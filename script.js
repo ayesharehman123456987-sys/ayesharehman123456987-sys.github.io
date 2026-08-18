@@ -2,7 +2,6 @@ const buttons = document.querySelectorAll(".nav");
 const pages = document.querySelectorAll(".page");
 const title = document.getElementById("title");
 
-
 buttons.forEach(button => {
 
     button.addEventListener("click", () => {
@@ -13,21 +12,17 @@ buttons.forEach(button => {
             page.classList.remove("active");
         });
 
+        const page = document.getElementById(pageId);
 
-        const selectedPage = document.getElementById(pageId);
-
-        if(selectedPage){
-            selectedPage.classList.add("active");
+        if(page){
+            page.classList.add("active");
         }
 
-
-        buttons.forEach(btn => {
+        buttons.forEach(btn=>{
             btn.classList.remove("active");
         });
 
-
         button.classList.add("active");
-
 
         if(title){
             title.innerText =
@@ -39,25 +34,21 @@ buttons.forEach(button => {
 });
 
 
+document.querySelectorAll("[data-go]").forEach(button=>{
 
-document.querySelectorAll("[data-go]").forEach(button => {
-
-    button.addEventListener("click", () => {
+    button.addEventListener("click",()=>{
 
         const pageId = button.dataset.go;
 
-
-        pages.forEach(page => {
+        pages.forEach(page=>{
             page.classList.remove("active");
         });
 
+        const page = document.getElementById(pageId);
 
-        const selectedPage = document.getElementById(pageId);
-
-        if(selectedPage){
-            selectedPage.classList.add("active");
+        if(page){
+            page.classList.add("active");
         }
-
 
     });
 
