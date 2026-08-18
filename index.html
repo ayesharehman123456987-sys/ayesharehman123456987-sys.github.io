@@ -319,7 +319,44 @@ Find Work →
 </div>
 
 
+<!-- Firebase Connection -->
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-analytics.js";
+
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
+
+authDomain: "elite-freelance-hub.firebaseapp.com",
+
+projectId: "elite-freelance-hub",
+
+storageBucket: "elite-freelance-hub.firebasestorage.app",
+
+messagingSenderId: "777611553956",
+
+appId: "1:777611553956:web:730b7df36570ff803a8a31",
+
+measurementId: "G-PC7G6G6BRD"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const analytics = getAnalytics(app);
+
+
+</script>
+
+
 <script src="script.js"></script>
+
 
 </body>
 </html>
