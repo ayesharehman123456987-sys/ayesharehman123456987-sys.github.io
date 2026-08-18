@@ -1,51 +1,64 @@
-const buttons = document.querySelectorAll('.nav');
-const pages = document.querySelectorAll('.page');
-const title = document.getElementById('title');
+const buttons = document.querySelectorAll(".nav");
+const pages = document.querySelectorAll(".page");
+const title = document.getElementById("title");
 
-buttons.forEach(btn => {
-  btn.addEventListener('click', () => {
 
-    let id = btn.dataset.page;
+buttons.forEach(button => {
 
-    pages.forEach(page => {
-      page.classList.remove('active');
+    button.addEventListener("click", () => {
+
+        const pageId = button.dataset.page;
+
+        pages.forEach(page => {
+            page.classList.remove("active");
+        });
+
+
+        const selectedPage = document.getElementById(pageId);
+
+        if(selectedPage){
+            selectedPage.classList.add("active");
+        }
+
+
+        buttons.forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+
+        button.classList.add("active");
+
+
+        if(title){
+            title.innerText =
+            pageId.charAt(0).toUpperCase() + pageId.slice(1);
+        }
+
     });
 
-    let selected = document.getElementById(id);
-    if(selected){
-      selected.classList.add('active');
-    }
-
-    buttons.forEach(b => {
-      b.classList.remove('active');
-    });
-
-    btn.classList.add('active');
-
-    if(title){
-      title.innerText = id.charAt(0).toUpperCase() + id.slice(1);
-    }
-
-  });
 });
 
 
-document.querySelectorAll('[data-go]').forEach(btn => {
 
-  btn.onclick = () => {
+document.querySelectorAll("[data-go]").forEach(button => {
 
-    let id = btn.dataset.go;
+    button.addEventListener("click", () => {
 
-    pages.forEach(page => {
-      page.classList.remove('active');
+        const pageId = button.dataset.go;
+
+
+        pages.forEach(page => {
+            page.classList.remove("active");
+        });
+
+
+        const selectedPage = document.getElementById(pageId);
+
+        if(selectedPage){
+            selectedPage.classList.add("active");
+        }
+
+
     });
-
-    let selected = document.getElementById(id);
-
-    if(selected){
-      selected.classList.add('active');
-    }
-
-  };
 
 });
