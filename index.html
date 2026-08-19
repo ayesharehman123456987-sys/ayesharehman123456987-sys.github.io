@@ -1,15 +1,14 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>ELITE FREELANCE HUB ✦</title>
 
 <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
@@ -24,9 +23,7 @@
 
 <div class="member">
 
-<div class="avatar">
-ET
-</div>
+<div class="avatar">ET</div>
 
 <div>
 <b id="profileName">Loading...</b>
@@ -37,68 +34,34 @@ ET
 
 <nav>
 
-<button class="nav active" data-page="dashboard">
-🏠 Dashboard
-</button>
-
-<button class="nav" data-page="jobs">
-🔍 Find Work
-</button>
-
-<button class="nav" data-page="applications">
-📩 Applications
-</button>
-
-<button class="nav" data-page="projects">
-💼 My Projects
-</button>
-
-<button class="nav" data-page="messages">
-💬 Messages
-</button>
-
-<button class="nav" data-page="profile">
-👤 Profile
-</button>
-
-<button class="nav" data-page="settings">
-⚙️ Settings
-</button>
+<button class="nav active" data-page="dashboard">🏠 Dashboard</button>
+<button class="nav" data-page="jobs">🔍 Find Work</button>
+<button class="nav" data-page="applications">📩 Applications</button>
+<button class="nav" data-page="projects">💼 My Projects</button>
+<button class="nav" data-page="messages">💬 Messages</button>
+<button class="nav" data-page="profile">👤 Profile</button>
+<button class="nav" data-page="settings">⚙️ Settings</button>
 
 </nav>
 
 </aside>
 
-
 <main class="main">
-
 
 <header class="topbar">
 
 <div>
-
 <small>WELCOME BACK</small>
-
-<h1 id="title">
-Dashboard
-</h1>
-
+<h1 id="title">Dashboard</h1>
 </div>
-
 
 <div class="user">
 
-<div class="avatar">
-ET
-</div>
+<div class="avatar">ET</div>
 
-<span id="userName">
-Loading...
-</span>
+<span id="userName">Loading...</span>
 
-<button
-id="logoutBtn"
-class="primary">
+<button id="logoutBtn" class="primary">
 Logout
 </button>
 
@@ -107,121 +70,61 @@ Logout
 </header>
 
 
-
 <!-- DASHBOARD -->
 
-<section
-class="page active"
-id="dashboard">
+<section class="page active" id="dashboard">
 
 <div class="hero">
 
 <h2>
-
 Your Freelance
 <br>
-
 <span>Work Hub</span>
-
 </h2>
 
 <p>
-
-Find online projects, apply for jobs and manage
-your professional work.
-
+Find online projects, apply for jobs and manage your professional work.
 </p>
 
-
-<button
-class="primary"
-data-go="jobs">
-
+<button class="primary" data-go="jobs">
 Find Work →
-
 </button>
 
-
-<a
-href="post-job.html"
+<a href="post-job.html"
 class="primary"
-style="
-text-decoration:none;
-display:inline-block;
-margin-left:10px;
-">
-
+style="text-decoration:none;display:inline-block;margin-left:10px;">
 Post a Project +
-
 </a>
 
 </div>
 
-
-
 <div class="stats">
 
+<div class="stat">
+<h3 id="jobCount">0</h3>
+<p>Available Jobs</p>
+</div>
 
 <div class="stat">
-
-<h3 id="jobCount">
-0
-</h3>
-
-<p>
-Available Jobs
-</p>
-
+<h3 id="projectCount">0</h3>
+<p>Active Projects</p>
 </div>
-
 
 <div class="stat">
-
-<h3 id="projectCount">
-0
-</h3>
-
-<p>
-Active Projects
-</p>
-
+<h3 id="applicationCount">0</h3>
+<p>Applications Sent</p>
 </div>
-
 
 <div class="stat">
-
-<h3 id="applicationCount">
-0
-</h3>
-
-<p>
-Applications Sent
-</p>
-
-</div>
-
-
-<div class="stat">
-
-<h3 id="ratingValue">
---
-</h3>
-
-<p>
-Profile Rating
-</p>
-
+<h3 id="ratingValue">--</h3>
+<p>Profile Rating</p>
 </div>
 
 </div>
-
-
 
 <div class="panel">
 
-<h3>
-Recent Work Activity
-</h3>
+<h3>Recent Work Activity</h3>
 
 <p id="activityText">
 No activity yet.
@@ -232,22 +135,15 @@ No activity yet.
 </section>
 
 
-
 <!-- JOBS -->
 
-<section
-class="page"
-id="jobs">
+<section class="page" id="jobs">
 
 <div class="intro">
 
-<label>
-FIND WORK
-</label>
+<label>FIND WORK</label>
 
-<h2>
-Available Jobs
-</h2>
+<h2>Available Jobs</h2>
 
 <p>
 Find projects posted by clients.
@@ -255,34 +151,22 @@ Find projects posted by clients.
 
 </div>
 
-
-<div
-class="cards"
-id="jobList">
-
+<div class="cards" id="jobList">
 Loading jobs...
-
 </div>
 
 </section>
 
 
-
 <!-- APPLICATIONS -->
 
-<section
-class="page"
-id="applications">
+<section class="page" id="applications">
 
 <div class="intro">
 
-<label>
-APPLICATIONS
-</label>
+<label>APPLICATIONS</label>
 
-<h2>
-My Applications
-</h2>
+<h2>My Applications</h2>
 
 <p>
 Track your applications.
@@ -290,34 +174,22 @@ Track your applications.
 
 </div>
 
-
-<div
-class="panel"
-id="applicationList">
-
+<div class="cards" id="applicationList">
 Loading applications...
-
 </div>
 
 </section>
 
 
-
 <!-- PROJECTS -->
 
-<section
-class="page"
-id="projects">
+<section class="page" id="projects">
 
 <div class="intro">
 
-<label>
-PROJECTS
-</label>
+<label>PROJECTS</label>
 
-<h2>
-My Projects
-</h2>
+<h2>My Projects</h2>
 
 <p>
 Your accepted projects appear here.
@@ -325,34 +197,22 @@ Your accepted projects appear here.
 
 </div>
 
-
-<div
-class="panel"
-id="projectList">
-
+<div class="cards" id="projectList">
 Loading projects...
-
 </div>
 
 </section>
 
 
-
 <!-- MESSAGES -->
 
-<section
-class="page"
-id="messages">
+<section class="page" id="messages">
 
 <div class="intro">
 
-<label>
-MESSAGES
-</label>
+<label>MESSAGES</label>
 
-<h2>
-Client Messages
-</h2>
+<h2>Client Messages</h2>
 
 <p>
 Chat with your clients.
@@ -360,15 +220,11 @@ Chat with your clients.
 
 </div>
 
-
 <div class="panel">
-
 
 <div id="chatHeader">
 
-<h3>
-💬 Select a project
-</h3>
+<h3>💬 Select a project</h3>
 
 <p>
 Open an accepted project to start chatting.
@@ -376,39 +232,23 @@ Open an accepted project to start chatting.
 
 </div>
 
-
-<div
-id="messageList"
-style="
-max-height:350px;
-overflow-y:auto;
-margin:20px 0;
-">
+<div id="messageList"
+style="max-height:350px;overflow-y:auto;margin:20px 0;">
 </div>
 
-
-<div
-id="chatBox"
-style="display:none;">
+<div id="chatBox" style="display:none;">
 
 <textarea
 id="messageInput"
 placeholder="Write a message..."
-style="
-width:100%;
-min-height:80px;
-padding:12px;
-box-sizing:border-box;
-"></textarea>
-
+style="width:100%;min-height:80px;padding:12px;box-sizing:border-box;">
+</textarea>
 
 <button
 class="primary"
 id="sendMessageBtn"
 style="margin-top:10px;">
-
 📤 Send Message
-
 </button>
 
 </div>
@@ -418,22 +258,15 @@ style="margin-top:10px;">
 </section>
 
 
-
 <!-- PROFILE -->
 
-<section
-class="page"
-id="profile">
+<section class="page" id="profile">
 
 <div class="intro">
 
-<label>
-PROFILE
-</label>
+<label>PROFILE</label>
 
-<h2>
-Freelancer Profile
-</h2>
+<h2>Freelancer Profile</h2>
 
 <p>
 Manage your professional profile.
@@ -441,10 +274,9 @@ Manage your professional profile.
 
 </div>
 
-
 <div class="panel">
 
-<h3>
+<h3 id="profileTitle">
 AYESHA REHMAN
 </h3>
 
@@ -453,10 +285,7 @@ Professional Freelancer
 </p>
 
 <p>
-📧
-<span id="profileEmail">
-Loading...
-</span>
+📧 <span id="profileEmail">Loading...</span>
 </p>
 
 </div>
@@ -464,544 +293,29 @@ Loading...
 </section>
 
 
-
 <!-- SETTINGS -->
 
-<section
-class="page"
-id="settings">
+<section class="page" id="settings">
 
 <div class="intro">
 
-<label>
-SETTINGS
-</label>
+<label>SETTINGS</label>
 
-<h2>
-Account Settings
-</h2>
+<h2>Account Settings</h2>
 
 </div>
 
-
 <div class="panel">
 
-<h3>
-⚙️ Account
-</h3>
+<h3>⚙️ Account</h3>
 
 <p>
 Your account is connected with Firebase.
 </p>
 
-
-<button
-class="primary"
-id="settingsLogout">
-
+<button class="primary" id="settingsLogout">
 Logout
-
 </button>
 
-</div>
-
-</section>
-
-
-</main>
-
-</div>
-
-
-
-<script type="module">
-
-
-/* FIREBASE */
-
-import {
-initializeApp
-}
-from
-"https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
-
-import {
-getAuth,
-onAuthStateChanged,
-signOut
-}
-from
-"https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-
-import {
-getFirestore,
-collection,
-getDocs,
-addDoc,
-query,
-where,
-orderBy,
-doc,
-getDoc,
-serverTimestamp
-}
-from
-"https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
-
-const firebaseConfig = {
-
-apiKey:
-"AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
-
-authDomain:
-"elite-freelance-hub.firebaseapp.com",
-
-projectId:
-"elite-freelance-hub",
-
-storageBucket:
-"elite-freelance-hub.firebasestorage.app",
-
-messagingSenderId:
-"777611553956",
-
-appId:
-"1:777611553956:web:730b7df36570ff803a8a31"
-
-};
-
-
-const app =
-initializeApp(firebaseConfig);
-
-const auth =
-getAuth(app);
-
-const db =
-getFirestore(app);
-
-
-let currentUser = null;
-
-let currentConversation = null;
-
-
-
-/* AUTH */
-
-onAuthStateChanged(
-auth,
-async(user)=>{
-
-if(!user){
-
-window.location.href =
-"login.html";
-
-return;
-
-}
-
-
-currentUser = user;
-
-
-document.getElementById(
-"userName"
-).innerText =
-user.email;
-
-
-document.getElementById(
-"profileName"
-).innerText =
-"AYESHA REHMAN";
-
-
-document.getElementById(
-"profileEmail"
-).innerText =
-user.email;
-
-
-await loadJobs();
-
-await loadApplications(user.uid);
-
-await loadProjects(user.uid);
-
-});
-
-
-
-/* LOAD JOBS */
-
-async function loadJobs(){
-
-const box =
-document.getElementById(
-"jobList"
-);
-
-
-try{
-
-const snap =
-await getDocs(
-collection(db,"jobs")
-);
-
-
-box.innerHTML = "";
-
-
-if(snap.empty){
-
-box.innerHTML =
-"<p>No jobs available right now.</p>";
-
-document.getElementById(
-"jobCount"
-).innerText =
-"0";
-
-return;
-
-}
-
-
-let count = 0;
-
-
-snap.forEach((item)=>{
-
-const data =
-item.data();
-
-
-/* Don't show closed jobs */
-
-if(data.status &&
-data.status !== "open"){
-
-return;
-
-}
-
-
-count++;
-
-
-const title =
-String(
-data.title ||
-"Project"
-)
-.replace(/'/g,"&#39;");
-
-
-const description =
-String(
-data.description ||
-"No description provided."
-);
-
-
-box.innerHTML += `
-
-<div class="card">
-
-<h3>
-💼 ${data.title || "Project"}
-</h3>
-
-<p>
-${description}
-</p>
-
-<p>
-📂 ${data.category || "General"}
-</p>
-
-<p>
-💰 $${data.budget || "0"}
-</p>
-
-<p>
-📅 Deadline:
-${data.deadline || "Not specified"}
-</p>
-
-<button
-class="primary"
-onclick="applyJob('${item.id}','${title}')">
-
-Apply Now
-
-</button>
-
-</div>
-
-`;
-
-});
-
-
-if(count === 0){
-
-box.innerHTML =
-"<p>No open jobs available right now.</p>";
-
-}
-
-
-document.getElementById(
-"jobCount"
-).innerText =
-count;
-
-
-}catch(error){
-
-console.error(error);
-
-box.innerHTML =
-"<p>Unable to load jobs.</p>";
-
-}
-
-}
-
-
-
-/* APPLY TO JOB */
-
-window.applyJob =
-async(jobId,title)=>{
-
-if(!currentUser){
-
-alert(
-"Please login first."
-);
-
-return;
-
-}
-
-
-try{
-
-
-/*
-Get the actual job document.
-This gives us the REAL clientId.
-*/
-
-const jobRef =
-doc(
-db,
-"jobs",
-jobId
-);
-
-
-const jobSnap =
-await getDoc(jobRef);
-
-
-if(!jobSnap.exists()){
-
-alert(
-"This project no longer exists."
-);
-
-return;
-
-}
-
-
-const jobData =
-jobSnap.data();
-
-
-/*
-Make sure this is still an open project.
-*/
-
-if(
-jobData.status &&
-jobData.status !== "open"
-){
-
-alert(
-"This project is no longer accepting applications."
-);
-
-await loadJobs();
-
-return;
-
-}
-
-
-/*
-Check if freelancer already applied.
-*/
-
-const q =
-query(
-
-collection(
-db,
-"applications"
-),
-
-where(
-"jobId",
-"==",
-jobId
-),
-
-where(
-"freelancerId",
-"==",
-currentUser.uid
-)
-
-);
-
-
-const existing =
-await getDocs(q);
-
-
-if(!existing.empty){
-
-alert(
-"You already applied for this project ✅"
-);
-
-return;
-
-}
-
-
-/*
-Create REAL application.
-IMPORTANT:
-clientId comes from the actual job.
-*/
-
-await addDoc(
-
-collection(
-db,
-"applications"
-),
-
-{
-
-jobId:
-jobId,
-
-jobTitle:
-jobData.title || title,
-
-jobCategory:
-jobData.category || "",
-
-jobBudget:
-Number(
-jobData.budget || 0
-),
-
-jobDeadline:
-jobData.deadline || "",
-
-freelancerId:
-currentUser.uid,
-
-freelancerEmail:
-currentUser.email,
-
-clientId:
-jobData.clientId || "",
-
-clientEmail:
-jobData.clientEmail || "",
-
-status:
-"pending",
-
-createdAt:
-serverTimestamp()
-
-}
-
-);
-
-
-alert(
-"Application sent successfully ✅"
-);
-
-
-await loadApplications(
-currentUser.uid
-);
-
-
-}catch(error){
-
-console.error(error);
-
-alert(
-"Application could not be sent."
-);
-
-}
-
-};
-
-
-
-/* LOAD APPLICATIONS */
-
-async function loadApplications(uid){
-
-const box =
-document.getElementById(
-"applicationList"
-);
-
-
-try{
-
-
-const q =
-query(
-
-collection(
-db,
-"applications"
-),
-
-where(
-"freelancerId",
-"==",
-uid
-)
-
-);
-
-
-const snap =
-await getDocs(q);
-
-
-box.innerHTML = "";
-
+</
+```
