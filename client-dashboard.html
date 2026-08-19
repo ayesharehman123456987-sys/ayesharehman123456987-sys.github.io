@@ -6,335 +6,829 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Elite Freelance Hub - Client</title>
+<title>ELITE FREELANCE HUB ✦ Client</title>
 
-<style>
-
-body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#070b18;
-color:white;
-}
-
-.box{
-max-width:700px;
-margin:40px auto;
-background:#111a33;
-padding:30px;
-border-radius:20px;
-border:1px solid #293554;
-}
-
-h1,h2{
-color:#9b8cff;
-}
-
-input,textarea,select{
-
-width:100%;
-padding:12px;
-margin:10px 0;
-background:#070b18;
-border:1px solid #293554;
-color:white;
-border-radius:10px;
-
-}
-
-
-button{
-
-background:#9b8cff;
-color:white;
-border:0;
-padding:12px 20px;
-border-radius:10px;
-cursor:pointer;
-font-weight:bold;
-
-}
-
-
-.card{
-
-background:#070b18;
-padding:20px;
-border-radius:15px;
-margin-top:15px;
-border:1px solid #293554;
-
-}
-
-
-.accept{
-
-background:#20c997;
-
-}
-
-
-.reject{
-
-background:#ff4d6d;
-
-}
-
-
-#message{
-
-margin-top:15px;
-color:#b9ff39;
-
-}
-
-
-</style>
+<link rel="stylesheet" href="style.css">
 
 </head>
 
-
 <body>
 
+<div class="layout">
 
-<div class="box">
+<aside class="sidebar">
+
+<div class="brand">
+✦ <span>ELITE</span> FREELANCE HUB
+</div>
+
+<div class="member">
+
+<div class="avatar">
+CL
+</div>
+
+<div>
+
+<b id="profileName">
+Loading...
+</b>
+
+<small>
+Professional Client
+</small>
+
+</div>
+
+</div>
+
+<nav>
+
+<button class="nav active" data-page="dashboard">
+🏠 Dashboard
+</button>
+
+<button class="nav" data-page="projects">
+💼 My Projects
+</button>
+
+<button class="nav" data-page="applications">
+📩 Applications
+</button>
+
+<button class="nav" data-page="messages">
+💬 Messages
+</button>
+
+<button class="nav" data-page="profile">
+👤 Profile
+</button>
+
+<button class="nav" data-page="settings">
+⚙️ Settings
+</button>
+
+</nav>
+
+</aside>
 
 
-<h1>
-✦ Client Dashboard
+<main class="main">
+
+
+<header class="topbar">
+
+<div>
+
+<small>
+WELCOME BACK
+</small>
+
+<h1 id="title">
+Dashboard
 </h1>
 
+</div>
+
+
+<div class="user">
+
+<div class="avatar">
+CL
+</div>
+
+<span id="userName">
+Loading...
+</span>
+
+<button
+id="logoutBtn"
+class="primary">
+Logout
+</button>
+
+</div>
+
+</header>
+
+
+<!-- DASHBOARD -->
+
+<section
+class="page active"
+id="dashboard">
+
+<div class="hero">
+
+<h2>
+
+Build Your
+<br>
+
+<span>Dream Project</span>
+
+</h2>
 
 <p>
-Post your project and manage applications.
+
+Post projects, find talented freelancers
+and manage your work.
+
 </p>
 
 
+<a
+href="post-job.html"
+class="primary"
+style="
+text-decoration:none;
+display:inline-block;
+">
+
+🚀 Post a Project
+
+</a>
+
+</div>
+
+
+<div class="stats">
+
+
+<div class="stat">
+
+<h3 id="projectCount">
+0
+</h3>
+
+<p>
+My Projects
+</p>
+
+</div>
+
+
+<div class="stat">
+
+<h3 id="applicationCount">
+0
+</h3>
+
+<p>
+Applications
+</p>
+
+</div>
+
+
+<div class="stat">
+
+<h3 id="acceptedCount">
+0
+</h3>
+
+<p>
+Accepted
+</p>
+
+</div>
+
+
+<div class="stat">
+
+<h3>
+--
+</h3>
+
+<p>
+Client Rating
+</p>
+
+</div>
+
+
+</div>
+
+
+<div class="panel">
+
+<h3>
+Recent Activity
+</h3>
+
+<p id="activityText">
+No activity yet.
+</p>
+
+</div>
+
+</section>
+
+
+
+<!-- PROJECTS -->
+
+<section
+class="page"
+id="projects">
+
+<div class="intro">
+
+<label>
+PROJECTS
+</label>
 
 <h2>
-Post Project
+My Projects
 </h2>
 
+<p>
+Projects posted by you.
+</p>
+
+</div>
 
 
-<input id="title" placeholder="Project Title">
+<div
+class="cards"
+id="projectList">
 
+Loading projects...
 
+</div>
 
-<select id="category">
-
-<option>Web Development</option>
-<option>Graphic Design</option>
-<option>Data Entry</option>
-<option>Content Writing</option>
-<option>Digital Marketing</option>
-
-</select>
-
-
-
-<textarea 
-id="description"
-placeholder="Project Description">
-</textarea>
+</section>
 
 
 
-<input id="budget" placeholder="Budget USD">
+<!-- APPLICATIONS -->
 
+<section
+class="page"
+id="applications">
 
+<div class="intro">
 
-<button id="postBtn">
-🚀 Post Project
-</button>
-
-
-
-<p id="message"></p>
-
-
-
-<hr>
-
-
+<label>
+APPLICATIONS
+</label>
 
 <h2>
-📩 Applications
+Freelancer Applications
 </h2>
 
+<p>
+Review freelancers who applied to your projects.
+</p>
+
+</div>
 
 
-<div id="applications">
+<div
+class="cards"
+id="applicationList">
 
 Loading applications...
 
 </div>
 
+</section>
 
+
+
+<!-- MESSAGES -->
+
+<section
+class="page"
+id="messages">
+
+<div class="intro">
+
+<label>
+MESSAGES
+</label>
+
+<h2>
+Client Messages
+</h2>
+
+<p>
+Communicate with your freelancers.
+</p>
 
 </div>
+
+
+<div class="panel">
+
+<div id="chatHeader">
+
+<h3>
+💬 Select a freelancer
+</h3>
+
+<p>
+Accept a project first to start chatting.
+</p>
+
+</div>
+
+
+<div
+id="messageList"
+style="
+max-height:350px;
+overflow-y:auto;
+margin:20px 0;
+">
+
+</div>
+
+
+<div
+id="chatBox"
+style="display:none;">
+
+<textarea
+id="messageInput"
+placeholder="Write a message..."
+style="
+width:100%;
+min-height:80px;
+padding:12px;
+box-sizing:border-box;
+">
+
+</textarea>
+
+
+<button
+class="primary"
+id="sendMessageBtn"
+style="margin-top:10px;">
+
+📤 Send Message
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- PROFILE -->
+
+<section
+class="page"
+id="profile">
+
+<div class="intro">
+
+<label>
+PROFILE
+</label>
+
+<h2>
+Client Profile
+</h2>
+
+<p>
+Manage your client account.
+</p>
+
+</div>
+
+
+<div class="panel">
+
+<h3 id="profileTitle">
+Client
+</h3>
+
+<p>
+Professional Client
+</p>
+
+<p>
+📧
+<span id="profileEmail">
+Loading...
+</span>
+</p>
+
+</div>
+
+</section>
+
+
+
+<!-- SETTINGS -->
+
+<section
+class="page"
+id="settings">
+
+<div class="intro">
+
+<label>
+SETTINGS
+</label>
+
+<h2>
+Account Settings
+</h2>
+
+</div>
+
+
+<div class="panel">
+
+<h3>
+⚙️ Account
+</h3>
+
+<p>
+Your account is connected with Firebase.
+</p>
+
+
+<button
+class="primary"
+id="settingsLogout">
+
+Logout
+
+</button>
+
+</div>
+
+</section>
+
+
+</main>
+
+</div>
+
+
+
+<script src="script.js"></script>
 
 
 <script type="module">
 
 
-import { initializeApp }
+import {
+initializeApp
+}
 
-from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
+
+import {
+
+getAuth,
+onAuthStateChanged,
+signOut
+
+}
+
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 
 import {
 
 getFirestore,
 collection,
-addDoc,
 getDocs,
+query,
+where,
 updateDoc,
-doc
+doc,
+addDoc,
+orderBy
 
 }
 
-from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
+
+
+/* FIREBASE */
 
 
 const firebaseConfig = {
 
+apiKey:
+"AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
 
-apiKey:"AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
+authDomain:
+"elite-freelance-hub.firebaseapp.com",
 
-authDomain:"elite-freelance-hub.firebaseapp.com",
+projectId:
+"elite-freelance-hub",
 
-projectId:"elite-freelance-hub",
+storageBucket:
+"elite-freelance-hub.firebasestorage.app",
 
-storageBucket:"elite-freelance-hub.firebasestorage.app",
+messagingSenderId:
+"777611553956",
 
-messagingSenderId:"777611553956",
-
-appId:"1:777611553956:web:730b7df36570ff803a8a31",
-
-measurementId:"G-PC7G6G6BRD"
-
-
-};
-
-
-
-const app = initializeApp(firebaseConfig);
-
-
-const db = getFirestore(app);
-
-
-
-document.getElementById("postBtn").onclick = async()=>{
-
-
-let title =
-document.getElementById("title").value;
-
-
-let category =
-document.getElementById("category").value;
-
-
-let description =
-document.getElementById("description").value;
-
-
-let budget =
-document.getElementById("budget").value;
-
-
-
-await addDoc(
-collection(db,"jobs"),
-{
-
-title:title,
-category:category,
-description:description,
-budget:budget,
-status:"open"
-
-}
-
-);
-
-
-
-document.getElementById("message").innerText =
-"Project Posted Successfully ✅";
-
-
+appId:
+"1:777611553956:web:730b7df36570ff803a8a31"
 
 };
 
 
-// LOAD APPLICATIONS
+const app =
+initializeApp(firebaseConfig);
 
-async function loadApplications(){
+const auth =
+getAuth(app);
 
-const box =
-document.getElementById("applications");
-
-
-const snapshot =
-await getDocs(
-collection(db,"applications")
-);
+const db =
+getFirestore(app);
 
 
-box.innerHTML="";
+
+let currentUser = null;
+
+let currentConversation = null;
 
 
-if(snapshot.empty){
 
-box.innerHTML =
-"No applications yet.";
+/* AUTH */
+
+
+onAuthStateChanged(
+auth,
+async(user)=>{
+
+if(!user){
+
+window.location.href =
+"login.html";
 
 return;
 
 }
 
 
+currentUser =
+user;
 
-snapshot.forEach((item)=>{
 
+document.getElementById(
+"userName"
+).innerText =
+user.email;
+
+
+document.getElementById(
+"profileName"
+).innerText =
+"AYESHA REHMAN";
+
+
+document.getElementById(
+"profileTitle"
+).innerText =
+"AYESHA REHMAN";
+
+
+document.getElementById(
+"profileEmail"
+).innerText =
+user.email;
+
+
+await loadProjects();
+
+await loadApplications();
+
+});
+
+
+
+/* LOAD CLIENT PROJECTS */
+
+
+async function loadProjects(){
+
+const box =
+document.getElementById(
+"projectList"
+);
+
+
+try{
+
+
+const q =
+query(
+
+collection(db,"jobs"),
+
+where(
+"clientId",
+"==",
+currentUser.uid
+)
+
+);
+
+
+const snap =
+await getDocs(q);
+
+
+box.innerHTML = "";
+
+
+if(snap.empty){
+
+box.innerHTML = `
+
+<div class="panel">
+
+<p>
+You have not posted any projects yet.
+</p>
+
+<a
+href="post-job.html"
+class="primary"
+style="
+text-decoration:none;
+display:inline-block;
+margin-top:10px;
+">
+
+🚀 Post Your First Project
+
+</a>
+
+</div>
+
+`;
+
+document.getElementById(
+"projectCount"
+).innerText =
+"0";
+
+return;
+
+}
+
+
+snap.forEach(
+(item)=>{
 
 const data =
 item.data();
 
 
-
 box.innerHTML += `
-
 
 <div class="card">
 
-
 <h3>
-💼 ${data.jobTitle || "Project"}
+💼 ${data.title || "Project"}
 </h3>
 
-
 <p>
-👤 Freelancer:
-<br>
-${data.freelancerEmail || "Unknown"}
+${data.description || ""}
 </p>
 
-
 <p>
-Status:
-<b>${data.status}</b>
+📂 ${data.category || "General"}
 </p>
 
+<p>
+💰 $${data.budget || "0"}
+</p>
+
+</div>
+
+`;
+
+});
 
 
-<button 
-class="accept"
+document.getElementById(
+"projectCount"
+).innerText =
+snap.size;
+
+
+}catch(error){
+
+console.error(error);
+
+box.innerHTML =
+"<p>Unable to load projects.</p>";
+
+}
+
+}
+
+
+
+/* LOAD APPLICATIONS */
+
+
+async function loadApplications(){
+
+const box =
+document.getElementById(
+"applicationList"
+);
+
+
+try{
+
+
+const q =
+query(
+
+collection(db,"applications"),
+
+where(
+"clientId",
+"==",
+currentUser.uid
+)
+
+);
+
+
+const snap =
+await getDocs(q);
+
+
+box.innerHTML = "";
+
+
+document.getElementById(
+"applicationCount"
+).innerText =
+snap.size;
+
+
+let accepted =
+0;
+
+
+if(snap.empty){
+
+box.innerHTML =
+"<p>No applications yet.</p>";
+
+document.getElementById(
+"acceptedCount"
+).innerText =
+"0";
+
+return;
+
+}
+
+
+snap.forEach(
+(item)=>{
+
+const data =
+item.data();
+
+
+if(data.status === "accepted"){
+
+accepted++;
+
+}
+
+
+let buttons = "";
+
+
+if(data.status === "pending"){
+
+buttons = `
+
+<div style="
+display:flex;
+gap:10px;
+margin-top:15px;
+">
+
+<button
+class="primary"
 onclick="acceptApplication('${item.id}')">
 
 Accept ✅
@@ -342,48 +836,163 @@ Accept ✅
 </button>
 
 
-
-<button 
-class="reject"
+<button
+class="primary"
 onclick="rejectApplication('${item.id}')">
 
 Reject ❌
 
 </button>
 
-
-
 </div>
-
-
 
 `;
 
+}
+
+
+if(data.status === "accepted"){
+
+buttons = `
+
+<p>
+
+<strong>
+✅ Application Accepted
+</strong>
+
+</p>
+
+<button
+class="primary"
+onclick="
+openChat(
+'${data.jobId}',
+'${data.jobTitle || "Project"}',
+'${data.freelancerId}',
+'${data.freelancerEmail || ""}'
+)">
+
+💬 Message Freelancer
+
+</button>
+
+`;
+
+}
+
+
+if(data.status === "rejected"){
+
+buttons = `
+
+<p>
+
+<strong>
+❌ Application Rejected
+</strong>
+
+</p>
+
+`;
+
+}
+
+
+box.innerHTML += `
+
+<div class="card">
+
+<h3>
+💼 ${data.jobTitle || "Project"}
+</h3>
+
+
+<p>
+
+👤 Freelancer:
+
+<br>
+
+<b>
+${data.freelancerEmail || "Unknown"}
+</b>
+
+</p>
+
+
+<p>
+
+Status:
+
+<b>
+${data.status || "pending"}
+</b>
+
+</p>
+
+
+${buttons}
+
+</div>
+
+`;
 
 });
 
 
+document.getElementById(
+"acceptedCount"
+).innerText =
+accepted;
+
+
+}catch(error){
+
+console.error(error);
+
+box.innerHTML =
+"<p>Unable to load applications.</p>";
+
+}
+
 }
 
 
 
+/* ACCEPT APPLICATION */
+
 
 window.acceptApplication =
-async(id)=>{
+async(applicationId)=>{
+
+try{
+
+
+const applicationRef =
+doc(
+db,
+"applications",
+applicationId
+);
 
 
 await updateDoc(
-
-doc(db,"applications",id),
-
+applicationRef,
 {
 
-status:"accepted"
+status:
+"accepted",
+
+clientId:
+currentUser.uid,
+
+clientEmail:
+currentUser.email
 
 }
 
 );
-
 
 
 alert(
@@ -391,31 +1000,56 @@ alert(
 );
 
 
+await loadApplications();
 
-loadApplications();
 
+}catch(error){
+
+console.error(error);
+
+alert(
+"Could not accept application."
+);
+
+}
 
 };
 
 
 
+/* REJECT APPLICATION */
+
 
 window.rejectApplication =
-async(id)=>{
+async(applicationId)=>{
+
+try{
+
+
+const applicationRef =
+doc(
+db,
+"applications",
+applicationId
+);
 
 
 await updateDoc(
-
-doc(db,"applications",id),
-
+applicationRef,
 {
 
-status:"rejected"
+status:
+"rejected",
+
+clientId:
+currentUser.uid,
+
+clientEmail:
+currentUser.email
 
 }
 
 );
-
 
 
 alert(
@@ -423,21 +1057,436 @@ alert(
 );
 
 
+await loadApplications();
 
-loadApplications();
 
+}catch(error){
+
+console.error(error);
+
+alert(
+"Could not reject application."
+);
+
+}
 
 };
 
 
 
+/* OPEN CHAT */
 
-loadApplications();
 
+window.openChat =
+async(
+jobId,
+title,
+freelancerId,
+freelancerEmail
+)=>{
+
+
+currentConversation =
+jobId +
+"_" +
+freelancerId +
+"_" +
+currentUser.uid;
+
+
+document.querySelectorAll(
+".nav"
+).forEach(
+(btn)=>{
+btn.classList.remove(
+"active"
+);
+});
+
+
+const messageButton =
+document.querySelector(
+'[data-page="messages"]'
+);
+
+
+if(messageButton){
+
+messageButton.classList.add(
+"active"
+);
+
+}
+
+
+document.querySelectorAll(
+".page"
+).forEach(
+(page)=>{
+page.classList.remove(
+"active"
+);
+});
+
+
+document.getElementById(
+"messages"
+).classList.add(
+"active"
+);
+
+
+document.getElementById(
+"title"
+).innerText =
+"Messages";
+
+
+document.getElementById(
+"chatHeader"
+).innerHTML = `
+
+<h3>
+💬 ${title}
+</h3>
+
+<p>
+Freelancer:
+${freelancerEmail}
+</p>
+
+`;
+
+
+document.getElementById(
+"chatBox"
+).style.display =
+"block";
+
+
+await loadMessages();
+
+};
+
+
+
+/* LOAD MESSAGES */
+
+
+async function loadMessages(){
+
+const box =
+document.getElementById(
+"messageList"
+);
+
+
+if(!currentConversation){
+
+box.innerHTML =
+"<p>Select a freelancer first.</p>";
+
+return;
+
+}
+
+
+try{
+
+
+const q =
+query(
+
+collection(db,"messages"),
+
+where(
+"conversationId",
+"==",
+currentConversation
+
+),
+
+orderBy(
+"createdAt",
+"asc"
+)
+
+);
+
+
+const snap =
+await getDocs(q);
+
+
+box.innerHTML = "";
+
+
+if(snap.empty){
+
+box.innerHTML =
+"<p>No messages yet. Start the conversation 💬</p>";
+
+return;
+
+}
+
+
+snap.forEach(
+(item)=>{
+
+const data =
+item.data();
+
+
+const mine =
+data.senderId ===
+currentUser.uid;
+
+
+box.innerHTML += `
+
+<div style="
+padding:12px;
+margin:8px 0;
+border-radius:12px;
+background:
+${mine
+? "#9b8cff"
+: "#18233f"};
+">
+
+<b>
+
+${mine
+? "You"
+: "Freelancer"}
+
+</b>
+
+<p
+style="margin:5px 0;">
+
+${data.text || ""}
+
+</p>
+
+</div>
+
+`;
+
+});
+
+
+box.scrollTop =
+box.scrollHeight;
+
+
+}catch(error){
+
+console.error(error);
+
+box.innerHTML =
+"<p>Unable to load messages.</p>";
+
+}
+
+}
+
+
+
+/* SEND MESSAGE */
+
+
+document.getElementById(
+"sendMessageBtn"
+).onclick =
+async()=>{
+
+
+const input =
+document.getElementById(
+"messageInput"
+);
+
+
+const text =
+input.value.trim();
+
+
+if(!text){
+
+alert(
+"Write a message first."
+);
+
+return;
+
+}
+
+
+if(!currentConversation){
+
+alert(
+"Open a freelancer chat first."
+);
+
+return;
+
+}
+
+
+try{
+
+
+await addDoc(
+
+collection(
+db,
+"messages"
+),
+
+{
+
+conversationId:
+currentConversation,
+
+senderId:
+currentUser.uid,
+
+senderEmail:
+currentUser.email,
+
+text:
+text,
+
+createdAt:
+new Date()
+
+}
+
+);
+
+
+input.value = "";
+
+
+await loadMessages();
+
+
+}catch(error){
+
+console.error(error);
+
+alert(
+"Message could not be sent."
+);
+
+}
+
+};
+
+
+
+/* LOGOUT */
+
+
+async function logout(){
+
+await signOut(auth);
+
+window.location.href =
+"login.html";
+
+}
+
+
+document.getElementById(
+"logoutBtn"
+).onclick =
+logout;
+
+
+document.getElementById(
+"settingsLogout"
+).onclick =
+logout;
+
+
+
+/* NAVIGATION */
+
+
+document.querySelectorAll(
+".nav"
+).forEach(
+(button)=>{
+
+button.addEventListener(
+"click",
+()=>{
+
+const pageName =
+button.getAttribute(
+"data-page"
+);
+
+
+document.querySelectorAll(
+".nav"
+).forEach(
+(btn)=>{
+btn.classList.remove(
+"active"
+);
+});
+
+
+button.classList.add(
+"active"
+);
+
+
+document.querySelectorAll(
+".page"
+).forEach(
+(page)=>{
+page.classList.remove(
+"active"
+);
+});
+
+
+const page =
+document.getElementById(
+pageName
+);
+
+
+if(page){
+
+page.classList.add(
+"active"
+);
+
+}
+
+
+document.getElementById(
+"title"
+).innerText =
+button.innerText
+.replace(
+/[^\w\s]/gi,
+""
+)
+.trim();
+
+});
+
+});
 
 
 </script>
-
 
 </body>
 
