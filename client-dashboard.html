@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Elite Freelance Hub - Client</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#070b18;
+    color:white;
+}
+
+.box{
+    max-width:600px;
+    margin:50px auto;
+    background:#111a33;
+    padding:30px;
+    border-radius:20px;
+}
+
+h1{
+    color:#9b8cff;
+}
+
+input,textarea,select{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    background:#070b18;
+    border:1px solid #293554;
+    color:white;
+    border-radius:10px;
+}
+
+button{
+    background:#9b8cff;
+    color:white;
+    border:0;
+    padding:13px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+#message{
+    margin-top:15px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<h1>
+✦ Client Dashboard
+</h1>
+
+<p>
+Post your project and find freelancers.
+</p>
+
+
+<input id="title" placeholder="Project Title">
+
+
+<select id="category">
+
+<option>
+Web Development
+</option>
+
+<option>
+Data Entry
+</option>
+
+<option>
+Graphic Design
+</option>
+
+<option>
+Content Writing
+</option>
+
+</select>
+
+
+<textarea id="description" placeholder="Project Description"></textarea>
+
+
+<input id="budget" placeholder="Budget">
+
+
+<button id="postBtn">
+Post Project
+</button>
+
+
+<p id="message"></p>
+
+
+</div>
+
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+
+import {
+getFirestore,
+collection,
+addDoc
+}
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+apiKey:"AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
+
+authDomain:"elite-freelance-hub.firebaseapp.com",
+
+projectId:"elite-freelance-hub",
+
+storageBucket:"elite-freelance-hub.firebasestorage.app",
+
+messagingSenderId:"777611553956",
+
+appId:"1:777611553956:web:730b7df36570ff803a8a31",
+
+measurementId:"G-PC7G6G6BRD"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+
+document.getElementById("postBtn").onclick = async()=>{
+
+
+let title =
+document.getElementById("title").value;
+
+
+let category =
+document.getElementById("category").value;
+
+
+let description =
+document.getElementById("description").value;
+
+
+let budget =
+document.getElementById("budget").value;
+
+
+
+await addDoc(collection(db,"jobs"),{
+
+title:title,
+
+category:category,
+
+description:description,
+
+budget:budget,
+
+status:"open"
+
+});
+
+
+document.getElementById("message").innerText =
+"Project Posted Successfully ✅";
+
+
+};
+
+
+</script>
+
+</body>
+</html>
