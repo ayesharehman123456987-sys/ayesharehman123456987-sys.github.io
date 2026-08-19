@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -11,42 +10,56 @@
 <link rel="stylesheet" href="style.css">
 
 <style>
-.loading {
-    color: #9b8cff;
+.loading{
+    color:#9b8cff;
+    padding:20px 0;
 }
 
-.error {
-    color: #ff7b8a;
+.error{
+    color:#ff7b8a;
+    padding:20px 0;
 }
 
-.empty {
-    color: #9da6c0;
-    padding: 20px 0;
+.empty{
+    color:#9da6c0;
+    padding:20px 0;
 }
 
-.card p {
-    margin: 8px 0;
+.card p{
+    margin:8px 0;
 }
 
-.card .primary {
-    margin-top: 12px;
+.card .primary{
+    margin-top:12px;
 }
 
-.status {
-    display: inline-block;
-    padding: 5px 10px;
-    border-radius: 8px;
-    background: #202b4d;
-    color: #cdd3e6;
-    font-size: 13px;
+.status{
+    display:inline-block;
+    padding:5px 10px;
+    border-radius:8px;
+    background:#202b4d;
+    color:#cdd3e6;
+    font-size:13px;
 }
 
-@media(max-width:700px) {
+.firebase-error{
+    position:fixed;
+    bottom:15px;
+    left:15px;
+    right:15px;
+    background:#3a1420;
+    border:1px solid #ff7b8a;
+    color:#fff;
+    padding:14px;
+    border-radius:10px;
+    z-index:9999;
+    display:none;
+}
 
-    .user {
-        flex-wrap: wrap;
+@media(max-width:700px){
+    .user{
+        flex-wrap:wrap;
     }
-
 }
 </style>
 
@@ -55,8 +68,6 @@
 <body>
 
 <div class="layout">
-
-<!-- SIDEBAR -->
 
 <aside class="sidebar">
 
@@ -71,15 +82,8 @@ ET
 </div>
 
 <div>
-
-<b id="profileName">
-Loading...
-</b>
-
-<small>
-Professional Freelancer
-</small>
-
+<b id="profileName">Loading...</b>
+<small>Professional Freelancer</small>
 </div>
 
 </div>
@@ -118,7 +122,6 @@ Professional Freelancer
 
 </aside>
 
-<!-- MAIN -->
 
 <main class="main">
 
@@ -126,9 +129,7 @@ Professional Freelancer
 
 <div>
 
-<small>
-WELCOME BACK
-</small>
+<small>WELCOME BACK</small>
 
 <h1 id="title">
 Dashboard
@@ -149,11 +150,13 @@ Loading...
 <button
 id="logoutBtn"
 class="primary">
-Logout </button>
+Logout
+</button>
 
 </div>
 
 </header>
+
 
 <!-- DASHBOARD -->
 
@@ -164,11 +167,9 @@ id="dashboard">
 <div class="hero">
 
 <h2>
-
-Your Freelance <br>
-
+Your Freelance
+<br>
 <span>Work Hub</span>
-
 </h2>
 
 <p>
@@ -178,67 +179,43 @@ Find online projects, apply for jobs and manage your professional work.
 <button
 class="primary"
 data-go="jobs">
-Find Work → </button>
+Find Work →
+</button>
 
 <a
 href="post-job.html"
 class="primary"
 style="text-decoration:none;display:inline-block;margin-left:10px;">
-Post a Project + </a>
+Post a Project +
+</a>
 
 </div>
+
 
 <div class="stats">
 
 <div class="stat">
-
-<h3 id="jobCount">
-0
-</h3>
-
-<p>
-Available Jobs
-</p>
-
+<h3 id="jobCount">0</h3>
+<p>Available Jobs</p>
 </div>
 
 <div class="stat">
-
-<h3 id="projectCount">
-0
-</h3>
-
-<p>
-Active Projects
-</p>
-
+<h3 id="projectCount">0</h3>
+<p>Active Projects</p>
 </div>
 
 <div class="stat">
-
-<h3 id="applicationCount">
-0
-</h3>
-
-<p>
-Applications Sent
-</p>
-
+<h3 id="applicationCount">0</h3>
+<p>Applications Sent</p>
 </div>
 
 <div class="stat">
-
-<h3 id="ratingValue">
---
-</h3>
-
-<p>
-Profile Rating
-</p>
-
+<h3 id="ratingValue">--</h3>
+<p>Profile Rating</p>
 </div>
 
 </div>
+
 
 <div class="panel">
 
@@ -253,6 +230,7 @@ No activity yet.
 </div>
 
 </section>
+
 
 <!-- JOBS -->
 
@@ -288,6 +266,7 @@ Loading jobs...
 
 </section>
 
+
 <!-- APPLICATIONS -->
 
 <section
@@ -322,6 +301,7 @@ Loading applications...
 
 </section>
 
+
 <!-- PROJECTS -->
 
 <section
@@ -355,6 +335,7 @@ Loading projects...
 </div>
 
 </section>
+
 
 <!-- MESSAGES -->
 
@@ -404,20 +385,21 @@ style="display:none;">
 <textarea
 id="messageInput"
 placeholder="Write a message..."
-style="width:100%;min-height:80px;padding:12px;box-sizing:border-box;">
-</textarea>
+style="width:100%;min-height:80px;padding:12px;box-sizing:border-box;"></textarea>
 
 <button
 class="primary"
 id="sendMessageBtn"
 style="margin-top:10px;">
-📤 Send Message </button>
+📤 Send Message
+</button>
 
 </div>
 
 </div>
 
 </section>
+
 
 <!-- PROFILE -->
 
@@ -452,14 +434,13 @@ Professional Freelancer
 </p>
 
 <p>
-📧 <span id="profileEmail">
-Loading...
-</span>
+📧 <span id="profileEmail">Loading...</span>
 </p>
 
 </div>
 
 </section>
+
 
 <!-- SETTINGS -->
 
@@ -492,7 +473,8 @@ Your account is connected with Firebase.
 <button
 class="primary"
 id="settingsLogout">
-Logout </button>
+Logout
+</button>
 
 </div>
 
@@ -502,7 +484,12 @@ Logout </button>
 
 </div>
 
-<!-- FIREBASE -->
+
+<div
+id="firebaseError"
+class="firebase-error">
+</div>
+
 
 <script type="module">
 
@@ -512,7 +499,6 @@ initializeApp
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
-
 import {
 getAuth,
 onAuthStateChanged,
@@ -520,7 +506,6 @@ signOut
 }
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
 
 import {
 getFirestore,
@@ -562,7 +547,7 @@ appId:
 };
 
 
-/* INITIALIZE */
+/* FIREBASE INITIALIZE */
 
 const app =
 initializeApp(firebaseConfig);
@@ -575,7 +560,6 @@ getFirestore(app);
 
 
 let currentUser = null;
-
 let currentConversation = null;
 
 
@@ -614,37 +598,51 @@ document.getElementById("messageInput");
 const sendMessageBtn =
 document.getElementById("sendMessageBtn");
 
+const firebaseError =
+document.getElementById("firebaseError");
+
+
+/* SHOW ERROR */
+
+function showFirebaseError(error){
+
+console.error("Firebase error:",error);
+
+firebaseError.style.display =
+"block";
+
+firebaseError.innerText =
+"Firebase Error: " +
+(error?.message || error);
+
+}
+
 
 /* PAGE NAVIGATION */
 
-document.querySelectorAll(".nav").forEach(button => {
+document.querySelectorAll(".nav")
+.forEach(button => {
 
-button.addEventListener("click", () => {
+button.addEventListener("click",()=>{
 
 const pageName =
 button.dataset.page;
 
 document.querySelectorAll(".page")
-.forEach(page => {
-
+.forEach(page=>{
 page.classList.remove("active");
-
 });
 
-const selectedPage =
+const page =
 document.getElementById(pageName);
 
-if(selectedPage){
-
-selectedPage.classList.add("active");
-
+if(page){
+page.classList.add("active");
 }
 
 document.querySelectorAll(".nav")
-.forEach(nav => {
-
+.forEach(nav=>{
 nav.classList.remove("active");
-
 });
 
 button.classList.add("active");
@@ -663,28 +661,25 @@ button.innerText.replace(
 
 /* FIND WORK BUTTON */
 
-document.querySelectorAll("[data-go]").forEach(button => {
+document.querySelectorAll("[data-go]")
+.forEach(button=>{
 
-button.addEventListener("click", () => {
+button.addEventListener("click",()=>{
 
 const pageName =
 button.dataset.go;
 
 document.querySelectorAll(".page")
-.forEach(page => {
-
+.forEach(page=>{
 page.classList.remove("active");
-
 });
 
 document.getElementById(pageName)
 .classList.add("active");
 
 document.querySelectorAll(".nav")
-.forEach(nav => {
-
+.forEach(nav=>{
 nav.classList.remove("active");
-
 });
 
 const nav =
@@ -693,9 +688,7 @@ document.querySelector(
 );
 
 if(nav){
-
 nav.classList.add("active");
-
 }
 
 document.getElementById("title")
@@ -720,11 +713,7 @@ window.location.href =
 
 }catch(error){
 
-console.error(error);
-
-alert(
-"Unable to logout."
-);
+showFirebaseError(error);
 
 }
 
@@ -737,7 +726,6 @@ document.getElementById("logoutBtn")
 logoutUser
 );
 
-
 document.getElementById("settingsLogout")
 .addEventListener(
 "click",
@@ -749,7 +737,9 @@ logoutUser
 
 onAuthStateChanged(
 auth,
-async user => {
+async(user)=>{
+
+console.log("AUTH USER:",user);
 
 if(!user){
 
@@ -765,19 +755,23 @@ currentUser =
 user;
 
 
-/* USER INFO */
+/* SHOW USER IMMEDIATELY */
 
 userName.innerText =
-user.email || "Freelancer";
+user.email ||
+"Freelancer";
 
 profileName.innerText =
 "AYESHA REHMAN";
 
 profileEmail.innerText =
-user.email || "";
+user.email ||
+"";
 
 
-/* LOAD DATA */
+/* LOAD EVERYTHING */
+
+try{
 
 await loadJobs();
 
@@ -792,6 +786,12 @@ user.uid
 await updateDashboard(
 user.uid
 );
+
+}catch(error){
+
+showFirebaseError(error);
+
+}
 
 }
 );
@@ -817,11 +817,10 @@ db,
 
 jobList.innerHTML = "";
 
-
 let count = 0;
 
 
-snapshot.forEach(item => {
+snapshot.forEach(item=>{
 
 const data =
 item.data();
@@ -851,7 +850,8 @@ card.innerHTML = `
 
 <h3>
 💼 ${escapeHtml(
-data.title || "Untitled Project"
+data.title ||
+"Untitled Project"
 )}
 </h3>
 
@@ -883,27 +883,21 @@ data.deadline ||
 )}
 </p>
 
-<button class="primary apply-button">
+<button
+class="primary apply-button">
 Apply Now
 </button>
 
 `;
 
 
-const applyButton =
 card.querySelector(
 ".apply-button"
-);
-
-
-applyButton.addEventListener(
+)
+.addEventListener(
 "click",
-() => {
-
-applyJob(
-item.id
-);
-
+()=>{
+applyJob(item.id);
 }
 );
 
@@ -926,10 +920,9 @@ jobList.innerHTML =
 
 }
 
-
 }catch(error){
 
-console.error(error);
+showFirebaseError(error);
 
 jobList.innerHTML =
 '<div class="error">Unable to load jobs.</div>';
@@ -999,7 +992,7 @@ return;
 }
 
 
-/* CHECK DUPLICATE */
+/* DUPLICATE CHECK */
 
 const existingQuery =
 query(
@@ -1056,30 +1049,37 @@ jobId:
 jobId,
 
 jobTitle:
-job.title || "Project",
+job.title ||
+"Project",
 
 jobCategory:
-job.category || "",
+job.category ||
+"",
 
 jobBudget:
 Number(
-job.budget || 0
+job.budget ||
+0
 ),
 
 jobDeadline:
-job.deadline || "",
+job.deadline ||
+"",
 
 freelancerId:
 currentUser.uid,
 
 freelancerEmail:
-currentUser.email || "",
+currentUser.email ||
+"",
 
 clientId:
-job.clientId || "",
+job.clientId ||
+"",
 
 clientEmail:
-job.clientEmail || "",
+job.clientEmail ||
+"",
 
 status:
 "pending",
@@ -1108,7 +1108,7 @@ currentUser.uid
 
 }catch(error){
 
-console.error(error);
+showFirebaseError(error);
 
 alert(
 "Application could not be sent."
@@ -1151,11 +1151,10 @@ await getDocs(q);
 
 applicationList.innerHTML = "";
 
-
 let count = 0;
 
 
-snapshot.forEach(item => {
+snapshot.forEach(item=>{
 
 const data =
 item.data();
@@ -1188,7 +1187,8 @@ data.jobCategory ||
 
 <p>
 💰 $${Number(
-data.jobBudget || 0
+data.jobBudget ||
+0
 )}
 </p>
 
@@ -1233,7 +1233,7 @@ applicationList.innerHTML =
 
 }catch(error){
 
-console.error(error);
+showFirebaseError(error);
 
 applicationList.innerHTML =
 '<div class="error">Unable to load applications.</div>';
@@ -1275,11 +1275,10 @@ await getDocs(q);
 
 projectList.innerHTML = "";
 
-
 let count = 0;
 
 
-snapshot.forEach(item => {
+snapshot.forEach(item=>{
 
 const data =
 item.data();
@@ -1323,7 +1322,8 @@ data.clientEmail ||
 
 <p>
 💰 $${Number(
-data.jobBudget || 0
+data.jobBudget ||
+0
 )}
 </p>
 
@@ -1341,7 +1341,8 @@ Accepted
 </span>
 </p>
 
-<button class="primary message-project">
+<button
+class="primary message-project">
 💬 Message Client
 </button>
 
@@ -1350,14 +1351,11 @@ Accepted
 
 card.querySelector(
 ".message-project"
-).addEventListener(
+)
+.addEventListener(
 "click",
-() => {
-
-openConversation(
-data
-);
-
+()=>{
+openConversation(data);
 }
 );
 
@@ -1383,7 +1381,7 @@ projectList.innerHTML =
 
 }catch(error){
 
-console.error(error);
+showFirebaseError(error);
 
 projectList.innerHTML =
 '<div class="error">Unable to load projects.</div>';
@@ -1399,7 +1397,7 @@ async function updateDashboard(uid){
 
 try{
 
-const applicationQuery =
+const q =
 query(
 
 collection(
@@ -1417,19 +1415,17 @@ uid
 
 
 const snapshot =
-await getDocs(
-applicationQuery
-);
+await getDocs(q);
 
-
-let accepted = 0;
 
 let totalApplications = 0;
+let accepted = 0;
 
 
-snapshot.forEach(item => {
+snapshot.forEach(item=>{
 
 totalApplications++;
+
 
 if(
 item.data().status ===
@@ -1474,14 +1470,14 @@ document.getElementById(
 
 }catch(error){
 
-console.error(error);
+showFirebaseError(error);
 
 }
 
 }
 
 
-/* OPEN CHAT */
+/* OPEN CONVERSATION */
 
 async function openConversation(project){
 
@@ -1490,10 +1486,8 @@ project;
 
 
 document.querySelectorAll(".page")
-.forEach(page => {
-
+.forEach(page=>{
 page.classList.remove("active");
-
 });
 
 
@@ -1503,10 +1497,8 @@ document.getElementById(
 
 
 document.querySelectorAll(".nav")
-.forEach(nav => {
-
+.forEach(nav=>{
 nav.classList.remove("active");
-
 });
 
 
@@ -1595,7 +1587,7 @@ return;
 }
 
 
-snapshot.forEach(item => {
+snapshot.forEach(item=>{
 
 const data =
 item.data();
@@ -1620,9 +1612,9 @@ message.style.borderRadius =
 "10px";
 
 message.style.background =
-mine ?
-"#202b4d" :
-"#111a33";
+mine
+? "#202b4d"
+: "#111a33";
 
 
 message.innerHTML = `
@@ -1633,7 +1625,8 @@ ${mine ? "You" : "Client"}
 
 <p>
 ${escapeHtml(
-data.text || ""
+data.text ||
+""
 )}
 </p>
 
@@ -1653,7 +1646,7 @@ messageList.scrollHeight;
 
 }catch(error){
 
-console.error(error);
+showFirebaseError(error);
 
 messageList.innerHTML =
 '<div class="error">Unable to load messages.</div>';
@@ -1667,12 +1660,10 @@ messageList.innerHTML =
 
 sendMessageBtn.addEventListener(
 "click",
-async () => {
+async()=>{
 
 if(!currentUser){
-
 return;
-
 }
 
 
@@ -1692,9 +1683,7 @@ messageInput.value.trim();
 
 
 if(!text){
-
 return;
-
 }
 
 
@@ -1723,13 +1712,16 @@ senderId:
 currentUser.uid,
 
 senderEmail:
-currentUser.email || "",
+currentUser.email ||
+"",
 
 receiverId:
-currentConversation.clientId || "",
+currentConversation.clientId ||
+"",
 
 receiverEmail:
-currentConversation.clientEmail || "",
+currentConversation.clientEmail ||
+"",
 
 text:
 text,
@@ -1752,7 +1744,7 @@ currentConversation.jobId
 
 }catch(error){
 
-console.error(error);
+showFirebaseError(error);
 
 alert(
 "Message could not be sent."
@@ -1776,16 +1768,35 @@ sendMessageBtn.innerText =
 function escapeHtml(value){
 
 return String(value)
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
+
+.replace(
+/&/g,
+"&amp;"
+)
+
+.replace(
+/</g,
+"&lt;"
+)
+
+.replace(
+/>/g,
+"&gt;"
+)
+
+.replace(
+/"/g,
+"&quot;"
+)
+
+.replace(
+/'/g,
+"&#039;"
+);
 
 }
 
 </script>
 
 </body>
-
 </html>
