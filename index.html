@@ -679,17 +679,22 @@ document.getElementById("applicationCount").innerText=count;
 
 
 
-async function loadProjects(uid){
+async function loadApplications(uid){
 
+...
+}
 
-const box=document.getElementById("projectList");
+⬇️
 
+PASTE NEW loadProjects HERE
 
-const q=query(
-collection(db,"applications"),
-where("freelancerId","==",uid),
-where("status","==","accepted")
-);
+⬇️
+
+document.getElementById("logoutBtn").onclick=()=>{
+
+signOut(auth);
+
+};
 
 
 const snap=await getDocs(q);
