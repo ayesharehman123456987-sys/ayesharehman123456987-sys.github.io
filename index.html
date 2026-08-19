@@ -1,141 +1,62 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>ELITE FREELANCE HUB ✦</title>
-
 <link rel="stylesheet" href="style.css">
-
 </head>
-
 
 <body>
 
-
 <div class="layout">
 
-
 <aside class="sidebar">
-
 
 <div class="brand">
 ✦ <span>ELITE</span> FREELANCE HUB
 </div>
 
-
 <div class="member">
-
-<div class="avatar">
-ET
-</div>
-
-
+<div class="avatar">ET</div>
 <div>
-
-<b id="profileName">
-Loading...
-</b>
-
-<small id="profileRole">
-Professional Freelancer
-</small>
-
+<b id="profileName">Loading...</b>
+<small id="profileRole">Professional Freelancer</small>
 </div>
-
 </div>
-
-
 
 <nav>
-
-<button class="nav active" data-page="dashboard">
-🏠 Dashboard
-</button>
-
-
-<button class="nav" data-page="jobs">
-🔍 Find Work
-</button>
-
-
-<button class="nav" data-page="applications">
-📩 Applications
-</button>
-
-
-<button class="nav" data-page="projects">
-💼 My Projects
-</button>
-
-
-<button class="nav" data-page="messages">
-💬 Messages
-</button>
-
-
-<button class="nav" data-page="profile">
-👤 Profile
-</button>
-
-
-<button class="nav" data-page="settings">
-⚙️ Settings
-</button>
-
-
+<button class="nav active" data-page="dashboard">🏠 Dashboard</button>
+<button class="nav" data-page="jobs">🔍 Find Work</button>
+<button class="nav" data-page="applications">📩 Applications</button>
+<button class="nav" data-page="projects">💼 My Projects</button>
+<button class="nav" data-page="messages">💬 Messages</button>
+<button class="nav" data-page="profile">👤 Profile</button>
+<button class="nav" data-page="settings">⚙️ Settings</button>
 </nav>
-
 
 </aside>
 
-
-
 <main class="main">
-
 
 <header class="topbar">
 
-
 <div>
-
-<small>
-WELCOME BACK
-</small>
-
-<h1 id="title">
-Dashboard
-</h1>
-
+<small>WELCOME BACK</small>
+<h1 id="title">Dashboard</h1>
 </div>
-
-
 
 <div class="user">
-
-<div class="avatar">
-ET
+<div class="avatar">ET</div>
+<span id="userName">Loading...</span>
+<button id="logoutBtn" class="primary">Logout</button>
 </div>
 
+</header>
 
-<span id="userName">
-Loading...
-</span>
-
-
-<button id="logoutBtn" class="primary">
-Logout
-</button>
-
-
-</div>
-
-
-</header><section class="page active" id="dashboard">
-
+<!-- DASHBOARD -->
+<section class="page active" id="dashboard">
 
 <div class="hero">
 
@@ -145,311 +66,182 @@ Your Freelance
 <span>Work Hub</span>
 </h2>
 
-
 <p>
 Find online projects, apply for jobs and manage your professional work.
 </p>
-
 
 <button class="primary" data-go="jobs">
 Find Work →
 </button>
 
-
-<a href="post-job.html" class="primary"
-style="text-decoration:none;display:inline-block;margin-left:10px;">
+<a
+href="post-job.html"
+class="primary"
+style="text-decoration:none;display:inline-block;margin-left:10px;"
+>
 Post a Project +
 </a>
 
-
 </div>
-
-
 
 <div class="stats">
 
-
 <div class="stat">
-
 <h3 id="jobCount">0</h3>
-
 <p>Available Jobs</p>
-
 </div>
 
-
-
 <div class="stat">
-
 <h3 id="projectCount">0</h3>
-
 <p>Active Projects</p>
-
 </div>
 
-
-
 <div class="stat">
-
 <h3 id="applicationCount">0</h3>
-
 <p>Applications Sent</p>
-
 </div>
-
-
 
 <div class="stat">
-
-<h3>--</h3>
-
+<h3 id="ratingValue">--</h3>
 <p>Profile Rating</p>
-
 </div>
 
-
 </div>
-
-
 
 <div class="panel">
-
-<h3>
-Recent Work Activity
-</h3>
-
-<p id="activityText">
-No activity yet.
-</p>
-
+<h3>Recent Work Activity</h3>
+<p id="activityText">No activity yet.</p>
 </div>
-
 
 </section>
 
 
-
-
-
+<!-- FIND WORK -->
 <section class="page" id="jobs">
 
-
 <div class="intro">
-
-<label>
-FIND WORK
-</label>
-
-
-<h2>
-Available Jobs
-</h2>
-
-
-<p>
-Find projects posted by clients.
-</p>
-
-
+<label>FIND WORK</label>
+<h2>Available Jobs</h2>
+<p>Find projects posted by clients.</p>
 </div>
-
-
 
 <div class="cards" id="jobList">
-
 Loading jobs...
-
 </div>
-
 
 </section>
 
 
-
-
-
+<!-- APPLICATIONS -->
 <section class="page" id="applications">
 
-
 <div class="intro">
-
-<label>
-APPLICATIONS
-</label>
-
-
-<h2>
-My Applications
-</h2>
-
-
-<p>
-Track your applications.
-</p>
-
-
+<label>APPLICATIONS</label>
+<h2>My Applications</h2>
+<p>Track your applications.</p>
 </div>
-
-
 
 <div class="panel" id="applicationList">
-
-No applications yet.
-
+Loading applications...
 </div>
-
-
-</section><section class="page" id="projects">
-
-<div class="intro">
-
-<label>
-PROJECTS
-</label>
-
-<h2>
-My Projects
-</h2>
-
-<p>
-Your accepted projects appear here.
-</p>
-
-</div>
-
-
-<div class="panel" id="projectList">
-
-No active projects yet.
-
-</div>
-
 
 </section>
 
 
+<!-- PROJECTS -->
+<section class="page" id="projects">
+
+<div class="intro">
+<label>PROJECTS</label>
+<h2>My Projects</h2>
+<p>Your accepted projects appear here.</p>
+</div>
+
+<div class="panel" id="projectList">
+Loading projects...
+</div>
+
+</section>
 
 
-
+<!-- MESSAGES -->
 <section class="page" id="messages">
 
 <div class="intro">
-
-<label>
-MESSAGES
-</label>
-
-
-<h2>
-Client Messages
-</h2>
-
-
-<p>
-Chat with clients.
-</p>
-
-
+<label>MESSAGES</label>
+<h2>Client Messages</h2>
+<p>Chat with clients.</p>
 </div>
 
+<div class="panel" id="messageList">
 
-<div class="panel">
+<h3>💬 Messages</h3>
 
-No messages yet.
+<p>No messages yet.</p>
 
 </div>
-
 
 </section>
 
 
-
-
-
+<!-- PROFILE -->
 <section class="page" id="profile">
 
 <div class="intro">
-
-<label>
-PROFILE
-</label>
-
-
-<h2>
-Freelancer Profile
-</h2>
-
-
-<p>
-Manage your professional profile.
-</p>
-
-
+<label>PROFILE</label>
+<h2>Freelancer Profile</h2>
+<p>Manage your professional profile.</p>
 </div>
-
 
 <div class="panel">
 
-<h3>
-AYESHA REHMAN
-</h3>
+<h3 id="profileTitle">AYESHA REHMAN</h3>
 
+<p>Professional Freelancer</p>
 
 <p>
-Professional Freelancer
+📧 <span id="profileEmail">Loading...</span>
 </p>
 
-
 </div>
-
 
 </section>
 
 
-
-
-
+<!-- SETTINGS -->
 <section class="page" id="settings">
 
 <div class="intro">
-
-<label>
-SETTINGS
-</label>
-
-
-<h2>
-Account Settings
-</h2>
-
-
+<label>SETTINGS</label>
+<h2>Account Settings</h2>
+<p>Manage your account.</p>
 </div>
-
 
 <div class="panel">
 
-<p>
-Settings coming soon.
-</p>
+<h3>⚙️ Account</h3>
 
+<p>Your account is connected with Firebase.</p>
+
+<button class="primary" id="settingsLogout">
+Logout
+</button>
 
 </div>
 
-
 </section>
 
-
-
 </main>
+</div>
 
 
-</div><script src="script.js"></script>
+<script src="script.js"></script>
+
 
 <script type="module">
 
 import { initializeApp }
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
 
 import {
 getAuth,
@@ -458,18 +250,20 @@ signOut
 }
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-
 import {
 getFirestore,
 collection,
 getDocs,
 addDoc,
+updateDoc,
+doc,
 query,
 where
 }
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
+/* FIREBASE */
 
 const firebaseConfig = {
 
@@ -488,7 +282,6 @@ appId:"1:777611553956:web:730b7df36570ff803a8a31"
 };
 
 
-
 const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
@@ -496,9 +289,9 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 
+/* AUTH */
 
 onAuthStateChanged(auth, async(user)=>{
-
 
 if(!user){
 
@@ -508,67 +301,84 @@ return;
 
 }
 
+document.getElementById("userName").innerText =
+user.email;
 
-document.getElementById("userName").innerText=user.email;
+document.getElementById("profileName").innerText =
+"AYESHA REHMAN";
 
-document.getElementById("profileName").innerText="AYESHA REHMAN";
+document.getElementById("profileTitle").innerText =
+"AYESHA REHMAN";
+
+document.getElementById("profileEmail").innerText =
+user.email;
 
 
-loadJobs();
+/* LOAD EVERYTHING */
 
-loadApplications(user.uid);
+await loadJobs();
 
-loadProjects(user.uid);
+await loadApplications(user.uid);
 
+await loadProjects(user.uid);
 
 });
 
 
-
-
+/* LOAD JOBS */
 
 async function loadJobs(){
 
+const box = document.getElementById("jobList");
 
-const box=document.getElementById("jobList");
+try{
 
-
-const snap=await getDocs(collection(db,"jobs"));
-
+const snap =
+await getDocs(collection(db,"jobs"));
 
 box.innerHTML="";
 
-
 let count=0;
 
+if(snap.empty){
+
+box.innerHTML =
+"<p>No jobs available right now.</p>";
+
+document.getElementById("jobCount").innerText="0";
+
+return;
+
+}
 
 snap.forEach((item)=>{
-
 
 const data=item.data();
 
 count++;
 
+const safeTitle =
+String(data.title || "Project")
+.replace(/'/g,"&#39;");
 
 box.innerHTML += `
 
 <div class="card">
 
-<h3>💼 ${data.title}</h3>
+<h3>💼 ${data.title || "Project"}</h3>
 
-<p>${data.description}</p>
+<p>${data.description || "No description provided."}</p>
 
-<p>📂 ${data.category}</p>
+<p>📂 ${data.category || "General"}</p>
 
-<p>💰 $${data.budget}</p>
+<p>💰 $${data.budget || "0"}</p>
 
-
-<button onclick="applyJob('${item.id}','${data.title}')">
-
+<button
+class="primary"
+onclick="applyJob('${item.id}','${safeTitle}')"
+>
 Apply Now
-
 </button>
-
 
 </div>
 
@@ -576,25 +386,67 @@ Apply Now
 
 });
 
-
 document.getElementById("jobCount").innerText=count;
 
+}catch(error){
+
+console.error(error);
+
+box.innerHTML =
+"<p>Unable to load jobs.</p>";
+
+}
 
 }
 
 
-
-
-
+/* APPLY TO JOB */
 
 window.applyJob = async(jobId,title)=>{
 
-
 const user=auth.currentUser;
 
+if(!user){
 
-await addDoc(collection(db,"applications"),{
+alert("Please login first.");
 
+return;
+
+}
+
+try{
+
+/* CHECK IF ALREADY APPLIED */
+
+const q=query(
+
+collection(db,"applications"),
+
+where("jobId","==",jobId),
+
+where("freelancerId","==",user.uid)
+
+);
+
+const existing =
+await getDocs(q);
+
+if(!existing.empty){
+
+alert("You already applied for this project ✅");
+
+return;
+
+}
+
+
+/* CREATE APPLICATION */
+
+await addDoc(
+
+collection(db,"applications"),
+
+{
 
 jobId:jobId,
 
@@ -604,123 +456,193 @@ freelancerId:user.uid,
 
 freelancerEmail:user.email,
 
+clientId:"",
+
+clientEmail:"",
+
 status:"pending",
 
 createdAt:new Date()
 
-});
+}
 
+);
 
 alert("Application sent successfully ✅");
 
+await loadApplications(user.uid);
 
-loadApplications(user.uid);
+}catch(error){
 
+console.error(error);
+
+alert("Application could not be sent. Please try again.");
+
+}
 
 };
 
 
-
-
-
+/* LOAD APPLICATIONS */
 
 async function loadApplications(uid){
 
+const box =
+document.getElementById("applicationList");
 
-const box=document.getElementById("applicationList");
-
+try{
 
 const q=query(
+
 collection(db,"applications"),
+
 where("freelancerId","==",uid)
+
 );
 
-
-const snap=await getDocs(q);
-
+const snap =
+await getDocs(q);
 
 box.innerHTML="";
 
+if(snap.empty){
+
+box.innerHTML =
+"<p>No applications yet.</p>";
+
+document.getElementById("applicationCount").innerText="0";
+
+return;
+
+}
 
 let count=0;
 
-
 snap.forEach((item)=>{
-
 
 const data=item.data();
 
 count++;
 
+let status=data.status || "pending";
+
+let statusText=status;
+
+if(status==="accepted"){
+
+statusText="✅ Accepted";
+
+}
+
+if(status==="rejected"){
+
+statusText="❌ Rejected";
+
+}
+
+if(status==="pending"){
+
+statusText="⏳ Pending";
+
+}
 
 box.innerHTML += `
 
 <div class="card">
 
-<h3>💼 ${data.jobTitle}</h3>
+<h3>💼 ${data.jobTitle || "Project"}</h3>
 
-<p>Status: <b>${data.status}</b></p>
+<p>
+Status:
+<b>${statusText}</b>
+</p>
+
+<p>
+📧 ${data.freelancerEmail || ""}
+</p>
 
 </div>
 
 `;
 
 });
-
 
 document.getElementById("applicationCount").innerText=count;
 
+}catch(error){
+
+console.error(error);
+
+box.innerHTML =
+"<p>Unable to load applications.</p>";
+
+}
 
 }
 
 
+/* LOAD ACCEPTED PROJECTS */
 
+async function loadProjects(uid){
 
+const box =
+document.getElementById("projectList");
 
+try{
 
+const q=query(
 
-async function loadApplications(uid){
+collection(db,"applications"),
 
-...
-}
+where("freelancerId","==",uid),
 
-⬇️
+where("status","==","accepted")
 
-PASTE NEW loadProjects HERE
+);
 
-⬇️
-
-document.getElementById("logoutBtn").onclick=()=>{
-
-signOut(auth);
-
-};
-
-
-const snap=await getDocs(q);
-
+const snap =
+await getDocs(q);
 
 box.innerHTML="";
 
+if(snap.empty){
 
-let count=0;
+box.innerHTML = `
 
+<p>No accepted projects yet.</p>
+
+`;
+
+document.getElementById("projectCount").innerText="0";
+
+return;
+
+}
 
 snap.forEach((item)=>{
 
-
 const data=item.data();
-
-count++;
-
 
 box.innerHTML += `
 
 <div class="card">
 
-<h3>✅ ${data.jobTitle}</h3>
+<h3>✅ ${data.jobTitle || "Project"}</h3>
 
-<p>Project Accepted</p>
+<p>
+<strong>Project Accepted</strong>
+</p>
+
+<p>
+You have been selected for this project.
+</p>
+
+<button
+class="primary"
+onclick="openProjectMessage('${data.jobId}','${data.jobTitle || "Project"}')"
+>
+💬 Message Client
+</button>
 
 </div>
 
@@ -728,26 +650,156 @@ box.innerHTML += `
 
 });
 
+document.getElementById("projectCount").innerText =
+snap.size;
 
-document.getElementById("projectCount").innerText=count;
+}catch(error){
 
+console.error(error);
+
+box.innerHTML =
+"<p>Unable to load projects.</p>";
+
+}
 
 }
 
 
+/* PROJECT MESSAGE BUTTON */
 
+window.openProjectMessage=(jobId,title)=>{
 
-document.getElementById("logoutBtn").onclick=()=>{
+document.querySelectorAll(".nav").forEach(btn=>{
+btn.classList.remove("active");
+});
 
-signOut(auth);
+const messageButton =
+document.querySelector('[data-page="messages"]');
+
+if(messageButton){
+messageButton.classList.add("active");
+}
+
+document.querySelectorAll(".page").forEach(page=>{
+page.classList.remove("active");
+});
+
+document.getElementById("messages").classList.add("active");
+
+document.getElementById("title").innerText="Messages";
+
+document.getElementById("messageList").innerHTML=`
+
+<h3>💬 ${title}</h3>
+
+<p>
+Your project has been accepted.
+</p>
+
+<p>
+Client chat will appear here.
+</p>
+
+`;
 
 };
 
 
+/* LOGOUT */
+
+async function logout(){
+
+try{
+
+await signOut(auth);
+
+window.location.href="login.html";
+
+}catch(error){
+
+console.error(error);
+
+}
+
+}
+
+document.getElementById("logoutBtn").onclick=logout;
+
+document.getElementById("settingsLogout").onclick=logout;
+
+
+/* NAVIGATION */
+
+document.querySelectorAll(".nav").forEach(button=>{
+
+button.addEventListener("click",()=>{
+
+const pageName =
+button.getAttribute("data-page");
+
+document.querySelectorAll(".nav").forEach(btn=>{
+btn.classList.remove("active");
+});
+
+button.classList.add("active");
+
+document.querySelectorAll(".page").forEach(page=>{
+page.classList.remove("active");
+});
+
+const page =
+document.getElementById(pageName);
+
+if(page){
+
+page.classList.add("active");
+
+}
+
+document.getElementById("title").innerText =
+button.innerText
+.replace(/[^\w\s]/gi,"")
+.trim();
+
+});
+
+});
+
+
+/* FIND WORK BUTTON */
+
+document.querySelectorAll("[data-go]").forEach(button=>{
+
+button.addEventListener("click",()=>{
+
+const target =
+button.getAttribute("data-go");
+
+document.querySelectorAll(".nav").forEach(btn=>{
+btn.classList.remove("active");
+});
+
+const jobsButton =
+document.querySelector('[data-page="jobs"]');
+
+if(jobsButton){
+jobsButton.classList.add("active");
+}
+
+document.querySelectorAll(".page").forEach(page=>{
+page.classList.remove("active");
+});
+
+document.getElementById(target).classList.add("active");
+
+document.getElementById("title").innerText="Find Work";
+
+});
+
+});
 
 </script>
 
-
 </body>
-
 </html>
+```
