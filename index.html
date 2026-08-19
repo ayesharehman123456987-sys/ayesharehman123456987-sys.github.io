@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,9 +19,10 @@
 
 <div class="member">
 <div class="avatar">ET</div>
+
 <div>
 <b id="profileName">Loading...</b>
-<small id="profileRole">Professional Freelancer</small>
+<small>Professional Freelancer</small>
 </div>
 </div>
 
@@ -55,7 +55,9 @@
 
 </header>
 
+
 <!-- DASHBOARD -->
+
 <section class="page active" id="dashboard">
 
 <div class="hero">
@@ -74,15 +76,14 @@ Find online projects, apply for jobs and manage your professional work.
 Find Work →
 </button>
 
-<a
-href="post-job.html"
+<a href="post-job.html"
 class="primary"
-style="text-decoration:none;display:inline-block;margin-left:10px;"
->
+style="text-decoration:none;display:inline-block;margin-left:10px;">
 Post a Project +
 </a>
 
 </div>
+
 
 <div class="stats">
 
@@ -108,15 +109,22 @@ Post a Project +
 
 </div>
 
+
 <div class="panel">
+
 <h3>Recent Work Activity</h3>
-<p id="activityText">No activity yet.</p>
+
+<p id="activityText">
+No activity yet.
+</p>
+
 </div>
 
 </section>
 
 
-<!-- FIND WORK -->
+<!-- JOBS -->
+
 <section class="page" id="jobs">
 
 <div class="intro">
@@ -133,6 +141,7 @@ Loading jobs...
 
 
 <!-- APPLICATIONS -->
+
 <section class="page" id="applications">
 
 <div class="intro">
@@ -149,6 +158,7 @@ Loading applications...
 
 
 <!-- PROJECTS -->
+
 <section class="page" id="projects">
 
 <div class="intro">
@@ -165,19 +175,43 @@ Loading projects...
 
 
 <!-- MESSAGES -->
+
 <section class="page" id="messages">
 
 <div class="intro">
 <label>MESSAGES</label>
 <h2>Client Messages</h2>
-<p>Chat with clients.</p>
+<p>Chat with your clients.</p>
 </div>
 
-<div class="panel" id="messageList">
+<div class="panel">
 
-<h3>💬 Messages</h3>
+<div id="chatHeader">
+<h3>💬 Select a project</h3>
+<p>Open an accepted project to start chatting.</p>
+</div>
 
-<p>No messages yet.</p>
+<div id="messageList"
+style="max-height:350px;overflow-y:auto;margin:20px 0;">
+</div>
+
+<div id="chatBox"
+style="display:none;">
+
+<textarea
+id="messageInput"
+placeholder="Write a message..."
+style="width:100%;min-height:80px;padding:12px;box-sizing:border-box;">
+</textarea>
+
+<button
+class="primary"
+id="sendMessageBtn"
+style="margin-top:10px;">
+📤 Send Message
+</button>
+
+</div>
 
 </div>
 
@@ -185,6 +219,7 @@ Loading projects...
 
 
 <!-- PROFILE -->
+
 <section class="page" id="profile">
 
 <div class="intro">
@@ -195,7 +230,7 @@ Loading projects...
 
 <div class="panel">
 
-<h3 id="profileTitle">AYESHA REHMAN</h3>
+<h3>AYESHA REHMAN</h3>
 
 <p>Professional Freelancer</p>
 
@@ -209,12 +244,12 @@ Loading projects...
 
 
 <!-- SETTINGS -->
+
 <section class="page" id="settings">
 
 <div class="intro">
 <label>SETTINGS</label>
 <h2>Account Settings</h2>
-<p>Manage your account.</p>
 </div>
 
 <div class="panel">
@@ -232,6 +267,7 @@ Logout
 </section>
 
 </main>
+
 </div>
 
 
@@ -255,15 +291,12 @@ getFirestore,
 collection,
 getDocs,
 addDoc,
-updateDoc,
-doc,
 query,
-where
+where,
+orderBy
 }
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-
-/* FIREBASE */
 
 const firebaseConfig = {
 
@@ -289,6 +322,11 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 
+let currentUser = null;
+
+let currentConversation = null;
+
+
 /* AUTH */
 
 onAuthStateChanged(auth, async(user)=>{
@@ -296,10 +334,11 @@ onAuthStateChanged(auth, async(user)=>{
 if(!user){
 
 window.location.href="login.html";
-
 return;
 
 }
+
+currentUser = user;
 
 document.getElementById("userName").innerText =
 user.email;
@@ -307,19 +346,11 @@ user.email;
 document.getElementById("profileName").innerText =
 "AYESHA REHMAN";
 
-document.getElementById("profileTitle").innerText =
-"AYESHA REHMAN";
-
 document.getElementById("profileEmail").innerText =
 user.email;
 
-
-/* LOAD EVERYTHING */
-
 await loadJobs();
-
 await loadApplications(user.uid);
-
 await loadProjects(user.uid);
 
 });
@@ -338,18 +369,15 @@ await getDocs(collection(db,"jobs"));
 
 box.innerHTML="";
 
-let count=0;
-
 if(snap.empty){
 
-box.innerHTML =
-"<p>No jobs available right now.</p>";
-
+box.innerHTML="<p>No jobs available right now.</p>";
 document.getElementById("jobCount").innerText="0";
-
 return;
 
 }
+
+let count=0;
 
 snap.forEach((item)=>{
 
@@ -357,7 +385,7 @@ const data=item.data();
 
 count++;
 
-const safeTitle =
+const title =
 String(data.title || "Project")
 .replace(/'/g,"&#39;");
 
@@ -375,8 +403,7 @@ box.innerHTML += `
 
 <button
 class="primary"
-onclick="applyJob('${item.id}','${safeTitle}')"
->
+onclick="applyJob('${item.id}','${title}')">
 Apply Now
 </button>
 
@@ -392,31 +419,25 @@ document.getElementById("jobCount").innerText=count;
 
 console.error(error);
 
-box.innerHTML =
-"<p>Unable to load jobs.</p>";
+box.innerHTML="<p>Unable to load jobs.</p>";
 
 }
 
 }
 
 
-/* APPLY TO JOB */
+/* APPLY */
 
 window.applyJob = async(jobId,title)=>{
 
-const user=auth.currentUser;
-
-if(!user){
+if(!currentUser){
 
 alert("Please login first.");
-
 return;
 
 }
 
 try{
-
-/* CHECK IF ALREADY APPLIED */
 
 const q=query(
 
@@ -424,23 +445,18 @@ collection(db,"applications"),
 
 where("jobId","==",jobId),
 
-where("freelancerId","==",user.uid)
+where("freelancerId","==",currentUser.uid)
 
 );
 
-const existing =
-await getDocs(q);
+const existing=await getDocs(q);
 
 if(!existing.empty){
 
 alert("You already applied for this project ✅");
-
 return;
 
 }
-
-
-/* CREATE APPLICATION */
 
 await addDoc(
 
@@ -452,9 +468,9 @@ jobId:jobId,
 
 jobTitle:title,
 
-freelancerId:user.uid,
+freelancerId:currentUser.uid,
 
-freelancerEmail:user.email,
+freelancerEmail:currentUser.email,
 
 clientId:"",
 
@@ -470,13 +486,13 @@ createdAt:new Date()
 
 alert("Application sent successfully ✅");
 
-await loadApplications(user.uid);
+await loadApplications(currentUser.uid);
 
 }catch(error){
 
 console.error(error);
 
-alert("Application could not be sent. Please try again.");
+alert("Application could not be sent.");
 
 }
 
@@ -487,8 +503,7 @@ alert("Application could not be sent. Please try again.");
 
 async function loadApplications(uid){
 
-const box =
-document.getElementById("applicationList");
+const box=document.getElementById("applicationList");
 
 try{
 
@@ -500,18 +515,14 @@ where("freelancerId","==",uid)
 
 );
 
-const snap =
-await getDocs(q);
+const snap=await getDocs(q);
 
 box.innerHTML="";
 
 if(snap.empty){
 
-box.innerHTML =
-"<p>No applications yet.</p>";
-
+box.innerHTML="<p>No applications yet.</p>";
 document.getElementById("applicationCount").innerText="0";
-
 return;
 
 }
@@ -526,24 +537,14 @@ count++;
 
 let status=data.status || "pending";
 
-let statusText=status;
+let statusText="⏳ Pending";
 
 if(status==="accepted"){
-
 statusText="✅ Accepted";
-
 }
 
 if(status==="rejected"){
-
 statusText="❌ Rejected";
-
-}
-
-if(status==="pending"){
-
-statusText="⏳ Pending";
-
 }
 
 box.innerHTML += `
@@ -555,10 +556,6 @@ box.innerHTML += `
 <p>
 Status:
 <b>${statusText}</b>
-</p>
-
-<p>
-📧 ${data.freelancerEmail || ""}
 </p>
 
 </div>
@@ -573,8 +570,7 @@ document.getElementById("applicationCount").innerText=count;
 
 console.error(error);
 
-box.innerHTML =
-"<p>Unable to load applications.</p>";
+box.innerHTML="<p>Unable to load applications.</p>";
 
 }
 
@@ -585,8 +581,7 @@ box.innerHTML =
 
 async function loadProjects(uid){
 
-const box =
-document.getElementById("projectList");
+const box=document.getElementById("projectList");
 
 try{
 
@@ -600,18 +595,13 @@ where("status","==","accepted")
 
 );
 
-const snap =
-await getDocs(q);
+const snap=await getDocs(q);
 
 box.innerHTML="";
 
 if(snap.empty){
 
-box.innerHTML = `
-
-<p>No accepted projects yet.</p>
-
-`;
+box.innerHTML="<p>No accepted projects yet.</p>";
 
 document.getElementById("projectCount").innerText="0";
 
@@ -622,6 +612,18 @@ return;
 snap.forEach((item)=>{
 
 const data=item.data();
+
+const title =
+String(data.jobTitle || "Project")
+.replace(/'/g,"&#39;");
+
+const clientId =
+String(data.clientId || "")
+.replace(/'/g,"&#39;");
+
+const clientEmail =
+String(data.clientEmail || "")
+.replace(/'/g,"&#39;");
 
 box.innerHTML += `
 
@@ -639,8 +641,12 @@ You have been selected for this project.
 
 <button
 class="primary"
-onclick="openProjectMessage('${data.jobId}','${data.jobTitle || "Project"}')"
->
+onclick="openChat(
+'${data.jobId}',
+'${title}',
+'${clientId}',
+'${clientEmail}'
+)">
 💬 Message Client
 </button>
 
@@ -650,24 +656,35 @@ onclick="openProjectMessage('${data.jobId}','${data.jobTitle || "Project"}')"
 
 });
 
-document.getElementById("projectCount").innerText =
-snap.size;
+document.getElementById("projectCount").innerText=snap.size;
 
 }catch(error){
 
 console.error(error);
 
-box.innerHTML =
-"<p>Unable to load projects.</p>";
+box.innerHTML="<p>Unable to load projects.</p>";
 
 }
 
 }
 
 
-/* PROJECT MESSAGE BUTTON */
+/* OPEN CHAT */
 
-window.openProjectMessage=(jobId,title)=>{
+window.openChat=async(jobId,title,clientId,clientEmail)=>{
+
+if(!clientId){
+
+alert(
+"Client chat will be available after the client account information is connected."
+);
+
+return;
+
+}
+
+currentConversation =
+jobId + "_" + currentUser.uid + "_" + clientId;
 
 document.querySelectorAll(".nav").forEach(btn=>{
 btn.classList.remove("active");
@@ -688,19 +705,158 @@ document.getElementById("messages").classList.add("active");
 
 document.getElementById("title").innerText="Messages";
 
-document.getElementById("messageList").innerHTML=`
+document.getElementById("chatHeader").innerHTML=`
 
 <h3>💬 ${title}</h3>
 
-<p>
-Your project has been accepted.
-</p>
-
-<p>
-Client chat will appear here.
-</p>
+<p>Client: ${clientEmail}</p>
 
 `;
+
+document.getElementById("chatBox").style.display="block";
+
+await loadMessages();
+
+};
+
+
+/* LOAD MESSAGES */
+
+async function loadMessages(){
+
+const box=document.getElementById("messageList");
+
+if(!currentConversation){
+
+box.innerHTML="<p>Select a project first.</p>";
+return;
+
+}
+
+try{
+
+const q=query(
+
+collection(db,"messages"),
+
+where("conversationId","==",currentConversation),
+
+orderBy("createdAt","asc")
+
+);
+
+const snap=await getDocs(q);
+
+box.innerHTML="";
+
+if(snap.empty){
+
+box.innerHTML=
+"<p>No messages yet. Start the conversation 💬</p>";
+
+return;
+
+}
+
+snap.forEach((item)=>{
+
+const data=item.data();
+
+const mine =
+data.senderId === currentUser.uid;
+
+box.innerHTML += `
+
+<div style="
+padding:12px;
+margin:8px 0;
+border-radius:12px;
+background:${mine ? "#9b8cff" : "#18233f"};
+">
+
+<b>${mine ? "You" : "Client"}</b>
+
+<p style="margin:5px 0;">
+${data.text || ""}
+</p>
+
+</div>
+
+`;
+
+});
+
+box.scrollTop=box.scrollHeight;
+
+}catch(error){
+
+console.error(error);
+
+box.innerHTML=
+"<p>Unable to load messages.</p>";
+
+}
+
+}
+
+
+/* SEND MESSAGE */
+
+document.getElementById("sendMessageBtn").onclick=async()=>{
+
+const input=document.getElementById("messageInput");
+
+const text=input.value.trim();
+
+if(!text){
+
+alert("Write a message first.");
+
+return;
+
+}
+
+if(!currentConversation){
+
+alert("Open a project chat first.");
+
+return;
+
+}
+
+try{
+
+await addDoc(
+
+collection(db,"messages"),
+
+{
+
+conversationId:currentConversation,
+
+senderId:currentUser.uid,
+
+senderEmail:currentUser.email,
+
+text:text,
+
+createdAt:new Date()
+
+}
+
+);
+
+input.value="";
+
+await loadMessages();
+
+}catch(error){
+
+console.error(error);
+
+alert("Message could not be sent.");
+
+}
 
 };
 
@@ -709,17 +865,9 @@ Client chat will appear here.
 
 async function logout(){
 
-try{
-
 await signOut(auth);
 
 window.location.href="login.html";
-
-}catch(error){
-
-console.error(error);
-
-}
 
 }
 
@@ -747,19 +895,10 @@ document.querySelectorAll(".page").forEach(page=>{
 page.classList.remove("active");
 });
 
-const page =
-document.getElementById(pageName);
-
-if(page){
-
-page.classList.add("active");
-
-}
+document.getElementById(pageName).classList.add("active");
 
 document.getElementById("title").innerText =
-button.innerText
-.replace(/[^\w\s]/gi,"")
-.trim();
+button.innerText.replace(/[^\w\s]/gi,"").trim();
 
 });
 
@@ -802,4 +941,3 @@ document.getElementById("title").innerText="Find Work";
 
 </body>
 </html>
-```
