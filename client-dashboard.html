@@ -1,107 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Elite Freelance Hub - Client</title>
 
 <style>
+
 body{
-    margin:0;
-    font-family:Arial,sans-serif;
-    background:#070b18;
-    color:white;
+margin:0;
+font-family:Arial,sans-serif;
+background:#070b18;
+color:white;
 }
 
 .box{
-    max-width:600px;
-    margin:50px auto;
-    background:#111a33;
-    padding:30px;
-    border-radius:20px;
+max-width:700px;
+margin:40px auto;
+background:#111a33;
+padding:30px;
+border-radius:20px;
+border:1px solid #293554;
 }
 
-h1{
-    color:#9b8cff;
+h1,h2{
+color:#9b8cff;
 }
 
 input,textarea,select{
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    background:#070b18;
-    border:1px solid #293554;
-    color:white;
-    border-radius:10px;
+
+width:100%;
+padding:12px;
+margin:10px 0;
+background:#070b18;
+border:1px solid #293554;
+color:white;
+border-radius:10px;
+
 }
+
 
 button{
-    background:#9b8cff;
-    color:white;
-    border:0;
-    padding:13px 20px;
-    border-radius:10px;
-    cursor:pointer;
-    font-weight:bold;
+
+background:#9b8cff;
+color:white;
+border:0;
+padding:12px 20px;
+border-radius:10px;
+cursor:pointer;
+font-weight:bold;
+
 }
 
-#message{
-    margin-top:15px;
+
+.card{
+
+background:#070b18;
+padding:20px;
+border-radius:15px;
+margin-top:15px;
+border:1px solid #293554;
+
 }
+
+
+.accept{
+
+background:#20c997;
+
+}
+
+
+.reject{
+
+background:#ff4d6d;
+
+}
+
+
+#message{
+
+margin-top:15px;
+color:#b9ff39;
+
+}
+
+
 </style>
 
 </head>
 
+
 <body>
 
+
 <div class="box">
+
 
 <h1>
 ✦ Client Dashboard
 </h1>
 
+
 <p>
-Post your project and find freelancers.
+Post your project and manage applications.
 </p>
+
+
+
+<h2>
+Post Project
+</h2>
+
 
 
 <input id="title" placeholder="Project Title">
 
 
+
 <select id="category">
 
-<option>
-Web Development
-</option>
-
-<option>
-Data Entry
-</option>
-
-<option>
-Graphic Design
-</option>
-
-<option>
-Content Writing
-</option>
+<option>Web Development</option>
+<option>Graphic Design</option>
+<option>Data Entry</option>
+<option>Content Writing</option>
+<option>Digital Marketing</option>
 
 </select>
 
 
-<textarea id="description" placeholder="Project Description"></textarea>
+
+<textarea 
+id="description"
+placeholder="Project Description">
+</textarea>
 
 
-<input id="budget" placeholder="Budget">
+
+<input id="budget" placeholder="Budget USD">
+
 
 
 <button id="postBtn">
-Post Project
+🚀 Post Project
 </button>
 
 
+
 <p id="message"></p>
+
+
+
+<hr>
+
+
+
+<h2>
+📩 Applications
+</h2>
+
+
+
+<div id="applications">
+
+Loading applications...
+
+</div>
+
 
 
 </div>
@@ -109,19 +177,30 @@ Post Project
 
 <script type="module">
 
+
 import { initializeApp }
+
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
 
+
 import {
+
 getFirestore,
 collection,
-addDoc
+addDoc,
+getDocs,
+updateDoc,
+doc
+
 }
+
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
+
 const firebaseConfig = {
+
 
 apiKey:"AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
 
@@ -137,12 +216,16 @@ appId:"1:777611553956:web:730b7df36570ff803a8a31",
 
 measurementId:"G-PC7G6G6BRD"
 
+
 };
+
 
 
 const app = initializeApp(firebaseConfig);
 
+
 const db = getFirestore(app);
+
 
 
 document.getElementById("postBtn").onclick = async()=>{
@@ -165,29 +248,197 @@ document.getElementById("budget").value;
 
 
 
-await addDoc(collection(db,"jobs"),{
+await addDoc(
+collection(db,"jobs"),
+{
 
 title:title,
-
 category:category,
-
 description:description,
-
 budget:budget,
-
 status:"open"
 
-});
+}
+
+);
+
 
 
 document.getElementById("message").innerText =
 "Project Posted Successfully ✅";
 
 
+
 };
+
+
+// LOAD APPLICATIONS
+
+async function loadApplications(){
+
+const box =
+document.getElementById("applications");
+
+
+const snapshot =
+await getDocs(
+collection(db,"applications")
+);
+
+
+box.innerHTML="";
+
+
+if(snapshot.empty){
+
+box.innerHTML =
+"No applications yet.";
+
+return;
+
+}
+
+
+
+snapshot.forEach((item)=>{
+
+
+const data =
+item.data();
+
+
+
+box.innerHTML += `
+
+
+<div class="card">
+
+
+<h3>
+💼 ${data.jobTitle || "Project"}
+</h3>
+
+
+<p>
+👤 Freelancer:
+<br>
+${data.freelancerEmail || "Unknown"}
+</p>
+
+
+<p>
+Status:
+<b>${data.status}</b>
+</p>
+
+
+
+<button 
+class="accept"
+onclick="acceptApplication('${item.id}')">
+
+Accept ✅
+
+</button>
+
+
+
+<button 
+class="reject"
+onclick="rejectApplication('${item.id}')">
+
+Reject ❌
+
+</button>
+
+
+
+</div>
+
+
+
+`;
+
+
+});
+
+
+}
+
+
+
+
+window.acceptApplication =
+async(id)=>{
+
+
+await updateDoc(
+
+doc(db,"applications",id),
+
+{
+
+status:"accepted"
+
+}
+
+);
+
+
+
+alert(
+"Application Accepted ✅"
+);
+
+
+
+loadApplications();
+
+
+};
+
+
+
+
+window.rejectApplication =
+async(id)=>{
+
+
+await updateDoc(
+
+doc(db,"applications",id),
+
+{
+
+status:"rejected"
+
+}
+
+);
+
+
+
+alert(
+"Application Rejected ❌"
+);
+
+
+
+loadApplications();
+
+
+};
+
+
+
+
+loadApplications();
+
 
 
 </script>
 
+
 </body>
+
 </html>
