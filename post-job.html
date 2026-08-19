@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Post a Project — Elite Freelance Hub</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+.job-page{
+max-width:850px;
+margin:40px auto;
+}
+
+.job-box{
+background:#111a33;
+border:1px solid #293554;
+border-radius:22px;
+padding:35px;
+}
+
+.job-box h1{
+margin-top:0;
+font-size:32px;
+}
+
+.job-box .subtitle{
+color:#9da6c0;
+margin-bottom:30px;
+}
+
+.form-group{
+margin-bottom:22px;
+}
+
+.form-group label{
+display:block;
+margin-bottom:8px;
+color:#cdd3e6;
+font-weight:bold;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select{
+width:100%;
+padding:14px;
+border-radius:12px;
+border:1px solid #293554;
+background:#070b18;
+color:white;
+font-size:15px;
+outline:none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus{
+border-color:#9b8cff;
+}
+
+.form-group textarea{
+min-height:150px;
+resize:vertical;
+}
+
+.form-row{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+.post-btn{
+width:100%;
+padding:15px;
+background:#9b8cff;
+border:0;
+border-radius:12px;
+color:white;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.post-btn:hover{
+opacity:.9;
+}
+
+#message{
+text-align:center;
+margin-top:18px;
+min-height:24px;
+color:#9b8cff;
+}
+
+.back-btn{
+display:inline-block;
+margin-bottom:20px;
+color:#cdd3e6;
+text-decoration:none;
+}
+
+.back-btn:hover{
+color:#9b8cff;
+}
+
+@media(max-width:600px){
+
+.form-row{
+grid-template-columns:1fr;
+}
+
+.job-box{
+padding:22px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="job-page">
+
+<a href="index.html" class="back-btn">
+← Back to Dashboard
+</a>
+
+<div class="job-box">
+
+<h1>💼 Post a Project</h1>
+
+<p class="subtitle">
+Find the right freelancer for your project.
+</p>
+
+
+<div class="form-group">
+
+<label for="jobTitle">
+Project Title
+</label>
+
+<input
+type="text"
+id="jobTitle"
+placeholder="e.g. Build a modern website"
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="jobCategory">
+Category
+</label>
+
+<select id="jobCategory">
+
+<option value="">
+Select a category
+</option>
+
+<option value="Web Development">
+Web Development
+</option>
+
+<option value="Graphic Design">
+Graphic Design
+</option>
+
+<option value="Data Entry">
+Data Entry
+</option>
+
+<option value="Content Writing">
+Content Writing
+</option>
+
+<option value="Digital Marketing">
+Digital Marketing
+</option>
+
+<option value="Video Editing">
+Video Editing
+</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="jobDescription">
+Project Description
+</label>
+
+<textarea
+id="jobDescription"
+placeholder="Describe what you need..."
+></textarea>
+
+</div>
+
+
+<div class="form-row">
+
+<div class="form-group">
+
+<label for="jobBudget">
+Budget (USD)
+</label>
+
+<input
+type="number"
+id="jobBudget"
+placeholder="e.g. 100"
+min="1"
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="jobDeadline">
+Deadline
+</label>
+
+<input
+type="date"
+id="jobDeadline"
+>
+
+</div>
+
+</div>
+
+
+<button
+id="postJobBtn"
+class="post-btn"
+>
+🚀 Post Project
+</button>
+
+<div id="message"></div>
+
+</div>
+
+</div>
+
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+import {
+getAuth,
+onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+serverTimestamp
+}
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+apiKey:
+"AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
+
+authDomain:
+"elite-freelance-hub.firebaseapp.com",
+
+projectId:
+"elite-freelance-hub",
+
+storageBucket:
+"elite-freelance-hub.firebasestorage.app",
+
+messagingSenderId:
+"777611553956",
+
+appId:
+"1:777611553956:web:730b7df36570ff803a8a31",
+
+measurementId:
+"G-PC7G6G6BRD"
+
+};
+
+
+const app =
+initializeApp(firebaseConfig);
+
+const auth =
+getAuth(app);
+
+const db =
+getFirestore(app);
+
+
+let currentUser = null;
+
+
+onAuthStateChanged(auth, (user) => {
+
+if(!user){
+
+window.location.href =
+"login.html";
+
+return;
+
+}
+
+currentUser = user;
+
+});
+
+
+const postJobBtn =
+document.getElementById("postJobBtn");
+
+const message =
+document.getElementById("message");
+
+
+postJobBtn.onclick =
+async () => {
+
+const title =
+document.getElementById("jobTitle")
+.value.trim();
+
+const category =
+document.getElementById("jobCategory")
+.value;
+
+const description =
+document.getElementById("jobDescription")
+.value.trim();
+
+const budget =
+document.getElementById("jobBudget")
+.value;
+
+const deadline =
+document.getElementById("jobDeadline")
+.value;
+
+
+if(
+!title ||
+!category ||
+!description ||
+!budget ||
+!deadline
+){
+
+message.innerText =
+"Please fill all fields.";
+
+return;
+
+}
+
+
+if(!currentUser){
+
+message.innerText =
+"Please login first.";
+
+return;
+
+}
+
+
+postJobBtn.disabled = true;
+
+postJobBtn.innerText =
+"Posting...";
+
+
+try{
+
+await addDoc(
+collection(db,"jobs"),
+{
+
+title:title,
+
+category:category,
+
+description:description,
+
+budget:Number(budget),
+
+deadline:deadline,
+
+clientId:currentUser.uid,
+
+clientEmail:currentUser.email,
+
+createdAt:serverTimestamp(),
+
+status:"open"
+
+}
+);
+
+
+message.innerText =
+"✅ Project posted successfully!";
+
+
+document.getElementById("jobTitle")
+.value = "";
+
+document.getElementById("jobCategory")
+.value = "";
+
+document.getElementById("jobDescription")
+.value = "";
+
+document.getElementById("jobBudget")
+.value = "";
+
+document.getElementById("jobDeadline")
+.value = "";
+
+
+setTimeout(() => {
+
+window.location.href =
+"index.html";
+
+},1200);
+
+
+}catch(error){
+
+console.error(error);
+
+message.innerText =
+"❌ Unable to post project. Check Firestore permissions.";
+
+postJobBtn.disabled = false;
+
+postJobBtn.innerText =
+"🚀 Post Project";
+
+}
+
+};
+
+</script>
+
+</body>
+
+</html>
