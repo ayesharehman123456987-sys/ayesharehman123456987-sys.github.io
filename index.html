@@ -22,11 +22,10 @@
 <div class="member">
 <div class="avatar">ET</div>
 <div>
-<b>Elite Member</b>
+<b id="profileName">Guest</b>
 <small>Professional Freelancer</small>
 </div>
 </div>
-
 
 <nav>
 
@@ -65,7 +64,6 @@
 
 <main class="main">
 
-
 <header class="topbar">
 
 <div>
@@ -75,15 +73,21 @@
 
 <div class="user">
 <div class="avatar">ET</div>
-Elite Member
+
+<span id="userName">
+Guest
+</span>
+
+<button id="logoutBtn" class="primary">
+Logout
+</button>
+
 </div>
 
 </header>
 
 
-
 <section class="page active" id="dashboard">
-
 
 <div class="hero">
 
@@ -104,29 +108,25 @@ Find Work →
 </div>
 
 
-
 <div class="stats">
 
 <div class="stat">
-<h3>24</h3>
+<h3 id="jobCount">0</h3>
 <p>Available Jobs</p>
 </div>
 
-
 <div class="stat">
-<h3>05</h3>
+<h3 id="projectCount">0</h3>
 <p>Active Projects</p>
 </div>
 
-
 <div class="stat">
-<h3>12</h3>
+<h3 id="applicationCount">0</h3>
 <p>Applications Sent</p>
 </div>
 
-
 <div class="stat">
-<h3>4.9 ⭐</h3>
+<h3>--</h3>
 <p>Profile Rating</p>
 </div>
 
@@ -137,53 +137,23 @@ Find Work →
 
 <h3>Recent Work Activity</h3>
 
-<p>📄 PDF Conversion Task — Submitted</p>
-
-<p>📊 Data Entry Project — In Progress</p>
-
-<p>💬 New Client Message — Received</p>
+<p>No activity yet.</p>
 
 </div>
-
 
 </section><section class="page" id="jobs">
 
 <div class="intro">
 <label>FIND WORK</label>
 <h2>Available Jobs</h2>
-<p>Apply for projects posted by clients.</p>
+<p>Real jobs from clients.</p>
 </div>
 
-
-<div class="cards">
-
-<div class="card">
-<h3>📄 PDF Conversion</h3>
-<p>Convert documents into editable files.</p>
-<b>Verified Client</b>
-<button class="primary">Apply Now</button>
-</div>
-
-
-<div class="card">
-<h3>⌨️ Data Entry</h3>
-<p>Organize business information and spreadsheets.</p>
-<b>Verified Client</b>
-<button class="primary">Apply Now</button>
-</div>
-
-
-<div class="card">
-<h3>🎨 Graphic Design</h3>
-<p>Create logos and social media designs.</p>
-<b>Verified Client</b>
-<button class="primary">Apply Now</button>
-</div>
+<div class="cards" id="jobList">
 
 </div>
 
 </section>
-
 
 
 <section class="page" id="applications">
@@ -191,23 +161,16 @@ Find Work →
 <div class="intro">
 <label>APPLICATIONS</label>
 <h2>My Applications</h2>
-<p>Track your job applications.</p>
+<p>Track your applications.</p>
 </div>
 
+<div class="panel" id="applicationList">
 
-<div class="panel">
-
-<p>📄 PDF Conversion — Pending Review</p>
-
-<p>⌨️ Data Entry — Submitted</p>
-
-<p>🎨 Design Project — Waiting Response</p>
+<p>No applications yet.</p>
 
 </div>
 
 </section>
-
-
 
 
 <section class="page" id="projects">
@@ -215,23 +178,16 @@ Find Work →
 <div class="intro">
 <label>PROJECTS</label>
 <h2>My Projects</h2>
-<p>Manage your active freelance work.</p>
+<p>Your hired projects appear here.</p>
 </div>
 
+<div class="panel" id="projectList">
 
-<div class="panel">
-
-<p>📊 Data Entry Project — In Progress</p>
-
-<p>📄 Document Work — Under Review</p>
-
-<p>🎨 Design Task — Completed</p>
+<p>No projects yet.</p>
 
 </div>
 
 </section>
-
-
 
 
 <section class="page" id="messages">
@@ -239,31 +195,24 @@ Find Work →
 <div class="intro">
 <label>MESSAGES</label>
 <h2>Client Messages</h2>
-<p>Communicate with clients.</p>
+<p>Chat with clients.</p>
 </div>
-
 
 <div class="panel">
 
-<h3>Inbox</h3>
-
-<p>💬 Client sent a new project request.</p>
-
-<p>💬 Support message received.</p>
+<p>No messages yet.</p>
 
 </div>
 
 </section>
 
 
-
-
 <section class="page" id="profile">
 
 <div class="intro">
 <label>PROFILE</label>
-<h2>Elite Member</h2>
-<p>Professional Freelancer Profile</p>
+<h2 id="profileTitle">Freelancer Profile</h2>
+<p>Manage your professional profile.</p>
 </div>
 
 
@@ -272,18 +221,13 @@ Find Work →
 <h3>Skills</h3>
 
 <p>🎨 Graphic Design</p>
-
 <p>💻 Website Development</p>
-
 <p>📊 Data Entry</p>
-
 <p>✍️ Content Writing</p>
 
 </div>
 
 </section>
-
-
 
 
 <section class="page" id="settings">
@@ -297,9 +241,7 @@ Find Work →
 <div class="panel">
 
 <p>🔔 Notifications</p>
-
 <p>🌙 Dark Mode</p>
-
 <p>✉️ Email Updates</p>
 
 </div>
@@ -307,25 +249,26 @@ Find Work →
 </section>
 
 
-
-
 <footer>
+
 © 2026 <b>ELITE FREELANCE HUB ✦</b> · Professional Freelancer Workspace
+
 </footer>
 
 
 </main>
 
-</div>
-
-
-<!-- Firebase Connection -->
+</div><!-- Firebase -->
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-analytics.js";
+import { getAuth, onAuthStateChanged, signOut } from 
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+import { getFirestore } from 
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
 const firebaseConfig = {
@@ -349,7 +292,41 @@ measurementId: "G-PC7G6G6BRD"
 
 const app = initializeApp(firebaseConfig);
 
-const analytics = getAnalytics(app);
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+
+
+onAuthStateChanged(auth,(user)=>{
+
+if(user){
+
+document.getElementById("userName").innerText = user.email;
+
+document.getElementById("profileName").innerText = "Member";
+
+}else{
+
+document.getElementById("userName").innerText = "Guest";
+
+}
+
+});
+
+
+
+const logout = document.getElementById("logoutBtn");
+
+if(logout){
+
+logout.onclick = ()=>{
+
+signOut(auth);
+
+};
+
+}
 
 
 </script>
@@ -359,4 +336,5 @@ const analytics = getAnalytics(app);
 
 
 </body>
+
 </html>
