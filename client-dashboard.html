@@ -37,7 +37,6 @@ font-size:13px;
 }
 
 .firebase-error{
-
 position:fixed;
 bottom:20px;
 left:20px;
@@ -49,7 +48,6 @@ padding:15px;
 border-radius:10px;
 display:none;
 z-index:9999;
-
 }
 
 </style>
@@ -67,13 +65,11 @@ z-index:9999;
 
 
 <div class="brand">
-
 ✦ <span>ELITE</span> FREELANCE HUB
-
 </div>
 
-<div class="member">
 
+<div class="member">
 
 <div class="avatar">
 CL
@@ -90,58 +86,54 @@ Loading...
 Professional Client
 </small>
 
+</div>
 
 </div>
 
 
-</div>
 
 <nav>
 
 
 <button class="nav active" data-page="dashboard">
-
 🏠 Dashboard
-
 </button>
 
 
 <button class="nav" data-page="projects">
-
 💼 My Projects
-
 </button>
+
 
 <button class="nav" data-page="applications">
-
 📩 Applications
-
 </button>
+
 
 <button class="nav" data-page="messages">
-
 💬 Messages
-
 </button>
+
 
 <button class="nav" data-page="profile">
-
 👤 Profile
-
 </button>
+
 
 <button class="nav" data-page="settings">
-
 ⚙️ Settings
-
 </button>
+
 
 </nav>
 
 
 </aside>
 
+
+
 <main class="main">
+
 
 <header class="topbar">
 
@@ -154,34 +146,29 @@ WELCOME BACK
 
 
 <h1 id="title">
-
 Dashboard
-
 </h1>
 
 
 </div>
 
+
+
 <div class="user">
 
 
 <div class="avatar">
-
 CL
-
 </div>
 
 
 <span id="userName">
-
 Loading...
-
 </span>
 
+
 <button id="logoutBtn" class="primary">
-
 Logout
-
 </button>
 
 
@@ -190,38 +177,38 @@ Logout
 
 </header>
 
+
+
+
+
 <section class="page active" id="dashboard">
+
 
 <div class="hero">
 
 
 <h2>
-
 Build Your
-
 <br>
-
 <span>
 Dream Project
 </span>
-
 </h2>
 
 
 <p>
-
 Post projects, find talented freelancers and manage your work.
-
 </p>
 
 
 <a href="post-job.html" class="primary">
-
 🚀 Post a Project
-
 </a>
 
+
 </div>
+
+
 
 <div class="stats">
 
@@ -229,134 +216,105 @@ Post projects, find talented freelancers and manage your work.
 <div class="stat">
 
 <h3 id="projectCount">
-
 0
-
 </h3>
 
 <p>
-
 My Projects
-
 </p>
 
 </div>
+
 
 <div class="stat">
 
 <h3 id="applicationCount">
-
 0
-
 </h3>
 
 <p>
-
 Applications
-
 </p>
 
 </div>
+
 
 <div class="stat">
 
 <h3 id="acceptedCount">
-
 0
-
 </h3>
 
 <p>
-
 Accepted
-
 </p>
 
 </div>
+
 
 <div class="stat">
 
 <h3>
-
 --
-
 </h3>
 
 <p>
-
 Rating
-
 </p>
 
 </div>
 
+
 </div>
+
+
 
 <div class="panel">
 
-
 <h3>
-
 Recent Activity
-
 </h3>
 
-
 <p id="activityText">
-
 No activity yet.
-
 </p>
-
 
 </div>
 
 
-</section>
-
-<section class="page" id="projects">
+</section><section class="page" id="projects">
 
 
 <div class="intro">
 
-
 <label>
-
 PROJECTS
-
 </label>
 
-
 <h2>
-
 My Projects
-
 </h2>
 
-
 <p>
-
 Projects posted by you.
-
 </p>
 
-
 </div>
+
 
 <div class="cards" id="projectList">
 
-
 <div class="loading">
-
 Loading projects...
-
 </div>
-
 
 </div>
 
 
 </section>
+
+
+
 
 <section class="page" id="applications">
 
@@ -380,20 +338,22 @@ Review freelancers who applied to your projects.
 
 </div>
 
+
+
 <div class="cards" id="applicationList">
 
-
 <div class="loading">
-
 Loading applications...
-
 </div>
-
 
 </div>
 
 
 </section>
+
+
+
+
 
 <section class="page" id="messages">
 
@@ -418,11 +378,12 @@ Communicate with your freelancers.
 </div>
 
 
+
+
 <div class="panel">
 
 
 <div id="chatHeader">
-
 
 <h3>
 💬 Select a freelancer
@@ -437,10 +398,13 @@ Accept a project first to start chatting.
 </div>
 
 
+
 <div id="messageList"></div>
 
 
+
 <div id="chatBox" style="display:none;">
+
 
 <textarea
 
@@ -449,6 +413,8 @@ id="messageInput"
 placeholder="Write a message..."
 
 ></textarea>
+
+
 
 <button
 
@@ -460,12 +426,20 @@ id="sendMessageBtn">
 
 </button>
 
+
 </div>
+
+
 
 </div>
 
 
 </section>
+
+
+
+
+
 
 <section class="page" id="profile">
 
@@ -474,61 +448,60 @@ id="sendMessageBtn">
 
 
 <label>
-
 PROFILE
-
 </label>
 
 
 <h2>
-
 Client Profile
-
 </h2>
 
 
 <p>
-
 Manage your client account.
-
 </p>
 
 
 </div>
+
+
 
 
 <div class="panel">
 
 
 <h3 id="profileTitle">
-
 Client
-
 </h3>
 
 
+
 <p>
-
 Professional Client
-
 </p>
+
+
 
 <p>
 
 📧
 
 <span id="profileEmail">
-
 Loading...
-
 </span>
 
 </p>
+
+
 
 </div>
 
 
 </section>
+
+
+
+
 
 
 <section class="page" id="settings">
@@ -538,36 +511,34 @@ Loading...
 
 
 <label>
-
 SETTINGS
-
 </label>
 
 
 <h2>
-
 Account Settings
-
 </h2>
 
 
 </div>
 
 
+
+
 <div class="panel">
 
 
 <h3>
-
 ⚙️ Account
-
 </h3>
 
+
+
 <p>
-
 Your account is connected with Firebase.
-
 </p>
+
+
 
 <button
 
@@ -579,10 +550,13 @@ Logout
 
 </button>
 
+
+
 </div>
 
 
 </section>
+
 
 </main>
 
@@ -590,150 +564,84 @@ Logout
 </div>
 
 
+
+
 <div id="firebaseError" class="firebase-error"></div>
-
-
 <script type="module">
 
-
 import { initializeApp }
-
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
+
 import {
-
 getAuth,
-
 onAuthStateChanged,
-
 signOut
-
 }
-
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
+
 import {
-
 getFirestore,
-
 collection,
-
 getDocs,
-
 getDoc,
-
 query,
-
 where,
-
 updateDoc,
-
 doc,
-
 addDoc,
-
-orderBy,
-
 serverTimestamp
-
 }
-
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
 
 
 const firebaseConfig = {
 
-
 apiKey:
-
 "AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
 
-
 authDomain:
-
 "elite-freelance-hub.firebaseapp.com",
 
-
 projectId:
-
 "elite-freelance-hub",
 
-
 storageBucket:
-
 "elite-freelance-hub.firebasestorage.app",
 
-
 messagingSenderId:
-
 "777611553956",
 
-
 appId:
-
 "1:777611553956:web:730b7df36570ff803a8a31"
-
 
 };
 
-const app = initializeApp(firebaseConfig);
 
+
+const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
 
-
 const db = getFirestore(app);
 
-let currentUser = null;
 
-let currentConversation = null;
-
-const userName =
-document.getElementById("userName");
+let currentUser=null;
 
 
-const profileName =
-document.getElementById("profileName");
 
+const userName=document.getElementById("userName");
+const profileName=document.getElementById("profileName");
+const profileTitle=document.getElementById("profileTitle");
+const profileEmail=document.getElementById("profileEmail");
 
-const profileTitle =
-document.getElementById("profileTitle");
+const projectList=document.getElementById("projectList");
+const applicationList=document.getElementById("applicationList");
 
+const firebaseError=document.getElementById("firebaseError");
 
-const profileEmail =
-document.getElementById("profileEmail");
-
-
-const projectList =
-document.getElementById("projectList");
-
-
-const applicationList =
-document.getElementById("applicationList");
-
-
-const messageList =
-document.getElementById("messageList");
-
-
-const messageInput =
-document.getElementById("messageInput");
-
-
-const sendMessageBtn =
-document.getElementById("sendMessageBtn");
-
-
-const chatBox =
-document.getElementById("chatBox");
-
-
-const chatHeader =
-document.getElementById("chatHeader");
-
-
-const firebaseError =
-document.getElementById("firebaseError");
 
 
 function showFirebaseError(error){
@@ -743,9 +651,10 @@ console.error(error);
 firebaseError.style.display="block";
 
 firebaseError.innerText =
-"Firebase Error: " + error.message;
+"Firebase Error: "+error.message;
 
 }
+
 
 
 function escapeHtml(value){
@@ -765,87 +674,61 @@ return String(value)
 }
 
 
-document.querySelectorAll(".nav")
 
+
+
+document.querySelectorAll(".nav")
 .forEach(button=>{
 
-
-button.addEventListener("click",()=>{
-
-
-const pageName =
-button.dataset.page;
+button.onclick=()=>{
 
 document.querySelectorAll(".page")
+.forEach(p=>p.classList.remove("active"));
 
-.forEach(page=>{
-
-page.classList.remove("active");
-
-});
-
-document.getElementById(pageName)
-
+document.getElementById(button.dataset.page)
 .classList.add("active");
 
 
 document.querySelectorAll(".nav")
-
-.forEach(nav=>{
-
-nav.classList.remove("active");
-
-});
+.forEach(n=>n.classList.remove("active"));
 
 button.classList.add("active");
 
+
 document.getElementById("title").innerText =
+button.innerText.replace(/[^\w\s]/gi,"").trim();
 
-button.innerText
-
-.replace(/[^\w\s]/gi,"")
-
-.trim();
+};
 
 });
 
 
-});
+
+
 
 async function logout(){
 
-try{
-
-
 await signOut(auth);
 
-
 window.location.href="login.html";
-
-
-}catch(error){
-
-showFirebaseError(error);
-
-}
 
 }
 
 
 document.getElementById("logoutBtn")
+.onclick=logout;
 
-.addEventListener("click",logout);
 
 document.getElementById("settingsLogout")
+.onclick=logout;
 
-.addEventListener("click",logout);
 
 
-onAuthStateChanged(
 
-auth,
 
-async(user)=>{
+
+
+onAuthStateChanged(auth,async(user)=>{
 
 
 if(!user){
@@ -856,29 +739,29 @@ return;
 
 }
 
+
 currentUser=user;
 
-const userDoc = await getDoc(
 
-doc(db,"users",user.uid)
+try{
 
-);
+
+const userDoc=
+await getDoc(doc(db,"users",user.uid));
+
 
 if(userDoc.exists()){
 
-const data=userDoc.data();
+let data=userDoc.data();
 
-userName.innerText =
-data.name || "Client";
+userName.innerText=data.name || "Client";
 
-profileName.innerText =
-data.name || "Client";
+profileName.innerText=data.name || "Client";
 
-profileTitle.innerText =
-data.name || "Client";
+profileTitle.innerText=data.name || "Client";
 
-profileEmail.innerText =
-data.email || user.email;
+profileEmail.innerText=data.email || user.email;
+
 
 }else{
 
@@ -895,62 +778,65 @@ profileEmail.innerText=user.email || "";
 }
 
 
-try{
 
+loadProjects();
 
-await loadProjects();
+loadApplications();
 
-
-await loadApplications();
-
-
-await updateDashboard();
 
 }catch(error){
 
-
 showFirebaseError(error);
-
 
 }
 
+
 });
+
+
+
+
+
+
 
 async function loadProjects(){
 
-projectList.innerHTML =
-`<div class="loading">Loading projects...</div>`;
 
 try{
 
-const q = query(
+
+let q=query(
+
 collection(db,"jobs"),
+
 where("clientId","==",currentUser.uid)
+
 );
 
 
-const snap = await getDocs(q);
+let snap=await getDocs(q);
 
 
 projectList.innerHTML="";
 
 
-document.getElementById("projectCount").innerText =
-snap.size;
+document.getElementById("projectCount").innerText=snap.size;
+
+
 
 if(snap.empty){
 
-projectList.innerHTML =
+projectList.innerHTML=
 
 `
 <div class="panel">
 
 <p>
-You have not posted any projects yet.
+No projects posted yet.
 </p>
 
 <a href="post-job.html" class="primary">
-🚀 Post Your First Project
+🚀 Post Project
 </a>
 
 </div>
@@ -960,14 +846,15 @@ return;
 
 }
 
+
+
 snap.forEach(item=>{
 
 
-const data=item.data();
+let data=item.data();
 
 
-const card=document.createElement("div");
-
+let card=document.createElement("div");
 
 card.className="card";
 
@@ -980,38 +867,29 @@ card.innerHTML=
 💼 ${escapeHtml(data.title || "Project")}
 </h3>
 
-
 <p>
-${escapeHtml(data.description || "No description")}
+${escapeHtml(data.description || "")}
 </p>
 
-
 <p>
-📂 ${escapeHtml(data.category || "General")}
+💰 $${data.budget || 0}
 </p>
-
-
-<p>
-💰 $${Number(data.budget || 0)}
-</p>
-
 
 <p>
 Status:
-
 <span class="status">
-
 ${escapeHtml(data.status || "open")}
-
 </span>
-
 </p>
 
 `;
 
+
 projectList.appendChild(card);
 
+
 });
+
 
 }catch(error){
 
@@ -1022,17 +900,18 @@ showFirebaseError(error);
 }
 
 
+
+
+
+
+
 async function loadApplications(){
-
-
-applicationList.innerHTML =
-`<div class="loading">Loading applications...</div>`;
 
 
 try{
 
 
-const q=query(
+let q=query(
 
 collection(db,"applications"),
 
@@ -1040,217 +919,104 @@ where("clientId","==",currentUser.uid)
 
 );
 
-const snap=await getDocs(q);
+
+let snap=await getDocs(q);
+
 
 applicationList.innerHTML="";
 
-document.getElementById("applicationCount").innerText =
-snap.size;
+
+document.getElementById("applicationCount")
+.innerText=snap.size;
+
+
 
 let accepted=0;
+
 
 
 snap.forEach(item=>{
 
 
-const data=item.data();
+let data=item.data();
 
-if(data.status==="accepted"){
 
-accepted++;
+if(data.status==="accepted") accepted++;
 
-}
 
-const card=document.createElement("div");
 
+let card=document.createElement("div");
 
 card.className="card";
+
 
 card.innerHTML=
 
 `
 
 <h3>
-
 💼 ${escapeHtml(data.jobTitle || "Project")}
-
 </h3>
 
 
 <p>
-
-👤 Freelancer:
-
-<br>
-
-<b>
-
-${escapeHtml(data.freelancerEmail || "Unknown")}
-
-</b>
-
+👤 ${escapeHtml(data.freelancerEmail || "Freelancer")}
 </p>
 
 
 <p>
-
 Status:
-
 <span class="status">
-
 ${escapeHtml(data.status || "pending")}
-
 </span>
-
 </p>
 
 
-<button class="primary accept-btn">
-
+<button class="primary">
 Accept ✅
-
 </button>
 
-
-<button class="primary reject-btn">
-
-Reject ❌
-
-</button>
 
 `;
 
-card.querySelector(".accept-btn")
-
-.onclick=()=>changeApplicationStatus(item.id,"accepted");
-
-card.querySelector(".reject-btn")
-
-.onclick=()=>changeApplicationStatus(item.id,"rejected");
-
-applicationList.appendChild(card);
-
-});
-
-document.getElementById("acceptedCount").innerText =
-accepted;
-
-}catch(error){
-
-showFirebaseError(error);
-
-}
-
-}
 
 
-async function changeApplicationStatus(id,status){
-
-
-try{
+card.querySelector("button")
+.onclick=async()=>{
 
 
 await updateDoc(
 
-doc(db,"applications",id),
+doc(db,"applications",item.id),
 
 {
-
-status:status,
-
-clientId:currentUser.uid,
-
-clientEmail:currentUser.email || ""
-
+status:"accepted"
 }
 
 );
 
-alert(
-status==="accepted"
-?
-"Application Accepted ✅"
-:
-"Application Rejected ❌"
-);
 
-await loadApplications();
-
-await updateDashboard();
-
-}catch(error){
-
-showFirebaseError(error);
-
-}
-
-}
-
-async function updateDashboard(){
+alert("Accepted ✅");
 
 
-try{
+loadApplications();
 
 
-const appSnap = await getDocs(
-
-query(
-
-collection(db,"applications"),
-
-where("clientId","==",currentUser.uid)
-
-)
-
-);
-
-let accepted=0;
-
-appSnap.forEach(item=>{
+};
 
 
-if(item.data().status==="accepted"){
 
-accepted++;
+applicationList.appendChild(card);
 
-}
 
 });
 
 
-document.getElementById("applicationCount").innerText =
-appSnap.size;
 
-document.getElementById("acceptedCount").innerText =
-accepted;
-
-const projectSnap = await getDocs(
-
-query(
-
-collection(db,"jobs"),
-
-where("clientId","==",currentUser.uid)
-
-)
-
-);
-
-document.getElementById("projectCount").innerText =
-projectSnap.size;
+document.getElementById("acceptedCount")
+.innerText=accepted;
 
 
-document.getElementById("activityText").innerText =
-
-appSnap.size > 0
-
-?
-
-`You have received ${appSnap.size} freelancer applications.`
-
-:
-
-"No activity yet.";
 
 }catch(error){
 
@@ -1260,54 +1026,11 @@ showFirebaseError(error);
 
 }
 
-sendMessageBtn.addEventListener("click",async()=>{
 
-
-const text=messageInput.value.trim();
-
-if(!text){
-
-alert("Write message first");
-
-return;
-
-}
-
-try{
-
-
-await addDoc(
-
-collection(db,"messages"),
-
-{
-
-senderId:currentUser.uid,
-
-senderEmail:currentUser.email || "",
-
-text:text,
-
-createdAt:serverTimestamp()
-
-}
-
-);
-
-messageInput.value="";
-
-alert("Message sent ✅");
-
-}catch(error){
-
-showFirebaseError(error);
-
-}
-
-
-});
 
 </script>
 
+
 </body>
+
 </html>
