@@ -187,46 +187,64 @@ from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 import {
 getFirestore,
 doc,
-setDoc
+setDoc,
+getDoc
 }
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
 const firebaseConfig = {
 
-apiKey: "AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
+apiKey:
+"AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
 
-authDomain: "elite-freelance-hub.firebaseapp.com",
+authDomain:
+"elite-freelance-hub.firebaseapp.com",
 
-projectId: "elite-freelance-hub",
+projectId:
+"elite-freelance-hub",
 
-storageBucket: "elite-freelance-hub.firebasestorage.app",
+storageBucket:
+"elite-freelance-hub.firebasestorage.app",
 
-messagingSenderId: "777611553956",
+messagingSenderId:
+"777611553956",
 
-appId: "1:777611553956:web:730b7df36570ff803a8a31",
+appId:
+"1:777611553956:web:730b7df36570ff803a8a31",
 
-measurementId: "G-PC7G6G6BRD"
+measurementId:
+"G-PC7G6G6BRD"
 
 };
 
 
-const app = initializeApp(firebaseConfig);
+const app =
+initializeApp(firebaseConfig);
 
-const auth = getAuth(app);
+const auth =
+getAuth(app);
 
-const db = getFirestore(app);
+const db =
+getFirestore(app);
 
 
-const loginForm = document.getElementById("loginForm");
-const signupForm = document.getElementById("signupForm");
-const message = document.getElementById("message");
+const loginForm =
+document.getElementById("loginForm");
+
+const signupForm =
+document.getElementById("signupForm");
+
+const message =
+document.getElementById("message");
 
 
 document.getElementById("showSignup").onclick = () => {
 
 loginForm.style.display = "none";
+
 signupForm.style.display = "block";
+
 message.innerText = "";
 
 };
@@ -235,26 +253,40 @@ message.innerText = "";
 document.getElementById("showLogin").onclick = () => {
 
 signupForm.style.display = "none";
+
 loginForm.style.display = "block";
+
 message.innerText = "";
 
 };
 
 
-document.getElementById("signupBtn").onclick = async () => {
+/* CREATE ACCOUNT */
 
-const name = document.getElementById("signupName").value.trim();
+document.getElementById("signupBtn").onclick =
+async () => {
 
-const email = document.getElementById("signupEmail").value.trim();
+const name =
+document.getElementById("signupName")
+.value.trim();
 
-const password = document.getElementById("signupPassword").value;
+const email =
+document.getElementById("signupEmail")
+.value.trim();
 
-const role = document.getElementById("signupRole").value;
+const password =
+document.getElementById("signupPassword")
+.value;
+
+const role =
+document.getElementById("signupRole")
+.value;
 
 
 if(!name || !email || !password){
 
-message.innerText = "Please fill all fields.";
+message.innerText =
+"Please fill all fields.";
 
 return;
 
@@ -270,7 +302,8 @@ email,
 password
 );
 
-const user = userCredential.user;
+const user =
+userCredential.user;
 
 
 await setDoc(
@@ -288,34 +321,55 @@ message.innerText =
 "Account created successfully!";
 
 
+/* ROLE BASED REDIRECT */
+
 setTimeout(() => {
 
-window.location.href = "index.html";
+if(role === "client"){
 
-},1000);
+window.location.href =
+"client.html";
+
+}else{
+
+window.location.href =
+"index.html";
+
+}
+
+},700);
 
 
 }catch(error){
 
-message.innerText = error.message;
+console.error(error);
+
+message.innerText =
+error.message;
 
 }
 
 };
 
 
-document.getElementById("loginBtn").onclick = async () => {
+/* LOGIN */
+
+document.getElementById("loginBtn").onclick =
+async () => {
 
 const email =
-document.getElementById("loginEmail").value.trim();
+document.getElementById("loginEmail")
+.value.trim();
 
 const password =
-document.getElementById("loginPassword").value;
+document.getElementById("loginPassword")
+.value;
 
 
 if(!email || !password){
 
-message.innerText = "Enter email and password.";
+message.innerText =
+"Enter email and password.";
 
 return;
 
@@ -324,12 +378,43 @@ return;
 
 try{
 
+const userCredential =
 await signInWithEmailAndPassword(
 auth,
 email,
 password
 );
 
+const user =
+userCredential.user;
+
+
+/* READ USER ROLE */
+
+const userDoc =
+await getDoc(
+doc(db,"users",user.uid)
+);
+
+
+if(!userDoc.exists()){
+
+message.innerText =
+"Account profile not found.";
+
+return;
+
+}
+
+
+const userData =
+userDoc.data();
+
+const role =
+userData.role;
+
+
+/* ROLE BASED LOGIN */
 
 message.innerText =
 "Login successful!";
@@ -337,14 +422,27 @@ message.innerText =
 
 setTimeout(() => {
 
-window.location.href = "index.html";
+if(role === "client"){
 
-},700);
+window.location.href =
+"client.html";
+
+}else{
+
+window.location.href =
+"index.html";
+
+}
+
+},500);
 
 
 }catch(error){
 
-message.innerText = error.message;
+console.error(error);
+
+message.innerText =
+error.message;
 
 }
 
