@@ -1040,31 +1040,7 @@ where("clientId","==",currentUser.uid)
 )
 );
 
-
-let accepted = 0;
-
-
-apps.forEach(item=>{
-
-if(item.data().status==="accepted"){
-accepted++;
-}
-
-});
-
-
-document.getElementById("acceptedCount").innerText = accepted;
-
-
-document.getElementById("activityText").innerText =
-apps.size > 0
-? `You have received ${apps.size} freelancer applications.`
-: "No activity yet.";
-
-
-}catch(error){
-
-showFirebaseError(error);
+...
 
 }
 
