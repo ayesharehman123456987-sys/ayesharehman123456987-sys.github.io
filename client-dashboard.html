@@ -11,68 +11,44 @@
 
 <style>
 .loading{
-    color:#9b8cff;
-    padding:20px 0;
+color:#9b8cff;
+padding:20px 0;
 }
 
 .error{
-    color:#ff7b8a;
-    padding:20px 0;
+color:#ff7b8a;
+padding:20px 0;
 }
 
 .empty{
-    color:#9da6c0;
-    padding:20px 0;
-}
-
-.card p{
-    margin:8px 0;
-}
-
-.card .primary{
-    margin-top:12px;
+color:#9da6c0;
+padding:20px 0;
 }
 
 .status{
-    display:inline-block;
-    padding:5px 10px;
-    border-radius:8px;
-    background:#202b4d;
-    color:#cdd3e6;
-    font-size:13px;
+display:inline-block;
+padding:5px 10px;
+border-radius:8px;
+background:#202b4d;
+color:#cdd3e6;
+font-size:13px;
 }
 
 .firebase-error{
-    position:fixed;
-    bottom:15px;
-    left:15px;
-    right:15px;
-    background:#3a1420;
-    border:1px solid #ff7b8a;
-    color:#fff;
-    padding:14px;
-    border-radius:10px;
-    z-index:9999;
-    display:none;
-}
-
-.action-row{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    margin-top:15px;
-}
-
-@media(max-width:700px){
-    .user{
-        flex-wrap:wrap;
-    }
-
-    .action-row{
-        flex-direction:column;
-    }
+position:fixed;
+bottom:15px;
+left:15px;
+right:15px;
+background:#3a1420;
+border:1px solid #ff7b8a;
+color:white;
+padding:14px;
+border-radius:10px;
+display:none;
+z-index:9999;
 }
 </style>
+
 </head>
 
 <body>
@@ -97,6 +73,7 @@ CL
 </div>
 
 </div>
+
 
 <nav>
 
@@ -128,17 +105,22 @@ CL
 
 </aside>
 
+
 <main class="main">
+
 
 <header class="topbar">
 
 <div>
+
 <small>WELCOME BACK</small>
 
 <h1 id="title">
 Dashboard
 </h1>
+
 </div>
+
 
 <div class="user">
 
@@ -146,9 +128,11 @@ Dashboard
 CL
 </div>
 
+
 <span id="userName">
 Loading...
 </span>
+
 
 <button id="logoutBtn" class="primary">
 Logout
@@ -157,6 +141,7 @@ Logout
 </div>
 
 </header>
+
 
 <section class="page active" id="dashboard">
 
@@ -168,19 +153,18 @@ Build Your
 <span>Dream Project</span>
 </h2>
 
+
 <p>
-Post projects, find talented freelancers
-and manage your work.
+Post projects, find talented freelancers and manage your work.
 </p>
 
-<a
-href="post-job.html"
-class="primary"
-style="text-decoration:none;display:inline-block;">
+
+<a href="post-job.html" class="primary">
 🚀 Post a Project
 </a>
 
 </div>
+
 
 <div class="stats">
 
@@ -189,22 +173,27 @@ style="text-decoration:none;display:inline-block;">
 <p>My Projects</p>
 </div>
 
+
 <div class="stat">
 <h3 id="applicationCount">0</h3>
 <p>Applications</p>
 </div>
+
 
 <div class="stat">
 <h3 id="acceptedCount">0</h3>
 <p>Accepted</p>
 </div>
 
+
 <div class="stat">
 <h3>--</h3>
-<p>Client Rating</p>
+<p>Rating</p>
 </div>
 
+
 </div>
+
 
 <div class="panel">
 
@@ -218,24 +207,12 @@ No activity yet.
 
 </div>
 
-</section>
-
-<section class="page" id="projects">
+</section><section class="page" id="projects">
 
 <div class="intro">
-
-<label>
-PROJECTS
-</label>
-
-<h2>
-My Projects
-</h2>
-
-<p>
-Projects posted by you.
-</p>
-
+<label>PROJECTS</label>
+<h2>My Projects</h2>
+<p>Projects posted by you.</p>
 </div>
 
 <div class="cards" id="projectList">
@@ -248,13 +225,13 @@ Loading projects...
 
 </section>
 
+
+
 <section class="page" id="applications">
 
 <div class="intro">
 
-<label>
-APPLICATIONS
-</label>
+<label>APPLICATIONS</label>
 
 <h2>
 Freelancer Applications
@@ -266,6 +243,7 @@ Review freelancers who applied to your projects.
 
 </div>
 
+
 <div class="cards" id="applicationList">
 
 <div class="loading">
@@ -274,7 +252,11 @@ Loading applications...
 
 </div>
 
+
 </section>
+
+
+
 
 <section class="page" id="messages">
 
@@ -289,12 +271,15 @@ Client Messages
 </h2>
 
 <p>
-Communicate with your freelancers.
+Communicate with freelancers.
 </p>
 
 </div>
 
+
+
 <div class="panel">
+
 
 <div id="chatHeader">
 
@@ -308,32 +293,40 @@ Accept a project first to start chatting.
 
 </div>
 
-<div
-id="messageList"
-style="max-height:350px;overflow-y:auto;margin:20px 0;">
-</div>
+
+<div id="messageList"></div>
+
 
 <div id="chatBox" style="display:none;">
+
 
 <textarea
 id="messageInput"
 placeholder="Write a message..."
-style="width:100%;min-height:80px;padding:12px;box-sizing:border-box;"></textarea>
+></textarea>
+
 
 <button
 class="primary"
-id="sendMessageBtn"
-style="margin-top:10px;">
+id="sendMessageBtn">
 📤 Send Message
 </button>
 
-</div>
 
 </div>
+
+
+</div>
+
 
 </section>
 
+
+
+
+
 <section class="page" id="profile">
+
 
 <div class="intro">
 
@@ -345,21 +338,22 @@ PROFILE
 Client Profile
 </h2>
 
-<p>
-Manage your client account.
-</p>
-
 </div>
 
+
+
 <div class="panel">
+
 
 <h3 id="profileTitle">
 Client
 </h3>
 
+
 <p>
 Professional Client
 </p>
+
 
 <p>
 📧
@@ -368,11 +362,18 @@ Loading...
 </span>
 </p>
 
+
 </div>
+
 
 </section>
 
+
+
+
+
 <section class="page" id="settings">
+
 
 <div class="intro">
 
@@ -386,15 +387,20 @@ Account Settings
 
 </div>
 
+
+
 <div class="panel">
+
 
 <h3>
 ⚙️ Account
 </h3>
 
+
 <p>
 Your account is connected with Firebase.
 </p>
+
 
 <button
 class="primary"
@@ -402,172 +408,261 @@ id="settingsLogout">
 Logout
 </button>
 
+
 </div>
+
 
 </section>
 
+
 </main>
+
 
 </div>
 
+
 <div id="firebaseError" class="firebase-error"></div>
+
+
+
+
 
 <script type="module">
 
+
 import { initializeApp }
+
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
-import {
-getAuth,
-onAuthStateChanged,
-signOut
-}
-from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
 
 import {
-getFirestore,
-collection,
-getDocs,
-getDoc,
-query,
-where,
-updateDoc,
-doc,
-addDoc,
-orderBy,
-serverTimestamp
+
+getAuth,
+
+onAuthStateChanged,
+
+signOut
+
 }
+
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+
+
+import {
+
+getFirestore,
+
+collection,
+
+getDocs,
+
+getDoc,
+
+query,
+
+where,
+
+updateDoc,
+
+doc,
+
+addDoc,
+
+orderBy,
+
+serverTimestamp
+
+}
+
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+
+
 
 const firebaseConfig = {
 
+
 apiKey:
+
 "AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
 
+
 authDomain:
+
 "elite-freelance-hub.firebaseapp.com",
 
+
 projectId:
+
 "elite-freelance-hub",
 
+
 storageBucket:
+
 "elite-freelance-hub.firebasestorage.app",
 
+
 messagingSenderId:
+
 "777611553956",
 
+
 appId:
+
 "1:777611553956:web:730b7df36570ff803a8a31"
 
 };
 
+
+
 const app =
 initializeApp(firebaseConfig);
+
+
 
 const auth =
 getAuth(app);
 
+
+
 const db =
 getFirestore(app);
 
-let currentUser = null;
-let currentConversation = null;
+
+
+let currentUser=null;
+
+let currentConversation=null;
+
+
+
 
 const userName =
 document.getElementById("userName");
 
+
 const profileName =
 document.getElementById("profileName");
+
 
 const profileTitle =
 document.getElementById("profileTitle");
 
+
 const profileEmail =
 document.getElementById("profileEmail");
+
 
 const projectList =
 document.getElementById("projectList");
 
+
 const applicationList =
 document.getElementById("applicationList");
+
 
 const messageList =
 document.getElementById("messageList");
 
-const chatBox =
-document.getElementById("chatBox");
-
-const chatHeader =
-document.getElementById("chatHeader");
 
 const messageInput =
 document.getElementById("messageInput");
 
+
 const sendMessageBtn =
 document.getElementById("sendMessageBtn");
+
+
+const chatBox =
+document.getElementById("chatBox");
+
+
+const chatHeader =
+document.getElementById("chatHeader");
+
 
 const firebaseError =
 document.getElementById("firebaseError");
 
+
+
 function showFirebaseError(error){
 
-console.error("Firebase error:",error);
+console.error(error);
 
-firebaseError.style.display =
-"block";
+firebaseError.style.display="block";
 
 firebaseError.innerText =
-"Firebase Error: " +
-(error?.message || error);
+"Firebase Error: "+error.message;
 
 }
+
+
 
 function escapeHtml(value){
 
 return String(value)
+
 .replace(/&/g,"&amp;")
+
 .replace(/</g,"&lt;")
+
 .replace(/>/g,"&gt;")
+
 .replace(/"/g,"&quot;")
+
 .replace(/'/g,"&#039;");
 
 }
+
+// Navigation
 
 document.querySelectorAll(".nav")
 .forEach(button=>{
 
 button.addEventListener("click",()=>{
 
-const pageName =
-button.dataset.page;
+let pageName = button.dataset.page;
+
 
 document.querySelectorAll(".page")
 .forEach(page=>{
 page.classList.remove("active");
 });
 
-const page =
-document.getElementById(pageName);
 
-if(page){
-page.classList.add("active");
-}
+document.getElementById(pageName)
+.classList.add("active");
+
+
 
 document.querySelectorAll(".nav")
 .forEach(nav=>{
 nav.classList.remove("active");
 });
 
+
 button.classList.add("active");
+
+
 
 document.getElementById("title").innerText =
 button.innerText
 .replace(/[^\w\s]/gi,"")
 .trim();
 
-});
 
 });
+
+
+});
+
+
+
+
 
 async function logout(){
 
@@ -575,8 +670,8 @@ try{
 
 await signOut(auth);
 
-window.location.href =
-"login.html";
+window.location.href="login.html";
+
 
 }catch(error){
 
@@ -586,77 +681,100 @@ showFirebaseError(error);
 
 }
 
+
+
 document.getElementById("logoutBtn")
 .addEventListener("click",logout);
 
+
+
 document.getElementById("settingsLogout")
 .addEventListener("click",logout);
+
+
+
+
+
+
 
 onAuthStateChanged(
 auth,
 async(user)=>{
 
+
 if(!user){
 
-window.location.href =
-"login.html";
+window.location.href="login.html";
 
 return;
 
 }
 
-currentUser = user;
 
 
-const userDoc = await getDoc(
+currentUser=user;
+
+
+
+// Firebase se client name lena
+
+const userDoc =
+await getDoc(
 doc(db,"users",user.uid)
 );
 
 
+
 if(userDoc.exists()){
 
-const data = userDoc.data();
 
-userName.innerText = data.name;
+const data=userDoc.data();
 
-profileName.innerText = data.name;
 
-profileTitle.innerText = data.name;
+userName.innerText =
+data.name || "Client";
 
-profileEmail.innerText = data.email;
+
+profileName.innerText =
+data.name || "Client";
+
+
+profileTitle.innerText =
+data.name || "Client";
+
+
+profileEmail.innerText =
+data.email || user.email;
+
+
 
 }else{
 
-userName.innerText = "Client";
 
-profileName.innerText = "Client";
+userName.innerText="Client";
 
-profileTitle.innerText = "Client";
+profileName.innerText="Client";
 
-profileEmail.innerText = user.email || "";
+profileTitle.innerText="Client";
+
+profileEmail.innerText =
+user.email || "";
+
 
 }
+
 
 
 try{
 
-await loadProjects(); 
-await loadApplications(); 
-await updateDashboard();
-
-}catch(error){
-
-showFirebaseError(error);
-
-}
-
-});
-
-try{
 
 await loadProjects();
+
 await loadApplications();
+
 await updateDashboard();
+
+
 
 }catch(error){
 
@@ -664,37 +782,65 @@ showFirebaseError(error);
 
 }
 
+
+
 });
+
+
+
+
+
 
 async function loadProjects(){
 
+
 projectList.innerHTML =
-'<div class="loading">Loading projects...</div>';
+`
+<div class="loading">
+Loading projects...
+</div>
+`;
+
+
 
 try{
 
+
 const q =
 query(
+
 collection(db,"jobs"),
+
 where(
 "clientId",
 "==",
 currentUser.uid
 )
+
 );
+
+
 
 const snap =
 await getDocs(q);
 
-projectList.innerHTML = "";
+
+
+projectList.innerHTML="";
+
+
 
 document.getElementById("projectCount")
-.innerText =
-snap.size;
+.innerText=snap.size;
+
+
+
 
 if(snap.empty){
 
-projectList.innerHTML = `
+
+projectList.innerHTML=
+`
 
 <div class="panel">
 
@@ -702,12 +848,10 @@ projectList.innerHTML = `
 You have not posted any projects yet.
 </p>
 
-<a
-href="post-job.html"
-class="primary"
-style="text-decoration:none;display:inline-block;margin-top:10px;">
+<a href="post-job.html"
+class="primary">
 
-🚀 Post Your First Project
+🚀 Post Project
 
 </a>
 
@@ -715,719 +859,234 @@ style="text-decoration:none;display:inline-block;margin-top:10px;">
 
 `;
 
+
 return;
 
 }
 
+
+
+
+
 snap.forEach(item=>{
 
-const data =
-item.data();
+
+const data=item.data();
+
+
 
 const card =
 document.createElement("div");
 
-card.className =
-"card";
 
-card.innerHTML = `
+card.className="card";
+
+
+
+card.innerHTML=
+
+`
 
 <h3>
-💼 ${escapeHtml(
-data.title ||
-"Project"
-)}
+💼 ${escapeHtml(data.title || "Project")}
 </h3>
 
-<p>
-${escapeHtml(
-data.description ||
-"No description provided."
-)}
-</p>
 
 <p>
-📂 ${escapeHtml(
-data.category ||
-"General"
-)}
+${escapeHtml(data.description || "")}
 </p>
 
-<p>
-💰 $${Number(
-data.budget ||
-0
-)}
-</p>
 
 <p>
-📅 Deadline:
-${escapeHtml(
-data.deadline ||
-"Not specified"
-)}
+📂 ${escapeHtml(data.category || "General")}
 </p>
+
+
+<p>
+💰 $${Number(data.budget || 0)}
+</p>
+
 
 <p>
 Status:
 <span class="status">
-${escapeHtml(
-data.status ||
-"open"
-)}
+${escapeHtml(data.status || "open")}
 </span>
 </p>
 
+
 `;
+
+
 
 projectList.appendChild(card);
 
+
+
 });
+
+
 
 }catch(error){
 
+
 showFirebaseError(error);
 
-projectList.innerHTML =
-'<div class="error">Unable to load your projects.</div>';
 
 }
 
+
+
 }
+
+
+
+
+
 
 async function loadApplications(){
 
-applicationList.innerHTML =
-'<div class="loading">Loading applications...</div>';
+
+applicationList.innerHTML=
+`
+<div class="loading">
+Loading applications...
+</div>
+`;
+
+
 
 try{
 
+
 const q =
 query(
+
 collection(db,"applications"),
+
 where(
 "clientId",
 "==",
 currentUser.uid
 )
+
 );
+
+
 
 const snap =
 await getDocs(q);
 
-applicationList.innerHTML = "";
+
+
+applicationList.innerHTML="";
+
+
 
 document.getElementById("applicationCount")
-.innerText =
-snap.size;
+.innerText=snap.size;
 
-let accepted = 0;
 
-if(snap.empty){
 
-applicationList.innerHTML =
-'<div class="empty">No freelancer applications yet.</div>';
+let accepted=0;
 
-document.getElementById("acceptedCount")
-.innerText =
-"0";
 
-return;
-
-}
 
 snap.forEach(item=>{
 
-const data =
-item.data();
 
-if(data.status === "accepted"){
+const data=item.data();
+
+
+
+if(data.status==="accepted"){
+
 accepted++;
+
 }
+
+
 
 const card =
 document.createElement("div");
 
-card.className =
-"card";
 
-let actions = "";
 
-if(
-!data.status ||
-data.status === "pending"
-){
+card.className="card";
 
-actions = `
 
-<div class="action-row">
 
-<button
-class="primary accept-btn">
-Accept ✅
-</button>
+card.innerHTML=
 
-<button
-class="primary reject-btn">
-Reject ❌
-</button>
-
-</div>
-
-`;
-
-}
-
-if(data.status === "accepted"){
-
-actions = `
-
-<p>
-<strong>
-✅ Application Accepted
-</strong>
-</p>
-
-<button
-class="primary message-btn">
-💬 Message Freelancer
-</button>
-
-`;
-
-}
-
-if(data.status === "rejected"){
-
-actions = `
-
-<p>
-<strong>
-❌ Application Rejected
-</strong>
-</p>
-
-`;
-
-}
-
-card.innerHTML = `
+`
 
 <h3>
-💼 ${escapeHtml(
-data.jobTitle ||
-"Project"
-)}
+💼 ${escapeHtml(data.jobTitle || "Project")}
 </h3>
+
 
 <p>
 👤 Freelancer:
 <br>
-
 <b>
-${escapeHtml(
-data.freelancerEmail ||
-"Unknown"
-)}
+${escapeHtml(data.freelancerEmail || "Unknown")}
 </b>
-
 </p>
 
-<p>
-📂 ${escapeHtml(
-data.jobCategory ||
-"General"
-)}
-</p>
-
-<p>
-💰 $${Number(
-data.jobBudget ||
-0
-)}
-</p>
-
-<p>
-📅 Deadline:
-${escapeHtml(
-data.jobDeadline ||
-"Not specified"
-)}
-</p>
 
 <p>
 Status:
-
 <span class="status">
-
-${escapeHtml(
-data.status ||
-"pending"
-)}
-
+${escapeHtml(data.status || "pending")}
 </span>
-
 </p>
 
-${actions}
+
+<button class="primary accept-btn">
+Accept ✅
+</button>
+
+
+<button class="primary reject-btn">
+Reject ❌
+</button>
+
 
 `;
 
-const acceptBtn =
-card.querySelector(".accept-btn");
 
-if(acceptBtn){
 
-acceptBtn.addEventListener(
-"click",
-async()=>{
+card.querySelector(".accept-btn")
+.onclick=()=>changeApplicationStatus(item.id,"accepted");
 
-await changeApplicationStatus(
-item.id,
-"accepted"
-);
 
-});
 
-}
+card.querySelector(".reject-btn")
+.onclick=()=>changeApplicationStatus(item.id,"rejected");
 
-const rejectBtn =
-card.querySelector(".reject-btn");
 
-if(rejectBtn){
-
-rejectBtn.addEventListener(
-"click",
-async()=>{
-
-await changeApplicationStatus(
-item.id,
-"rejected"
-);
-
-});
-
-}
-
-const messageBtn =
-card.querySelector(".message-btn");
-
-if(messageBtn){
-
-messageBtn.addEventListener(
-"click",
-async()=>{
-
-openChat(
-data.jobId,
-data.jobTitle || "Project",
-data.freelancerId,
-data.freelancerEmail || ""
-);
-
-});
-
-}
 
 applicationList.appendChild(card);
 
+
+
 });
+
+
 
 document.getElementById("acceptedCount")
-.innerText =
-accepted;
+.innerText=accepted;
+
+
 
 }catch(error){
 
 showFirebaseError(error);
 
-applicationList.innerHTML =
-'<div class="error">Unable to load applications.</div>';
+}
+
+
 
 }
 
-}
 
-async function changeApplicationStatus(
-applicationId,
-newStatus
-){
-
-try{
-
-const applicationRef =
-doc(
-db,
-"applications",
-applicationId
-);
-
-await updateDoc(
-applicationRef,
-{
-
-status:newStatus,
-
-clientId:
-currentUser.uid,
-
-clientEmail:
-currentUser.email || ""
-
-}
-);
-
-alert(
-newStatus === "accepted"
-? "Application Accepted ✅"
-: "Application Rejected ❌"
-);
-
-await loadApplications();
-await updateDashboard();
-
-}catch(error){
-
-showFirebaseError(error);
-
-alert(
-"Could not update application."
-);
-
-}
-
-}
-
-async function openChat(
-jobId,
-title,
-freelancerId,
-freelancerEmail
-){
-
-currentConversation =
-jobId +
-"_" +
-freelancerId +
-"_" +
-currentUser.uid;
-
-document.querySelectorAll(".nav")
-.forEach(btn=>{
-btn.classList.remove("active");
-});
-
-const messageButton =
-document.querySelector(
-'[data-page="messages"]'
-);
-
-if(messageButton){
-messageButton.classList.add("active");
-}
-
-document.querySelectorAll(".page")
-.forEach(page=>{
-page.classList.remove("active");
-});
-
-document.getElementById("messages")
-.classList.add("active");
-
-document.getElementById("title")
-.innerText =
-"Messages";
-
-chatHeader.innerHTML = `
-
-<h3>
-💬 ${escapeHtml(title)}
-</h3>
-
-<p>
-Freelancer:
-${escapeHtml(freelancerEmail)}
-</p>
-
-`;
-
-chatBox.style.display =
-"block";
-
-await loadMessages();
-
-}
-
-async function loadMessages(){
-
-if(!currentConversation){
-
-messageList.innerHTML =
-"<p>Select a freelancer first.</p>";
-
-return;
-
-}
-
-messageList.innerHTML =
-'<div class="loading">Loading messages...</div>';
-
-try{
-
-const q =
-query(
-collection(db,"messages"),
-where(
-"conversationId",
-"==",
-currentConversation
-),
-orderBy(
-"createdAt",
-"asc"
-)
-);
-
-const snap =
-await getDocs(q);
-
-messageList.innerHTML = "";
-
-if(snap.empty){
-
-messageList.innerHTML =
-"<div class='empty'>No messages yet. Start the conversation 💬</div>";
-
-return;
-
-}
-
-snap.forEach(item=>{
-
-const data =
-item.data();
-
-const mine =
-data.senderId ===
-currentUser.uid;
-
-const message =
-document.createElement("div");
-
-message.style.padding =
-"12px";
-
-message.style.margin =
-"8px 0";
-
-message.style.borderRadius =
-"12px";
-
-message.style.background =
-mine
-? "#202b4d"
-: "#111a33";
-
-message.innerHTML = `
-
-<strong>
-${mine ? "You" : "Freelancer"}
-</strong>
-
-<p>
-${escapeHtml(
-data.text || ""
-)}
-</p>
-
-`;
-
-messageList.appendChild(
-message
-);
-
-});
-
-messageList.scrollTop =
-messageList.scrollHeight;
-
-}catch(error){
-
-showFirebaseError(error);
-
-messageList.innerHTML =
-'<div class="error">Unable to load messages.</div>';
-
-}
-
-}
-
-sendMessageBtn.addEventListener(
-"click",
-async()=>{
-
-if(!currentUser){
-return;
-}
-
-if(!currentConversation){
-
-alert(
-"Open a freelancer chat first."
-);
-
-return;
-
-}
-
-const text =
-messageInput.value.trim();
-
-if(!text){
-
-alert(
-"Write a message first."
-);
-
-return;
-
-}
-
-sendMessageBtn.disabled =
-true;
-
-sendMessageBtn.innerText =
-"Sending...";
-
-try{
-
-await addDoc(
-collection(db,"messages"),
-{
-
-conversationId:
-currentConversation,
-
-senderId:
-currentUser.uid,
-
-senderEmail:
-currentUser.email || "",
-
-text:text,
-
-createdAt:
-serverTimestamp()
-
-}
-);
-
-messageInput.value = "";
-
-await loadMessages();
-
-}catch(error){
-
-showFirebaseError(error);
-
-alert(
-"Message could not be sent."
-);
-
-}
-
-sendMessageBtn.disabled =
-false;
-
-sendMessageBtn.innerText =
-"📤 Send Message";
-
-});
-
-async function updateDashboard(){
-
-try{
-
-const q =
-query(
-collection(db,"applications"),
-where(
-"clientId",
-"==",
-currentUser.uid
-)
-);
-
-const snap =
-await getDocs(q);
-
-let accepted = 0;
-
-snap.forEach(item=>{
-
-if(
-item.data().status ===
-"accepted"
-){
-
-accepted++;
-
-}
-
-});
-
-document.getElementById(
-"applicationCount"
-).innerText =
-snap.size;
-
-document.getElementById(
-"acceptedCount"
-).innerText =
-accepted;
-
-const projectSnap =
-await getDocs(
-query(
-collection(db,"jobs"),
-where(
-"clientId",
-"==",
-currentUser.uid
-)
-)
-);
-
-document.getElementById(
-"projectCount"
-).innerText =
-projectSnap.size;
-
-if(snap.size > 0){
-
-document.getElementById(
-"activityText"
-).innerText =
-`You have received ${snap.size} freelancer application${snap.size === 1 ? "" : "s"}.`;
-
-}else{
-
-document.getElementById(
-"activityText"
-).innerText =
-"No activity yet.";
-
-}
-
-}catch(error){
-
-showFirebaseError(error);
-
-}
-
-}
-
-</script>
-
-</body>
-</html>
