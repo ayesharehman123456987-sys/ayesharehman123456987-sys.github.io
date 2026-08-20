@@ -72,8 +72,6 @@ z-index:9999;
 
 </div>
 
-
-
 <div class="member">
 
 
@@ -98,8 +96,6 @@ Professional Client
 
 </div>
 
-
-
 <nav>
 
 
@@ -116,15 +112,11 @@ Professional Client
 
 </button>
 
-
-
 <button class="nav" data-page="applications">
 
 📩 Applications
 
 </button>
-
-
 
 <button class="nav" data-page="messages">
 
@@ -132,15 +124,11 @@ Professional Client
 
 </button>
 
-
-
 <button class="nav" data-page="profile">
 
 👤 Profile
 
 </button>
-
-
 
 <button class="nav" data-page="settings">
 
@@ -148,20 +136,12 @@ Professional Client
 
 </button>
 
-
-
 </nav>
 
 
 </aside>
 
-
-
-
-
 <main class="main">
-
-
 
 <header class="topbar">
 
@@ -182,8 +162,6 @@ Dashboard
 
 </div>
 
-
-
 <div class="user">
 
 
@@ -200,8 +178,6 @@ Loading...
 
 </span>
 
-
-
 <button id="logoutBtn" class="primary">
 
 Logout
@@ -214,13 +190,7 @@ Logout
 
 </header>
 
-
-
-
-
 <section class="page active" id="dashboard">
-
-
 
 <div class="hero">
 
@@ -251,13 +221,7 @@ Post projects, find talented freelancers and manage your work.
 
 </a>
 
-
-
 </div>
-
-
-
-
 
 <div class="stats">
 
@@ -278,8 +242,6 @@ My Projects
 
 </div>
 
-
-
 <div class="stat">
 
 <h3 id="applicationCount">
@@ -295,8 +257,6 @@ Applications
 </p>
 
 </div>
-
-
 
 <div class="stat">
 
@@ -314,8 +274,6 @@ Accepted
 
 </div>
 
-
-
 <div class="stat">
 
 <h3>
@@ -332,13 +290,7 @@ Rating
 
 </div>
 
-
-
 </div>
-
-
-
-
 
 <div class="panel">
 
@@ -361,10 +313,6 @@ No activity yet.
 
 
 </section>
-
-
-
-
 
 <section class="page" id="projects">
 
@@ -395,8 +343,6 @@ Projects posted by you.
 
 </div>
 
-
-
 <div class="cards" id="projectList">
 
 
@@ -410,7 +356,9 @@ Loading projects...
 </div>
 
 
-</section><section class="page" id="applications">
+</section>
+
+<section class="page" id="applications">
 
 
 <div class="intro">
@@ -432,8 +380,6 @@ Review freelancers who applied to your projects.
 
 </div>
 
-
-
 <div class="cards" id="applicationList">
 
 
@@ -448,10 +394,6 @@ Loading applications...
 
 
 </section>
-
-
-
-
 
 <section class="page" id="messages">
 
@@ -476,8 +418,6 @@ Communicate with your freelancers.
 </div>
 
 
-
-
 <div class="panel">
 
 
@@ -497,16 +437,10 @@ Accept a project first to start chatting.
 </div>
 
 
-
-
 <div id="messageList"></div>
 
 
-
-
 <div id="chatBox" style="display:none;">
-
-
 
 <textarea
 
@@ -515,8 +449,6 @@ id="messageInput"
 placeholder="Write a message..."
 
 ></textarea>
-
-
 
 <button
 
@@ -528,22 +460,12 @@ id="sendMessageBtn">
 
 </button>
 
-
-
 </div>
-
-
 
 </div>
 
 
 </section>
-
-
-
-
-
-
 
 <section class="page" id="profile">
 
@@ -575,8 +497,6 @@ Manage your client account.
 </div>
 
 
-
-
 <div class="panel">
 
 
@@ -593,8 +513,6 @@ Professional Client
 
 </p>
 
-
-
 <p>
 
 📧
@@ -607,18 +525,10 @@ Loading...
 
 </p>
 
-
-
 </div>
 
 
 </section>
-
-
-
-
-
-
 
 
 <section class="page" id="settings">
@@ -644,8 +554,6 @@ Account Settings
 </div>
 
 
-
-
 <div class="panel">
 
 
@@ -655,15 +563,11 @@ Account Settings
 
 </h3>
 
-
-
 <p>
 
 Your account is connected with Firebase.
 
 </p>
-
-
 
 <button
 
@@ -675,16 +579,10 @@ Logout
 
 </button>
 
-
-
 </div>
 
 
 </section>
-
-
-
-
 
 </main>
 
@@ -692,11 +590,7 @@ Logout
 </div>
 
 
-
-
 <div id="firebaseError" class="firebase-error"></div>
-
-
 
 
 <script type="module">
@@ -705,8 +599,6 @@ Logout
 import { initializeApp }
 
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
-
 
 import {
 
@@ -719,8 +611,6 @@ signOut
 }
 
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-
 
 import {
 
@@ -749,8 +639,6 @@ serverTimestamp
 }
 
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
-
 
 
 const firebaseConfig = {
@@ -788,8 +676,6 @@ appId:
 
 };
 
-
-
 const app = initializeApp(firebaseConfig);
 
 
@@ -798,12 +684,11 @@ const auth = getAuth(app);
 
 const db = getFirestore(app);
 
-
-
 let currentUser = null;
 
 let currentConversation = null;
-  const userName =
+
+const userName =
 document.getElementById("userName");
 
 
@@ -851,8 +736,6 @@ const firebaseError =
 document.getElementById("firebaseError");
 
 
-
-
 function showFirebaseError(error){
 
 console.error(error);
@@ -863,8 +746,6 @@ firebaseError.innerText =
 "Firebase Error: " + error.message;
 
 }
-
-
 
 
 function escapeHtml(value){
@@ -884,10 +765,6 @@ return String(value)
 }
 
 
-
-
-
-
 document.querySelectorAll(".nav")
 
 .forEach(button=>{
@@ -899,8 +776,6 @@ button.addEventListener("click",()=>{
 const pageName =
 button.dataset.page;
 
-
-
 document.querySelectorAll(".page")
 
 .forEach(page=>{
@@ -909,13 +784,9 @@ page.classList.remove("active");
 
 });
 
-
-
 document.getElementById(pageName)
 
 .classList.add("active");
-
-
 
 
 document.querySelectorAll(".nav")
@@ -926,11 +797,7 @@ nav.classList.remove("active");
 
 });
 
-
-
 button.classList.add("active");
-
-
 
 document.getElementById("title").innerText =
 
@@ -940,18 +807,10 @@ button.innerText
 
 .trim();
 
-
-
 });
 
 
 });
-
-
-
-
-
-
 
 async function logout(){
 
@@ -973,23 +832,13 @@ showFirebaseError(error);
 }
 
 
-
-
 document.getElementById("logoutBtn")
 
 .addEventListener("click",logout);
 
-
-
 document.getElementById("settingsLogout")
 
 .addEventListener("click",logout);
-
-
-
-
-
-
 
 
 onAuthStateChanged(
@@ -1007,13 +856,7 @@ return;
 
 }
 
-
-
 currentUser=user;
-
-
-
-
 
 const userDoc = await getDoc(
 
@@ -1021,37 +864,21 @@ doc(db,"users",user.uid)
 
 );
 
-
-
-
-
 if(userDoc.exists()){
 
-
-
 const data=userDoc.data();
-
-
 
 userName.innerText =
 data.name || "Client";
 
-
-
 profileName.innerText =
 data.name || "Client";
-
-
 
 profileTitle.innerText =
 data.name || "Client";
 
-
-
 profileEmail.innerText =
 data.email || user.email;
-
-
 
 }else{
 
@@ -1068,10 +895,6 @@ profileEmail.innerText=user.email || "";
 }
 
 
-
-
-
-
 try{
 
 
@@ -1083,8 +906,6 @@ await loadApplications();
 
 await updateDashboard();
 
-
-
 }catch(error){
 
 
@@ -1092,8 +913,6 @@ showFirebaseError(error);
 
 
 }
-
-
 
 });
 
@@ -1119,8 +938,6 @@ projectList.innerHTML="";
 document.getElementById("projectCount").innerText =
 snap.size;
 
-
-
 if(snap.empty){
 
 projectList.innerHTML =
@@ -1142,8 +959,6 @@ You have not posted any projects yet.
 return;
 
 }
-
-
 
 snap.forEach(item=>{
 
@@ -1194,15 +1009,9 @@ ${escapeHtml(data.status || "open")}
 
 `;
 
-
-
 projectList.appendChild(card);
 
-
-
 });
-
-
 
 }catch(error){
 
@@ -1211,10 +1020,6 @@ showFirebaseError(error);
 }
 
 }
-
-
-
-
 
 
 async function loadApplications(){
@@ -1235,24 +1040,14 @@ where("clientId","==",currentUser.uid)
 
 );
 
-
-
 const snap=await getDocs(q);
 
-
-
 applicationList.innerHTML="";
-
-
 
 document.getElementById("applicationCount").innerText =
 snap.size;
 
-
-
 let accepted=0;
-
-
 
 
 snap.forEach(item=>{
@@ -1260,22 +1055,16 @@ snap.forEach(item=>{
 
 const data=item.data();
 
-
-
 if(data.status==="accepted"){
 
 accepted++;
 
 }
 
-
-
 const card=document.createElement("div");
 
 
 card.className="card";
-
-
 
 card.innerHTML=
 
@@ -1331,34 +1120,20 @@ Reject ❌
 
 `;
 
-
-
-
-
 card.querySelector(".accept-btn")
 
 .onclick=()=>changeApplicationStatus(item.id,"accepted");
-
-
 
 card.querySelector(".reject-btn")
 
 .onclick=()=>changeApplicationStatus(item.id,"rejected");
 
-
-
 applicationList.appendChild(card);
-
-
 
 });
 
-
-
 document.getElementById("acceptedCount").innerText =
 accepted;
-
-
 
 }catch(error){
 
@@ -1367,10 +1142,6 @@ showFirebaseError(error);
 }
 
 }
-
-
-
-
 
 
 async function changeApplicationStatus(id,status){
@@ -1395,8 +1166,6 @@ clientEmail:currentUser.email || ""
 
 );
 
-
-
 alert(
 status==="accepted"
 ?
@@ -1405,13 +1174,9 @@ status==="accepted"
 "Application Rejected ❌"
 );
 
-
-
 await loadApplications();
 
 await updateDashboard();
-
-
 
 }catch(error){
 
@@ -1420,12 +1185,6 @@ showFirebaseError(error);
 }
 
 }
-
-
-
-
-
-
 
 async function updateDashboard(){
 
@@ -1445,11 +1204,7 @@ where("clientId","==",currentUser.uid)
 
 );
 
-
-
 let accepted=0;
-
-
 
 appSnap.forEach(item=>{
 
@@ -1463,17 +1218,11 @@ accepted++;
 });
 
 
-
-
 document.getElementById("applicationCount").innerText =
 appSnap.size;
 
-
-
 document.getElementById("acceptedCount").innerText =
 accepted;
-
-
 
 const projectSnap = await getDocs(
 
@@ -1487,12 +1236,8 @@ where("clientId","==",currentUser.uid)
 
 );
 
-
-
 document.getElementById("projectCount").innerText =
 projectSnap.size;
-
-
 
 
 document.getElementById("activityText").innerText =
@@ -1507,8 +1252,6 @@ appSnap.size > 0
 
 "No activity yet.";
 
-
-
 }catch(error){
 
 showFirebaseError(error);
@@ -1517,18 +1260,10 @@ showFirebaseError(error);
 
 }
 
-
-
-
-
-
-
 sendMessageBtn.addEventListener("click",async()=>{
 
 
 const text=messageInput.value.trim();
-
-
 
 if(!text){
 
@@ -1537,8 +1272,6 @@ alert("Write message first");
 return;
 
 }
-
-
 
 try{
 
@@ -1561,15 +1294,9 @@ createdAt:serverTimestamp()
 
 );
 
-
-
 messageInput.value="";
 
-
-
 alert("Message sent ✅");
-
-
 
 }catch(error){
 
@@ -1579,7 +1306,8 @@ showFirebaseError(error);
 
 
 });
-  </script>
+
+</script>
 
 </body>
 </html>
