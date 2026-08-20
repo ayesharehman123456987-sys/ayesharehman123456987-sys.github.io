@@ -607,32 +607,50 @@ return;
 
 currentUser = user;
 
-userName.innerText =
-user.email ||
-"Client";
 
 const userDoc = await getDoc(
 doc(db,"users",user.uid)
 );
 
+
 if(userDoc.exists()){
 
 const data = userDoc.data();
+
+userName.innerText = data.name;
 
 profileName.innerText = data.name;
 
 profileTitle.innerText = data.name;
 
+profileEmail.innerText = data.email;
+
 }else{
+
+userName.innerText = "Client";
 
 profileName.innerText = "Client";
 
 profileTitle.innerText = "Client";
 
+profileEmail.innerText = user.email || "";
+
 }
 
-profileEmail.innerText =
-user.email || "";
+
+try{
+
+await loadProjects(); 
+await loadApplications(); 
+await updateDashboard();
+
+}catch(error){
+
+showFirebaseError(error);
+
+}
+
+});
 
 try{
 
