@@ -428,6 +428,7 @@ import {
 getFirestore,
 collection,
 getDocs,
+getDoc,
 query,
 where,
 updateDoc,
@@ -610,11 +611,25 @@ userName.innerText =
 user.email ||
 "Client";
 
-profileName.innerText =
-"AYESHA REHMAN";
+const userDoc = await getDoc(
+doc(db,"users",user.uid)
+);
 
-profileTitle.innerText =
-"AYESHA REHMAN";
+if(userDoc.exists()){
+
+const data = userDoc.data();
+
+profileName.innerText = data.name;
+
+profileTitle.innerText = data.name;
+
+}else{
+
+profileName.innerText = "Client";
+
+profileTitle.innerText = "Client";
+
+}
 
 profileEmail.innerText =
 user.email || "";
