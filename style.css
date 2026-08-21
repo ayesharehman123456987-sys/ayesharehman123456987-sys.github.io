@@ -634,3 +634,15 @@ button:disabled{
         font-size:24px;
     }
 }
+/* Profile Photo */
+.profile-photo-small {
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+    min-height: 45px;
+    max-width: 45px;
+    max-height: 45px;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
