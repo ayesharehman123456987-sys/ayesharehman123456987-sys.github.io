@@ -1489,7 +1489,6 @@ try{
 Prevent multiple accepted
 applications for same job.
 */
-
 const existingAccepted =
 query(
 
@@ -1502,6 +1501,12 @@ where(
 "jobId",
 "==",
 applicationData.jobId
+),
+
+where(
+"clientId",
+"==",
+currentUser.uid
 ),
 
 where(
