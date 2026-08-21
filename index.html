@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="style.css">
 
 <style>
+
 .loading{
     color:#9b8cff;
     padding:20px 0;
@@ -56,80 +57,212 @@
     display:none;
 }
 
+.profile-photo{
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    object-fit:cover;
+    display:block;
+    border:2px solid #9b8cff;
+    background:#202b4d;
+}
+
+.profile-photo-small{
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    object-fit:cover;
+    display:block;
+    border:2px solid #9b8cff;
+    background:#202b4d;
+}
+
+.profile-photo-large{
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    object-fit:cover;
+    display:block;
+    border:3px solid #9b8cff;
+    background:#202b4d;
+    margin-bottom:18px;
+}
+
+.profile-card{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
 @media(max-width:700px){
+
     .user{
         flex-wrap:wrap;
     }
+
+    .profile-card{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
 }
+
 </style>
 
 </head>
+
 
 <body>
 
 <div class="layout">
 
+
+<!-- ================= SIDEBAR ================= -->
+
 <aside class="sidebar">
+
 
 <div class="brand">
 ✦ <span>ELITE</span> FREELANCE HUB
 </div>
 
+
 <div class="member">
 
-<div class="avatar">
+<img
+src="profile.png"
+alt="Profile"
+class="profile-photo-small"
+onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+>
+
+<div
+class="avatar"
+style="display:none;">
 ET
 </div>
 
+
 <div>
-<b id="profileName">Loading...</b>
-<small>Professional Freelancer</small>
+
+<b id="profileName">
+Loading...
+</b>
+
+<small>
+Professional Freelancer
+</small>
+
 </div>
 
 </div>
+
 
 <nav>
 
-<button class="nav active" data-page="dashboard">
+
+<button
+class="nav active"
+data-page="dashboard">
+
 🏠 Dashboard
+
 </button>
 
-<button class="nav" data-page="jobs">
+
+<button
+class="nav"
+data-page="jobs">
+
 🔍 Find Work
+
 </button>
 
-<button class="nav" data-page="applications">
-📩 Applications <span class="nav-count" id="applicationsBadge">0</span>
+
+<button
+class="nav"
+data-page="applications">
+
+📩 Applications
+
+<span
+class="nav-count"
+id="applicationsBadge">
+0
+</span>
+
 </button>
 
-<button class="nav" data-page="projects">
-💼 My Projects <span class="nav-count" id="projectsBadge">0</span>
+
+<button
+class="nav"
+data-page="projects">
+
+💼 My Projects
+
+<span
+class="nav-count"
+id="projectsBadge">
+0
+</span>
+
 </button>
 
-<button class="nav" data-page="messages">
-💬 Messages <span class="nav-count" id="messagesBadge">0</span>
+
+<button
+class="nav"
+data-page="messages">
+
+💬 Messages
+
+<span
+class="nav-count"
+id="messagesBadge">
+0
+</span>
+
 </button>
 
-<button class="nav" data-page="profile">
+
+<button
+class="nav"
+data-page="profile">
+
 👤 Profile
+
 </button>
 
-<button class="nav" data-page="settings">
+
+<button
+class="nav"
+data-page="settings">
+
 ⚙️ Settings
+
 </button>
+
 
 </nav>
 
 </aside>
 
 
+
+<!-- ================= MAIN ================= -->
+
 <main class="main">
+
+
+<!-- TOP BAR -->
 
 <header class="topbar">
 
+
 <div>
 
-<small>WELCOME BACK</small>
+<small>
+WELCOME BACK
+</small>
 
 <h1 id="title">
 Dashboard
@@ -137,84 +270,153 @@ Dashboard
 
 </div>
 
+
 <div class="user">
 
-<div class="avatar">
+
+<img
+src="profile.png"
+alt="Profile"
+class="profile-photo-small"
+onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+>
+
+<div
+class="avatar"
+style="display:none;">
 ET
 </div>
+
 
 <span id="userName">
 Loading...
 </span>
 
+
 <button
 id="logoutBtn"
 class="primary">
+
 Logout
+
 </button>
+
 
 </div>
 
 </header>
 
 
-<!-- DASHBOARD -->
+
+<!-- ================= DASHBOARD ================= -->
 
 <section
 class="page active"
 id="dashboard">
 
+
 <div class="hero">
 
+
 <h2>
+
 Your Freelance
 <br>
-<span>Work Hub</span>
+
+<span>
+Work Hub
+</span>
+
 </h2>
 
+
 <p>
+
 Find online projects, apply for jobs and manage your professional work.
+
 </p>
+
 
 <button
 class="primary"
 data-go="jobs">
+
 Find Work →
+
 </button>
+
 
 <a
 href="post-job.html"
 class="primary"
 style="text-decoration:none;display:inline-block;margin-left:10px;">
+
 Post a Project +
+
 </a>
 
+
 </div>
+
 
 
 <div class="stats">
 
-<div class="stat">
-<h3 id="jobCount">0</h3>
-<p>Available Jobs</p>
-</div>
 
 <div class="stat">
-<h3 id="projectCount">0</h3>
-<p>Active Projects</p>
+
+<h3 id="jobCount">
+0
+</h3>
+
+<p>
+Available Jobs
+</p>
+
 </div>
+
 
 <div class="stat">
-<h3 id="applicationCount">0</h3>
-<p>Applications Sent</p>
+
+<h3 id="projectCount">
+0
+</h3>
+
+<p>
+Active Projects
+</p>
+
 </div>
+
 
 <div class="stat">
-<h3 id="ratingValue">--</h3>
-<p>Profile Rating</p>
-</div>
+
+<h3 id="applicationCount">
+0
+</h3>
+
+<p>
+Applications Sent
+</p>
 
 </div>
+
+
+<div class="stat">
+
+<h3 id="ratingValue">
+--
+</h3>
+
+<p>
+Profile Rating
+</p>
+
+</div>
+
+
+</div>
+
 
 
 <div class="panel">
@@ -229,14 +431,17 @@ No activity yet.
 
 </div>
 
+
 </section>
 
 
-<!-- JOBS -->
+
+<!-- ================= JOBS ================= -->
 
 <section
 class="page"
 id="jobs">
+
 
 <div class="intro">
 
@@ -254,6 +459,7 @@ Find projects posted by clients.
 
 </div>
 
+
 <div
 class="cards"
 id="jobList">
@@ -264,14 +470,17 @@ Loading jobs...
 
 </div>
 
+
 </section>
 
 
-<!-- APPLICATIONS -->
+
+<!-- ================= APPLICATIONS ================= -->
 
 <section
 class="page"
 id="applications">
+
 
 <div class="intro">
 
@@ -289,6 +498,7 @@ Track your applications.
 
 </div>
 
+
 <div
 class="cards"
 id="applicationList">
@@ -299,14 +509,17 @@ Loading applications...
 
 </div>
 
+
 </section>
 
 
-<!-- PROJECTS -->
+
+<!-- ================= PROJECTS ================= -->
 
 <section
 class="page"
 id="projects">
+
 
 <div class="intro">
 
@@ -324,6 +537,7 @@ Your accepted projects appear here.
 
 </div>
 
+
 <div
 class="cards"
 id="projectList">
@@ -334,14 +548,17 @@ Loading projects...
 
 </div>
 
+
 </section>
 
 
-<!-- MESSAGES -->
+
+<!-- ================= MESSAGES ================= -->
 
 <section
 class="page"
 id="messages">
+
 
 <div class="intro">
 
@@ -359,7 +576,9 @@ Chat with your clients.
 
 </div>
 
+
 <div class="panel">
+
 
 <div id="chatHeader">
 
@@ -373,39 +592,50 @@ Open an accepted project to start chatting.
 
 </div>
 
+
 <div
 id="messageList"
 style="max-height:350px;overflow-y:auto;margin:20px 0;">
 </div>
 
+
 <div
 id="chatBox"
 style="display:none;">
 
+
 <textarea
 id="messageInput"
 placeholder="Write a message..."
-style="width:100%;min-height:80px;padding:12px;box-sizing:border-box;"></textarea>
+style="width:100%;min-height:80px;padding:12px;box-sizing:border-box;">
+</textarea>
+
 
 <button
 class="primary"
 id="sendMessageBtn"
 style="margin-top:10px;">
+
 📤 Send Message
+
 </button>
 
+
 </div>
 
 </div>
+
 
 </section>
 
 
-<!-- PROFILE -->
+
+<!-- ================= PROFILE ================= -->
 
 <section
 class="page"
 id="profile">
+
 
 <div class="intro">
 
@@ -423,7 +653,29 @@ Manage your professional profile.
 
 </div>
 
+
 <div class="panel">
+
+
+<div class="profile-card">
+
+
+<img
+src="profile.png"
+alt="Freelancer Profile"
+class="profile-photo-large"
+onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+>
+
+
+<div
+class="avatar"
+style="display:none;width:110px;height:110px;border-radius:50%;align-items:center;justify-content:center;font-size:30px;">
+ET
+</div>
+
+
+<div>
 
 <h3 id="profileTitle">
 AYESHA REHMAN
@@ -434,19 +686,35 @@ Professional Freelancer
 </p>
 
 <p>
-📧 <span id="profileEmail">Loading...</span>
+📧
+<span id="profileEmail">
+Loading...
+</span>
+</p>
+
+<p>
+💼 Available for freelance projects
 </p>
 
 </div>
 
+
+</div>
+
+
+</div>
+
+
 </section>
 
 
-<!-- SETTINGS -->
+
+<!-- ================= SETTINGS ================= -->
 
 <section
 class="page"
 id="settings">
+
 
 <div class="intro">
 
@@ -460,29 +728,39 @@ Account Settings
 
 </div>
 
+
 <div class="panel">
+
 
 <h3>
 ⚙️ Account
 </h3>
 
+
 <p>
 Your account is connected with Firebase.
 </p>
 
+
 <button
 class="primary"
 id="settingsLogout">
+
 Logout
+
 </button>
+
 
 </div>
 
+
 </section>
+
 
 </main>
 
 </div>
+
 
 
 <div
@@ -491,13 +769,18 @@ class="firebase-error">
 </div>
 
 
+
+<!-- ================= FIREBASE ================= -->
+
 <script type="module">
+
 
 import {
 initializeApp
 }
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
 
 import {
 getAuth,
@@ -506,6 +789,7 @@ signOut
 }
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
 
 import {
 getFirestore,
@@ -516,14 +800,14 @@ query,
 where,
 doc,
 getDoc,
-setDoc,
 serverTimestamp
 }
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
-/* FIREBASE CONFIG */
+
+/* ================= FIREBASE CONFIG ================= */
 
 const firebaseConfig = {
 
@@ -548,7 +832,8 @@ appId:
 };
 
 
-/* FIREBASE INITIALIZE */
+
+/* ================= INITIALIZE ================= */
 
 const app =
 initializeApp(firebaseConfig);
@@ -560,11 +845,14 @@ const db =
 getFirestore(app);
 
 
+
 let currentUser = null;
+
 let currentConversation = null;
 
 
-/* ELEMENTS */
+
+/* ================= ELEMENTS ================= */
 
 const userName =
 document.getElementById("userName");
@@ -603,11 +891,15 @@ const firebaseError =
 document.getElementById("firebaseError");
 
 
-/* SHOW ERROR */
+
+/* ================= ERROR ================= */
 
 function showFirebaseError(error){
 
-console.error("Firebase error:",error);
+console.error(
+"Firebase error:",
+error
+);
 
 firebaseError.style.display =
 "block";
@@ -619,37 +911,66 @@ firebaseError.innerText =
 }
 
 
-/* PAGE NAVIGATION */
 
-document.querySelectorAll(".nav")
-.forEach(button => {
+/* ================= NAVIGATION ================= */
 
-button.addEventListener("click",()=>{
+document
+.querySelectorAll(".nav")
+.forEach(button=>{
+
+button.addEventListener(
+"click",
+()=>{
 
 const pageName =
 button.dataset.page;
 
-document.querySelectorAll(".page")
+
+document
+.querySelectorAll(".page")
 .forEach(page=>{
-page.classList.remove("active");
+
+page.classList.remove(
+"active"
+);
+
 });
+
 
 const page =
-document.getElementById(pageName);
+document.getElementById(
+pageName
+);
+
 
 if(page){
-page.classList.add("active");
+
+page.classList.add(
+"active"
+);
+
 }
 
-document.querySelectorAll(".nav")
+
+document
+.querySelectorAll(".nav")
 .forEach(nav=>{
-nav.classList.remove("active");
+
+nav.classList.remove(
+"active"
+);
+
 });
 
-button.classList.add("active");
 
-document.getElementById("title")
-.innerText =
+button.classList.add(
+"active"
+);
+
+
+document.getElementById(
+"title"
+).innerText =
 button.innerText.replace(
 /^[^\w]+/,
 ""
@@ -660,40 +981,68 @@ button.innerText.replace(
 });
 
 
-/* FIND WORK BUTTON */
 
-document.querySelectorAll("[data-go]")
+/* ================= FIND WORK ================= */
+
+document
+.querySelectorAll("[data-go]")
 .forEach(button=>{
 
-button.addEventListener("click",()=>{
+button.addEventListener(
+"click",
+()=>{
 
 const pageName =
 button.dataset.go;
 
-document.querySelectorAll(".page")
+
+document
+.querySelectorAll(".page")
 .forEach(page=>{
-page.classList.remove("active");
+
+page.classList.remove(
+"active"
+);
+
 });
 
-document.getElementById(pageName)
-.classList.add("active");
 
-document.querySelectorAll(".nav")
+document
+.getElementById(pageName)
+.classList.add(
+"active"
+);
+
+
+document
+.querySelectorAll(".nav")
 .forEach(nav=>{
-nav.classList.remove("active");
+
+nav.classList.remove(
+"active"
+);
+
 });
+
 
 const nav =
 document.querySelector(
 `.nav[data-page="${pageName}"]`
 );
 
+
 if(nav){
-nav.classList.add("active");
+
+nav.classList.add(
+"active"
+);
+
 }
 
-document.getElementById("title")
-.innerText =
+
+document.getElementById(
+"title"
+).innerText =
 "Find Work";
 
 });
@@ -701,7 +1050,8 @@ document.getElementById("title")
 });
 
 
-/* LOGOUT */
+
+/* ================= LOGOUT ================= */
 
 async function logoutUser(){
 
@@ -721,26 +1071,35 @@ showFirebaseError(error);
 }
 
 
-document.getElementById("logoutBtn")
+document
+.getElementById("logoutBtn")
 .addEventListener(
 "click",
 logoutUser
 );
 
-document.getElementById("settingsLogout")
+
+document
+.getElementById("settingsLogout")
 .addEventListener(
 "click",
 logoutUser
 );
 
 
-/* AUTH */
+
+/* ================= AUTH ================= */
 
 onAuthStateChanged(
 auth,
 async(user)=>{
 
-console.log("AUTH USER:",user);
+
+console.log(
+"AUTH USER:",
+user
+);
+
 
 if(!user){
 
@@ -756,21 +1115,25 @@ currentUser =
 user;
 
 
-/* SHOW USER IMMEDIATELY */
+
+/* USER INFO */
 
 userName.innerText =
 user.email ||
 "Freelancer";
 
+
 profileName.innerText =
 "AYESHA REHMAN";
+
 
 profileEmail.innerText =
 user.email ||
 "";
 
 
-/* LOAD EVERYTHING */
+
+/* LOAD DATA */
 
 try{
 
@@ -790,22 +1153,26 @@ user.uid
 
 }catch(error){
 
-showFirebaseError(error);
-
-}
-
-}
+showFirebaseError(
+error
 );
 
+}
 
-/* LOAD JOBS */
+});
+
+
+
+/* ================= LOAD JOBS ================= */
 
 async function loadJobs(){
 
 jobList.innerHTML =
 '<div class="loading">Loading jobs...</div>';
 
+
 try{
+
 
 const snapshot =
 await getDocs(
@@ -816,12 +1183,16 @@ db,
 );
 
 
-jobList.innerHTML = "";
+jobList.innerHTML =
+"";
+
 
 let count = 0;
 
 
-snapshot.forEach(item=>{
+
+snapshot.forEach(
+item=>{
 
 const data =
 item.data();
@@ -841,7 +1212,10 @@ count++;
 
 
 const card =
-document.createElement("div");
+document.createElement(
+"div"
+);
+
 
 card.className =
 "card";
@@ -872,7 +1246,8 @@ data.category ||
 
 <p>
 💰 $${Number(
-data.budget || 0
+data.budget ||
+0
 )}
 </p>
 
@@ -892,18 +1267,24 @@ Apply Now
 `;
 
 
-card.querySelector(
+card
+.querySelector(
 ".apply-button"
 )
 .addEventListener(
 "click",
 ()=>{
-applyJob(item.id);
-}
+
+applyJob(
+item.id
 );
 
+});
 
-jobList.appendChild(card);
+
+jobList.appendChild(
+card
+);
 
 });
 
@@ -921,9 +1302,12 @@ jobList.innerHTML =
 
 }
 
+
 }catch(error){
 
-showFirebaseError(error);
+showFirebaseError(
+error
+);
 
 jobList.innerHTML =
 '<div class="error">Unable to load jobs.</div>';
@@ -933,9 +1317,13 @@ jobList.innerHTML =
 }
 
 
-/* APPLY JOB */
 
-async function applyJob(jobId){
+/* ================= APPLY JOB ================= */
+
+async function applyJob(
+jobId
+){
+
 
 if(!currentUser){
 
@@ -950,6 +1338,7 @@ return;
 
 try{
 
+
 const jobRef =
 doc(
 db,
@@ -959,7 +1348,9 @@ jobId
 
 
 const jobSnapshot =
-await getDoc(jobRef);
+await getDoc(
+jobRef
+);
 
 
 if(!jobSnapshot.exists()){
@@ -991,6 +1382,7 @@ await loadJobs();
 return;
 
 }
+
 
 
 /* DUPLICATE CHECK */
@@ -1033,6 +1425,7 @@ alert(
 return;
 
 }
+
 
 
 /* CREATE APPLICATION */
@@ -1102,14 +1495,16 @@ await loadApplications(
 currentUser.uid
 );
 
+
 await updateDashboard(
 currentUser.uid
 );
 
-
 }catch(error){
 
-showFirebaseError(error);
+showFirebaseError(
+error
+);
 
 alert(
 "Application could not be sent."
@@ -1120,14 +1515,19 @@ alert(
 }
 
 
-/* LOAD APPLICATIONS */
 
-async function loadApplications(uid){
+/* ================= LOAD APPLICATIONS ================= */
+
+async function loadApplications(
+uid
+){
 
 applicationList.innerHTML =
 '<div class="loading">Loading applications...</div>';
 
+
 try{
+
 
 const q =
 query(
@@ -1150,21 +1550,28 @@ const snapshot =
 await getDocs(q);
 
 
-applicationList.innerHTML = "";
+applicationList.innerHTML =
+"";
+
 
 let count = 0;
 
 
-snapshot.forEach(item=>{
+snapshot.forEach(
+item=>{
 
 const data =
 item.data();
+
 
 count++;
 
 
 const card =
-document.createElement("div");
+document.createElement(
+"div"
+);
+
 
 card.className =
 "card";
@@ -1202,24 +1609,34 @@ data.jobDeadline ||
 
 <p>
 Status:
+
 <span class="status">
 ${escapeHtml(
 data.status ||
 "pending"
 )}
 </span>
+
 </p>
 
 `;
 
 
-applicationList.appendChild(card);
+applicationList.appendChild(
+card
+);
 
 });
 
 
 document.getElementById(
 "applicationCount"
+).innerText =
+count;
+
+
+document.getElementById(
+"applicationsBadge"
 ).innerText =
 count;
 
@@ -1234,7 +1651,9 @@ applicationList.innerHTML =
 
 }catch(error){
 
-showFirebaseError(error);
+showFirebaseError(
+error
+);
 
 applicationList.innerHTML =
 '<div class="error">Unable to load applications.</div>';
@@ -1244,14 +1663,19 @@ applicationList.innerHTML =
 }
 
 
-/* LOAD PROJECTS */
 
-async function loadProjects(uid){
+/* ================= LOAD PROJECTS ================= */
+
+async function loadProjects(
+uid
+){
 
 projectList.innerHTML =
 '<div class="loading">Loading projects...</div>';
 
+
 try{
+
 
 const q =
 query(
@@ -1274,12 +1698,15 @@ const snapshot =
 await getDocs(q);
 
 
-projectList.innerHTML = "";
+projectList.innerHTML =
+"";
+
 
 let count = 0;
 
 
-snapshot.forEach(item=>{
+snapshot.forEach(
+item=>{
 
 const data =
 item.data();
@@ -1298,7 +1725,10 @@ count++;
 
 
 const card =
-document.createElement("div");
+document.createElement(
+"div"
+);
+
 
 card.className =
 "card";
@@ -1337,37 +1767,53 @@ data.jobDeadline ||
 </p>
 
 <p>
+
 <span class="status">
 Accepted
 </span>
+
 </p>
 
 <button
 class="primary message-project">
+
 💬 Message Client
+
 </button>
 
 `;
 
 
-card.querySelector(
+card
+.querySelector(
 ".message-project"
 )
 .addEventListener(
 "click",
 ()=>{
-openConversation(data);
-}
+
+openConversation(
+data
 );
 
+});
 
-projectList.appendChild(card);
+
+projectList.appendChild(
+card
+);
 
 });
 
 
 document.getElementById(
 "projectCount"
+).innerText =
+count;
+
+
+document.getElementById(
+"projectsBadge"
 ).innerText =
 count;
 
@@ -1382,7 +1828,9 @@ projectList.innerHTML =
 
 }catch(error){
 
-showFirebaseError(error);
+showFirebaseError(
+error
+);
 
 projectList.innerHTML =
 '<div class="error">Unable to load projects.</div>';
@@ -1392,11 +1840,15 @@ projectList.innerHTML =
 }
 
 
-/* DASHBOARD */
 
-async function updateDashboard(uid){
+/* ================= DASHBOARD ================= */
+
+async function updateDashboard(
+uid
+){
 
 try{
+
 
 const q =
 query(
@@ -1420,10 +1872,12 @@ await getDocs(q);
 
 
 let totalApplications = 0;
+
 let accepted = 0;
 
 
-snapshot.forEach(item=>{
+snapshot.forEach(
+item=>{
 
 totalApplications++;
 
@@ -1447,7 +1901,19 @@ totalApplications;
 
 
 document.getElementById(
+"applicationsBadge"
+).innerText =
+totalApplications;
+
+
+document.getElementById(
 "projectCount"
+).innerText =
+accepted;
+
+
+document.getElementById(
+"projectsBadge"
 ).innerText =
 accepted;
 
@@ -1471,41 +1937,62 @@ document.getElementById(
 
 }catch(error){
 
-showFirebaseError(error);
+showFirebaseError(
+error
+);
 
 }
 
 }
 
 
-/* OPEN CONVERSATION */
 
-async function openConversation(project){
+/* ================= OPEN CONVERSATION ================= */
+
+async function openConversation(
+project
+){
 
 currentConversation =
 project;
 
 
-document.querySelectorAll(".page")
+document
+.querySelectorAll(".page")
 .forEach(page=>{
-page.classList.remove("active");
+
+page.classList.remove(
+"active"
+);
+
 });
 
 
 document.getElementById(
 "messages"
-).classList.add("active");
+).classList.add(
+"active"
+);
 
 
-document.querySelectorAll(".nav")
+document
+.querySelectorAll(".nav")
 .forEach(nav=>{
-nav.classList.remove("active");
+
+nav.classList.remove(
+"active"
+);
+
 });
 
 
-document.querySelector(
+document
+.querySelector(
 '.nav[data-page="messages"]'
-).classList.add("active");
+)
+.classList.add(
+"active"
+);
 
 
 document.getElementById(
@@ -1545,14 +2032,19 @@ project.jobId
 }
 
 
-/* LOAD MESSAGES */
 
-async function loadMessages(jobId){
+/* ================= LOAD MESSAGES ================= */
+
+async function loadMessages(
+jobId
+){
 
 messageList.innerHTML =
 '<div class="loading">Loading messages...</div>';
 
+
 try{
+
 
 const q =
 query(
@@ -1575,7 +2067,8 @@ const snapshot =
 await getDocs(q);
 
 
-messageList.innerHTML = "";
+messageList.innerHTML =
+"";
 
 
 if(snapshot.empty){
@@ -1588,7 +2081,8 @@ return;
 }
 
 
-snapshot.forEach(item=>{
+snapshot.forEach(
+item=>{
 
 const data =
 item.data();
@@ -1600,17 +2094,22 @@ currentUser.uid;
 
 
 const message =
-document.createElement("div");
+document.createElement(
+"div"
+);
 
 
 message.style.padding =
 "12px";
 
+
 message.style.marginBottom =
 "10px";
 
+
 message.style.borderRadius =
 "10px";
+
 
 message.style.background =
 mine
@@ -1647,7 +2146,9 @@ messageList.scrollHeight;
 
 }catch(error){
 
-showFirebaseError(error);
+showFirebaseError(
+error
+);
 
 messageList.innerHTML =
 '<div class="error">Unable to load messages.</div>';
@@ -1657,11 +2158,13 @@ messageList.innerHTML =
 }
 
 
-/* SEND MESSAGE */
+
+/* ================= SEND MESSAGE ================= */
 
 sendMessageBtn.addEventListener(
 "click",
 async()=>{
+
 
 if(!currentUser){
 return;
@@ -1691,11 +2194,13 @@ return;
 sendMessageBtn.disabled =
 true;
 
+
 sendMessageBtn.innerText =
 "Sending...";
 
 
 try{
+
 
 await addDoc(
 
@@ -1735,7 +2240,8 @@ serverTimestamp()
 );
 
 
-messageInput.value = "";
+messageInput.value =
+"";
 
 
 await loadMessages(
@@ -1745,7 +2251,9 @@ currentConversation.jobId
 
 }catch(error){
 
-showFirebaseError(error);
+showFirebaseError(
+error
+);
 
 alert(
 "Message could not be sent."
@@ -1757,6 +2265,7 @@ alert(
 sendMessageBtn.disabled =
 false;
 
+
 sendMessageBtn.innerText =
 "📤 Send Message";
 
@@ -1764,9 +2273,12 @@ sendMessageBtn.innerText =
 );
 
 
-/* ESCAPE HTML */
 
-function escapeHtml(value){
+/* ================= ESCAPE HTML ================= */
+
+function escapeHtml(
+value
+){
 
 return String(value)
 
@@ -1800,4 +2312,5 @@ return String(value)
 </script>
 
 </body>
+
 </html>
