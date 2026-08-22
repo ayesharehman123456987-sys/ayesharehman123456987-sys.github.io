@@ -1,5 +1,6 @@
 /* =========================================================
-   ELITE FREELANCE HUB — FINAL FULL STYLE
+   ELITE FREELANCE HUB
+   FINAL STYLE.CSS
 ========================================================= */
 
 *{
@@ -18,18 +19,23 @@ html{
     --line:#202d45;
     --text:#f5f7ff;
     --muted:#8994ab;
+
     --purple:#8b4fff;
-    --purple-dark:#5f2fc2;
-    --purple-soft:#b882ff;
+    --purple-dark:#6331c7;
+    --purple-soft:#b883ff;
+
     --gold:#f5bb22;
     --gold-dark:#b17c00;
+
     --green:#35ca78;
     --red:#ff546d;
+    --blue:#397bd7;
 }
 
 body{
     margin:0;
     min-height:100vh;
+
     background:
         radial-gradient(
             circle at 50% -15%,
@@ -37,8 +43,14 @@ body{
             transparent 33%
         ),
         var(--bg);
+
     color:var(--text);
-    font-family:Inter,Arial,sans-serif;
+
+    font-family:
+        Inter,
+        Arial,
+        sans-serif;
+
     font-size:14px;
 }
 
@@ -70,6 +82,7 @@ button{
 
 .sidebar{
     position:fixed;
+
     left:0;
     top:0;
     bottom:0;
@@ -83,9 +96,11 @@ button{
             #070c16
         );
 
-    border-right:1px solid #1d2940;
+    border-right:
+        1px solid #1d2940;
 
-    padding:16px 14px;
+    padding:
+        16px 14px;
 
     z-index:20;
 
@@ -103,11 +118,13 @@ button{
 
     display:flex;
     align-items:center;
+
     gap:10px;
 
     padding:0 8px;
 
-    border-bottom:1px solid #1c2840;
+    border-bottom:
+        1px solid #1c2840;
 }
 
 .brand .mark{
@@ -117,7 +134,9 @@ button{
 
 .brand strong{
     display:block;
+
     font-size:17px;
+
     line-height:1;
 }
 
@@ -135,24 +154,28 @@ button{
 
 
 /* =========================================================
-   MINI PROFILE
+   PROFILE
 ========================================================= */
 
 .mini-profile{
     display:flex;
+
     align-items:center;
 
     gap:10px;
 
-    padding:14px 8px;
+    padding:
+        14px 8px;
 
     margin:9px 0;
 
-    border-bottom:1px solid #1c2840;
+    border-bottom:
+        1px solid #1c2840;
 }
 
 .mini-profile strong{
     display:block;
+
     font-size:12px;
 }
 
@@ -177,13 +200,14 @@ button{
 
     object-fit:cover;
 
+    display:block;
+
     background:#161f33;
 
-    border:2px solid #995dff;
+    border:
+        2px solid #995dff;
 
     flex:none;
-
-    display:block;
 }
 
 .client .avatar{
@@ -197,7 +221,7 @@ button{
 
 
 /* =========================================================
-   NAV AREA
+   SIDEBAR NAV
 ========================================================= */
 
 .nav-area{
@@ -221,11 +245,6 @@ button{
     border-radius:20px;
 }
 
-
-/* =========================================================
-   SECTION TITLES
-========================================================= */
-
 .section-title{
     color:#606b82;
 
@@ -235,13 +254,9 @@ button{
 
     letter-spacing:1px;
 
-    padding:12px 10px 5px;
+    padding:
+        12px 10px 5px;
 }
-
-
-/* =========================================================
-   NAV BUTTONS
-========================================================= */
 
 .nav{
     width:100%;
@@ -254,7 +269,8 @@ button{
 
     text-align:left;
 
-    padding:10px 11px;
+    padding:
+        10px 11px;
 
     border-radius:9px;
 
@@ -262,11 +278,7 @@ button{
 
     font-size:12px;
 
-    transition:
-        background .2s ease,
-        color .2s ease,
-        border .2s ease,
-        transform .2s ease;
+    transition:.2s ease;
 }
 
 .nav:hover{
@@ -291,8 +303,6 @@ button{
 
     box-shadow:
         inset 3px 0 #9b63ff;
-
-    transform:none;
 }
 
 .client .nav.active{
@@ -315,7 +325,8 @@ button{
 ========================================================= */
 
 .side-bottom{
-    border-top:1px solid #1c2840;
+    border-top:
+        1px solid #1c2840;
 
     padding-top:8px;
 }
@@ -340,6 +351,7 @@ button{
 
 .side-bottom button:hover{
     background:#111a2c;
+
     color:#fff;
 }
 
@@ -359,12 +371,13 @@ button{
 
     flex:1;
 
-    padding:18px 26px 40px;
+    padding:
+        18px 26px 40px;
 }
 
 
 /* =========================================================
-   TOP BAR
+   TOPBAR
 ========================================================= */
 
 .topbar{
@@ -378,7 +391,8 @@ button{
 
     gap:15px;
 
-    border-bottom:1px solid #172238;
+    border-bottom:
+        1px solid #172238;
 
     margin-bottom:15px;
 
@@ -396,7 +410,8 @@ button{
 }
 
 .top-left h1{
-    margin:4px 0 0;
+    margin:
+        4px 0 0;
 
     font-size:23px;
 
@@ -415,7 +430,7 @@ button{
 
 
 /* =========================================================
-   ROUND BUTTONS
+   TOP BUTTONS
 ========================================================= */
 
 .round-btn{
@@ -424,7 +439,8 @@ button{
 
     border-radius:50%;
 
-    border:1px solid #25314a;
+    border:
+        1px solid #25314a;
 
     background:#0c1424;
 
@@ -457,11 +473,6 @@ button{
     background:#9f54ff;
 }
 
-
-/* =========================================================
-   USER CHIP
-========================================================= */
-
 .user-chip{
     display:flex;
 
@@ -469,13 +480,15 @@ button{
 
     gap:7px;
 
-    border:1px solid #223048;
+    border:
+        1px solid #223048;
 
     border-radius:19px;
 
     background:#0d1525;
 
-    padding:4px 9px 4px 5px;
+    padding:
+        4px 9px 4px 5px;
 }
 
 .user-chip .avatar{
@@ -494,19 +507,16 @@ button{
     color:#cdd4e2;
 }
 
-
-/* =========================================================
-   TOP LOGOUT
-========================================================= */
-
 .logout-top{
-    border:1px solid #7a3041;
+    border:
+        1px solid #7a3041;
 
     background:#120e15;
 
     color:#ff667b;
 
-    padding:9px 13px;
+    padding:
+        9px 13px;
 
     border-radius:8px;
 
@@ -521,25 +531,28 @@ button{
 
 
 /* =========================================================
-   MODE BADGE
+   MODE
 ========================================================= */
 
 .mode{
     width:max-content;
 
-    margin:0 auto -7px;
+    margin:
+        0 auto -7px;
 
     position:relative;
 
     z-index:3;
 
-    border:1px solid var(--purple);
+    border:
+        1px solid var(--purple);
 
     color:#bb83ff;
 
     background:#150c27;
 
-    padding:6px 17px;
+    padding:
+        6px 17px;
 
     border-radius:20px;
 
@@ -560,13 +573,14 @@ button{
 
 
 /* =========================================================
-   PAGES
+   PAGE
 ========================================================= */
 
 .page{
     display:none;
 
-    animation:pageIn .2s ease;
+    animation:
+        pageIn .2s ease;
 }
 
 .page.active{
@@ -574,6 +588,7 @@ button{
 }
 
 @keyframes pageIn{
+
     from{
         opacity:0;
         transform:translateY(4px);
@@ -599,12 +614,13 @@ button{
 
     overflow:hidden;
 
-    border:1px solid #26334b;
+    border:
+        1px solid #26334b;
 
     background:
         radial-gradient(
             circle at 84% 20%,
-            rgba(125,72,255,.2),
+            rgba(125,72,255,.20),
             transparent 29%
         ),
         linear-gradient(
@@ -630,13 +646,9 @@ button{
         );
 }
 
-
-/* =========================================================
-   HERO COPY
-========================================================= */
-
 .hero-copy{
-    padding:36px 26px;
+    padding:
+        36px 26px;
 
     max-width:57%;
 
@@ -652,7 +664,8 @@ button{
 
     line-height:1.07;
 
-    margin:0 0 13px;
+    margin:
+        0 0 13px;
 }
 
 .hero h2 span{
@@ -670,13 +683,9 @@ button{
 
     line-height:1.55;
 
-    margin:0 0 18px;
+    margin:
+        0 0 18px;
 }
-
-
-/* =========================================================
-   HERO ACTIONS
-========================================================= */
 
 .actions{
     display:flex;
@@ -703,7 +712,8 @@ button{
 
     color:#fff;
 
-    padding:10px 16px;
+    padding:
+        10px 16px;
 
     border-radius:8px;
 
@@ -716,7 +726,8 @@ button{
     transform:translateY(-1px);
 
     box-shadow:
-        0 8px 18px rgba(111,53,222,.25);
+        0 8px 18px
+        rgba(111,53,222,.25);
 }
 
 .client .primary{
@@ -733,11 +744,13 @@ button{
 .secondary{
     background:#0b1220;
 
-    border:1px solid #7f54d8;
+    border:
+        1px solid #7f54d8;
 
     color:#fff;
 
-    padding:10px 16px;
+    padding:
+        10px 16px;
 
     border-radius:8px;
 
@@ -790,7 +803,7 @@ button{
 
 .client .hero-art .circle{
     background:
-        rgba(226,169,18,.2);
+        rgba(226,169,18,.20);
 }
 
 .hero-art .person{
@@ -804,7 +817,7 @@ button{
     filter:
         drop-shadow(
             0 15px 15px
-            rgba(0,0,0,.3)
+            rgba(0,0,0,.30)
         );
 }
 
@@ -819,7 +832,8 @@ button{
 
     border-radius:10px;
 
-    border:1px solid #414e70;
+    border:
+        1px solid #414e70;
 
     background:
         linear-gradient(
@@ -828,8 +842,7 @@ button{
             #101927
         );
 
-    transform:
-        skew(-9deg);
+    transform:skew(-9deg);
 
     opacity:.9;
 }
@@ -844,7 +857,8 @@ button{
 
     background:#171f33;
 
-    border:1px solid #354361;
+    border:
+        1px solid #354361;
 
     display:grid;
 
@@ -880,7 +894,8 @@ button{
 }
 
 .stat{
-    border:1px solid #233149;
+    border:
+        1px solid #233149;
 
     background:
         linear-gradient(
@@ -914,24 +929,22 @@ button{
 
     background:#221343;
 
-    border:1px solid #6941ba;
+    border:
+        1px solid #6941ba;
 }
 
 .stat:nth-child(2) .icon{
     background:#0d281a;
-
     border-color:#268052;
 }
 
 .stat:nth-child(3) .icon{
     background:#291906;
-
     border-color:#a86c09;
 }
 
 .stat:nth-child(4) .icon{
     background:#0d2240;
-
     border-color:#2f72c4;
 }
 
@@ -953,7 +966,7 @@ button{
 
 
 /* =========================================================
-   TWO COLUMN PANELS
+   PANELS
 ========================================================= */
 
 .grid2{
@@ -967,13 +980,9 @@ button{
     margin-top:12px;
 }
 
-
-/* =========================================================
-   PANEL
-========================================================= */
-
 .panel{
-    border:1px solid #233149;
+    border:
+        1px solid #233149;
 
     background:
         linear-gradient(
@@ -996,9 +1005,11 @@ button{
 
     gap:10px;
 
-    padding:13px 14px;
+    padding:
+        13px 14px;
 
-    border-bottom:1px solid #1c2840;
+    border-bottom:
+        1px solid #1c2840;
 }
 
 .panel-head h3{
@@ -1045,9 +1056,11 @@ button{
 
     gap:10px;
 
-    padding:11px 14px;
+    padding:
+        11px 14px;
 
-    border-bottom:1px solid #19243a;
+    border-bottom:
+        1px solid #19243a;
 
     align-items:center;
 }
@@ -1068,7 +1081,8 @@ button{
 
     background:#151f31;
 
-    border:1px solid #2a3750;
+    border:
+        1px solid #2a3750;
 
     flex:none;
 }
@@ -1095,7 +1109,8 @@ button{
 ========================================================= */
 
 .page-head{
-    margin:11px 0 18px;
+    margin:
+        11px 0 18px;
 }
 
 .page-head label{
@@ -1113,7 +1128,8 @@ button{
 }
 
 .page-head h2{
-    margin:6px 0 4px;
+    margin:
+        6px 0 4px;
 
     font-size:23px;
 }
@@ -1151,7 +1167,8 @@ button{
             #0a111f
         );
 
-    border:1px solid #233149;
+    border:
+        1px solid #233149;
 
     border-radius:11px;
 
@@ -1167,13 +1184,15 @@ button{
 }
 
 .card h3{
-    margin:0 0 8px;
+    margin:
+        0 0 8px;
 
     font-size:14px;
 }
 
 .card p{
-    margin:7px 0;
+    margin:
+        7px 0;
 
     color:#a7b0c2;
 
@@ -1212,13 +1231,15 @@ button{
 
     align-items:center;
 
-    padding:4px 8px;
+    padding:
+        4px 8px;
 
     border-radius:20px;
 
     background:#151e31;
 
-    border:1px solid #293751;
+    border:
+        1px solid #293751;
 
     color:#b8c1d2;
 
@@ -1259,29 +1280,25 @@ button{
 
 
 /* =========================================================
-   DANGER BUTTON
+   DANGER
 ========================================================= */
 
 .danger{
     background:#32151f;
 
-    border:1px solid #6d2b3b;
+    border:
+        1px solid #6d2b3b;
 
     color:#ff7083;
 
-    padding:9px 12px;
+    padding:
+        9px 12px;
 
     border-radius:7px;
 
     font-size:11px;
 
     font-weight:800;
-
-    transition:.2s ease;
-}
-
-.danger:hover{
-    background:#411a27;
 }
 
 
@@ -1302,7 +1319,8 @@ button{
 
 .conversations,
 .chat{
-    border:1px solid #233149;
+    border:
+        1px solid #233149;
 
     background:#0b1322;
 
@@ -1322,7 +1340,8 @@ button{
 
     border:0;
 
-    border-bottom:1px solid #1a253a;
+    border-bottom:
+        1px solid #1a253a;
 
     text-align:left;
 
@@ -1359,7 +1378,8 @@ button{
 .chat-head{
     padding:13px;
 
-    border-bottom:1px solid #1d2840;
+    border-bottom:
+        1px solid #1d2840;
 }
 
 .chat-head strong{
@@ -1387,11 +1407,13 @@ button{
 .bubble{
     max-width:72%;
 
-    padding:9px 11px;
+    padding:
+        9px 11px;
 
     background:#172238;
 
-    border:1px solid #293751;
+    border:
+        1px solid #293751;
 
     border-radius:11px;
 
@@ -1425,7 +1447,8 @@ button{
 
     padding:10px;
 
-    border-top:1px solid #1c2840;
+    border-top:
+        1px solid #1c2840;
 }
 
 .composer textarea{
@@ -1437,7 +1460,8 @@ button{
 
     color:#fff;
 
-    border:1px solid #29364f;
+    border:
+        1px solid #29364f;
 
     border-radius:8px;
 
@@ -1448,19 +1472,16 @@ button{
     outline:none;
 }
 
-.composer textarea:focus{
-    border-color:#8d5be0;
-}
-
 
 /* =========================================================
-   FORM
+   FORMS
 ========================================================= */
 
 .form-box{
     max-width:800px;
 
-    border:1px solid #233149;
+    border:
+        1px solid #233149;
 
     background:#0c1423;
 
@@ -1498,30 +1519,22 @@ button{
 
 .field input,
 .field select,
-.field textarea{
+.field textarea,
+.composer textarea{
     width:100%;
 
     background:#070d18;
 
     color:#fff;
 
-    border:1px solid #29364f;
+    border:
+        1px solid #29364f;
 
     border-radius:8px;
 
     padding:10px;
 
     outline:none;
-}
-
-.field input:focus,
-.field select:focus,
-.field textarea:focus{
-    border-color:#8d5be0;
-
-    box-shadow:
-        0 0 0 3px
-        rgba(139,79,255,.08);
 }
 
 .field textarea{
@@ -1562,7 +1575,8 @@ button{
 
     max-width:650px;
 
-    border:1px solid #233149;
+    border:
+        1px solid #233149;
 
     background:#0c1423;
 
@@ -1579,7 +1593,8 @@ button{
 
     object-fit:cover;
 
-    border:3px solid #985eff;
+    border:
+        3px solid #985eff;
 }
 
 .client .profile-large{
@@ -1588,7 +1603,7 @@ button{
 
 
 /* =========================================================
-   LOADING / EMPTY / ERROR
+   STATUS
 ========================================================= */
 
 .loading{
@@ -1633,7 +1648,8 @@ button{
 
     color:#fff;
 
-    border:1px solid #9a334b;
+    border:
+        1px solid #9a334b;
 
     border-radius:9px;
 
@@ -1642,6 +1658,588 @@ button{
     box-shadow:
         0 10px 30px
         rgba(0,0,0,.35);
+}
+
+
+/* =========================================================
+   LIGHT MODE
+========================================================= */
+
+body.light{
+    background:#f4f6fb;
+
+    color:#253047;
+}
+
+body.light .sidebar{
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff 0%,
+            #f7f8fc 100%
+        );
+
+    border-right:
+        1px solid #dfe4ed;
+
+    box-shadow:
+        4px 0 22px
+        rgba(36,48,70,.05);
+}
+
+body.light .brand{
+    border-bottom-color:#e5e9f0;
+
+    color:#202a3d;
+}
+
+body.light .brand small{
+    color:#7b8597;
+}
+
+body.light .mini-profile{
+    border-bottom-color:#e5e9f0;
+}
+
+body.light .mini-profile strong{
+    color:#263147;
+}
+
+body.light .mini-profile small{
+    color:#7d8799;
+}
+
+body.light .nav{
+    color:#657086;
+}
+
+body.light .nav:hover{
+    background:#eef1f6;
+
+    color:#263147;
+}
+
+body.light .nav.active{
+    background:
+        linear-gradient(
+            90deg,
+            #eee7ff,
+            #f8f5ff
+        );
+
+    color:#6935c7;
+
+    border-color:#d8c8f5;
+
+    box-shadow:
+        inset 3px 0 #8a4fff;
+}
+
+body.client.light .nav.active{
+    background:
+        linear-gradient(
+            90deg,
+            #fff4d2,
+            #fffaf0
+        );
+
+    color:#956c00;
+
+    border-color:#ead59a;
+
+    box-shadow:
+        inset 3px 0 #e1ad19;
+}
+
+body.light .section-title{
+    color:#98a1b1;
+}
+
+body.light .main{
+    background:#f4f6fb;
+}
+
+body.light .topbar{
+    border-bottom-color:#dfe4ec;
+}
+
+body.light .top-left small{
+    color:#8792a5;
+}
+
+body.light .top-left h1{
+    color:#273148;
+}
+
+body.light .round-btn{
+    background:#ffffff;
+
+    border-color:#d9e0ea;
+
+    color:#5c687c;
+
+    box-shadow:
+        0 4px 14px
+        rgba(35,46,66,.06);
+}
+
+body.light .round-btn:hover{
+    background:#f7f8fb;
+
+    border-color:#bca4e9;
+
+    color:#6c38c7;
+}
+
+body.light .user-chip{
+    background:#ffffff;
+
+    border-color:#dce2eb;
+
+    color:#374257;
+
+    box-shadow:
+        0 4px 14px
+        rgba(35,46,66,.05);
+}
+
+body.light .user-chip span{
+    color:#374257;
+}
+
+body.light .logout-top{
+    background:#fff4f5;
+
+    border-color:#ecc3cb;
+
+    color:#bb3d54;
+}
+
+body.light .mode{
+    background:#f4edff;
+
+    border-color:#a876ef;
+
+    color:#6c35c6;
+}
+
+body.client.light .mode{
+    background:#fff7dc;
+
+    border-color:#d7a51b;
+
+    color:#966d00;
+}
+
+body.light .hero{
+    background:
+        radial-gradient(
+            circle at 84% 18%,
+            rgba(139,79,255,.11),
+            transparent 28%
+        ),
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #f6f2ff
+        );
+
+    border-color:#dfe3ec;
+
+    box-shadow:
+        0 10px 30px
+        rgba(42,52,72,.07);
+}
+
+body.light .hero h2{
+    color:#263148;
+}
+
+body.light .hero h2 span{
+    color:#7b3fe0;
+}
+
+body.light .hero p{
+    color:#697589;
+}
+
+body.client.light .hero{
+    background:
+        radial-gradient(
+            circle at 84% 18%,
+            rgba(227,174,21,.11),
+            transparent 28%
+        ),
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #fff9ed
+        );
+}
+
+body.client.light .hero h2{
+    color:#2b2f39;
+}
+
+body.client.light .hero h2 span{
+    color:#d89e0b;
+}
+
+body.light .hero-art .circle{
+    background:rgba(124,73,234,.15);
+}
+
+body.client.light .hero-art .circle{
+    background:rgba(220,163,20,.14);
+}
+
+body.light .hero-art .screen{
+    background:
+        linear-gradient(
+            145deg,
+            #dfe5ee,
+            #f9fafc
+        );
+
+    border-color:#c6cfdd;
+}
+
+body.light .hero-art .float{
+    background:#ffffff;
+
+    border-color:#d4dce8;
+
+    color:#47536a;
+
+    box-shadow:
+        0 7px 18px
+        rgba(32,43,61,.08);
+}
+
+body.light .primary{
+    background:
+        linear-gradient(
+            135deg,
+            #8c50ee,
+            #7035d6
+        );
+
+    color:#fff;
+
+    box-shadow:
+        0 8px 20px
+        rgba(111,53,214,.20);
+}
+
+body.client.light .primary{
+    background:
+        linear-gradient(
+            135deg,
+            #f4c42a,
+            #dfa400
+        );
+
+    color:#2b2103;
+}
+
+body.light .secondary{
+    background:#ffffff;
+
+    color:#6c35c6;
+
+    border-color:#bda4e8;
+}
+
+body.client.light .secondary{
+    color:#936d00;
+
+    border-color:#d8bd68;
+}
+
+body.light .stat{
+    background:#ffffff;
+
+    border-color:#dfe5ee;
+
+    box-shadow:
+        0 6px 18px
+        rgba(37,47,66,.05);
+}
+
+body.light .stat h3{
+    color:#273149;
+}
+
+body.light .stat p{
+    color:#7b8698;
+}
+
+body.light .stat .icon{
+    background:#f1eaff;
+
+    border-color:#c7adf2;
+
+    color:#6d35cf;
+}
+
+body.light .panel{
+    background:#ffffff;
+
+    border-color:#dfe5ee;
+
+    box-shadow:
+        0 6px 18px
+        rgba(37,47,66,.045);
+}
+
+body.light .panel-head{
+    border-bottom-color:#e7ebf1;
+}
+
+body.light .panel-head h3{
+    color:#263148;
+}
+
+body.light .panel-head p{
+    color:#8792a4;
+}
+
+body.light .activity-row{
+    border-bottom-color:#edf0f4;
+}
+
+body.light .activity-row strong{
+    color:#2b354a;
+}
+
+body.light .activity-row span{
+    color:#7b8698;
+}
+
+body.light .activity-icon{
+    background:#f3f5f9;
+
+    border-color:#dce2eb;
+
+    color:#58667a;
+}
+
+body.light .page-head label{
+    color:#7c43d8;
+}
+
+body.client.light .page-head label{
+    color:#a47600;
+}
+
+body.light .page-head h2{
+    color:#273149;
+}
+
+body.light .page-head p{
+    color:#7c8799;
+}
+
+body.light .card{
+    background:#ffffff;
+
+    border-color:#dfe5ee;
+
+    box-shadow:
+        0 6px 18px
+        rgba(37,47,66,.045);
+}
+
+body.light .card h3{
+    color:#263148;
+}
+
+body.light .card p{
+    color:#687489;
+}
+
+body.light .pill{
+    background:#f3f5f8;
+
+    border-color:#dce2e9;
+
+    color:#5d697c;
+}
+
+body.light .pill.open{
+    background:#eaf8ef;
+
+    border-color:#b8e0c8;
+
+    color:#24894e;
+}
+
+body.light .pill.pending{
+    background:#fff7de;
+
+    border-color:#ead69a;
+
+    color:#986f00;
+}
+
+body.light .pill.accepted{
+    background:#eaf8ef;
+
+    border-color:#b8e0c8;
+
+    color:#24894e;
+}
+
+body.light .pill.rejected{
+    background:#fff0f2;
+
+    border-color:#efc2cb;
+
+    color:#bd3d52;
+}
+
+body.light .conversations,
+body.light .chat{
+    background:#ffffff;
+
+    border-color:#dfe5ee;
+}
+
+body.light .conversation{
+    color:#2c3549;
+
+    border-bottom-color:#e8ecf2;
+}
+
+body.light .conversation:hover,
+body.light .conversation.active{
+    background:#f3effd;
+}
+
+body.client.light .conversation:hover,
+body.client.light .conversation.active{
+    background:#fff8e7;
+}
+
+body.light .conversation strong{
+    color:#2c3549;
+}
+
+body.light .conversation span{
+    color:#8490a2;
+}
+
+body.light .chat-head{
+    border-bottom-color:#e5e9f0;
+}
+
+body.light .chat-head strong{
+    color:#263148;
+}
+
+body.light .chat-head span{
+    color:#8792a4;
+}
+
+body.light .messages{
+    background:#ffffff;
+}
+
+body.light .bubble{
+    background:#f0f3f7;
+
+    border-color:#dce3eb;
+
+    color:#293349;
+}
+
+body.light .bubble.mine{
+    background:#ece2ff;
+
+    border-color:#c5a6ed;
+
+    color:#3c2c55;
+}
+
+body.light .composer{
+    background:#ffffff;
+
+    border-top-color:#e5e9f0;
+}
+
+body.light .form-box{
+    background:#ffffff;
+
+    border-color:#dfe5ee;
+
+    box-shadow:
+        0 6px 18px
+        rgba(37,47,66,.045);
+}
+
+body.light .field{
+    color:#4f5b6f;
+}
+
+body.light .field input,
+body.light .field select,
+body.light .field textarea,
+body.light .composer textarea{
+    background:#ffffff;
+
+    color:#273148;
+
+    border-color:#d2dae6;
+}
+
+body.light .field input::placeholder,
+body.light .field textarea::placeholder,
+body.light .composer textarea::placeholder{
+    color:#a0a8b6;
+}
+
+body.light .profile-box{
+    background:#ffffff;
+
+    border-color:#dfe5ee;
+
+    box-shadow:
+        0 6px 18px
+        rgba(37,47,66,.045);
+}
+
+body.light .profile-box h3{
+    color:#273148;
+}
+
+body.light .profile-box p{
+    color:#738096;
+}
+
+body.light .side-bottom{
+    border-top-color:#e5e9f0;
+}
+
+body.light .side-bottom button{
+    color:#687387;
+}
+
+body.light .side-bottom button:hover{
+    background:#eef1f6;
+
+    color:#263148;
+}
+
+body.light .side-bottom .logout{
+    color:#bd4055;
+}
+
+body.light .firebase-error{
+    background:#fff0f2;
+
+    color:#a82f47;
+
+    border-color:#e8bcc6;
 }
 
 
@@ -1663,459 +2261,17 @@ button{
     border-radius:20px;
 }
 
+body.light ::-webkit-scrollbar-track{
+    background:#eef1f5;
+}
+
+body.light ::-webkit-scrollbar-thumb{
+    background:#c8d0dc;
+}
+
 
 /* =========================================================
-   LIGHT MODE
-========================================================= */
-
-body.light{
-    background:#f5f7fb;
-
-    color:#172033;
-}
-
-body.light .sidebar{
-    background:#ffffff;
-
-    border-right:
-        1px solid #e4e8f0;
-
-    box-shadow:
-        4px 0 18px
-        rgba(25,35,55,.04);
-}
-
-body.light .brand{
-    border-bottom-color:#e7ebf2;
-
-    color:#182033;
-}
-
-body.light .brand small{
-    color:#7b8496;
-}
-
-body.light .mini-profile{
-    border-bottom-color:#e7ebf2;
-}
-
-body.light .mini-profile strong{
-    color:#172033;
-}
-
-body.light .mini-profile small{
-    color:#7c8698;
-}
-
-body.light .nav{
-    color:#596579;
-}
-
-body.light .nav:hover{
-    background:#f3f5f9;
-
-    color:#172033;
-}
-
-body.light .nav.active{
-    background:
-        linear-gradient(
-            90deg,
-            #f0e8ff,
-            #f8f4ff
-        );
-
-    color:#6d32d2;
-
-    border-color:#ddd0f8;
-
-    box-shadow:
-        inset 3px 0 #8b4fff;
-}
-
-body.client.light .nav.active{
-    background:
-        linear-gradient(
-            90deg,
-            #fff6d9,
-            #fffaf0
-        );
-
-    color:#9b7100;
-
-    border-color:#ead79a;
-
-    box-shadow:
-        inset 3px 0 #e0ab16;
-}
-
-body.light .section-title{
-    color:#98a1b1;
-}
-
-body.light .main{
-    background:#f5f7fb;
-}
-
-body.light .topbar{
-    border-bottom-color:#e3e7ef;
-}
-
-body.light .top-left small{
-    color:#8993a4;
-}
-
-body.light .top-left h1{
-    color:#172033;
-}
-
-body.light .round-btn{
-    background:#ffffff;
-
-    border-color:#dde3ec;
-
-    color:#4e596b;
-
-    box-shadow:
-        0 3px 10px
-        rgba(25,35,55,.05);
-}
-
-body.light .user-chip{
-    background:#ffffff;
-
-    border-color:#dde3ec;
-
-    color:#303a4c;
-}
-
-body.light .logout-top{
-    background:#fff5f6;
-
-    border-color:#efc1ca;
-
-    color:#bf4054;
-}
-
-body.light .hero{
-    background:
-        radial-gradient(
-            circle at 85% 20%,
-            rgba(139,79,255,.10),
-            transparent 30%
-        ),
-        linear-gradient(
-            135deg,
-            #ffffff,
-            #f5f1ff
-        );
-
-    border-color:#dddfea;
-
-    box-shadow:
-        0 10px 30px
-        rgba(38,45,70,.06);
-}
-
-body.client.light .hero{
-    background:
-        radial-gradient(
-            circle at 85% 20%,
-            rgba(230,175,25,.10),
-            transparent 30%
-        ),
-        linear-gradient(
-            135deg,
-            #ffffff,
-            #fffaf0
-        );
-}
-
-body.light .hero p{
-    color:#687387;
-}
-
-body.light .hero-art .screen{
-    background:
-        linear-gradient(
-            145deg,
-            #e2e7f0,
-            #f6f8fb
-        );
-
-    border-color:#c7cfdd;
-}
-
-body.light .hero-art .float{
-    background:#fff;
-
-    border-color:#dbe2ec;
-
-    box-shadow:
-        0 6px 18px
-        rgba(30,40,60,.07);
-}
-
-body.light .stat{
-    background:#ffffff;
-
-    border-color:#e1e6ee;
-
-    box-shadow:
-        0 6px 20px
-        rgba(30,40,60,.05);
-}
-
-body.light .stat h3{
-    color:#1b2333;
-}
-
-body.light .stat p{
-    color:#7b8597;
-}
-
-body.light .panel{
-    background:#ffffff;
-
-    border-color:#e1e6ee;
-
-    box-shadow:
-        0 6px 20px
-        rgba(30,40,60,.04);
-}
-
-body.light .panel-head{
-    border-bottom-color:#e7ebf1;
-}
-
-body.light .panel-head h3{
-    color:#1c2433;
-}
-
-body.light .panel-head p{
-    color:#8791a2;
-}
-
-body.light .activity-row{
-    border-bottom-color:#edf0f4;
-}
-
-body.light .activity-row strong{
-    color:#253044;
-}
-
-body.light .activity-row span{
-    color:#7f899a;
-}
-
-body.light .card{
-    background:#ffffff;
-
-    border-color:#e1e6ee;
-
-    box-shadow:
-        0 6px 20px
-        rgba(30,40,60,.04);
-}
-
-body.light .card h3{
-    color:#1c2433;
-}
-
-body.light .card p{
-    color:#687387;
-}
-
-body.light .pill{
-    background:#f4f6f9;
-
-    border-color:#dce2ea;
-
-    color:#596579;
-}
-
-body.light .pill.open{
-    background:#ebfaf2;
-
-    border-color:#b9e7cb;
-
-    color:#24864c;
-}
-
-body.light .pill.pending{
-    background:#fff8df;
-
-    border-color:#ead790;
-
-    color:#987300;
-}
-
-body.light .pill.accepted{
-    background:#ebfaf2;
-
-    border-color:#b9e7cb;
-
-    color:#24864c;
-}
-
-body.light .pill.rejected{
-    background:#fff0f2;
-
-    border-color:#f0c2cb;
-
-    color:#c03b53;
-}
-
-body.light .secondary{
-    background:#ffffff;
-
-    color:#6d32d2;
-
-    border-color:#bda1ec;
-}
-
-body.client.light .secondary{
-    color:#936c00;
-
-    border-color:#d9bd68;
-}
-
-body.light .conversation{
-    color:#263044;
-
-    border-bottom-color:#e8ecf2;
-}
-
-body.light .conversation:hover,
-body.light .conversation.active{
-    background:#f5f1ff;
-}
-
-body.client.light .conversation:hover,
-body.client.light .conversation.active{
-    background:#fff8e7;
-}
-
-body.light .conversation strong{
-    color:#263044;
-}
-
-body.light .conversation span{
-    color:#8993a4;
-}
-
-body.light .chat{
-    background:#ffffff;
-}
-
-body.light .chat-head{
-    border-bottom-color:#e5e9f0;
-}
-
-body.light .chat-head strong{
-    color:#202a3b;
-}
-
-body.light .chat-head span{
-    color:#8791a2;
-}
-
-body.light .messages{
-    background:#ffffff;
-}
-
-body.light .bubble{
-    background:#f0f3f7;
-
-    border-color:#dce2ea;
-
-    color:#202a3b;
-}
-
-body.light .bubble.mine{
-    background:#ece2ff;
-
-    border-color:#c5a8ee;
-}
-
-body.light .composer{
-    border-top-color:#e5e9f0;
-
-    background:#ffffff;
-}
-
-body.light .composer textarea,
-body.light .field input,
-body.light .field select,
-body.light .field textarea{
-    background:#ffffff;
-
-    color:#202a3b;
-
-    border-color:#d5dce7;
-}
-
-body.light .composer textarea:focus,
-body.light .field input:focus,
-body.light .field select:focus,
-body.light .field textarea:focus{
-    border-color:#9b6ce5;
-
-    box-shadow:
-        0 0 0 3px
-        rgba(139,79,255,.08);
-}
-
-body.light .form-box,
-body.light .profile-box{
-    background:#ffffff;
-
-    border-color:#e1e6ee;
-
-    box-shadow:
-        0 6px 20px
-        rgba(30,40,60,.04);
-}
-
-body.light .page-head h2{
-    color:#1b2434;
-}
-
-body.light .page-head p{
-    color:#7d8798;
-}
-
-body.light .side-bottom{
-    border-top-color:#e7ebf2;
-}
-
-body.light .side-bottom button{
-    color:#667085;
-}
-
-body.light .side-bottom button:hover{
-    background:#f3f5f9;
-
-    color:#172033;
-}
-
-body.light .side-bottom .logout{
-    color:#c23d53;
-}
-
-body.light .firebase-error{
-    left:270px;
-
-    background:#fff0f2;
-
-    color:#a92f47;
-
-    border-color:#edbdc7;
-}
-
-
-/* =========================================================
-   MOBILE
+   RESPONSIVE
 ========================================================= */
 
 @media(max-width:1080px){
@@ -2202,7 +2358,8 @@ body.light .firebase-error{
     .hero-copy{
         max-width:none;
 
-        padding:30px 22px;
+        padding:
+            30px 22px;
     }
 
     .hero-art{
