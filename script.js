@@ -14,8 +14,10 @@ const firebaseConfig = {
 const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);
 const db=getFirestore(app);
-let currentUser=null,userData={};
-
+let currentUser=null;
+let userData={};
+let currentProjects=[];
+let currentConversation=null;
 const $=id=>document.getElementById(id);
 const role=()=>document.body.dataset.role==="client"?"client":"freelancer";
 const userName=()=>userData.name||currentUser?.email?.split("@")[0]||(role()==="client"?"Client":"Freelancer");
