@@ -1,17 +1,53 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ELITE FREELANCE HUB ✦</title><link rel="icon" href="profile.png"><link rel="stylesheet" href="style.css"></head>
-<body data-role="client">
-<div class="app-shell"><aside class="sidebar">
-<div class="brand"><span class="brand-mark">✦</span><div><b>ELITE</b><small>FREELANCE HUB</small></div></div>
-<div class="profile-mini"><img src="profile.png" class="avatar-img" alt="Profile"><div><strong id="sideName">Loading...</strong><span id="sideRole">Professional Freelancer</span></div><span class="online-dot">●</span></div>
-<nav id="sidebarNav" class="sidebar-nav"></nav><div class="sidebar-footer"><button class="side-action" id="switchMode">⇄ Switch to Client Mode</button><button class="side-action">◌ Help & Support</button><button class="side-action danger" id="logoutBtn">↪ Logout</button></div>
-</aside><main class="main-content"><header class="topbar"><div><span class="eyebrow">WELCOME BACK 👋</span><h1 id="pageTitle">Dashboard</h1></div><div class="top-actions"><button class="icon-btn">◐</button><button class="icon-btn">♢<span class="notif-dot"></span></button><div class="top-user"><img src="profile.png" class="avatar-img" alt="Profile"><span id="topName">Member</span></div><button class="outline-danger" id="topLogout">↪ Logout</button></div></header>
-<section class="page active" id="dashboardPage"><div class="mode-badge client-badge">CLIENT MODE</div><div class="hero-card client-hero"><div class="hero-copy"><h2>Build Your <span>Dream Project</span></h2><p>Post projects, find talented freelancers and manage your work.</p><div class="hero-buttons"><button class="primary" data-target="postPage">Post a Project ＋</button><button class="secondary" data-target="applicationsPage">View Applications</button></div></div><div class="hero-art"><div class="glow orb-a"></div><div class="hero-person">👩🏻‍💻</div><div class="hero-float f1">💼</div><div class="hero-float f2">✓</div><div class="hero-laptop"></div></div></div><div class="stats" id="stats"></div><div class="dashboard-grid"><div class="panel"><div class="panel-head"><div><h3>Recent Work Activity</h3><p>Latest activity across your account</p></div><button class="text-link" data-target="applicationsPage">View All →</button></div><div id="activityList"></div></div><div class="panel"><div class="panel-head"><div><h3>Recent Messages</h3><p>Your latest project conversations</p></div><button class="text-link" data-target="messagesPage">View All →</button></div><div class="empty">Open Messages to see project chats.</div></div></div></section>
-<section class="page" id="jobsPage"><div class="page-heading"><span>FIND WORK</span><h2>Available Projects</h2><p>Browse open projects from clients.</p></div><div id="jobsList" class="card-grid"></div></section>
-<section class="page" id="applicationsPage"><div class="page-heading"><span>APPLICATIONS</span><h2>My Applications</h2><p>Track your proposals.</p></div><div id="applicationsList" class="card-grid"></div></section>
-<section class="page" id="projectsPage"><div class="page-heading"><span>MY PROJECTS</span><h2>Active Projects</h2><p>Projects assigned to you.</p></div><div id="projectsList" class="card-grid"></div></section>
-<section class="page" id="messagesPage"><div class="page-heading"><span>MESSAGES</span><h2>Project Inbox</h2><p>Chat with your clients.</p></div><div class="messages-layout"><div class="conversation-list" id="conversationList"></div><div class="chat-panel"><div class="chat-head"><strong id="chatTitle">Select a project</strong><span id="chatSubtitle">Choose a conversation to start messaging.</span></div><div class="messages" id="messages"></div><div class="composer" id="composer" style="display:none"><textarea id="messageInput" placeholder="Write a message..."></textarea><button class="primary" id="sendMessage">Send</button></div></div></div></section>
-<section class="page" id="postPage"><div class="page-heading"><span>CREATE PROJECT</span><h2>Post a Project</h2><p>Tell your marketplace what you need.</p></div><div class="form-panel"><form id="postForm"><div class="form-grid"><label>Project Title<input id="postTitle" required></label><label>Category<select id="postCategory" required><option value="">Select</option><option>Web Development</option><option>Graphic Design</option><option>Data Entry</option><option>Content Writing</option><option>Digital Marketing</option><option>Video Editing</option></select></label><label class="full">Project Description<textarea id="postDescription" required></textarea></label><label>Budget (USD)<input id="postBudget" type="number" min="1" required></label><label>Deadline<input id="postDeadline" type="date" required></label></div><div class="form-actions"><button class="primary" id="postBtn">🚀 Publish Project</button><span class="form-message" id="postMessage"></span></div></form></div></section>
-<section class="page" id="profilePage"><div class="page-heading"><span>ACCOUNT</span><h2>Profile</h2><p>Manage your professional identity.</p></div><div class="profile-panel"><img src="profile.png" class="profile-large" alt="Profile"><div><h3 id="profileName">Member</h3><p id="profileRole">Professional Freelancer</p><p>✉ <span id="profileEmail"></span></p></div></div></section>
-<section class="page" id="settingsPage"><div class="page-heading"><span>ACCOUNT</span><h2>Settings</h2><p>Update your account details.</p></div><div class="form-panel"><form id="settingsForm"><div class="form-grid"><label>Display Name<input id="settingsName" required></label><label>Email<input id="settingsEmail" disabled></label><label class="full">Skills<input id="settingsSkills"></label></div><div class="form-actions"><button class="primary">Save Changes</button><span id="settingsMessage" class="form-message"></span></div></form></div></section>
-<div id="firebaseError" class="firebase-error"></div></main></div><script type="module" src="script.js"></script></body></html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ELITE FREELANCE HUB ✦</title>
+<link rel="icon" href="profile.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="client" data-role="client">
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><span class="mark">✦</span><div><strong>ELITE</strong><small>FREELANCE HUB</small></div></div>
+  <div class="mini-profile"><img src="profile.png" class="avatar" alt="Profile"><div><strong id="sideName">Loading...</strong><small id="sideRole">Professional Client</small></div><small class="online">●</small></div>
+  <div class="nav-area" id="navArea"></div>
+  <div class="side-bottom"><button id="switchMode">⇄ Switch Mode</button><button>♧ Help & Support</button><button class="logout" id="logoutBtn">↪ Logout</button></div>
+</aside>
+<main class="main">
+<header class="topbar">
+  <div class="top-left"><small>WELCOME BACK 👋</small><h1 id="pageTitle">Dashboard</h1></div>
+  <div class="top-right"><button class="round-btn" id="themeToggle">◐</button><button class="round-btn">♢<span class="dot"></span></button><div class="user-chip"><img src="profile.png" class="avatar" alt="Profile"><span id="topName">Member</span></div><button class="logout-top" id="topLogout">↪ Logout</button></div>
+</header>
+
+<section class="page active" id="dashboardPage">
+  <div class="mode">CLIENT MODE</div>
+  <div class="hero">
+    <div class="hero-copy">
+      <h2>Build Your <span>Dream Project</span></h2><p>Post projects, find talented freelancers and manage your work.</p>
+      <div class="actions"><button class="primary" data-target="postPage">Post a Project ＋</button><button class="secondary" data-target="applicationsPage">View Applications</button></div>
+    </div>
+    <div class="hero-art"><div class="circle"></div><div class="person">👩🏻‍💼</div><div class="float a">💼</div><div class="float b">✓</div><div class="screen"></div></div>
+  </div>
+  <div class="stats" id="stats"></div>
+  <div class="grid2">
+    <div class="panel"><div class="panel-head"><div><h3>Recent Work Activity</h3><p>Latest activity across your account</p></div><button class="link" data-target="applicationsPage">View All →</button></div><div class="activity" id="activity"></div></div>
+    <div class="panel"><div class="panel-head"><div><h3>Recent Messages</h3><p>Your latest project conversations</p></div><button class="link" data-target="messagesPage">View All →</button></div><div class="empty">Open Messages to see project chats.</div></div>
+  </div>
+</section>
+
+<section class="page" id="jobsPage"><div class="page-head"><label>FIND WORK</label><h2>Available Projects</h2><p>Browse open projects from clients.</p></div><div class="cards" id="jobs"></div></section>
+<section class="page" id="applicationsPage"><div class="page-head"><label>APPLICATIONS</label><h2>Applications</h2><p>Track project applications.</p></div><div class="cards" id="applications"></div></section>
+<section class="page" id="projectsPage"><div class="page-head"><label>MY PROJECTS</label><h2>My Projects</h2><p>Manage your current projects.</p></div><div class="cards" id="projects"></div></section>
+<section class="page" id="messagesPage"><div class="page-head"><label>MESSAGES</label><h2>Project Inbox</h2><p>Chat with clients and freelancers.</p></div><div class="messages-layout"><div class="conversations" id="conversations"></div><div class="chat"><div class="chat-head"><strong id="chatTitle">Select a project</strong><span id="chatSubtitle">Choose a conversation to start.</span></div><div class="messages" id="messages"><div class="empty">Select a conversation.</div></div><div class="composer" id="composer" style="display:none"><textarea id="messageInput" placeholder="Write a message..."></textarea><button class="primary" id="sendMessage">Send</button></div></div></div></section>
+
+<section class="page" id="postPage"><div class="page-head"><label>PROJECT</label><h2>Post a Project</h2><p>Publish a real client project.</p></div><div class="form-box"><form id="postForm"><div class="form-grid"><label class="field">Project Title<input id="postTitle" required></label><label class="field">Category<select id="postCategory" required><option value="">Select</option><option>Web Development</option><option>Graphic Design</option><option>Data Entry</option><option>Content Writing</option><option>Digital Marketing</option><option>Video Editing</option></select></label><label class="field full">Description<textarea id="postDescription" required></textarea></label><label class="field">Budget (USD)<input id="postBudget" type="number" min="1" required></label><label class="field">Deadline<input id="postDeadline" type="date" required></label></div><div class="form-row"><button class="primary" id="postBtn">🚀 Publish Project</button><span class="success" id="postMessage"></span></div></form></div></section>
+
+<section class="page" id="profilePage"><div class="page-head"><label>ACCOUNT</label><h2>Profile</h2><p>Your professional profile.</p></div><div class="profile-box"><img src="profile.png" class="profile-large" alt="Profile"><div><h3 id="profileName">Member</h3><p id="profileRole">Professional</p><p>✉ <span id="profileEmail"></span></p></div></div></section>
+
+<section class="page" id="settingsPage"><div class="page-head"><label>ACCOUNT</label><h2>Settings</h2><p>Update your account information.</p></div><div class="form-box"><form id="settingsForm"><div class="form-grid"><label class="field">Display Name<input id="settingsName" required></label><label class="field">Email<input id="settingsEmail" disabled></label><label class="field full">Skills<input id="settingsSkills"></label></div><div class="form-row"><button class="primary">Save Changes</button><span class="success" id="settingsMessage"></span></div></form></div></section>
+
+</main></div>
+<div id="firebaseError" class="firebase-error"></div>
+<script type="module" src="script.js"></script>
+</body></html>
