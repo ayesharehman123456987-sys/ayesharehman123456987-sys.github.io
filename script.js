@@ -1,3593 +1,2294 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
-import {
-    getAuth,
-    onAuthStateChanged,
-    signOut
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-import {
-    getFirestore,
-    collection,
-    query,
-    where,
-    getDocs,
-    doc,
-    getDoc,
-    addDoc,
-    updateDoc,
-    setDoc,
-    serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
-
-/* =========================================================
-   FIREBASE CONFIG
-========================================================= */
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import {getAuth,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+import {getFirestore,collection,query,where,getDocs,doc,getDoc,addDoc,updateDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 const firebaseConfig = {
-
-    apiKey:
-        "AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
-
-    authDomain:
-        "elite-freelance-hub.firebaseapp.com",
-
-    projectId:
-        "elite-freelance-hub",
-
-    storageBucket:
-        "elite-freelance-hub.firebasestorage.app",
-
-    messagingSenderId:
-        "777611553956",
-
-    appId:
-        "1:777611553956:web:730b7df36570ff803a8a31"
-
+  apiKey: "AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
+  authDomain: "elite-freelance-hub.firebaseapp.com",
+  projectId: "elite-freelance-hub",
+  storageBucket: "elite-freelance-hub.firebasestorage.app",
+  messagingSenderId: "777611553956",
+  appId: "1:777611553956:web:730b7df36570ff803a8a31"
 };
 
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+let currentUser=null,userData={};
 
-/* =========================================================
-   INITIALIZE FIREBASE
-========================================================= */
+const $=id=>document.getElementById(id);
+const role=()=>document.body.dataset.role==="client"?"client":"freelancer";
+const userName=()=>userData.name||currentUser?.email?.split("@")[0]||(role()==="client"?"Client":"Freelancer");
+const userEmail=()=>userData.email||currentUser?.email||"";
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+const dateTxt=v=>{if(!v)return"";try{const d=v.toDate?v.toDate():new Date(v);return d.toLocaleDateString(undefined,{day:"numeric",month:"short"})}catch{return""}};
+const showErr=e=>{console.error(e);const b=$("firebaseError");if(b){b.style.display="block";b.textContent="Firebase Error: "+(e?.message||e)}};
+const text=(id,v)=>{if($(id))$(id).textContent=v??""};
+const pill=s=>`<span class="pill ${esc(s||"pending")}">${esc(s||"pending")}</span>`;
 
-const app = initializeApp(firebaseConfig);
+function go(id,title){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  $(id)?.classList.add("active");
+  document.querySelectorAll(".nav").forEach(n=>n.classList.toggle("active",n.dataset.target===id));
+  text("pageTitle",title.replace(/^[^A-Za-z]+/,"").trim());
 
-const auth = getAuth(app);
-
-const db = getFirestore(app);
-
-
-/* =========================================================
-   GLOBAL STATE
-========================================================= */
-
-let currentUser = null;
-
-let userData = null;
-
-let currentProjects = [];
-
-let currentConversation = null;
-
-
-/* =========================================================
-   HELPERS
-========================================================= */
-
-const $ = (id) => document.getElementById(id);
-
-
-function escapeHtml(value) {
-
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
+  if(id==="dashboardPage")loadDashboard();
+  if(id==="jobsPage")loadJobs();
+  if(id==="applicationsPage")loadApplications();
+  if(id==="projectsPage")loadProjects();
+  if(id==="messagesPage")loadConversations();
 }
 
-
-function getRole() {
-
-    const bodyRole =
-        document.body.dataset.role;
-
-    if (bodyRole === "client") {
-        return "client";
-    }
-
-    return "freelancer";
-
-}
-
-
-function getDisplayName() {
-
-    if (userData && userData.name) {
-        return userData.name;
-    }
-
-    if (
-        currentUser &&
-        currentUser.email
-    ) {
-
-        return currentUser.email.split("@")[0];
-
-    }
-
-    return getRole() === "client"
-        ? "Client"
-        : "Freelancer";
-
-}
-
-
-function getDisplayEmail() {
-
-    if (
-        userData &&
-        userData.email
-    ) {
-
-        return userData.email;
-
-    }
-
-    return currentUser?.email || "";
-
-}
-
-
-function formatDate(value) {
-
-    if (!value) {
-        return "";
-    }
-
-    try {
-
-        const date =
-            value.toDate
-                ? value.toDate()
-                : new Date(value);
-
-        if (Number.isNaN(date.getTime())) {
-            return "";
-        }
-
-        return date.toLocaleDateString(
-            undefined,
-            {
-                day: "numeric",
-                month: "short",
-                year: "numeric"
-            }
-        );
-
-    } catch {
-        return "";
-    }
-
-}
-
-
-function showFirebaseError(error) {
-
-    console.error(
-        "Firebase Error:",
-        error
-    );
-
-    const box =
-        $("firebaseError");
-
-    if (!box) {
-        return;
-    }
-
-    box.style.display = "block";
-
-    box.textContent =
-        "Firebase Error: " +
-        (
-            error?.message ||
-            error ||
-            "Unknown error"
-        );
-
-}
-
-
-function clearFirebaseError() {
-
-    const box =
-        $("firebaseError");
-
-    if (!box) {
-        return;
-    }
-
-    box.style.display = "none";
-
-}
-
-
-function setText(id, value) {
-
-    const element = $(id);
-
-    if (element) {
-        element.textContent =
-            value ?? "";
-    }
-
-}
-
-
-function setValue(id, value) {
-
-    const element = $(id);
-
-    if (element) {
-        element.value =
-            value ?? "";
-    }
-
-}
-
-
-/* =========================================================
-   STATUS PILL
-========================================================= */
-
-function statusPill(status) {
-
-    const value =
-        status || "pending";
-
-    return `
-        <span class="pill ${escapeHtml(value)}">
-            ${escapeHtml(value)}
-        </span>
-    `;
-
-}
-
-
-/* =========================================================
-   NAVIGATION
-========================================================= */
-
-function showPage(pageId) {
-
-    document
-        .querySelectorAll(".page")
-        .forEach(page => {
-
-            page.classList.remove("active");
-
-        });
-
-
-    const target =
-        $(pageId);
-
-    if (target) {
-
-        target.classList.add("active");
-
-    }
-
-
-    document
-        .querySelectorAll(".nav")
-        .forEach(button => {
-
-            button.classList.toggle(
-                "active",
-                button.dataset.target === pageId
-            );
-
-        });
-
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
-}
-
-
-function navigate(
-    pageId,
-    title = ""
-) {
-
-    showPage(pageId);
-
-    setText(
-        "pageTitle",
-        title
-            .replace(/^[^A-Za-z]+/, "")
-            .trim()
-    );
-
-
-    if (pageId === "dashboardPage") {
-
-        loadDashboard();
-
-    }
-
-
-    if (pageId === "jobsPage") {
-
-        loadJobs();
-
-    }
-
-
-    if (
-        pageId ===
-        "applicationsPage"
-    ) {
-
-        loadApplications();
-
-    }
-
-
-    if (
-        pageId ===
-        "projectsPage"
-    ) {
-
-        loadProjects();
-
-    }
-
-
-    if (
-        pageId ===
-        "messagesPage"
-    ) {
-
-        loadConversations();
-
-    }
-
-}
-
-
-/* =========================================================
-   BUILD SIDEBAR
-========================================================= */
-
-function buildNavigation() {
-
-    const nav = $("sidebarNav");
-
-    if (!nav) {
-        return;
-    }
-
-    const client = getRole() === "client";
-
-    let html = "";
-
-    html += `
-        <div class="nav-section">
-            MAIN
-        </div>
-    `;
-
-    if (client) {
-
-        html += `
-            <button class="nav active" data-target="dashboardPage">
-                🏠 &nbsp; Dashboard
-            </button>
-
-            <button class="nav" data-target="projectsPage">
-                💼 &nbsp; My Projects
-            </button>
-
-            <button class="nav" data-target="applicationsPage">
-                📩 &nbsp; Applications
-            </button>
-
-            <button class="nav" data-target="messagesPage">
-                💬 &nbsp; Messages
-            </button>
-
-            <div class="nav-section">
-                MANAGE
-            </div>
-
-            <button class="nav" data-target="postPage">
-                ＋ &nbsp; Post a Project
-            </button>
-
-            <button class="nav" data-target="applicationsPage">
-                👥 &nbsp; Find Freelancers
-            </button>
-
-            <button class="nav" data-target="projectsPage">
-                📋 &nbsp; Contracts
-            </button>
-
-            <div class="nav-section">
-                ACCOUNT
-            </div>
-
-            <button class="nav" data-target="profilePage">
-                👤 &nbsp; Profile
-            </button>
-
-            <button class="nav" data-target="settingsPage">
-                ⚙️ &nbsp; Settings
-            </button>
-
-            <div class="nav-section">
-                OTHERS
-            </div>
-
-            <button class="nav" data-target="messagesPage">
-                💬 &nbsp; Help & Support
-            </button>
-        `;
-
-    } else {
-
-        html += `
-            <button class="nav active" data-target="dashboardPage">
-                🏠 &nbsp; Dashboard
-            </button>
-
-            <button class="nav" data-target="jobsPage">
-                🔍 &nbsp; Find Work
-            </button>
-
-            <button class="nav" data-target="applicationsPage">
-                📩 &nbsp; Applications
-            </button>
-
-            <button class="nav" data-target="projectsPage">
-                💼 &nbsp; My Projects
-            </button>
-
-            <button class="nav" data-target="messagesPage">
-                💬 &nbsp; Messages
-            </button>
-
-            <div class="nav-section">
-                MANAGE
-            </div>
-
-            <button class="nav" data-target="jobsPage">
-                🔖 &nbsp; Saved Jobs
-            </button>
-
-            <button class="nav" data-target="applicationsPage">
-                📝 &nbsp; Proposals
-            </button>
-
-            <button class="nav" data-target="projectsPage">
-                📋 &nbsp; Contracts
-            </button>
-
-            <button class="nav" data-target="projectsPage">
-                💰 &nbsp; Earnings
-            </button>
-
-            <button class="nav" data-target="projectsPage">
-                ⏱️ &nbsp; Time Tracker
-            </button>
-
-            <div class="nav-section">
-                ACCOUNT
-            </div>
-
-            <button class="nav" data-target="profilePage">
-                👤 &nbsp; Profile
-            </button>
-
-            <button class="nav" data-target="profilePage">
-                🖼️ &nbsp; Portfolio
-            </button>
-
-            <button class="nav" data-target="profilePage">
-                ⭐ &nbsp; Reviews
-            </button>
-
-            <button class="nav" data-target="settingsPage">
-                ⚙️ &nbsp; Settings
-            </button>
-
-            <div class="nav-section">
-                OTHERS
-            </div>
-
-            <button class="nav" data-target="messagesPage">
-                💬 &nbsp; Help & Support
-            </button>
-        `;
-
-    }
-
-    nav.innerHTML = html;
-
-    nav
-        .querySelectorAll(".nav")
-        .forEach(button => {
-
-            button.onclick = () => {
-
-                navigate(
-                    button.dataset.target,
-                    button.textContent
-                );
-
-            };
-
-        });
-
-
-    const switchButton = $("switchMode");
-
-    if (switchButton) {
-
-        switchButton.textContent =
-            client
-                ? "⇄ Switch to Freelancer Mode"
-                : "⇄ Switch to Client Mode";
-
-        switchButton.onclick = () => {
-
-            window.location.href =
-                client
-                    ? "index.html"
-                    : "client-dashboard.html";
-
-        };
-
-    }
-
-}
-
-    const client =
-        getRole() === "client";
-
-
-    const items = client
-
-        ? [
-
-            [
-                "dashboardPage",
-                "🏠",
-                "Dashboard"
-            ],
-
-            [
-                "projectsPage",
-                "💼",
-                "My Projects"
-            ],
-
-            [
-                "applicationsPage",
-                "📩",
-                "Applications"
-            ],
-
-            [
-                "messagesPage",
-                "💬",
-                "Messages"
-            ],
-
-            [
-                "postPage",
-                "＋",
-                "Post a Project"
-            ],
-
-            [
-                "profilePage",
-                "👤",
-                "Profile"
-            ],
-
-            [
-                "settingsPage",
-                "⚙️",
-                "Settings"
-            ]
-
+function buildNav(){
+
+  const nav=$("navArea");
+
+  if(!nav){
+    return;
+  }
+
+  const client=role()==="client";
+
+  const groups=client
+    ?[
+      [
+        "MAIN",
+        [
+          ["dashboardPage","⌂","Dashboard"],
+          ["projectsPage","▣","My Projects"],
+          ["applicationsPage","✉","Applications"],
+          ["messagesPage","◌","Messages"]
         ]
+      ],
 
-        : [
+      [
+        "MANAGE",
+        [
+          ["postPage","＋","Post a Project"],
+          ["applicationsPage","♟","Find Freelancers"],
+          ["projectsPage","▤","Contracts"]
+        ]
+      ],
 
-            [
-                "dashboardPage",
-                "🏠",
-                "Dashboard"
-            ],
+      [
+        "ACCOUNT",
+        [
+          ["profilePage","♙","Profile"],
+          ["settingsPage","⚙","Settings"]
+        ]
+      ],
 
-            [
-                "jobsPage",
-                "🔍",
-                "Find Work"
-            ],
+      [
+        "OTHERS",
+        [
+          ["messagesPage","♧","Help & Support"]
+        ]
+      ]
 
-            [
-                "applicationsPage",
-                "📩",
-                "Applications"
-            ],
+    ]
+    :[
+      [
+        "MAIN",
+        [
+          ["dashboardPage","⌂","Dashboard"],
+          ["jobsPage","⌕","Find Work"],
+          ["applicationsPage","✉","Applications"],
+          ["projectsPage","▣","My Projects"],
+          ["messagesPage","◌","Messages"]
+        ]
+      ],
 
-            [
-                "projectsPage",
-                "💼",
-                "My Projects"
-            ],
+      [
+        "MANAGE",
+        [
+          ["jobsPage","🔖","Saved Jobs"],
+          ["applicationsPage","✎","Proposals"],
+          ["projectsPage","▤","Contracts"],
+          ["projectsPage","$","Earnings"],
+          ["projectsPage","◷","Time Tracker"]
+        ]
+      ],
 
-            [
-                "messagesPage",
-                "💬",
-                "Messages"
-            ],
+      [
+        "ACCOUNT",
+        [
+          ["profilePage","♙","Profile"],
+          ["profilePage","▦","Portfolio"],
+          ["profilePage","★","Reviews"],
+          ["settingsPage","⚙","Settings"]
+        ]
+      ],
 
-            [
-                "profilePage",
-                "👤",
-                "Profile"
-            ],
+      [
+        "OTHERS",
+        [
+          ["messagesPage","♧","Help & Support"]
+        ]
+      ]
+    ];
 
-            [
-                "settingsPage",
-                "⚙️",
-                "Settings"
-            ]
+  nav.innerHTML=groups
+    .map(([group,items])=>{
 
-        ];
-
-
-    nav.innerHTML =
-        `
-        <div class="nav-section">
-            MAIN
+      return `
+        <div class="section-title">
+          ${group}
         </div>
 
         ${
-            items
-                .map(
-                    item => {
+          items
+            .map(([id,icon,label],index)=>{
 
-                        const [
-                            id,
-                            icon,
-                            label
-                        ] = item;
+              return `
+                <button
+                  class="nav ${
+                    id==="dashboardPage" && index===0
+                      ? "active"
+                      : ""
+                  }"
+                  data-target="${id}"
+                >
+                  ${icon}&nbsp; ${label}
+                </button>
+              `;
 
-                        return `
-                            <button
-                                class="nav ${
-                                    id === "dashboardPage"
-                                        ? "active"
-                                        : ""
-                                }"
-                                data-target="${id}"
-                            >
-                                ${icon}
-                                &nbsp;
-                                ${label}
-                            </button>
-                        `;
-
-                    }
-                )
-                .join("")
+            })
+            .join("")
         }
+      `;
+
+    })
+    .join("");
+
+  nav
+    .querySelectorAll(".nav")
+    .forEach(button=>{
+
+      button.onclick=()=>{
+
+        go(
+          button.dataset.target,
+          button.textContent
+        );
+
+      };
+
+    });
+
+  if($("switchMode")){
+
+    $("switchMode").onclick=()=>{
+
+      location.href =
+        client
+          ? "index.html"
+          : "client-dashboard.html";
+
+    };
+
+  }
+
+  text(
+    "switchMode",
+    client
+      ? "⇄ Switch to Freelancer Mode"
+      : "⇄ Switch to Client Mode"
+  );
+
+}
+
+function applyIdentity(){
+
+  const client=role()==="client";
+
+  text(
+    "sideName",
+    userName()
+  );
+
+  text(
+    "topName",
+    userName()
+  );
+
+  text(
+    "profileName",
+    userName()
+  );
+
+  text(
+    "profileRole",
+    client
+      ? "Professional Client"
+      : "Professional Freelancer"
+  );
+
+  text(
+    "profileEmail",
+    userEmail()
+  );
+
+  if($("settingsName")){
+
+    $("settingsName").value =
+      userName();
+
+  }
+
+  if($("settingsEmail")){
+
+    $("settingsEmail").value =
+      userEmail();
+
+  }
+
+  text(
+    "sideRole",
+    client
+      ? "Professional Client"
+      : "Professional Freelancer"
+  );
+
+  buildNav();
+
+}
+
+function stat(icon,value,label){
+
+  return `
+    <div class="stat">
+
+      <span class="icon">
+        ${icon}
+      </span>
+
+      <h3>
+        ${esc(value)}
+      </h3>
+
+      <p>
+        ${esc(label)}
+      </p>
+
+    </div>
+  `;
+
+}
+
+async function loadDashboard(){
+
+  try{
+
+    if(role()==="client"){
+
+      const [
+        projectsSnapshot,
+        applicationsSnapshot
+      ] = await Promise.all([
+
+        getDocs(
+          query(
+            collection(
+              db,
+              "jobs"
+            ),
+            where(
+              "clientId",
+              "==",
+              currentUser.uid
+            )
+          )
+        ),
+
+        getDocs(
+          query(
+            collection(
+              db,
+              "applications"
+            ),
+            where(
+              "clientId",
+              "==",
+              currentUser.uid
+            )
+          )
+        )
+
+      ]);
+
+      $("stats").innerHTML=[
+
+        stat(
+          "▣",
+          projectsSnapshot.size,
+          "My Projects"
+        ),
+
+        stat(
+          "♟",
+          applicationsSnapshot.size,
+          "Applications"
+        ),
+
+        stat(
+          "✓",
+          applicationsSnapshot.docs.filter(
+            d =>
+              d.data().status ===
+              "accepted"
+          ).length,
+          "Accepted"
+        ),
+
+        stat(
+          "★",
+          "—",
+          "Rating"
+        )
+
+      ].join("");
+
+      $("activity").innerHTML =
+        projectsSnapshot.empty
+
+          ? `
+            <div class="empty">
+              No activity yet.
+              Post your first project.
+            </div>
+          `
+
+          :
+
+          projectsSnapshot.docs
+            .slice(-4)
+            .reverse()
+            .map(d=>{
+
+              const x=d.data();
+
+              return `
+                <div class="activity-row">
+
+                  <div class="activity-icon">
+                    ▣
+                  </div>
+
+                  <div>
+
+                    <strong>
+                      ${esc(
+                        x.title ||
+                        "Project"
+                      )}
+                    </strong>
+
+                    <span>
+                      ${esc(
+                        x.status ||
+                        "open"
+                      )}
+                      ·
+                      $${Number(
+                        x.budget ||
+                        0
+                      )}
+                      ·
+                      ${esc(
+                        x.deadline ||
+                        "No deadline"
+                      )}
+                    </span>
+
+                  </div>
+
+                </div>
+              `;
+
+            })
+            .join("");
+
+    }else{
+
+      const [
+        jobsSnapshot,
+        applicationsSnapshot,
+        projectsSnapshot
+      ] = await Promise.all([
+
+        getDocs(
+          query(
+            collection(
+              db,
+              "jobs"
+            ),
+            where(
+              "status",
+              "==",
+              "open"
+            )
+          )
+        ),
+
+        getDocs(
+          query(
+            collection(
+              db,
+              "applications"
+            ),
+            where(
+              "freelancerId",
+              "==",
+              currentUser.uid
+            )
+          )
+        ),
+
+        getDocs(
+          query(
+            collection(
+              db,
+              "jobs"
+            ),
+            where(
+              "freelancerId",
+              "==",
+              currentUser.uid
+            )
+          )
+        )
+
+      ]);
+
+      $("stats").innerHTML=[
+
+        stat(
+          "▣",
+          jobsSnapshot.size,
+          "Available Jobs"
+        ),
+
+        stat(
+          "▤",
+          projectsSnapshot.size,
+          "Active Projects"
+        ),
+
+        stat(
+          "➤",
+          applicationsSnapshot.size,
+          "Applications Sent"
+        ),
+
+        stat(
+          "★",
+          "4.8",
+          "Profile Rating"
+        )
+
+      ].join("");
+
+      $("activity").innerHTML =
+        applicationsSnapshot.empty
+
+          ? `
+            <div class="empty">
+              No applications yet.
+              <br>
+              Start applying to projects.
+            </div>
+          `
+
+          :
+
+          applicationsSnapshot.docs
+            .slice(-4)
+            .reverse()
+            .map(d=>{
+
+              const x=d.data();
+
+              return `
+                <div class="activity-row">
+
+                  <div class="activity-icon">
+                    ➤
+                  </div>
+
+                  <div>
+
+                    <strong>
+                      Application for
+                      “${esc(
+                        x.jobTitle ||
+                        "Project"
+                      )}”
+                    </strong>
+
+                    <span>
+                      ${pill(
+                        x.status
+                      )}
+                      ·
+                      ${dateTxt(
+                        x.createdAt
+                      )}
+                    </span>
+
+                  </div>
+
+                </div>
+              `;
+
+            })
+            .join("");
+
+    }
+
+  }catch(e){
+
+    showErr(e);
+
+  }
+
+}
+
+async function loadJobs(){
+
+  const box=$("jobs");
+
+  if(!box){
+    return;
+  }
+
+  box.innerHTML=
+    `
+      <div class="loading">
+        Loading live projects...
+      </div>
+    `;
+
+  try{
+
+    const [
+      jobsSnapshot,
+      applicationsSnapshot
+    ] = await Promise.all([
+
+      getDocs(
+        query(
+          collection(
+            db,
+            "jobs"
+          ),
+          where(
+            "status",
+            "==",
+            "open"
+          )
+        )
+      ),
+
+      getDocs(
+        query(
+          collection(
+            db,
+            "applications"
+          ),
+          where(
+            "freelancerId",
+            "==",
+            currentUser.uid
+          )
+        )
+      )
+
+    ]);
+
+    const applied =
+      new Set(
+        applicationsSnapshot.docs.map(
+          d =>
+            d.data().jobId
+        )
+      );
+
+    if(
+      jobsSnapshot.empty
+    ){
+
+      box.innerHTML=
+        `
+          <div class="empty">
+            No open projects right now.
+          </div>
         `;
 
+      return;
 
-    nav
-        .querySelectorAll(".nav")
-        .forEach(button => {
+    }
 
-            button.onclick = () => {
+    box.innerHTML =
+      jobsSnapshot.docs
+        .map(d=>{
 
-                navigate(
-                    button.dataset.target,
-                    button.textContent
-                );
+          const x=
+            d.data();
 
-            };
+          return `
+            <div class="card">
 
-        });
+              <h3>
+                💼
+                ${esc(
+                  x.title ||
+                  "Project"
+                )}
+              </h3>
 
+              <p>
+                ${esc(
+                  x.description ||
+                  "No description"
+                )}
+              </p>
 
-    const switchButton =
-        $("switchMode");
+              <div class="meta">
 
-    if (switchButton) {
+                ${pill("open")}
 
-        switchButton.textContent =
-            client
-                ? "⇄ Switch to Freelancer Mode"
-                : "⇄ Switch to Client Mode";
+                <span class="pill">
+                  💰
+                  $${Number(
+                    x.budget ||
+                    0
+                  )}
+                </span>
 
+                <span class="pill">
+                  📅
+                  ${esc(
+                    x.deadline ||
+                    "—"
+                  )}
+                </span>
 
-        switchButton.onclick = () => {
+              </div>
 
-            if (client) {
+              <p>
+                Client:
+                ${esc(
+                  x.clientName ||
+                  x.clientEmail ||
+                  "Client"
+                )}
+              </p>
 
-                window.location.href =
-                    "index.html";
+              <div class="card-actions">
 
-            } else {
+                ${
+                  applied.has(
+                    d.id
+                  )
 
-                window.location.href =
-                    "client-dashboard.html";
+                    ? `
+                      <span class="pill pending">
+                        Application sent
+                      </span>
+                    `
 
-            }
+                    :
+
+                    `
+                      <button
+                        class="primary apply"
+                        data-id="${d.id}"
+                      >
+                        Apply Now
+                      </button>
+                    `
+                }
+
+              </div>
+
+            </div>
+          `;
+
+        })
+        .join("");
+
+    box
+      .querySelectorAll(
+        ".apply"
+      )
+      .forEach(button=>{
+
+        button.onclick=()=>
+          applyJob(
+            button.dataset.id
+          );
+
+      });
+
+  }catch(e){
+
+    box.innerHTML=
+      `
+        <div class="error">
+          Unable to load jobs.
+        </div>
+      `;
+
+    showErr(e);
+
+  }
+
+}
+
+async function applyJob(id){
+
+  try{
+
+    const snapshot=
+      await getDoc(
+        doc(
+          db,
+          "jobs",
+          id
+        )
+      );
+
+    if(
+      !snapshot.exists()
+    ){
+
+      alert(
+        "Project no longer exists."
+      );
+
+      return;
+
+    }
+
+    const x=
+      snapshot.data();
+
+    const proposal=
+      prompt(
+        `Write a short proposal for "${x.title || "Project"}":`
+      );
+
+    if(
+      proposal === null
+    ){
+
+      return;
+
+    }
+
+    if(
+      !proposal.trim()
+    ){
+
+      alert(
+        "Please write a proposal."
+      );
+
+      return;
+
+    }
+
+    const old=
+      await getDocs(
+        query(
+          collection(
+            db,
+            "applications"
+          ),
+          where(
+            "jobId",
+            "==",
+            id
+          ),
+          where(
+            "freelancerId",
+            "==",
+            currentUser.uid
+          )
+        )
+      );
+
+    if(
+      !old.empty
+    ){
+
+      alert(
+        "You already applied."
+      );
+
+      return;
+
+    }
+
+    await addDoc(
+      collection(
+        db,
+        "applications"
+      ),
+      {
+
+        jobId:
+          id,
+
+        jobTitle:
+          x.title ||
+          "Project",
+
+        clientId:
+          x.clientId ||
+          "",
+
+        clientName:
+          x.clientName ||
+          "Client",
+
+        clientEmail:
+          x.clientEmail ||
+          "",
+
+        freelancerId:
+          currentUser.uid,
+
+        freelancerName:
+          userName(),
+
+        freelancerEmail:
+          userEmail(),
+
+        proposal:
+          proposal.trim(),
+
+        status:
+          "pending",
+
+        createdAt:
+          serverTimestamp()
+
+      }
+    );
+
+    alert(
+      "Application sent successfully ✅"
+    );
+
+    loadJobs();
+    loadDashboard();
+
+  }catch(e){
+
+    showErr(e);
+
+    alert(
+      "Application could not be sent."
+    );
+
+  }
+
+}
+
+async function loadApplications(){
+
+  const box=
+    $("applications");
+
+  if(!box){
+    return;
+  }
+
+  box.innerHTML=
+    `
+      <div class="loading">
+        Loading...
+      </div>
+    `;
+
+  try{
+
+    const field=
+      role()==="client"
+        ? "clientId"
+        : "freelancerId";
+
+    const snapshot=
+      await getDocs(
+        query(
+          collection(
+            db,
+            "applications"
+          ),
+          where(
+            field,
+            "==",
+            currentUser.uid
+          )
+        )
+      );
+
+    if(
+      snapshot.empty
+    ){
+
+      box.innerHTML=
+        `
+          <div class="empty">
+            No applications yet.
+          </div>
+        `;
+
+      return;
+
+    }
+
+    box.innerHTML=
+      snapshot.docs
+        .map(d=>{
+
+          const x=
+            d.data();
+
+          const client=
+            role()==="client";
+
+          return `
+            <div class="card">
+
+              <h3>
+
+                ${
+                  client
+                    ? "👤"
+                    : "✉"
+                }
+
+                ${esc(
+                  client
+                    ? (
+                        x.freelancerName ||
+                        x.freelancerEmail ||
+                        "Freelancer"
+                      )
+
+                    :
+
+                      (
+                        x.jobTitle ||
+                        "Project"
+                      )
+                )}
+
+              </h3>
+
+              <p>
+
+                ${
+                  client
+
+                    ?
+
+                      `
+                        Project:
+                        ${esc(
+                          x.jobTitle ||
+                          "Project"
+                        )}
+
+                        <br>
+
+                        Email:
+                        ${esc(
+                          x.freelancerEmail ||
+                          ""
+                        )}
+                      `
+
+                    :
+
+                      `
+                        Client:
+                        ${esc(
+                          x.clientName ||
+                          x.clientEmail ||
+                          "Client"
+                        )}
+                      `
+                }
+
+              </p>
+
+              <div class="meta">
+
+                ${pill(
+                  x.status
+                )}
+
+                <span class="pill">
+                  ${dateTxt(
+                    x.createdAt
+                  )}
+                </span>
+
+              </div>
+
+              <p>
+                <b>
+                  Proposal:
+                </b>
+
+                ${esc(
+                  x.proposal ||
+                  "No proposal"
+                )}
+              </p>
+
+              ${
+                client &&
+                x.status==="pending"
+
+                  ?
+
+                  `
+                    <div class="card-actions">
+
+                      <button
+                        class="primary accept"
+                        data-id="${d.id}"
+                        data-job="${x.jobId}"
+                      >
+                        Accept
+                      </button>
+
+                      <button
+                        class="danger reject"
+                        data-id="${d.id}"
+                      >
+                        Reject
+                      </button>
+
+                    </div>
+                  `
+
+                  :
+
+                  ""
+              }
+
+              ${
+                client &&
+                x.status==="accepted"
+
+                  ?
+
+                  `
+                    <div class="card-actions">
+
+                      <button
+                        class="secondary chat-app"
+                        data-job="${x.jobId}"
+                      >
+                        💬 Open Chat
+                      </button>
+
+                    </div>
+                  `
+
+                  :
+
+                  ""
+              }
+
+            </div>
+          `;
+
+        })
+        .join("");
+
+    box
+      .querySelectorAll(
+        ".accept"
+      )
+      .forEach(button=>{
+
+        button.onclick=
+          ()=>
+            acceptApp(
+              button.dataset.id,
+              button.dataset.job
+            );
+
+      });
+
+    box
+      .querySelectorAll(
+        ".reject"
+      )
+      .forEach(button=>{
+
+        button.onclick=
+          ()=>
+            rejectApp(
+              button.dataset.id
+            );
+
+      });
+
+    box
+      .querySelectorAll(
+        ".chat-app"
+      )
+      .forEach(button=>{
+
+        button.onclick=()=>{
+
+          go(
+            "messagesPage",
+            "Messages"
+          );
+
+          setTimeout(
+            ()=>
+              openConversationByProject(
+                button.dataset.job
+              ),
+            80
+          );
 
         };
 
-    }
+      });
 
-}
+  }catch(e){
 
-
-/* =========================================================
-   SET IDENTITY
-========================================================= */
-
-function setIdentity() {
-
-    const name =
-        getDisplayName();
-
-    const email =
-        getDisplayEmail();
-
-    const client =
-        getRole() === "client";
-
-
-    const roleLabel =
-        client
-            ? "Professional Client"
-            : "Professional Freelancer";
-
-
-    setText(
-        "sideName",
-        name
-    );
-
-    setText(
-        "topName",
-        name
-    );
-
-    setText(
-        "profileName",
-        name
-    );
-
-    setText(
-        "profileRole",
-        roleLabel
-    );
-
-    setText(
-        "profileEmail",
-        email
-    );
-
-    setValue(
-        "settingsEmail",
-        email
-    );
-
-    setValue(
-        "settingsName",
-        name
-    );
-
-    setValue(
-        "settingsSkills",
-        userData?.skills || ""
-    );
-
-    const sideRole =
-        $("sideRole");
-
-    if (sideRole) {
-
-        sideRole.innerHTML =
-            `
-            ${roleLabel}
-            <span class="online-dot">
-                ●
-            </span>
-            `;
-
-    }
-
-
-    buildNavigation();
-
-}
-
-
-/* =========================================================
-   STAT CARD
-========================================================= */
-
-function statCard(
-    icon,
-    value,
-    label
-) {
-
-    return `
-        <div class="stat">
-
-            <span class="stat-icon">
-                ${icon}
-            </span>
-
-            <h3>
-                ${escapeHtml(value)}
-            </h3>
-
-            <p>
-                ${escapeHtml(label)}
-            </p>
-
+    box.innerHTML=
+      `
+        <div class="error">
+          Unable to load applications.
         </div>
+      `;
+
+    showErr(e);
+
+  }
+
+}
+
+async function acceptApp(
+  id,
+  jobId
+){
+
+  try{
+
+    const snapshot=
+      await getDoc(
+        doc(
+          db,
+          "applications",
+          id
+        )
+      );
+
+    if(
+      !snapshot.exists()
+    ){
+
+      return;
+
+    }
+
+    const x=
+      snapshot.data();
+
+    await updateDoc(
+      doc(
+        db,
+        "applications",
+        id
+      ),
+      {
+
+        status:
+          "accepted",
+
+        acceptedAt:
+          serverTimestamp()
+
+      }
+    );
+
+    await updateDoc(
+      doc(
+        db,
+        "jobs",
+        jobId
+      ),
+      {
+
+        status:
+          "assigned",
+
+        freelancerId:
+          x.freelancerId,
+
+        freelancerName:
+          x.freelancerName ||
+          "Freelancer",
+
+        freelancerEmail:
+          x.freelancerEmail ||
+          ""
+
+      }
+    );
+
+    alert(
+      "Freelancer accepted ✅"
+    );
+
+    loadApplications();
+    loadProjects();
+    loadDashboard();
+
+  }catch(e){
+
+    showErr(e);
+
+    alert(
+      "Could not accept application."
+    );
+
+  }
+
+}
+
+async function rejectApp(id){
+
+  try{
+
+    await updateDoc(
+      doc(
+        db,
+        "applications",
+        id
+      ),
+      {
+
+        status:
+          "rejected",
+
+        rejectedAt:
+          serverTimestamp()
+
+      }
+    );
+
+    loadApplications();
+    loadDashboard();
+
+  }catch(e){
+
+    showErr(e);
+
+  }
+
+}
+
+async function loadProjects(){
+
+  const box=
+    $("projects");
+
+  if(!box){
+    return;
+  }
+
+  box.innerHTML=
+    `
+      <div class="loading">
+        Loading projects...
+      </div>
     `;
 
-}
-
-
-/* =========================================================
-   DASHBOARD
-========================================================= */
-
-async function loadDashboard() {
-
-    if (!currentUser) {
-        return;
-    }
-
-
-    const client =
-        getRole() === "client";
-
-
-    try {
-
-        if (client) {
-
-            const [
-                projectsSnapshot,
-                applicationsSnapshot
-            ] = await Promise.all([
-
-                getDocs(
-                    query(
-                        collection(
-                            db,
-                            "jobs"
-                        ),
-
-                        where(
-                            "clientId",
-                            "==",
-                            currentUser.uid
-                        )
-                    )
-                ),
-
-                getDocs(
-                    query(
-                        collection(
-                            db,
-                            "applications"
-                        ),
-
-                        where(
-                            "clientId",
-                            "==",
-                            currentUser.uid
-                        )
-                    )
-                )
-
-            ]);
-
-
-            const accepted =
-                applicationsSnapshot.docs
-                    .filter(
-                        docSnap =>
-                            docSnap.data()
-                                .status ===
-                            "accepted"
-                    )
-                    .length;
-
-
-            const stats =
-                $("stats");
-
-
-            if (stats) {
-
-                stats.innerHTML =
-                    [
-
-                        statCard(
-                            "📁",
-                            projectsSnapshot.size,
-                            "My Projects"
-                        ),
-
-                        statCard(
-                            "👥",
-                            applicationsSnapshot.size,
-                            "Applications"
-                        ),
-
-                        statCard(
-                            "✓",
-                            accepted,
-                            "Accepted"
-                        ),
-
-                        statCard(
-                            "★",
-                            "—",
-                            "Average Rating"
-                        )
-
-                    ].join("");
-
-            }
-
-
-            const activity =
-                $("activityList");
-
-            if (activity) {
-
-                if (
-                    projectsSnapshot.empty
-                ) {
-
-                    activity.innerHTML =
-                        `
-                        <div class="empty">
-                            No projects yet.
-                        </div>
-                        `;
-
-                } else {
-
-                    activity.innerHTML =
-                        projectsSnapshot.docs
-                            .slice(-5)
-                            .reverse()
-                            .map(
-                                docSnap => {
-
-                                    const data =
-                                        docSnap.data();
-
-                                    return `
-                                    <div class="activity-row">
-
-                                        <div class="activity-icon">
-                                            📁
-                                        </div>
-
-                                        <div>
-
-                                            <strong>
-                                                ${
-                                                    escapeHtml(
-                                                        data.title ||
-                                                        "Project"
-                                                    )
-                                                }
-                                            </strong>
-
-                                            <span>
-                                                ${
-                                                    escapeHtml(
-                                                        data.status ||
-                                                        "open"
-                                                    )
-                                                }
-
-                                                ·
-
-                                                $
-                                                ${
-                                                    Number(
-                                                        data.budget ||
-                                                        0
-                                                    )
-                                                }
-
-                                                ·
-
-                                                ${
-                                                    escapeHtml(
-                                                        data.deadline ||
-                                                        ""
-                                                    )
-                                                }
-                                            </span>
-
-                                        </div>
-
-                                    </div>
-                                    `;
-
-                                }
-                            )
-                            .join("");
-
-                }
-
-            }
-
-
-        } else {
-
-            const [
-
-                jobsSnapshot,
-
-                applicationsSnapshot,
-
-                projectsSnapshot
-
-            ] = await Promise.all([
-
-                getDocs(
-                    query(
-                        collection(
-                            db,
-                            "jobs"
-                        ),
-
-                        where(
-                            "status",
-                            "==",
-                            "open"
-                        )
-                    )
-                ),
-
-                getDocs(
-                    query(
-                        collection(
-                            db,
-                            "applications"
-                        ),
-
-                        where(
-                            "freelancerId",
-                            "==",
-                            currentUser.uid
-                        )
-                    )
-                ),
-
-                getDocs(
-                    query(
-                        collection(
-                            db,
-                            "jobs"
-                        ),
-
-                        where(
-                            "freelancerId",
-                            "==",
-                            currentUser.uid
-                        )
-                    )
-                )
-
-            ]);
-
-
-            const stats =
-                $("stats");
-
-
-            if (stats) {
-
-                stats.innerHTML =
-                    [
-
-                        statCard(
-                            "💼",
-                            jobsSnapshot.size,
-                            "Available Jobs"
-                        ),
-
-                        statCard(
-                            "📁",
-                            projectsSnapshot.size,
-                            "Active Projects"
-                        ),
-
-                        statCard(
-                            "➤",
-                            applicationsSnapshot.size,
-                            "Applications Sent"
-                        ),
-
-                        statCard(
-                            "★",
-                            "4.8",
-                            "Profile Rating"
-                        )
-
-                    ].join("");
-
-            }
-
-
-            const activity =
-                $("activityList");
-
-
-            if (activity) {
-
-                if (
-                    applicationsSnapshot.empty
-                ) {
-
-                    activity.innerHTML =
-                        `
-                        <div class="empty">
-                            No applications yet.
-                        </div>
-                        `;
-
-                } else {
-
-                    activity.innerHTML =
-                        applicationsSnapshot.docs
-                            .slice(-5)
-                            .reverse()
-                            .map(
-                                docSnap => {
-
-                                    const data =
-                                        docSnap.data();
-
-                                    return `
-                                    <div class="activity-row">
-
-                                        <div class="activity-icon">
-                                            ➤
-                                        </div>
-
-                                        <div>
-
-                                            <strong>
-                                                Application for
-                                                ${
-                                                    escapeHtml(
-                                                        data.jobTitle ||
-                                                        "Project"
-                                                    )
-                                                }
-                                            </strong>
-
-                                            <span>
-                                                ${
-                                                    statusPill(
-                                                        data.status
-                                                    )
-                                                }
-
-                                                ·
-
-                                                ${
-                                                    formatDate(
-                                                        data.createdAt
-                                                    )
-                                                }
-                                            </span>
-
-                                        </div>
-
-                                    </div>
-                                    `;
-
-                                }
-                            )
-                            .join("");
-
-                }
-
-            }
-
-        }
-
-    } catch (error) {
-
-        showFirebaseError(
-            error
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   LOAD JOBS
-========================================================= */
-
-async function loadJobs() {
-
-    const box =
-        $("jobsList");
-
-    if (!box) {
-        return;
-    }
-
-
-    box.innerHTML =
+  try{
+
+    const field=
+      role()==="client"
+        ? "clientId"
+        : "freelancerId";
+
+    const snapshot=
+      await getDocs(
+        query(
+          collection(
+            db,
+            "jobs"
+          ),
+          where(
+            field,
+            "==",
+            currentUser.uid
+          )
+        )
+      );
+
+    currentProjects=
+      snapshot.docs.map(
+        d=>({
+          id:
+            d.id,
+          ...d.data()
+        })
+      );
+
+    if(
+      snapshot.empty
+    ){
+
+      box.innerHTML=
         `
-        <div class="loading">
-            Loading live projects...
-        </div>
+          <div class="empty">
+            No projects here yet.
+          </div>
         `;
 
-
-    try {
-
-        const [
-            jobsSnapshot,
-            applicationsSnapshot
-        ] = await Promise.all([
-
-            getDocs(
-                query(
-                    collection(
-                        db,
-                        "jobs"
-                    ),
-
-                    where(
-                        "status",
-                        "==",
-                        "open"
-                    )
-                )
-            ),
-
-            getDocs(
-                query(
-                    collection(
-                        db,
-                        "applications"
-                    ),
-
-                    where(
-                        "freelancerId",
-                        "==",
-                        currentUser.uid
-                    )
-                )
-            )
-
-        ]);
-
-
-        const applied =
-            new Set(
-
-                applicationsSnapshot.docs
-                    .map(
-                        docSnap =>
-                            docSnap.data().jobId
-                    )
-
-            );
-
-
-        if (jobsSnapshot.empty) {
-
-            box.innerHTML =
-                `
-                <div class="empty">
-                    No open projects right now.
-                </div>
-                `;
-
-            return;
-
-        }
-
-
-        box.innerHTML =
-            jobsSnapshot.docs
-                .map(
-                    docSnap => {
-
-                        const data =
-                            docSnap.data();
-
-                        const alreadyApplied =
-                            applied.has(
-                                docSnap.id
-                            );
-
-
-                        return `
-                        <div class="card">
-
-                            <h3>
-                                💼
-                                ${
-                                    escapeHtml(
-                                        data.title ||
-                                        "Untitled Project"
-                                    )
-                                }
-                            </h3>
-
-                            <p>
-                                ${
-                                    escapeHtml(
-                                        data.description ||
-                                        "No description"
-                                    )
-                                }
-                            </p>
-
-                            <div class="card-meta">
-
-                                ${
-                                    statusPill(
-                                        data.status ||
-                                        "open"
-                                    )
-                                }
-
-                                <span class="pill">
-                                    💰
-                                    $
-                                    ${
-                                        Number(
-                                            data.budget ||
-                                            0
-                                        )
-                                    }
-                                </span>
-
-                                <span class="pill">
-                                    📅
-                                    ${
-                                        escapeHtml(
-                                            data.deadline ||
-                                            "—"
-                                        )
-                                    }
-                                </span>
-
-                            </div>
-
-                            <p>
-                                Client:
-                                ${
-                                    escapeHtml(
-                                        data.clientName ||
-                                        data.clientEmail ||
-                                        "Client"
-                                    )
-                                }
-                            </p>
-
-                            <div class="card-actions">
-
-                                ${
-                                    alreadyApplied
-
-                                        ? `
-                                        <span class="pill pending">
-                                            Application sent
-                                        </span>
-                                        `
-
-                                        : `
-                                        <button
-                                            class="primary small-btn apply-btn"
-                                            data-id="${docSnap.id}"
-                                        >
-                                            Apply Now
-                                        </button>
-                                        `
-                                }
-
-                            </div>
-
-                        </div>
-                        `;
-
-                    }
-                )
-                .join("");
-
-
-        box
-            .querySelectorAll(
-                ".apply-btn"
-            )
-            .forEach(
-                button => {
-
-                    button.onclick = () =>
-                        applyForJob(
-                            button.dataset.id
-                        );
-
-                }
-            );
-
-
-    } catch (error) {
-
-        box.innerHTML =
-            `
-            <div class="error">
-                Unable to load jobs.
-            </div>
-            `;
-
-        showFirebaseError(
-            error
-        );
+      return;
 
     }
 
-}
+    box.innerHTML=
+      snapshot.docs
+        .map(d=>{
 
+          const x=
+            d.data();
 
-/* =========================================================
-   APPLY FOR JOB
-========================================================= */
-
-async function applyForJob(
-    jobId
-) {
-
-    try {
-
-        const jobSnapshot =
-            await getDoc(
-                doc(
-                    db,
-                    "jobs",
-                    jobId
-                )
+          const canChat=
+            [
+              "assigned",
+              "in_progress",
+              "completed"
+            ].includes(
+              x.status
             );
 
-
-        if (
-            !jobSnapshot.exists()
-        ) {
-
-            alert(
-                "Project no longer exists."
-            );
-
-            return;
-
-        }
-
-
-        const job =
-            jobSnapshot.data();
-
-
-        const proposal =
-            prompt(
-                `Write a short proposal for "${job.title || "Project"}":`
-            );
-
-
-        if (
-            proposal === null
-        ) {
-
-            return;
-
-        }
-
-
-        if (
-            !proposal.trim()
-        ) {
-
-            alert(
-                "Please write a proposal."
-            );
-
-            return;
-
-        }
-
-
-        const existingSnapshot =
-            await getDocs(
-                query(
-
-                    collection(
-                        db,
-                        "applications"
-                    ),
-
-                    where(
-                        "jobId",
-                        "==",
-                        jobId
-                    ),
-
-                    where(
-                        "freelancerId",
-                        "==",
-                        currentUser.uid
-                    )
-
-                )
-            );
-
-
-        if (
-            !existingSnapshot.empty
-        ) {
-
-            alert(
-                "You already applied."
-            );
-
-            return;
-
-        }
-
-
-        await addDoc(
-            collection(
-                db,
-                "applications"
-            ),
-            {
-
-                jobId:
-
-                    jobId,
-
-                jobTitle:
-
-                    job.title ||
-                    "Project",
-
-                clientId:
-
-                    job.clientId ||
-                    "",
-
-                clientName:
-
-                    job.clientName ||
-                    "Client",
-
-                clientEmail:
-
-                    job.clientEmail ||
-                    "",
-
-                freelancerId:
-
-                    currentUser.uid,
-
-                freelancerName:
-
-                    getDisplayName(),
-
-                freelancerEmail:
-
-                    getDisplayEmail(),
-
-                proposal:
-
-                    proposal.trim(),
-
-                status:
-
-                    "pending",
-
-                createdAt:
-
-                    serverTimestamp()
-
-            }
-        );
-
-
-        alert(
-            "Application sent successfully ✅"
-        );
-
-
-        loadJobs();
-
-        loadDashboard();
-
-
-    } catch (error) {
-
-        showFirebaseError(
-            error
-        );
-
-        alert(
-            "Application could not be sent."
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   LOAD APPLICATIONS
-========================================================= */
-
-async function loadApplications() {
-
-    const box =
-        $("applicationsList");
-
-    if (!box) {
-        return;
-    }
-
-
-    box.innerHTML =
-        `
-        <div class="loading">
-            Loading applications...
-        </div>
-        `;
-
-
-    try {
-
-        const field =
-            getRole() === "client"
-                ? "clientId"
-                : "freelancerId";
-
-
-        const snapshot =
-            await getDocs(
-                query(
-
-                    collection(
-                        db,
-                        "applications"
-                    ),
-
-                    where(
-                        field,
-                        "==",
-                        currentUser.uid
-                    )
-
-                )
-            );
-
-
-        if (
-            snapshot.empty
-        ) {
-
-            box.innerHTML =
-                `
-                <div class="empty">
-                    No applications yet.
-                </div>
-                `;
-
-            return;
-
-        }
-
-
-        box.innerHTML =
-            snapshot.docs
-                .map(
-                    docSnap => {
-
-                        const data =
-                            docSnap.data();
-
-
-                        const client =
-                            getRole() ===
-                            "client";
-
-
-                        return `
-                        <div class="card">
-
-                            <h3>
-
-                                ${
-                                    client
-                                        ? "👤"
-                                        : "📩"
-                                }
-
-                                ${
-                                    escapeHtml(
-                                        client
-                                            ? (
-                                                data.freelancerName ||
-                                                data.freelancerEmail ||
-                                                "Freelancer"
-                                            )
-                                            : (
-                                                data.jobTitle ||
-                                                "Project"
-                                            )
-                                    )
-                                }
-
-                            </h3>
-
-
-                            <p>
-
-                                ${
-                                    client
-
-                                        ? `
-                                        Project:
-                                        ${escapeHtml(
-                                            data.jobTitle ||
-                                            "Project"
-                                        )}
-
-                                        <br>
-
-                                        Email:
-                                        ${escapeHtml(
-                                            data.freelancerEmail ||
-                                            ""
-                                        )}
-                                        `
-
-                                        : `
-                                        Client:
-                                        ${escapeHtml(
-                                            data.clientName ||
-                                            data.clientEmail ||
-                                            "Client"
-                                        )}
-                                        `
-
-                                }
-
-                            </p>
-
-
-                            <div class="card-meta">
-
-                                ${
-                                    statusPill(
-                                        data.status
-                                    )
-                                }
-
-                                <span class="pill">
-                                    ${
-                                        formatDate(
-                                            data.createdAt
-                                        )
-                                    }
-                                </span>
-
-                            </div>
-
-
-                            <p>
-
-                                <b>
-                                    Proposal:
-                                </b>
-
-                                ${
-                                    escapeHtml(
-                                        data.proposal ||
-                                        "No proposal"
-                                    )
-                                }
-
-                            </p>
-
-
-                            ${
-                                client &&
-                                data.status ===
-                                "pending"
-
-                                    ? `
-                                    <div class="card-actions">
-
-                                        <button
-                                            class="primary small-btn accept-btn"
-                                            data-id="${docSnap.id}"
-                                            data-job="${escapeHtml(
-                                                data.jobId
-                                            )}"
-                                        >
-                                            Accept
-                                        </button>
-
-                                        <button
-                                            class="danger small-btn reject-btn"
-                                            data-id="${docSnap.id}"
-                                        >
-                                            Reject
-                                        </button>
-
-                                    </div>
-                                    `
-
-                                    : ""
-                            }
-
-
-                            ${
-                                client &&
-                                data.status ===
-                                "accepted"
-
-                                    ? `
-                                    <div class="card-actions">
-
-                                        <button
-                                            class="secondary small-btn chat-app"
-                                            data-job="${escapeHtml(
-                                                data.jobId
-                                            )}"
-                                        >
-                                            💬 Open Chat
-                                        </button>
-
-                                    </div>
-                                    `
-
-                                    : ""
-                            }
-
-                        </div>
-                        `;
-
-                    }
-                )
-                .join("");
-
-
-        box
-            .querySelectorAll(
-                ".accept-btn"
-            )
-            .forEach(
-                button => {
-
-                    button.onclick =
-                        () =>
-                            acceptApplication(
-                                button.dataset.id,
-                                button.dataset.job
-                            );
-
+          return `
+            <div class="card">
+
+              <h3>
+                💼
+                ${esc(
+                  x.title ||
+                  "Project"
+                )}
+              </h3>
+
+              <p>
+                ${esc(
+                  x.description ||
+                  "No description"
+                )}
+              </p>
+
+              <div class="meta">
+
+                ${pill(
+                  x.status ||
+                  "open"
+                )}
+
+                <span class="pill">
+                  💰
+                  $${Number(
+                    x.budget ||
+                    0
+                  )}
+                </span>
+
+                <span class="pill">
+                  📅
+                  ${esc(
+                    x.deadline ||
+                    "—"
+                  )}
+                </span>
+
+              </div>
+
+              <p>
+
+                ${
+                  role()==="client"
+
+                    ?
+
+                      `
+                        Freelancer:
+                        ${esc(
+                          x.freelancerName ||
+                          "Not assigned"
+                        )}
+                      `
+
+                    :
+
+                      `
+                        Client:
+                        ${esc(
+                          x.clientName ||
+                          x.clientEmail ||
+                          "Client"
+                        )}
+                      `
                 }
-            );
 
+              </p>
 
-        box
-            .querySelectorAll(
-                ".reject-btn"
-            )
-            .forEach(
-                button => {
+              ${
+                canChat
 
-                    button.onclick =
-                        () =>
-                            rejectApplication(
-                                button.dataset.id
-                            );
+                  ?
 
-                }
-            );
+                    `
+                      <button
+                        class="secondary project-chat"
+                        data-id="${d.id}"
+                      >
+                        💬 Message
+                      </button>
+                    `
 
+                  :
 
-        box
-            .querySelectorAll(
-                ".chat-app"
-            )
-            .forEach(
-                button => {
-
-                    button.onclick =
-                        () => {
-
-                            navigate(
-                                "messagesPage",
-                                "Messages"
-                            );
-
-
-                            setTimeout(
-                                () =>
-                                    openConversationByProject(
-                                        button.dataset.job
-                                    ),
-                                100
-                            );
-
-                        };
-
-                }
-            );
-
-
-    } catch (error) {
-
-        box.innerHTML =
-            `
-            <div class="error">
-                Unable to load applications.
-            </div>
-            `;
-
-        showFirebaseError(
-            error
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   ACCEPT APPLICATION
-========================================================= */
-
-async function acceptApplication(
-    applicationId,
-    jobId
-) {
-
-    try {
-
-        const applicationSnapshot =
-            await getDoc(
-                doc(
-                    db,
-                    "applications",
-                    applicationId
-                )
-            );
-
-
-        if (
-            !applicationSnapshot.exists()
-        ) {
-
-            return;
-
-        }
-
-
-        const application =
-            applicationSnapshot.data();
-
-
-        await updateDoc(
-            doc(
-                db,
-                "applications",
-                applicationId
-            ),
-            {
-
-                status:
-                    "accepted",
-
-                acceptedAt:
-                    serverTimestamp()
-
-            }
-        );
-
-
-        await updateDoc(
-            doc(
-                db,
-                "jobs",
-                jobId
-            ),
-            {
-
-                status:
-                    "assigned",
-
-                freelancerId:
-                    application.freelancerId ||
-                    "",
-
-                freelancerName:
-                    application.freelancerName ||
-                    "Freelancer",
-
-                freelancerEmail:
-                    application.freelancerEmail ||
                     ""
+              }
 
-            }
-        );
+            </div>
+          `;
 
+        })
+        .join("");
 
-        alert(
-            "Freelancer accepted ✅"
-        );
+    box
+      .querySelectorAll(
+        ".project-chat"
+      )
+      .forEach(button=>{
 
+        button.onclick=()=>{
 
-        loadApplications();
+          go(
+            "messagesPage",
+            "Messages"
+          );
 
-        loadProjects();
+          setTimeout(
+            ()=>
+              openConversationByProject(
+                button.dataset.id
+              ),
+            80
+          );
 
-        loadDashboard();
+        };
 
+      });
 
-    } catch (error) {
+  }catch(e){
 
-        showFirebaseError(
-            error
-        );
-
-        alert(
-            "Could not accept application."
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   REJECT APPLICATION
-========================================================= */
-
-async function rejectApplication(
-    applicationId
-) {
-
-    try {
-
-        await updateDoc(
-
-            doc(
-                db,
-                "applications",
-                applicationId
-            ),
-
-            {
-
-                status:
-                    "rejected",
-
-                rejectedAt:
-                    serverTimestamp()
-
-            }
-
-        );
-
-
-        loadApplications();
-
-        loadDashboard();
-
-
-    } catch (error) {
-
-        showFirebaseError(
-            error
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   LOAD PROJECTS
-========================================================= */
-
-async function loadProjects() {
-
-    const box =
-        $("projectsList");
-
-    if (!box) {
-        return;
-    }
-
-
-    box.innerHTML =
-        `
-        <div class="loading">
-            Loading projects...
+    box.innerHTML=
+      `
+        <div class="error">
+          Unable to load projects.
         </div>
+      `;
+
+    showErr(e);
+
+  }
+
+}
+
+async function loadConversations(){
+
+  const list=
+    $("conversations");
+
+  if(!list){
+    return;
+  }
+
+  try{
+
+    const field=
+      role()==="client"
+        ? "clientId"
+        : "freelancerId";
+
+    const snapshot=
+      await getDocs(
+        query(
+          collection(
+            db,
+            "jobs"
+          ),
+          where(
+            field,
+            "==",
+            currentUser.uid
+          )
+        )
+      );
+
+    const accepted=
+      snapshot.docs.filter(
+        d=>
+          [
+            "assigned",
+            "in_progress",
+            "completed"
+          ].includes(
+            d.data().status
+          )
+      );
+
+    currentProjects=
+      accepted.map(
+        d=>({
+          id:
+            d.id,
+          ...d.data()
+        })
+      );
+
+    if(
+      !accepted.length
+    ){
+
+      list.innerHTML=
+        `
+          <div class="empty">
+            No accepted projects yet.
+          </div>
         `;
 
-
-    try {
-
-        const field =
-            getRole() === "client"
-                ? "clientId"
-                : "freelancerId";
-
-
-        const snapshot =
-            await getDocs(
-                query(
-
-                    collection(
-                        db,
-                        "jobs"
-                    ),
-
-                    where(
-                        field,
-                        "==",
-                        currentUser.uid
-                    )
-
-                )
-            );
-
-
-        currentProjects =
-            snapshot.docs.map(
-                docSnap => ({
-
-                    id:
-                        docSnap.id,
-
-                    ...docSnap.data()
-
-                })
-            );
-
-
-        if (
-            snapshot.empty
-        ) {
-
-            box.innerHTML =
-                `
-                <div class="empty">
-                    No projects here yet.
-                </div>
-                `;
-
-            return;
-
-        }
-
-
-        box.innerHTML =
-            snapshot.docs
-                .map(
-                    docSnap => {
-
-                        const data =
-                            docSnap.data();
-
-
-                        const canChat =
-                            [
-                                "assigned",
-                                "in_progress",
-                                "completed"
-                            ].includes(
-                                data.status
-                            );
-
-
-                        return `
-                        <div class="card">
-
-                            <h3>
-                                💼
-                                ${
-                                    escapeHtml(
-                                        data.title ||
-                                        "Project"
-                                    )
-                                }
-                            </h3>
-
-                            <p>
-                                ${
-                                    escapeHtml(
-                                        data.description ||
-                                        "No description"
-                                    )
-                                }
-                            </p>
-
-                            <div class="card-meta">
-
-                                ${
-                                    statusPill(
-                                        data.status ||
-                                        "open"
-                                    )
-                                }
-
-                                <span class="pill">
-                                    💰
-                                    $
-                                    ${
-                                        Number(
-                                            data.budget ||
-                                            0
-                                        )
-                                    }
-                                </span>
-
-                                <span class="pill">
-                                    📅
-                                    ${
-                                        escapeHtml(
-                                            data.deadline ||
-                                            "—"
-                                        )
-                                    }
-                                </span>
-
-                            </div>
-
-
-                            <p>
-
-                                ${
-                                    getRole() ===
-                                    "client"
-
-                                        ? `
-                                        Freelancer:
-                                        ${
-                                            escapeHtml(
-                                                data.freelancerName ||
-                                                "Not assigned"
-                                            )
-                                        }
-                                        `
-
-                                        : `
-                                        Client:
-                                        ${
-                                            escapeHtml(
-                                                data.clientName ||
-                                                data.clientEmail ||
-                                                "Client"
-                                            )
-                                        }
-                                        `
-
-                                }
-
-                            </p>
-
-
-                            ${
-                                canChat
-
-                                    ? `
-                                    <button
-                                        class="secondary small-btn project-chat"
-                                        data-id="${docSnap.id}"
-                                    >
-                                        💬 Message
-                                    </button>
-                                    `
-
-                                    : ""
-                            }
-
-                        </div>
-                        `;
-
-                    }
-                )
-                .join("");
-
-
-        box
-            .querySelectorAll(
-                ".project-chat"
-            )
-            .forEach(
-                button => {
-
-                    button.onclick =
-                        () => {
-
-                            navigate(
-                                "messagesPage",
-                                "Messages"
-                            );
-
-
-                            setTimeout(
-                                () =>
-                                    openConversationByProject(
-                                        button.dataset.id
-                                    ),
-                                100
-                            );
-
-                        };
-
-                }
-            );
-
-
-    } catch (error) {
-
-        box.innerHTML =
-            `
-            <div class="error">
-                Unable to load projects.
-            </div>
-            `;
-
-        showFirebaseError(
-            error
-        );
+      return;
 
     }
+
+    list.innerHTML=
+      accepted
+        .map(d=>{
+
+          const x=
+            d.data();
+
+          const other=
+            role()==="client"
+
+              ?
+                (
+                  x.freelancerName ||
+                  "Freelancer"
+                )
+
+              :
+                (
+                  x.clientName ||
+                  x.clientEmail ||
+                  "Client"
+                );
+
+          return `
+            <button
+              class="conversation"
+              data-id="${d.id}"
+            >
+
+              <strong>
+                ${esc(
+                  x.title ||
+                  "Project"
+                )}
+              </strong>
+
+              <span>
+                Chat with
+                ${esc(
+                  other
+                )}
+              </span>
+
+            </button>
+          `;
+
+        })
+        .join("");
+
+    list
+      .querySelectorAll(
+        ".conversation"
+      )
+      .forEach(button=>{
+
+        button.onclick=
+          ()=>
+            openConversationByProject(
+              button.dataset.id
+            );
+
+      });
+
+  }catch(e){
+
+    list.innerHTML=
+      `
+        <div class="error">
+          Unable to load conversations.
+        </div>
+      `;
+
+    showErr(e);
+
+  }
 
 }
 
+async function openConversationByProject(id){
 
-/* =========================================================
-   LOAD CONVERSATIONS
-========================================================= */
+  const project=
+    currentProjects.find(
+      x =>
+        x.id ===
+        id
+    );
 
-async function loadConversations() {
+  if(!project){
+    return;
+  }
 
-    const list =
-        $("conversationList");
+  currentConversation={
 
-    if (!list) {
-        return;
-    }
+    projectId:
+      id,
 
+    otherId:
+      role()==="client"
+        ? project.freelancerId
+        : project.clientId,
 
-    const messages =
-        $("messages");
+    otherName:
+      role()==="client"
 
-    if (messages) {
+        ?
 
-        messages.innerHTML =
-            `
-            <div class="empty">
-                Select a conversation.
-            </div>
-            `;
+          (
+            project.freelancerName ||
+            "Freelancer"
+          )
 
-    }
+        :
 
+          (
+            project.clientName ||
+            project.clientEmail ||
+            "Client"
+          )
 
-    const composer =
-        $("composer");
+  };
 
-    if (composer) {
+  text(
+    "chatTitle",
+    project.title ||
+    "Project"
+  );
 
-        composer.style.display =
-            "none";
+  text(
+    "chatSubtitle",
+    "Conversation with " +
+    currentConversation.otherName
+  );
 
-    }
+  if(
+    $("composer")
+  ){
 
+    $("composer").style.display=
+      "flex";
 
-    try {
+  }
 
-        const field =
-            getRole() === "client"
-                ? "clientId"
-                : "freelancerId";
-
-
-        const snapshot =
-            await getDocs(
-                query(
-
-                    collection(
-                        db,
-                        "jobs"
-                    ),
-
-                    where(
-                        field,
-                        "==",
-                        currentUser.uid
-                    )
-
-                )
-            );
-
-
-        const accepted =
-            snapshot.docs.filter(
-                docSnap =>
-                    [
-                        "assigned",
-                        "in_progress",
-                        "completed"
-                    ].includes(
-                        docSnap.data().status
-                    )
-            );
-
-
-        currentProjects =
-            accepted.map(
-                docSnap => ({
-
-                    id:
-                        docSnap.id,
-
-                    ...docSnap.data()
-
-                })
-            );
-
-
-        if (
-            accepted.length ===
-            0
-        ) {
-
-            list.innerHTML =
-                `
-                <div class="empty">
-                    No accepted projects yet.
-                </div>
-                `;
-
-            return;
-
-        }
-
-
-        list.innerHTML =
-            accepted
-                .map(
-                    docSnap => {
-
-                        const data =
-                            docSnap.data();
-
-
-                        const otherName =
-                            getRole() ===
-                            "client"
-
-                                ? (
-                                    data.freelancerName ||
-                                    "Freelancer"
-                                )
-
-                                : (
-                                    data.clientName ||
-                                    data.clientEmail ||
-                                    "Client"
-                                );
-
-
-                        return `
-                        <button
-                            class="conversation"
-                            data-id="${docSnap.id}"
-                        >
-
-                            <strong>
-                                ${
-                                    escapeHtml(
-                                        data.title ||
-                                        "Project"
-                                    )
-                                }
-                            </strong>
-
-                            <span>
-                                Chat with
-                                ${
-                                    escapeHtml(
-                                        otherName
-                                    )
-                                }
-                            </span>
-
-                        </button>
-                        `;
-
-                    }
-                )
-                .join("");
-
-
-        list
-            .querySelectorAll(
-                ".conversation"
-            )
-            .forEach(
-                button => {
-
-                    button.onclick =
-                        () =>
-                            openConversationByProject(
-                                button.dataset.id
-                            );
-
-                }
-            );
-
-
-    } catch (error) {
-
-        list.innerHTML =
-            `
-            <div class="error">
-                Unable to load conversations.
-            </div>
-            `;
-
-        showFirebaseError(
-            error
-        );
-
-    }
+  await loadMessages();
 
 }
 
+async function loadMessages(){
 
-/* =========================================================
-   OPEN CONVERSATION
-========================================================= */
+  if(
+    !currentConversation
+  ){
 
-async function openConversationByProject(
-    projectId
-) {
+    return;
 
-    const project =
-        currentProjects.find(
-            item =>
-                item.id ===
-                projectId
-        );
+  }
 
+  try{
 
-    if (!project) {
-        return;
-    }
+    const [
+      sentSnapshot,
+      receivedSnapshot
+    ] = await Promise.all([
 
-
-    const client =
-        getRole() === "client";
-
-
-    currentConversation = {
-
-        projectId:
-
-            projectId,
-
-        otherId:
-
-            client
-                ? project.freelancerId
-                : project.clientId,
-
-        otherName:
-
-            client
-
-                ? (
-                    project.freelancerName ||
-                    project.freelancerEmail ||
-                    "Freelancer"
-                )
-
-                : (
-                    project.clientName ||
-                    project.clientEmail ||
-                    "Client"
-                )
-
-    };
-
-
-    setText(
-        "chatTitle",
-        project.title ||
-        "Project"
-    );
-
-
-    setText(
-        "chatSubtitle",
-        "Conversation with " +
-        currentConversation.otherName
-    );
-
-
-    const composer =
-        $("composer");
-
-    if (composer) {
-
-        composer.style.display =
-            "flex";
-
-    }
-
-
-    document
-        .querySelectorAll(
-            ".conversation"
+      getDocs(
+        query(
+          collection(
+            db,
+            "messages"
+          ),
+          where(
+            "projectId",
+            "==",
+            currentConversation.projectId
+          ),
+          where(
+            "senderId",
+            "==",
+            currentUser.uid
+          )
         )
-        .forEach(
-            button => {
-
-                button.classList.toggle(
-
-                    "active",
-
-                    button.dataset.id ===
-                    projectId
-
-                );
-
-            }
-        );
-
-
-    await loadMessages();
-
-}
-
-
-/* =========================================================
-   LOAD MESSAGES
-========================================================= */
-
-async function loadMessages() {
-
-    if (!currentConversation) {
-        return;
-    }
-
-
-    const messagesBox =
-        $("messages");
-
-    if (!messagesBox) {
-        return;
-    }
-
-
-    try {
-
-        const [
-            sentSnapshot,
-            receivedSnapshot
-        ] = await Promise.all([
-
-            getDocs(
-                query(
-
-                    collection(
-                        db,
-                        "messages"
-                    ),
-
-                    where(
-                        "projectId",
-                        "==",
-                        currentConversation.projectId
-                    ),
-
-                    where(
-                        "senderId",
-                        "==",
-                        currentUser.uid
-                    )
-
-                )
-            ),
-
-            getDocs(
-                query(
-
-                    collection(
-                        db,
-                        "messages"
-                    ),
-
-                    where(
-                        "projectId",
-                        "==",
-                        currentConversation.projectId
-                    ),
-
-                    where(
-                        "receiverId",
-                        "==",
-                        currentUser.uid
-                    )
-
-                )
-            )
-
-        ]);
-
-
-        const map =
-            new Map();
-
-
-        [
-            ...sentSnapshot.docs,
-            ...receivedSnapshot.docs
-        ]
-            .forEach(
-                docSnap => {
-
-                    map.set(
-                        docSnap.id,
-                        {
-
-                            id:
-                                docSnap.id,
-
-                            ...docSnap.data()
-
-                        }
-                    );
-
-                }
-            );
-
-
-        const messages =
-            Array.from(
-                map.values()
-            )
-                .sort(
-                    (a, b) => {
-
-                        const first =
-                            a.createdAt?.toMillis?.() ||
-                            0;
-
-                        const second =
-                            b.createdAt?.toMillis?.() ||
-                            0;
-
-                        return (
-                            first -
-                            second
-                        );
-
-                    }
-                );
-
-
-        if (
-            messages.length ===
-            0
-        ) {
-
-            messagesBox.innerHTML =
-                `
-                <div class="empty">
-                    No messages yet.
-                    Start the conversation.
-                </div>
-                `;
-
-            return;
-
-        }
-
-
-        messagesBox.innerHTML =
-            messages
-                .map(
-                    message => {
-
-                        const mine =
-                            message.senderId ===
-                            currentUser.uid;
-
-
-                        return `
-                        <div
-                            class="bubble ${
-                                mine
-                                    ? "mine"
-                                    : ""
-                            }"
-                        >
-
-                            ${
-                                escapeHtml(
-                                    message.text ||
-                                    ""
-                                )
-                            }
-
-                            <small>
-
-                                ${
-                                    mine
-                                        ? "You"
-                                        : escapeHtml(
-                                            currentConversation
-                                                .otherName
-                                        )
-                                }
-
-                                ·
-
-                                ${
-                                    formatDate(
-                                        message.createdAt
-                                    )
-                                }
-
-                            </small>
-
-                        </div>
-                        `;
-
-                    }
-                )
-                .join("");
-
-
-        messagesBox.scrollTop =
-            messagesBox.scrollHeight;
-
-
-    } catch (error) {
-
-        messagesBox.innerHTML =
-            `
-            <div class="error">
-                Messages could not be loaded.
-                Check Firestore permissions.
-            </div>
-            `;
-
-        showFirebaseError(
-            error
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   SEND MESSAGE
-========================================================= */
-
-async function sendMessage() {
-
-    if (
-        !currentConversation ||
-        !currentUser
-    ) {
-
-        return;
-
-    }
-
-
-    const input =
-        $("messageInput");
-
-
-    if (!input) {
-        return;
-    }
-
-
-    const text =
-        input.value.trim();
-
-
-    if (!text) {
-        return;
-    }
-
-
-    const button =
-        $("sendMessage");
-
-
-    if (button) {
-        button.disabled = true;
-    }
-
-
-    try {
-
-        await addDoc(
-
-            collection(
-                db,
-                "messages"
-            ),
-
+      ),
+
+      getDocs(
+        query(
+          collection(
+            db,
+            "messages"
+          ),
+          where(
+            "projectId",
+            "==",
+            currentConversation.projectId
+          ),
+          where(
+            "receiverId",
+            "==",
+            currentUser.uid
+          )
+        )
+      )
+
+    ]);
+
+    const map=
+      new Map();
+
+    [
+      ...sentSnapshot.docs,
+      ...receivedSnapshot.docs
+    ]
+      .forEach(
+        d=>{
+
+          map.set(
+            d.id,
             {
-
-                projectId:
-
-                    currentConversation
-                        .projectId,
-
-                senderId:
-
-                    currentUser.uid,
-
-                senderName:
-
-                    getDisplayName(),
-
-                senderEmail:
-
-                    getDisplayEmail(),
-
-                receiverId:
-
-                    currentConversation
-                        .otherId,
-
-                receiverName:
-
-                    currentConversation
-                        .otherName,
-
-                text:
-
-                    text,
-
-                createdAt:
-
-                    serverTimestamp()
-
+              id:
+                d.id,
+              ...d.data()
             }
-
-        );
-
-
-        input.value =
-            "";
-
-
-        await loadMessages();
-
-
-    } catch (error) {
-
-        showFirebaseError(
-            error
-        );
-
-        alert(
-            "Message could not be sent."
-        );
-
-    } finally {
-
-        if (button) {
-
-            button.disabled =
-                false;
+          );
 
         }
-
-    }
-
-}
-
-
-/* =========================================================
-   POST PROJECT
-========================================================= */
-
-async function setupPostForm() {
-
-    const form =
-        $("postForm");
-
-
-    if (!form) {
-        return;
-    }
-
-
-    form.addEventListener(
-        "submit",
-        async event => {
-
-            event.preventDefault();
-
-
-            if (
-                getRole() !==
-                "client"
-            ) {
-
-                return;
-
-            }
-
-
-            const button =
-                $("postBtn");
-
-
-            const message =
-                $("postMessage");
-
-
-            if (button) {
-
-                button.disabled =
-                    true;
-
-                button.textContent =
-                    "Publishing...";
-
-            }
-
-
-            try {
-
-                await addDoc(
-
-                    collection(
-                        db,
-                        "jobs"
-                    ),
-
-                    {
-
-                        title:
-                            $("postTitle")
-                                ?.value
-                                .trim() ||
-                            "",
-
-                        category:
-                            $("postCategory")
-                                ?.value ||
-                            "",
-
-                        description:
-                            $("postDescription")
-                                ?.value
-                                .trim() ||
-                            "",
-
-                        budget:
-                            Number(
-                                $("postBudget")
-                                    ?.value ||
-                                0
-                            ),
-
-                        deadline:
-                            $("postDeadline")
-                                ?.value ||
-                            "",
-
-                        clientId:
-                            currentUser.uid,
-
-                        clientName:
-                            getDisplayName(),
-
-                        clientEmail:
-                            getDisplayEmail(),
-
-                        status:
-                            "open",
-
-                        freelancerId:
-                            "",
-
-                        freelancerName:
-                            "",
-
-                        freelancerEmail:
-                            "",
-
-                        createdAt:
-                            serverTimestamp()
-
-                    }
-
-                );
-
-
-                form.reset();
-
-
-                if (message) {
-
-                    message.textContent =
-                        "Project published successfully ✅";
-
-                }
-
-
-                if (
-                    window.location.pathname
-                        .includes(
-                            "post-job.html"
-                        )
-                ) {
-
-                    setTimeout(
-                        () => {
-
-                            window.location.href =
-                                "client-dashboard.html";
-
-                        },
-                        1000
-                    );
-
-                }
-
-
-            } catch (error) {
-
-                showFirebaseError(
-                    error
-                );
-
-
-                if (message) {
-
-                    message.textContent =
-                        "Could not publish project.";
-
-                }
-
-            } finally {
-
-                if (button) {
-
-                    button.disabled =
-                        false;
-
-                    button.textContent =
-                        "🚀 Publish Project";
-
-                }
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   SETTINGS
-========================================================= */
-
-function setupSettings() {
-
-    const form =
-        $("settingsForm");
-
-
-    if (!form) {
-        return;
-    }
-
-
-    form.addEventListener(
-        "submit",
-        async event => {
-
-            event.preventDefault();
-
-
-            try {
-
-                const name =
-                    $("settingsName")
-                        ?.value
-                        .trim() ||
-                    "";
-
-
-                const skills =
-                    $("settingsSkills")
-                        ?.value
-                        .trim() ||
-                    "";
-
-
-                await updateDoc(
-
-                    doc(
-                        db,
-                        "users",
-                        currentUser.uid
-                    ),
-
-                    {
-
-                        name:
-                            name,
-
-                        skills:
-                            skills
-
-                    }
-
-                );
-
-
-                if (!userData) {
-                    userData = {};
-                }
-
-
-                userData.name =
-                    name;
-
-                userData.skills =
-                    skills;
-
-
-                setIdentity();
-
-
-                setText(
-                    "settingsMessage",
-                    "Saved successfully ✅"
-                );
-
-
-            } catch (error) {
-
-                showFirebaseError(
-                    error
-                );
-
-
-                setText(
-                    "settingsMessage",
-                    "Could not save changes."
-                );
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   LOGOUT
-========================================================= */
-
-async function logout() {
-
-    try {
-
-        await signOut(
-            auth
-        );
-
-
-        window.location.href =
-            "login.html";
-
-
-    } catch (error) {
-
-        showFirebaseError(
-            error
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   BUTTON EVENTS
-========================================================= */
-
-function setupButtons() {
-
-    $("logoutBtn")?.addEventListener(
-        "click",
-        logout
-    );
-
-
-    $("topLogout")?.addEventListener(
-        "click",
-        logout
-    );
-
-
-    $("sendMessage")?.addEventListener(
-        "click",
-        sendMessage
-    );
-
-
-    $("messageInput")?.addEventListener(
-        "keydown",
-        event => {
-
-            if (
-                event.key ===
-                "Enter" &&
-                !event.shiftKey
-            ) {
-
-                event.preventDefault();
-
-                sendMessage();
-
-            }
-
-        }
-    );
-
-
-    document
-        .querySelectorAll(
-            "[data-target]"
-        )
-        .forEach(
-            button => {
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        navigate(
-                            button.dataset.target,
-                            button.textContent
-                        );
-
-                    }
-                );
-
-            }
-        );
-
-}
-
-
-/* =========================================================
-   LOAD USER
-   IMPORTANT:
-   UI LOADS EVEN IF FIRESTORE PROFILE READ FAILS
-========================================================= */
-
-async function loadUserProfile() {
-
-    userData = {
-
-        name:
-            currentUser
-                ?.email
-                ?.split("@")[0] ||
+      );
+
+    const arr=
+      [...map.values()]
+        .sort(
+          (a,b)=>
             (
-                getRole() === "client"
-                    ? "Client"
-                    : "Freelancer"
-            ),
-
-        email:
-            currentUser?.email ||
-            "",
-
-        role:
-            getRole(),
-
-        skills:
-            ""
-
-    };
-
-
-    /* Immediately render UI */
-
-    setIdentity();
-
-
-    /*
-       Firestore profile is optional for initial UI.
-       This prevents the whole dashboard from getting
-       stuck at "Loading..." when Firestore rules
-       temporarily block the profile read.
-    */
-
-    try {
-
-        const snapshot =
-            await getDoc(
-
-                doc(
-                    db,
-                    "users",
-                    currentUser.uid
-                )
-
-            );
-
-
-        if (
-            snapshot.exists()
-        ) {
-
-            userData = {
-
-                ...userData,
-
-                ...snapshot.data()
-
-            };
-
-
-            setIdentity();
-
-        }
-
-    } catch (error) {
-
-        console.warn(
-            "User profile could not be loaded:",
-            error
+              a.createdAt?.toMillis?.() ||
+              0
+            )
+            -
+            (
+              b.createdAt?.toMillis?.() ||
+              0
+            )
         );
 
-        /*
-           Do NOT block the interface.
-           The dashboard will still load.
-        */
+    $("messages").innerHTML=
+      arr.length
 
-    }
+        ?
+
+          arr
+            .map(
+              x=>
+                `
+                  <div
+                    class="bubble ${
+                      x.senderId ===
+                      currentUser.uid
+                        ? "mine"
+                        : ""
+                    }"
+                  >
+
+                    ${esc(
+                      x.text
+                    )}
+
+                    <small>
+
+                      ${
+                        x.senderId ===
+                        currentUser.uid
+
+                          ? "You"
+
+                          :
+                            esc(
+                              currentConversation
+                                .otherName
+                            )
+                      }
+
+                      ·
+
+                      ${dateTxt(
+                        x.createdAt
+                      )}
+
+                    </small>
+
+                  </div>
+                `
+            )
+            .join("")
+
+        :
+
+          `
+            <div class="empty">
+              No messages yet.
+              Start the conversation.
+            </div>
+          `;
+
+  }catch(e){
+
+    $("messages").innerHTML=
+      `
+        <div class="error">
+          Messages could not be loaded.
+          Check Firestore rules.
+        </div>
+      `;
+
+    showErr(e);
+
+  }
 
 }
 
+$("sendMessage")?.addEventListener(
+  "click",
+  async()=>{
 
-/* =========================================================
-   AUTH STATE
-========================================================= */
+    if(
+      !currentConversation
+    ){
 
-onAuthStateChanged(
-
-    auth,
-
-    async user => {
-
-        clearFirebaseError();
-
-
-        if (!user) {
-
-            window.location.href =
-                "login.html";
-
-            return;
-
-        }
-
-
-        currentUser =
-            user;
-
-
-        try {
-
-            /*
-               Build interface first.
-            */
-
-            await loadUserProfile();
-
-
-            /*
-               Then load live Firebase data.
-            */
-
-            await loadDashboard();
-
-
-        } catch (error) {
-
-            showFirebaseError(
-                error
-            );
-
-        }
+      return;
 
     }
 
+    const input=
+      $("messageInput");
+
+    const value=
+      input.value.trim();
+
+    if(
+      !value
+    ){
+
+      return;
+
+    }
+
+    try{
+
+      await addDoc(
+        collection(
+          db,
+          "messages"
+        ),
+        {
+
+          projectId:
+            currentConversation
+              .projectId,
+
+          senderId:
+            currentUser.uid,
+
+          senderName:
+            userName(),
+
+          senderEmail:
+            userEmail(),
+
+          receiverId:
+            currentConversation
+              .otherId,
+
+          receiverName:
+            currentConversation
+              .otherName,
+
+          text:
+            value,
+
+          createdAt:
+            serverTimestamp()
+
+        }
+      );
+
+      input.value=
+        "";
+
+      loadMessages();
+
+    }catch(e){
+
+      showErr(e);
+
+      alert(
+        "Message could not be sent."
+      );
+
+    }
+
+  }
 );
 
+$("messageInput")?.addEventListener(
+  "keydown",
+  e=>{
 
-/* =========================================================
-   STARTUP
-========================================================= */
+    if(
+      e.key==="Enter" &&
+      !e.shiftKey
+    ){
 
-buildNavigation();
+      e.preventDefault();
 
-setupButtons();
+      $("sendMessage").click();
 
-setupPostForm();
+    }
 
-setupSettings();
+  }
+);
+
+$("postForm")?.addEventListener(
+  "submit",
+  async e=>{
+
+    e.preventDefault();
+
+    try{
+
+      await addDoc(
+        collection(
+          db,
+          "jobs"
+        ),
+        {
+
+          title:
+            $("postTitle")
+              .value
+              .trim(),
+
+          category:
+            $("postCategory")
+              .value,
+
+          description:
+            $("postDescription")
+              .value
+              .trim(),
+
+          budget:
+            Number(
+              $("postBudget")
+                .value
+            ),
+
+          deadline:
+            $("postDeadline")
+              .value,
+
+          clientId:
+            currentUser.uid,
+
+          clientName:
+            userName(),
+
+          clientEmail:
+            userEmail(),
+
+          status:
+            "open",
+
+          freelancerId:
+            "",
+
+          freelancerName:
+            "",
+
+          freelancerEmail:
+            "",
+
+          createdAt:
+            serverTimestamp()
+
+        }
+      );
+
+      $("postForm").reset();
+
+      text(
+        "postMessage",
+        "Project published successfully ✅"
+      );
+
+    }catch(e){
+
+      showErr(e);
+
+      text(
+        "postMessage",
+        "Could not publish project."
+      );
+
+    }
+
+  }
+);
+
+$("settingsForm")?.addEventListener(
+  "submit",
+  async e=>{
+
+    e.preventDefault();
+
+    try{
+
+      const n=
+        $("settingsName")
+          .value
+          .trim();
+
+      const skills=
+        $("settingsSkills")
+          ?.value
+          .trim() ||
+        "";
+
+      await updateDoc(
+
+        doc(
+          db,
+          "users",
+          currentUser.uid
+        ),
+
+        {
+
+          name:
+            n,
+
+          skills:
+            skills
+
+        }
+
+      );
+
+      userData.name=
+        n;
+
+      userData.skills=
+        skills;
+
+      applyIdentity();
+
+      text(
+        "settingsMessage",
+        "Saved successfully ✅"
+      );
+
+    }catch(e){
+
+      showErr(e);
+
+      text(
+        "settingsMessage",
+        "Could not save changes."
+      );
+
+    }
+
+  }
+);
+
+$("logoutBtn")?.addEventListener(
+  "click",
+  async()=>{
+
+    await signOut(
+      auth
+    );
+
+    location.href=
+      "login.html";
+
+  }
+);
+
+$("topLogout")?.addEventListener(
+  "click",
+  async()=>{
+
+    await signOut(
+      auth
+    );
+
+    location.href=
+      "login.html";
+
+  }
+);
+
+$("themeToggle")?.addEventListener(
+  "click",
+  ()=>{
+
+    document.body.classList.toggle(
+      "light"
+    );
+
+    localStorage.setItem(
+      "elite-theme",
+      document.body.classList.contains(
+        "light"
+      )
+        ? "light"
+        : "dark"
+    );
+
+  }
+);
+
+if(
+  localStorage.getItem(
+    "elite-theme"
+  ) ===
+  "light"
+){
+
+  document.body.classList.add(
+    "light"
+  );
+
+}
+
+onAuthStateChanged(
+  auth,
+  async user=>{
+
+    if(
+      !user
+    ){
+
+      location.href=
+        "login.html";
+
+      return;
+
+    }
+
+    currentUser=
+      user;
+
+    userData={
+
+      name:
+        user.email
+          ?.split("@")[0] ||
+        "Member",
+
+      email:
+        user.email ||
+        "",
+
+      role:
+        role(),
+
+      skills:
+        ""
+
+    };
+
+    applyIdentity();
+
+    try{
+
+      const snapshot=
+        await getDoc(
+          doc(
+            db,
+            "users",
+            user.uid
+          )
+        );
+
+      if(
+        snapshot.exists()
+      ){
+
+        userData={
+          ...userData,
+          ...snapshot.data()
+        };
+
+        applyIdentity();
+
+      }
+
+    }catch(e){
+
+      console.warn(
+        "Profile read failed:",
+        e
+      );
+
+    }
+
+    loadDashboard();
+
+  }
+);
+
+buildNav();
