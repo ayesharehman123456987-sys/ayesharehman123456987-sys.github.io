@@ -371,13 +371,195 @@ function navigate(
 
 function buildNavigation() {
 
-    const nav =
-        $("sidebarNav");
+    const nav = $("sidebarNav");
 
     if (!nav) {
         return;
     }
 
+    const client = getRole() === "client";
+
+    let html = "";
+
+    html += `
+        <div class="nav-section">
+            MAIN
+        </div>
+    `;
+
+    if (client) {
+
+        html += `
+            <button class="nav active" data-target="dashboardPage">
+                🏠 &nbsp; Dashboard
+            </button>
+
+            <button class="nav" data-target="projectsPage">
+                💼 &nbsp; My Projects
+            </button>
+
+            <button class="nav" data-target="applicationsPage">
+                📩 &nbsp; Applications
+            </button>
+
+            <button class="nav" data-target="messagesPage">
+                💬 &nbsp; Messages
+            </button>
+
+            <div class="nav-section">
+                MANAGE
+            </div>
+
+            <button class="nav" data-target="postPage">
+                ＋ &nbsp; Post a Project
+            </button>
+
+            <button class="nav" data-target="applicationsPage">
+                👥 &nbsp; Find Freelancers
+            </button>
+
+            <button class="nav" data-target="projectsPage">
+                📋 &nbsp; Contracts
+            </button>
+
+            <div class="nav-section">
+                ACCOUNT
+            </div>
+
+            <button class="nav" data-target="profilePage">
+                👤 &nbsp; Profile
+            </button>
+
+            <button class="nav" data-target="settingsPage">
+                ⚙️ &nbsp; Settings
+            </button>
+
+            <div class="nav-section">
+                OTHERS
+            </div>
+
+            <button class="nav" data-target="messagesPage">
+                💬 &nbsp; Help & Support
+            </button>
+        `;
+
+    } else {
+
+        html += `
+            <button class="nav active" data-target="dashboardPage">
+                🏠 &nbsp; Dashboard
+            </button>
+
+            <button class="nav" data-target="jobsPage">
+                🔍 &nbsp; Find Work
+            </button>
+
+            <button class="nav" data-target="applicationsPage">
+                📩 &nbsp; Applications
+            </button>
+
+            <button class="nav" data-target="projectsPage">
+                💼 &nbsp; My Projects
+            </button>
+
+            <button class="nav" data-target="messagesPage">
+                💬 &nbsp; Messages
+            </button>
+
+            <div class="nav-section">
+                MANAGE
+            </div>
+
+            <button class="nav" data-target="jobsPage">
+                🔖 &nbsp; Saved Jobs
+            </button>
+
+            <button class="nav" data-target="applicationsPage">
+                📝 &nbsp; Proposals
+            </button>
+
+            <button class="nav" data-target="projectsPage">
+                📋 &nbsp; Contracts
+            </button>
+
+            <button class="nav" data-target="projectsPage">
+                💰 &nbsp; Earnings
+            </button>
+
+            <button class="nav" data-target="projectsPage">
+                ⏱️ &nbsp; Time Tracker
+            </button>
+
+            <div class="nav-section">
+                ACCOUNT
+            </div>
+
+            <button class="nav" data-target="profilePage">
+                👤 &nbsp; Profile
+            </button>
+
+            <button class="nav" data-target="profilePage">
+                🖼️ &nbsp; Portfolio
+            </button>
+
+            <button class="nav" data-target="profilePage">
+                ⭐ &nbsp; Reviews
+            </button>
+
+            <button class="nav" data-target="settingsPage">
+                ⚙️ &nbsp; Settings
+            </button>
+
+            <div class="nav-section">
+                OTHERS
+            </div>
+
+            <button class="nav" data-target="messagesPage">
+                💬 &nbsp; Help & Support
+            </button>
+        `;
+
+    }
+
+    nav.innerHTML = html;
+
+    nav
+        .querySelectorAll(".nav")
+        .forEach(button => {
+
+            button.onclick = () => {
+
+                navigate(
+                    button.dataset.target,
+                    button.textContent
+                );
+
+            };
+
+        });
+
+
+    const switchButton = $("switchMode");
+
+    if (switchButton) {
+
+        switchButton.textContent =
+            client
+                ? "⇄ Switch to Freelancer Mode"
+                : "⇄ Switch to Client Mode";
+
+        switchButton.onclick = () => {
+
+            window.location.href =
+                client
+                    ? "index.html"
+                    : "client-dashboard.html";
+
+        };
+
+    }
+
+}
 
     const client =
         getRole() === "client";
