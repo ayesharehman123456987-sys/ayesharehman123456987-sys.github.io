@@ -1,26 +1,26 @@
 import {
-initializeApp
+  initializeApp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
 import {
-getAuth,
-onAuthStateChanged,
-signOut,
-sendPasswordResetEmail
+  getAuth,
+  onAuthStateChanged,
+  signOut,
+  sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 import {
-getFirestore,
-collection,
-query,
-where,
-getDocs,
-getDoc,
-doc,
-setDoc,
-addDoc,
-updateDoc,
-serverTimestamp
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+  getDoc,
+  doc,
+  setDoc,
+  addDoc,
+  updateDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
@@ -28,189 +28,204 @@ serverTimestamp
    FIREBASE
 ========================================================= */
 
-const firebaseConfig={
+const firebaseConfig = {
 
-apiKey:"AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
+  apiKey: "AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
 
-authDomain:"elite-freelance-hub.firebaseapp.com",
+  authDomain: "elite-freelance-hub.firebaseapp.com",
 
-projectId:"elite-freelance-hub",
+  projectId: "elite-freelance-hub",
 
-storageBucket:"elite-freelance-hub.firebasestorage.app",
+  storageBucket: "elite-freelance-hub.firebasestorage.app",
 
-messagingSenderId:"777611553956",
+  messagingSenderId: "777611553956",
 
-appId:"1:777611553956:web:730b7df36570ff803a8a31"
+  appId: "1:777611553956:web:730b7df36570ff803a8a31"
 
 };
 
-const app=initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
-const auth=getAuth(app);
+const auth = getAuth(app);
 
-const db=getFirestore(app);
+const db = getFirestore(app);
 
 
 /* =========================================================
    OWNER
 ========================================================= */
 
-const OWNER_EMAIL=
-"ayesharehman123456987@gmail.com";
+const OWNER_EMAIL =
+  "ayesharehman123456987@gmail.com";
 
 
 /* =========================================================
    GLOBAL STATE
 ========================================================= */
 
-let currentUser=null;
+let currentUser = null;
 
-let userData={};
+let userData = {};
 
-let currentConversation=null;
+let currentConversation = null;
 
-let timerSeconds=0;
+let timerSeconds = 0;
 
-let timerInterval=null;
+let timerInterval = null;
 
 
 /* =========================================================
    HELPERS
 ========================================================= */
 
-const $=id=>document.getElementById(id);
+const $ = id => document.getElementById(id);
 
-const role=()=>document.body.dataset.role==="client"
-?"client"
-:"freelancer";
 
-const isOwner=()=>{
+const role = () => {
 
-return (
-currentUser?.email?.toLowerCase()===
-OWNER_EMAIL.toLowerCase()
-);
+  return document.body.dataset.role === "client"
+    ? "client"
+    : "freelancer";
 
 };
 
-const userName=()=>{
 
-return (
-userData.name ||
-currentUser?.email?.split("@")[0] ||
-"Member"
-);
+const isOwner = () => {
 
-};
-
-const userEmail=()=>{
-
-return (
-userData.email ||
-currentUser?.email ||
-""
-);
+  return (
+    currentUser?.email?.toLowerCase() ===
+    OWNER_EMAIL.toLowerCase()
+  );
 
 };
 
-const esc=value=>{
 
-return String(value??"")
-.replace(/[&<>"']/g,char=>({
+const userName = () => {
 
-"&":"&amp;",
-"<":"&lt;",
-">":"&gt;",
-'"':"&quot;",
-"'":"&#039;"
-
-}[char]));
+  return (
+    userData.name ||
+    currentUser?.displayName ||
+    currentUser?.email?.split("@")[0] ||
+    "Member"
+  );
 
 };
 
-const dateText=value=>{
 
-if(!value)return"";
+const userEmail = () => {
 
-try{
-
-const d=value.toDate
-?value.toDate()
-:new Date(value);
-
-return d.toLocaleDateString(
-undefined,
-{
-day:"numeric",
-month:"short",
-year:"numeric"
-}
-);
-
-}catch{
-
-return"";
-
-}
+  return (
+    userData.email ||
+    currentUser?.email ||
+    ""
+  );
 
 };
 
-const pill=status=>{
 
-const s=status||"pending";
+const esc = value => {
 
-return `
-<span class="pill ${esc(s)}">
-${esc(s.replaceAll("_"," "))}
-</span>
-`;
+  return String(value ?? "")
+    .replace(/[&<>"']/g, char => ({
+
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+
+    }[char]));
 
 };
 
-function showToast(message){
 
-const toast=$("toast");
+const dateText = value => {
 
-if(!toast)return;
+  if (!value) return "";
 
-toast.textContent=message;
+  try {
 
-toast.classList.add("show");
+    const d = value.toDate
+      ? value.toDate()
+      : new Date(value);
 
-setTimeout(
-()=>toast.classList.remove("show"),
-2600
-);
+    return d.toLocaleDateString(
+      undefined,
+      {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      }
+    );
+
+  } catch {
+
+    return "";
+
+  }
+
+};
+
+
+const pill = status => {
+
+  const s = status || "pending";
+
+  return `
+    <span class="pill ${esc(s)}">
+      ${esc(s.replaceAll("_", " "))}
+    </span>
+  `;
+
+};
+
+
+function showToast(message) {
+
+  const toast = $("toast");
+
+  if (!toast) return;
+
+  toast.textContent = message;
+
+  toast.classList.add("show");
+
+  setTimeout(
+    () => toast.classList.remove("show"),
+    2600
+  );
 
 }
 
-function showError(error){
 
-console.error(error);
+function showError(error) {
 
-const box=$("firebaseError");
+  console.error(error);
 
-if(box){
+  const box = $("firebaseError");
 
-box.style.display="block";
+  if (box) {
 
-box.textContent=
-"Firebase Error: "+
-(error?.message||error);
+    box.style.display = "block";
 
-}
+    box.textContent =
+      "Firebase Error: " +
+      (error?.message || error);
 
-showToast("Something went wrong.");
+  }
 
-}
-
-function text(id,value){
-
-if($(id)){
-
-$(id).textContent=value??"";
+  showToast("Something went wrong.");
 
 }
+
+
+function text(id, value) {
+
+  if ($(id)) {
+
+    $(id).textContent = value ?? "";
+
+  }
 
 }
 
@@ -219,40 +234,42 @@ $(id).textContent=value??"";
    AVATAR
 ========================================================= */
 
-function avatarEmoji(gender){
+function avatarEmoji(gender) {
 
-return gender==="male"
-?"👨🏻‍💻"
-:"👩🏻‍💻";
-
-}
-
-function clientAvatarEmoji(gender){
-
-return gender==="male"
-?"👨🏻‍💼"
-:"👩🏻‍💼";
+  return gender === "male"
+    ? "👨🏻‍💻"
+    : "👩🏻‍💻";
 
 }
 
-function setAvatar(){
 
-const emoji=
-role()==="client"
-?clientAvatarEmoji(userData.gender)
-:avatarEmoji(userData.gender);
+function clientAvatarEmoji(gender) {
 
-if($("sideAvatar"))
-$("sideAvatar").textContent=emoji;
+  return gender === "male"
+    ? "👨🏻‍💼"
+    : "👩🏻‍💼";
 
-if($("topAvatar"))
-$("topAvatar").textContent=emoji;
+}
 
-if($("profileAvatar"))
-$("profileAvatar").textContent=emoji;
 
-if($("heroPerson"))
-$("heroPerson").textContent=emoji;
+function setAvatar() {
+
+  const emoji =
+    role() === "client"
+      ? clientAvatarEmoji(userData.gender)
+      : avatarEmoji(userData.gender);
+
+  if ($("sideAvatar"))
+    $("sideAvatar").textContent = emoji;
+
+  if ($("topAvatar"))
+    $("topAvatar").textContent = emoji;
+
+  if ($("profileAvatar"))
+    $("profileAvatar").textContent = emoji;
+
+  if ($("heroPerson"))
+    $("heroPerson").textContent = emoji;
 
 }
 
@@ -261,338 +278,380 @@ $("heroPerson").textContent=emoji;
    NAVIGATION
 ========================================================= */
 
-const navGroups=()=>{
+const navGroups = () => {
 
-if(role()==="client"){
+  if (role() === "client") {
 
-return [
+    return [
 
-[
-"MAIN",
-[
-["dashboardPage","⌂","Dashboard"],
-["projectsPage","▣","My Projects"],
-["applicationsPage","✉","Applications"],
-["messagesPage","◌","Messages"]
-]
-],
+      [
+        "MAIN",
+        [
+          ["dashboardPage", "⌂", "Dashboard"],
+          ["projectsPage", "▣", "My Projects"],
+          ["applicationsPage", "✉", "Applications"],
+          ["messagesPage", "◌", "Messages"]
+        ]
+      ],
 
-[
-"MANAGE",
-[
-["postPage","＋","Post a Project"],
-["jobsPage","♙","Find Freelancers"],
-["projectsPage","▤","Contracts"]
-]
-],
+      [
+        "MANAGE",
+        [
+          ["postPage", "＋", "Post a Project"],
+          ["jobsPage", "♙", "Find Freelancers"],
+          ["projectsPage", "▤", "Contracts"]
+        ]
+      ],
 
-[
-"ACCOUNT",
-[
-["profilePage","♙","Profile"],
-["portfolioPage","▦","Portfolio"],
-["reviewsPage","★","Reviews"],
-["settingsPage","⚙","Settings"]
-]
-],
+      [
+        "ACCOUNT",
+        [
+          ["profilePage", "♙", "Profile"],
+          ["portfolioPage", "▦", "Portfolio"],
+          ["reviewsPage", "★", "Reviews"],
+          ["settingsPage", "⚙", "Settings"]
+        ]
+      ],
 
-[
-"FINANCE",
-[
-["earningsPage","$","Payments"],
-["trackerPage","◷","Time Tracker"]
-]
-]
+      [
+        "FINANCE",
+        [
+          ["earningsPage", "$", "Payments"],
+          ["trackerPage", "◷", "Time Tracker"]
+        ]
+      ]
 
-];
+    ];
 
-}
-
-return [
-
-[
-"MAIN",
-[
-["dashboardPage","⌂","Dashboard"],
-["jobsPage","⌕","Find Work"],
-["applicationsPage","✉","Applications"],
-["projectsPage","▣","My Projects"],
-["messagesPage","◌","Messages"]
-]
-],
-
-[
-"MANAGE",
-[
-["jobsPage","🔖","Saved Jobs"],
-["applicationsPage","✎","Proposals"],
-["projectsPage","▤","Contracts"],
-["earningsPage","$","Earnings"],
-["trackerPage","◷","Time Tracker"]
-]
-],
-
-[
-"ACCOUNT",
-[
-["profilePage","♙","Profile"],
-["portfolioPage","▦","Portfolio"],
-["reviewsPage","★","Reviews"],
-["settingsPage","⚙","Settings"]
-]
-]
-
-];
-
-};
+  }
 
 
-function buildNav(){
+  return [
 
-const nav=$("navArea");
+    [
+      "MAIN",
+      [
+        ["dashboardPage", "⌂", "Dashboard"],
+        ["jobsPage", "⌕", "Find Work"],
+        ["applicationsPage", "✉", "Applications"],
+        ["projectsPage", "▣", "My Projects"],
+        ["messagesPage", "◌", "Messages"]
+      ]
+    ],
 
-if(!nav)return;
+    [
+      "MANAGE",
+      [
+        ["jobsPage", "🔖", "Saved Jobs"],
+        ["applicationsPage", "✎", "Proposals"],
+        ["projectsPage", "▤", "Contracts"],
+        ["earningsPage", "$", "Earnings"],
+        ["trackerPage", "◷", "Time Tracker"]
+      ]
+    ],
 
-nav.innerHTML=
-navGroups()
-.map(([group,items])=>{
+    [
+      "ACCOUNT",
+      [
+        ["profilePage", "♙", "Profile"],
+        ["portfolioPage", "▦", "Portfolio"],
+        ["reviewsPage", "★", "Reviews"],
+        ["settingsPage", "⚙", "Settings"]
+      ]
+    ]
 
-return `
-
-<div class="section-title">
-${group}
-</div>
-
-${items.map(([id,icon,label])=>`
-
-<button
-class="nav"
-data-target="${id}"
-data-title="${esc(label)}">
-
-${icon}&nbsp; ${label}
-
-</button>
-
-`).join("")}
-
-`;
-
-})
-.join("");
-
-
-nav.querySelectorAll(".nav")
-.forEach(button=>{
-
-button.onclick=()=>{
-
-go(
-button.dataset.target,
-button.dataset.title
-);
+  ];
 
 };
 
-});
+
+function buildNav() {
+
+  const nav = $("navArea");
+
+  if (!nav) return;
+
+  nav.innerHTML =
+    navGroups()
+      .map(([group, items]) => {
+
+        return `
+
+          <div class="section-title">
+            ${group}
+          </div>
+
+          ${items.map(([id, icon, label]) => `
+
+            <button
+              class="nav"
+              data-target="${id}"
+              data-title="${esc(label)}">
+
+              ${icon}&nbsp; ${label}
+
+            </button>
+
+          `).join("")}
+
+        `;
+
+      })
+      .join("");
 
 
-nav.querySelectorAll(".nav")
-.forEach(button=>{
+  nav.querySelectorAll(".nav")
+    .forEach(button => {
 
-if(
-button.dataset.target==="dashboardPage"
-){
+      button.onclick = () => {
 
-button.classList.add("active");
+        go(
+          button.dataset.target,
+          button.dataset.title
+        );
+
+      };
+
+    });
+
+
+  nav.querySelectorAll(".nav")
+    .forEach(button => {
+
+      if (
+        button.dataset.target === "dashboardPage"
+      ) {
+
+        button.classList.add("active");
+
+      }
+
+    });
+
+
+  if ($("switchMode")) {
+
+    $("switchMode").textContent =
+      role() === "client"
+        ? "⇄ Switch to Freelancer Mode"
+        : "⇄ Switch to Client Mode";
+
+
+    $("switchMode").onclick = () => {
+
+      if (!isOwner()) {
+
+        showToast(
+          "Only the owner can switch between modes."
+        );
+
+        return;
+
+      }
+
+
+      location.href =
+        role() === "client"
+          ? "index.html"
+          : "client-dashboard.html";
+
+    };
+
+  }
 
 }
 
-});
+
+function go(id, title) {
+
+  document.querySelectorAll(".page")
+    .forEach(page => {
+
+      page.classList.remove("active");
+
+    });
 
 
-if($("switchMode")){
+  $(id)?.classList.add("active");
 
-$("switchMode").textContent=
-role()==="client"
-?"⇄ Switch to Freelancer Mode"
-:"⇄ Switch to Client Mode";
 
-$("switchMode").onclick=()=>{
+  document.querySelectorAll(".nav")
+    .forEach(nav => {
 
-if(!isOwner()){
+      nav.classList.toggle(
+        "active",
+        nav.dataset.target === id
+      );
 
-showToast(
-"Only the owner can switch between modes."
+    });
+
+
+  text(
+    "pageTitle",
+    title || "Dashboard"
+  );
+
+
+  if (id === "dashboardPage")
+    loadDashboard();
+
+  if (id === "jobsPage")
+    loadJobs();
+
+  if (id === "applicationsPage")
+    loadApplications();
+
+  if (id === "projectsPage")
+    loadProjects();
+
+  if (id === "messagesPage")
+    loadConversations();
+
+  if (id === "portfolioPage")
+    loadPortfolio();
+
+  if (id === "reviewsPage")
+    loadReviews();
+
+  if (id === "earningsPage")
+    loadEarnings();
+
+}
+
+
+document.addEventListener(
+  "click",
+  event => {
+
+    const target =
+      event.target.closest("[data-target]");
+
+    if (target) {
+
+      go(
+        target.dataset.target,
+        target.dataset.title ||
+        target.textContent.trim()
+      );
+
+    }
+
+  }
 );
-
-return;
-
-}
-
-location.href=
-role()==="client"
-?"index.html"
-:"client-dashboard.html";
-
-};
-
-}
-
-}
-
-
-function go(id,title){
-
-document.querySelectorAll(".page")
-.forEach(page=>{
-page.classList.remove("active");
-});
-
-$(id)?.classList.add("active");
-
-document.querySelectorAll(".nav")
-.forEach(nav=>{
-
-nav.classList.toggle(
-"active",
-nav.dataset.target===id
-);
-
-});
-
-text("pageTitle",title||"Dashboard");
-
-
-if(id==="dashboardPage")
-loadDashboard();
-
-if(id==="jobsPage")
-loadJobs();
-
-if(id==="applicationsPage")
-loadApplications();
-
-if(id==="projectsPage")
-loadProjects();
-
-if(id==="messagesPage")
-loadConversations();
-
-if(id==="portfolioPage")
-loadPortfolio();
-
-if(id==="reviewsPage")
-loadReviews();
-
-if(id==="earningsPage")
-loadEarnings();
-
-}
-
-
-document.addEventListener("click",event=>{
-
-const target=event.target.closest("[data-target]");
-
-if(target){
-
-go(
-target.dataset.target,
-target.textContent.trim()
-);
-
-}
-
-});
 
 
 /* =========================================================
    IDENTITY
 ========================================================= */
 
-function applyIdentity(){
+function applyIdentity() {
 
-const client=role()==="client";
-
-text("sideName",userName());
-
-text("topName",userName());
-
-text("profileName",userName());
-
-text(
-"profileRole",
-client
-?"Professional Client"
-:"Professional Freelancer"
-);
-
-text(
-"profileEmail",
-userEmail()
-);
-
-text(
-"profileLocation",
-userData.location||
-"Location not added"
-);
-
-text(
-"profileSkills",
-userData.skills||
-"No skills added yet."
-);
-
-text(
-"profileBio",
-userData.bio||
-"No professional bio added yet."
-);
-
-text(
-"sideRole",
-client
-?"Professional Client"
-:"Professional Freelancer"
-);
+  const client = role() === "client";
 
 
-if($("settingsName"))
-$("settingsName").value=userName();
+  text(
+    "sideName",
+    userName()
+  );
 
-if($("settingsEmail"))
-$("settingsEmail").value=userEmail();
+  text(
+    "topName",
+    userName()
+  );
 
-if($("settingsGender"))
-$("settingsGender").value=
-userData.gender||"female";
-
-if($("settingsLocation"))
-$("settingsLocation").value=
-userData.location||"";
-
-if($("settingsRate"))
-$("settingsRate").value=
-userData.hourlyRate||0;
-
-if($("settingsAvailability"))
-$("settingsAvailability").value=
-userData.availability||"Available";
-
-if($("settingsSkills"))
-$("settingsSkills").value=
-userData.skills||"";
-
-if($("settingsBio"))
-$("settingsBio").value=
-userData.bio||"";
+  text(
+    "profileName",
+    userName()
+  );
 
 
-setAvatar();
+  text(
+    "profileRole",
+    client
+      ? "Professional Client"
+      : "Professional Freelancer"
+  );
 
-buildNav();
+
+  text(
+    "profileEmail",
+    userEmail()
+  );
+
+
+  text(
+    "profileLocation",
+    userData.location ||
+    "Location not added"
+  );
+
+
+  text(
+    "profileSkills",
+    userData.skills ||
+    "No skills added yet."
+  );
+
+
+  text(
+    "profileBio",
+    userData.bio ||
+    "No professional bio added yet."
+  );
+
+
+  text(
+    "sideRole",
+    client
+      ? "Professional Client"
+      : "Professional Freelancer"
+  );
+
+
+  if ($("settingsName"))
+    $("settingsName").value =
+      userName();
+
+
+  if ($("settingsEmail"))
+    $("settingsEmail").value =
+      userEmail();
+
+
+  if ($("settingsGender"))
+    $("settingsGender").value =
+      userData.gender || "female";
+
+
+  if ($("settingsLocation"))
+    $("settingsLocation").value =
+      userData.location || "";
+
+
+  if ($("settingsRate"))
+    $("settingsRate").value =
+      userData.hourlyRate || 0;
+
+
+  if ($("settingsAvailability"))
+    $("settingsAvailability").value =
+      userData.availability ||
+      "Available";
+
+
+  if ($("settingsSkills"))
+    $("settingsSkills").value =
+      userData.skills || "";
+
+
+  if ($("settingsBio"))
+    $("settingsBio").value =
+      userData.bio || "";
+
+
+  setAvatar();
+
+  buildNav();
 
 }
 
@@ -601,27 +660,27 @@ buildNav();
    STATS
 ========================================================= */
 
-function stat(icon,value,label){
+function stat(icon, value, label) {
 
-return `
+  return `
 
-<div class="stat">
+    <div class="stat">
 
-<span class="icon">
-${icon}
-</span>
+      <span class="icon">
+        ${icon}
+      </span>
 
-<h3>
-${esc(value)}
-</h3>
+      <h3>
+        ${esc(value)}
+      </h3>
 
-<p>
-${esc(label)}
-</p>
+      <p>
+        ${esc(label)}
+      </p>
 
-</div>
+    </div>
 
-`;
+  `;
 
 }
 
@@ -630,500 +689,600 @@ ${esc(label)}
    DASHBOARD
 ========================================================= */
 
-async function loadDashboard(){
+async function loadDashboard() {
 
-try{
+  try {
 
-if(!currentUser)return;
+    if (!currentUser) return;
 
 
-if(role()==="client"){
+    if (role() === "client") {
 
-const jobsSnap=
-await getDocs(
-query(
-collection(db,"jobs"),
-where("clientId","==",currentUser.uid)
-)
-);
+      const jobsSnap =
+        await getDocs(
+          query(
+            collection(db, "jobs"),
+            where(
+              "clientId",
+              "==",
+              currentUser.uid
+            )
+          )
+        );
 
-const appsSnap=
-await getDocs(
-query(
-collection(db,"applications"),
-where("clientId","==",currentUser.uid)
-)
-);
 
-const accepted=
-appsSnap.docs.filter(
-d=>d.data().status==="accepted"
-).length;
+      const appsSnap =
+        await getDocs(
+          query(
+            collection(db, "applications"),
+            where(
+              "clientId",
+              "==",
+              currentUser.uid
+            )
+          )
+        );
 
-$("stats").innerHTML=[
 
-stat(
-"▣",
-jobsSnap.size,
-"My Projects"
-),
+      const accepted =
+        appsSnap.docs.filter(
+          d =>
+            d.data().status === "accepted"
+        ).length;
 
-stat(
-"♟",
-appsSnap.size,
-"Applications"
-),
 
-stat(
-"✓",
-accepted,
-"Accepted"
-),
+      if ($("stats")) {
 
-stat(
-"★",
-"—",
-"Rating"
-)
+        $("stats").innerHTML = [
 
-].join("");
+          stat(
+            "▣",
+            jobsSnap.size,
+            "My Projects"
+          ),
 
+          stat(
+            "♟",
+            appsSnap.size,
+            "Applications"
+          ),
 
-if(jobsSnap.empty){
+          stat(
+            "✓",
+            accepted,
+            "Accepted"
+          ),
 
-$("activity").innerHTML=`
+          stat(
+            "★",
+            "—",
+            "Rating"
+          )
 
-<div class="empty">
-No activity yet.<br>
-Post your first project.
-</div>
+        ].join("");
 
-`;
+      }
 
-}else{
 
-$("activity").innerHTML=
-jobsSnap.docs
-.slice(-5)
-.reverse()
-.map(d=>{
-
-const x=d.data();
+      if ($("activity")) {
 
-return `
+        if (jobsSnap.empty) {
 
-<div class="activity-row">
+          $("activity").innerHTML = `
 
-<div class="activity-icon">
-▣
-</div>
+            <div class="empty">
+              No activity yet.<br>
+              Post your first project.
+            </div>
 
-<div>
+          `;
 
-<strong>
-${esc(x.title||"Project")}
-</strong>
+        } else {
 
-<span>
-${pill(x.status)}
-· ${dateText(x.createdAt)}
-</span>
+          $("activity").innerHTML =
+            jobsSnap.docs
+              .slice(-5)
+              .reverse()
+              .map(d => {
 
-</div>
+                const x = d.data();
 
-</div>
-
-`;
+                return `
 
-})
-.join("");
+                  <div class="activity-row">
 
-}
+                    <div class="activity-icon">
+                      ▣
+                    </div>
+
+                    <div>
 
+                      <strong>
+                        ${esc(
+                          x.title ||
+                          "Project"
+                        )}
+                      </strong>
+
+                      <span>
+                        ${pill(x.status)}
+                        ·
+                        ${dateText(
+                          x.createdAt
+                        )}
+                      </span>
 
-}else{
+                    </div>
 
-const jobsSnap=
-await getDocs(
-query(
-collection(db,"jobs"),
-where("status","==","open")
-)
-);
+                  </div>
 
-const appsSnap=
-await getDocs(
-query(
-collection(db,"applications"),
-where(
-"freelancerId",
-"==",
-currentUser.uid
-)
-)
-);
+                `;
 
-const projectsSnap=
-await getDocs(
-query(
-collection(db,"jobs"),
-where(
-"freelancerId",
-"==",
-currentUser.uid
-)
-)
-);
+              })
+              .join("");
 
-const rating=await getRating(
-currentUser.uid
-);
+        }
 
-$("stats").innerHTML=[
+      }
 
-stat(
-"▣",
-jobsSnap.size,
-"Available Jobs"
-),
 
-stat(
-"◈",
-projectsSnap.size,
-"Active Projects"
-),
+    } else {
 
-stat(
-"➤",
-appsSnap.size,
-"Applications Sent"
-),
 
-stat(
-"★",
-rating.count
-?rating.average.toFixed(1)
-:"—",
-"Profile Rating"
-)
+      const jobsSnap =
+        await getDocs(
+          query(
+            collection(db, "jobs"),
+            where(
+              "status",
+              "==",
+              "open"
+            )
+          )
+        );
 
-].join("");
 
+      const appsSnap =
+        await getDocs(
+          query(
+            collection(db, "applications"),
+            where(
+              "freelancerId",
+              "==",
+              currentUser.uid
+            )
+          )
+        );
 
-if(appsSnap.empty){
 
-$("activity").innerHTML=`
+      const projectsSnap =
+        await getDocs(
+          query(
+            collection(db, "jobs"),
+            where(
+              "freelancerId",
+              "==",
+              currentUser.uid
+            )
+          )
+        );
 
-<div class="empty">
-No applications yet.<br>
-Start applying to projects.
-</div>
 
-`;
+      const rating =
+        await getRating(
+          currentUser.uid
+        );
 
-}else{
 
-$("activity").innerHTML=
-appsSnap.docs
-.slice(-5)
-.reverse()
-.map(d=>{
+      if ($("stats")) {
 
-const x=d.data();
+        $("stats").innerHTML = [
 
-return `
+          stat(
+            "▣",
+            jobsSnap.size,
+            "Available Jobs"
+          ),
 
-<div class="activity-row">
+          stat(
+            "◈",
+            projectsSnap.size,
+            "Active Projects"
+          ),
 
-<div class="activity-icon">
-➤
-</div>
+          stat(
+            "➤",
+            appsSnap.size,
+            "Applications Sent"
+          ),
 
-<div>
+          stat(
+            "★",
+            rating.count
+              ? rating.average.toFixed(1)
+              : "—",
+            "Profile Rating"
+          )
 
-<strong>
-Application for
-“${esc(x.jobTitle||"Project")}”
-</strong>
+        ].join("");
 
-<span>
-${pill(x.status)}
-· ${dateText(x.createdAt)}
-</span>
+      }
 
-</div>
 
-</div>
+      if ($("activity")) {
 
-`;
+        if (appsSnap.empty) {
 
-})
-.join("");
+          $("activity").innerHTML = `
 
-}
+            <div class="empty">
+              No applications yet.<br>
+              Start applying to projects.
+            </div>
 
-}
+          `;
 
-}catch(error){
+        } else {
 
-showError(error);
+          $("activity").innerHTML =
+            appsSnap.docs
+              .slice(-5)
+              .reverse()
+              .map(d => {
 
-}
+                const x = d.data();
+
+                return `
+
+                  <div class="activity-row">
+
+                    <div class="activity-icon">
+                      ➤
+                    </div>
+
+                    <div>
+
+                      <strong>
+                        Application for
+                        “${esc(
+                          x.jobTitle ||
+                          "Project"
+                        )}”
+                      </strong>
+
+                      <span>
+                        ${pill(x.status)}
+                        ·
+                        ${dateText(
+                          x.createdAt
+                        )}
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                `;
+
+              })
+              .join("");
+
+        }
+
+      }
+
+    }
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
 
 /* =========================================================
-   JOBS
+   JOBS / FIND WORK
 ========================================================= */
 
-async function loadJobs(){
+async function loadJobs() {
 
-const box=$("jobs");
+  const box = $("jobs");
 
-if(!box)return;
+  if (!box) return;
 
-box.innerHTML=
-`<div class="loading">Loading live projects...</div>`;
+  box.innerHTML =
+    `<div class="loading">
+      Loading live projects...
+    </div>`;
 
-try{
 
-if(role()==="client"){
+  try {
 
-const apps=
-await getDocs(
-query(
-collection(db,"applications"),
-where(
-"clientId",
-"==",
-currentUser.uid
-)
-)
-);
 
-if(apps.empty){
+    /* CLIENT:
+       SHOW FREELANCER APPLICATIONS
+    */
 
-box.innerHTML=`
+    if (role() === "client") {
 
-<div class="empty">
-No freelancers have applied yet.
-</div>
+      const apps =
+        await getDocs(
+          query(
+            collection(db, "applications"),
+            where(
+              "clientId",
+              "==",
+              currentUser.uid
+            )
+          )
+        );
 
-`;
 
-return;
+      if (apps.empty) {
 
-}
+        box.innerHTML = `
 
-box.innerHTML=
-apps.docs
-.map(d=>{
+          <div class="empty">
+            No freelancers have applied yet.
+          </div>
 
-const x=d.data();
+        `;
 
-return `
+        return;
 
-<div class="card">
+      }
 
-<h3>
-👤 ${esc(
-x.freelancerName||
-"Freelancer"
-)}
-</h3>
 
-<p>
-Project:
-${esc(x.jobTitle||"Project")}
-</p>
+      box.innerHTML =
+        apps.docs
+          .map(d => {
 
-<div class="meta">
-${pill(x.status)}
-</div>
+            const x = d.data();
 
-<p>
-${esc(x.proposal||"No proposal provided.")}
-</p>
+            return `
 
-<div class="card-actions">
+              <div class="card">
 
-<button
-class="secondary open-app-chat"
-data-job="${esc(x.jobId)}">
+                <h3>
+                  👤 ${esc(
+                    x.freelancerName ||
+                    "Freelancer"
+                  )}
+                </h3>
 
-💬 Message
+                <p>
+                  Project:
+                  ${esc(
+                    x.jobTitle ||
+                    "Project"
+                  )}
+                </p>
 
-</button>
+                <div class="meta">
+                  ${pill(x.status)}
+                </div>
 
-</div>
+                <p>
+                  ${esc(
+                    x.proposal ||
+                    "No proposal provided."
+                  )}
+                </p>
 
-</div>
+                <div class="card-actions">
 
-`;
+                  <button
+                    class="secondary open-app-chat"
+                    data-job="${esc(
+                      x.jobId
+                    )}">
 
-})
-.join("");
+                    💬 Message
 
+                  </button>
 
-box.querySelectorAll(".open-app-chat")
-.forEach(button=>{
+                </div>
 
-button.onclick=async()=>{
+              </div>
 
-await openConversationByProject(
-button.dataset.job
-);
+            `;
 
-go("messagesPage","Messages");
+          })
+          .join("");
 
-};
 
-});
+      box.querySelectorAll(
+        ".open-app-chat"
+      )
+        .forEach(button => {
 
-return;
+          button.onclick = async () => {
 
-}
+            await openConversationByProject(
+              button.dataset.job
+            );
 
+            go(
+              "messagesPage",
+              "Messages"
+            );
 
-const jobsSnap=
-await getDocs(
-query(
-collection(db,"jobs"),
-where("status","==","open")
-)
-);
+          };
 
-const applicationsSnap=
-await getDocs(
-query(
-collection(db,"applications"),
-where(
-"freelancerId",
-"==",
-currentUser.uid
-)
-)
-);
+        });
 
-const applied=
-new Set(
-applicationsSnap.docs.map(
-d=>d.data().jobId
-)
-);
+      return;
 
+    }
 
-if(jobsSnap.empty){
 
-box.innerHTML=`
+    /* FREELANCER:
+       SHOW OPEN PROJECTS
+    */
 
-<div class="empty">
-No open projects right now.
-</div>
+    const jobsSnap =
+      await getDocs(
+        query(
+          collection(db, "jobs"),
+          where(
+            "status",
+            "==",
+            "open"
+          )
+        )
+      );
 
-`;
 
-return;
+    const applicationsSnap =
+      await getDocs(
+        query(
+          collection(db, "applications"),
+          where(
+            "freelancerId",
+            "==",
+            currentUser.uid
+          )
+        )
+      );
 
-}
 
+    const applied =
+      new Set(
+        applicationsSnap.docs.map(
+          d => d.data().jobId
+        )
+      );
 
-box.innerHTML=
-jobsSnap.docs
-.map(d=>{
 
-const x=d.data();
+    if (jobsSnap.empty) {
 
-return `
+      box.innerHTML = `
 
-<div class="card">
+        <div class="empty">
+          No open projects right now.
+        </div>
 
-<h3>
-💼 ${esc(x.title||"Project")}
-</h3>
+      `;
 
-<p>
-${esc(
-x.description||
-"No description"
-)}
-</p>
+      return;
 
-<div class="meta">
+    }
 
-${pill("open")}
 
-<span class="pill">
-💰 $${Number(x.budget||0)}
-</span>
+    box.innerHTML =
+      jobsSnap.docs
+        .map(d => {
 
-<span class="pill">
-📅 ${esc(x.deadline||"—")}
-</span>
+          const x = d.data();
 
-<span class="pill">
-${esc(x.category||"Other")}
-</span>
+          return `
 
-</div>
+            <div class="card">
 
-<p>
-Client:
-${esc(x.clientName||"Client")}
-</p>
+              <h3>
+                💼 ${esc(
+                  x.title ||
+                  "Project"
+                )}
+              </h3>
 
-<div class="card-actions">
+              <p>
+                ${esc(
+                  x.description ||
+                  "No description"
+                )}
+              </p>
 
-${
-applied.has(d.id)
+              <div class="meta">
 
-?`
+                ${pill("open")}
 
-<span class="pill pending">
-Application sent
-</span>
+                <span class="pill">
+                  💰 $${Number(
+                    x.budget || 0
+                  )}
+                </span>
 
-`
+                <span class="pill">
+                  📅 ${esc(
+                    x.deadline ||
+                    "—"
+                  )}
+                </span>
 
-:`
+                <span class="pill">
+                  ${esc(
+                    x.category ||
+                    "Other"
+                  )}
+                </span>
 
-<button
-class="primary apply-btn"
-data-id="${d.id}">
+              </div>
 
-Apply Now
+              <p>
+                Client:
+                ${esc(
+                  x.clientName ||
+                  "Client"
+                )}
+              </p>
 
-</button>
+              <div class="card-actions">
 
-`
+                ${
+                  applied.has(d.id)
 
-}
+                    ? `
 
-</div>
+                      <span class="pill pending">
+                        Application sent
+                      </span>
 
-</div>
+                    `
 
-`;
+                    : `
 
-})
-.join("");
+                      <button
+                        class="primary apply-btn"
+                        data-id="${d.id}">
 
+                        Apply Now
 
-box.querySelectorAll(".apply-btn")
-.forEach(button=>{
+                      </button>
 
-button.onclick=()=>applyJob(
-button.dataset.id
-);
+                    `
+                }
 
-});
+              </div>
 
-}catch(error){
+            </div>
 
-showError(error);
+          `;
 
-}
+        })
+        .join("");
+
+
+    box.querySelectorAll(
+      ".apply-btn"
+    )
+      .forEach(button => {
+
+        button.onclick = () =>
+          applyJob(
+            button.dataset.id
+          );
+
+      });
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
@@ -1132,120 +1291,154 @@ showError(error);
    APPLY JOB
 ========================================================= */
 
-async function applyJob(jobId){
+async function applyJob(jobId) {
 
-try{
+  try {
 
-const jobSnap=
-await getDoc(
-doc(db,"jobs",jobId)
-);
-
-if(!jobSnap.exists()){
-
-showToast("Project no longer exists.");
-
-return;
-
-}
-
-const job=jobSnap.data();
-
-if(job.status!=="open"){
-
-showToast("This project is no longer open.");
-
-return;
-
-}
-
-const old=
-await getDocs(
-query(
-collection(db,"applications"),
-where("jobId","==",jobId),
-where(
-"freelancerId",
-"==",
-currentUser.uid
-)
-)
-);
-
-if(!old.empty){
-
-showToast("You already applied.");
-
-return;
-
-}
-
-const proposal=
-prompt(
-`Write a short proposal for "${job.title||"Project"}":`
-);
-
-if(proposal===null)return;
-
-if(!proposal.trim()){
-
-showToast("Please write a proposal.");
-
-return;
-
-}
+    const jobSnap =
+      await getDoc(
+        doc(db, "jobs", jobId)
+      );
 
 
-await addDoc(
-collection(db,"applications"),
-{
+    if (!jobSnap.exists()) {
 
-jobId,
+      showToast(
+        "Project no longer exists."
+      );
 
-jobTitle:
-job.title||"Project",
+      return;
 
-clientId:
-job.clientId,
-
-clientName:
-job.clientName||"Client",
-
-freelancerId:
-currentUser.uid,
-
-freelancerName:
-userName(),
-
-freelancerEmail:
-userEmail(),
-
-proposal:
-proposal.trim(),
-
-status:
-"pending",
-
-createdAt:
-serverTimestamp()
-
-}
-);
+    }
 
 
-showToast(
-"Application sent successfully ✅"
-);
+    const job =
+      jobSnap.data();
 
-await loadJobs();
 
-await loadDashboard();
+    if (job.status !== "open") {
 
-}catch(error){
+      showToast(
+        "This project is no longer open."
+      );
 
-showError(error);
+      return;
 
-}
+    }
+
+
+    const old =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "applications"
+          ),
+
+          where(
+            "jobId",
+            "==",
+            jobId
+          ),
+
+          where(
+            "freelancerId",
+            "==",
+            currentUser.uid
+          )
+        )
+      );
+
+
+    if (!old.empty) {
+
+      showToast(
+        "You already applied."
+      );
+
+      return;
+
+    }
+
+
+    const proposal =
+      prompt(
+        `Write a short proposal for "${job.title || "Project"}":`
+      );
+
+
+    if (proposal === null)
+      return;
+
+
+    if (!proposal.trim()) {
+
+      showToast(
+        "Please write a proposal."
+      );
+
+      return;
+
+    }
+
+
+    await addDoc(
+      collection(
+        db,
+        "applications"
+      ),
+      {
+
+        jobId,
+
+        jobTitle:
+          job.title ||
+          "Project",
+
+        clientId:
+          job.clientId,
+
+        clientName:
+          job.clientName ||
+          "Client",
+
+        freelancerId:
+          currentUser.uid,
+
+        freelancerName:
+          userName(),
+
+        freelancerEmail:
+          userEmail(),
+
+        proposal:
+          proposal.trim(),
+
+        status:
+          "pending",
+
+        createdAt:
+          serverTimestamp()
+
+      }
+    );
+
+
+    showToast(
+      "Application sent successfully ✅"
+    );
+
+
+    await loadJobs();
+
+    await loadDashboard();
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
@@ -1254,321 +1447,401 @@ showError(error);
    APPLICATIONS
 ========================================================= */
 
-async function loadApplications(){
+async function loadApplications() {
 
-const box=$("applications");
+  const box =
+    $("applications");
 
-if(!box)return;
+  if (!box) return;
 
-box.innerHTML=
-`<div class="loading">Loading applications...</div>`;
 
-try{
+  box.innerHTML =
+    `<div class="loading">
+      Loading applications...
+    </div>`;
 
-const field=
-role()==="client"
-?"clientId"
-:"freelancerId";
 
-const snap=
-await getDocs(
-query(
-collection(db,"applications"),
-where(
-field,
-"==",
-currentUser.uid
-)
-)
-);
+  try {
 
+    const field =
+      role() === "client"
+        ? "clientId"
+        : "freelancerId";
 
-if(snap.empty){
 
-box.innerHTML=
-`<div class="empty">No applications yet.</div>`;
+    const snap =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "applications"
+          ),
 
-return;
+          where(
+            field,
+            "==",
+            currentUser.uid
+          )
+        )
+      );
 
-}
 
+    if (snap.empty) {
 
-box.innerHTML=
-snap.docs
-.map(d=>{
+      box.innerHTML =
+        `<div class="empty">
+          No applications yet.
+        </div>`;
 
-const x=d.data();
+      return;
 
-const client=role()==="client";
+    }
 
-return `
 
-<div class="card">
+    box.innerHTML =
+      snap.docs
+        .map(d => {
 
-<h3>
+          const x =
+            d.data();
 
-${client?"👤":"✉"}
+          const client =
+            role() === "client";
 
-${esc(
-client
-?x.freelancerName||"Freelancer"
-:x.jobTitle||"Project"
-)}
 
-</h3>
+          return `
 
-<p>
+            <div class="card">
 
-${
-client
-?"Project: "+esc(x.jobTitle||"Project")
-:"Client: "+esc(x.clientName||"Client")
-}
+              <h3>
 
-</p>
+                ${client ? "👤" : "✉"}
 
-<div class="meta">
+                ${esc(
+                  client
+                    ? x.freelancerName ||
+                      "Freelancer"
+                    : x.jobTitle ||
+                      "Project"
+                )}
 
-${pill(x.status)}
+              </h3>
 
-<span class="pill">
-${dateText(x.createdAt)}
-</span>
 
-</div>
+              <p>
 
-<p>
+                ${
+                  client
+                    ? "Project: " +
+                      esc(
+                        x.jobTitle ||
+                        "Project"
+                      )
+                    : "Client: " +
+                      esc(
+                        x.clientName ||
+                        "Client"
+                      )
+                }
 
-<b>Proposal:</b>
+              </p>
 
-${esc(
-x.proposal||"No proposal"
-)}
 
-</p>
+              <div class="meta">
 
+                ${pill(x.status)}
 
-${
-client && x.status==="pending"
+                <span class="pill">
+                  ${dateText(
+                    x.createdAt
+                  )}
+                </span>
 
-?`
+              </div>
 
-<div class="card-actions">
 
-<button
-class="primary accept-btn"
-data-id="${d.id}"
-data-job="${x.jobId}">
+              <p>
 
-Accept
+                <b>Proposal:</b>
 
-</button>
+                ${esc(
+                  x.proposal ||
+                  "No proposal"
+                )}
 
-<button
-class="danger reject-btn"
-data-id="${d.id}">
+              </p>
 
-Reject
 
-</button>
+              ${
+                client &&
+                x.status === "pending"
 
-</div>
+                  ? `
 
-`
+                    <div class="card-actions">
 
-:""
+                      <button
+                        class="primary accept-btn"
+                        data-id="${d.id}"
+                        data-job="${x.jobId}">
 
-}
+                        Accept
 
+                      </button>
 
-${
-client && x.status==="accepted"
+                      <button
+                        class="danger reject-btn"
+                        data-id="${d.id}">
 
-?`
+                        Reject
 
-<div class="card-actions">
+                      </button>
 
-<button
-class="secondary app-chat-btn"
-data-job="${x.jobId}">
+                    </div>
 
-💬 Open Chat
+                  `
 
-</button>
+                  : ""
+              }
 
-</div>
 
-`
+              ${
+                client &&
+                x.status === "accepted"
 
-:""
+                  ? `
 
-}
+                    <div class="card-actions">
 
-</div>
+                      <button
+                        class="secondary app-chat-btn"
+                        data-job="${x.jobId}">
 
-`;
+                        💬 Open Chat
 
-})
-.join("");
+                      </button>
 
+                    </div>
 
-box.querySelectorAll(".accept-btn")
-.forEach(button=>{
+                  `
 
-button.onclick=()=>acceptApplication(
-button.dataset.id,
-button.dataset.job
-);
+                  : ""
+              }
 
-});
+            </div>
 
+          `;
 
-box.querySelectorAll(".reject-btn")
-.forEach(button=>{
+        })
+        .join("");
 
-button.onclick=()=>rejectApplication(
-button.dataset.id
-);
 
-});
+    box.querySelectorAll(
+      ".accept-btn"
+    )
+      .forEach(button => {
 
+        button.onclick = () =>
+          acceptApplication(
+            button.dataset.id,
+            button.dataset.job
+          );
 
-box.querySelectorAll(".app-chat-btn")
-.forEach(button=>{
+      });
 
-button.onclick=async()=>{
 
-await openConversationByProject(
-button.dataset.job
-);
+    box.querySelectorAll(
+      ".reject-btn"
+    )
+      .forEach(button => {
 
-go("messagesPage","Messages");
+        button.onclick = () =>
+          rejectApplication(
+            button.dataset.id
+          );
 
-};
+      });
 
-});
 
+    box.querySelectorAll(
+      ".app-chat-btn"
+    )
+      .forEach(button => {
 
-}catch(error){
+        button.onclick = async () => {
 
-showError(error);
+          await openConversationByProject(
+            button.dataset.job
+          );
 
-}
+          go(
+            "messagesPage",
+            "Messages"
+          );
+
+        };
+
+      });
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
 
 /* =========================================================
-   ACCEPT / REJECT
+   ACCEPT APPLICATION
 ========================================================= */
 
 async function acceptApplication(
-applicationId,
-jobId
-){
+  applicationId,
+  jobId
+) {
 
-try{
+  try {
 
-const appSnap=
-await getDoc(
-doc(db,"applications",applicationId)
-);
-
-if(!appSnap.exists())return;
-
-const appData=appSnap.data();
-
-await updateDoc(
-doc(
-db,
-"applications",
-applicationId
-),
-{
-
-status:"accepted",
-
-acceptedAt:
-serverTimestamp()
-
-}
-);
+    const appSnap =
+      await getDoc(
+        doc(
+          db,
+          "applications",
+          applicationId
+        )
+      );
 
 
-await updateDoc(
-doc(db,"jobs",jobId),
-{
-
-status:"assigned",
-
-freelancerId:
-appData.freelancerId,
-
-freelancerName:
-appData.freelancerName||"Freelancer",
-
-freelancerEmail:
-appData.freelancerEmail||"",
-
-paymentStatus:
-"unpaid"
-
-}
-);
+    if (!appSnap.exists())
+      return;
 
 
-await ensureConversation(
-jobId,
-appData.freelancerId,
-appData.freelancerName,
-appData.freelancerEmail
-);
+    const appData =
+      appSnap.data();
 
 
-showToast("Freelancer accepted ✅");
+    await updateDoc(
+      doc(
+        db,
+        "applications",
+        applicationId
+      ),
+      {
 
-await loadApplications();
+        status:
+          "accepted",
 
-await loadProjects();
+        acceptedAt:
+          serverTimestamp()
 
-await loadDashboard();
-
-}catch(error){
-
-showError(error);
-
-}
-
-}
+      }
+    );
 
 
-async function rejectApplication(id){
+    await updateDoc(
+      doc(
+        db,
+        "jobs",
+        jobId
+      ),
+      {
 
-try{
+        status:
+          "assigned",
 
-await updateDoc(
-doc(db,"applications",id),
-{
+        freelancerId:
+          appData.freelancerId,
 
-status:"rejected",
+        freelancerName:
+          appData.freelancerName ||
+          "Freelancer",
 
-rejectedAt:
-serverTimestamp()
+        freelancerEmail:
+          appData.freelancerEmail ||
+          "",
 
-}
-);
+        paymentStatus:
+          "unpaid",
 
-showToast("Application rejected.");
+        platformFee:
+          0
 
-await loadApplications();
+      }
+    );
 
-await loadDashboard();
 
-}catch(error){
+    await ensureConversation(
+      jobId,
+      appData.freelancerId,
+      appData.freelancerName,
+      appData.freelancerEmail
+    );
 
-showError(error);
+
+    showToast(
+      "Freelancer accepted ✅"
+    );
+
+
+    await loadApplications();
+
+    await loadProjects();
+
+    await loadDashboard();
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
+
+
+/* =========================================================
+   REJECT APPLICATION
+========================================================= */
+
+async function rejectApplication(id) {
+
+  try {
+
+    await updateDoc(
+      doc(
+        db,
+        "applications",
+        id
+      ),
+      {
+
+        status:
+          "rejected",
+
+        rejectedAt:
+          serverTimestamp()
+
+      }
+    );
+
+
+    showToast(
+      "Application rejected."
+    );
+
+
+    await loadApplications();
+
+    await loadDashboard();
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
@@ -1577,328 +1850,401 @@ showError(error);
    PROJECTS
 ========================================================= */
 
-async function loadProjects(){
+async function loadProjects() {
 
-const box=$("projects");
+  const box =
+    $("projects");
 
-if(!box)return;
+  if (!box) return;
 
-box.innerHTML=
-`<div class="loading">Loading projects...</div>`;
 
-try{
+  box.innerHTML =
+    `<div class="loading">
+      Loading projects...
+    </div>`;
 
-const field=
-role()==="client"
-?"clientId"
-:"freelancerId";
 
-const snap=
-await getDocs(
-query(
-collection(db,"jobs"),
-where(
-field,
-"==",
-currentUser.uid
-)
-)
-);
+  try {
 
+    const field =
+      role() === "client"
+        ? "clientId"
+        : "freelancerId";
 
-if(snap.empty){
 
-box.innerHTML=
-`<div class="empty">No projects here yet.</div>`;
+    const snap =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "jobs"
+          ),
 
-return;
+          where(
+            field,
+            "==",
+            currentUser.uid
+          )
+        )
+      );
 
-}
 
+    if (snap.empty) {
 
-box.innerHTML=
-snap.docs
-.map(d=>{
+      box.innerHTML =
+        `<div class="empty">
+          No projects here yet.
+        </div>`;
 
-const x=d.data();
+      return;
 
-const freelancer=
-role()!=="client";
+    }
 
-return `
 
-<div class="card">
+    box.innerHTML =
+      snap.docs
+        .map(d => {
 
-<h3>
-💼 ${esc(x.title||"Project")}
-</h3>
+          const x =
+            d.data();
 
-<p>
-${esc(x.description||"")}
-</p>
+          const freelancer =
+            role() !== "client";
 
-<div class="meta">
 
-${pill(x.status||"open")}
+          return `
 
-<span class="pill">
-💰 $${Number(x.budget||0)}
-</span>
+            <div class="card">
 
-<span class="pill">
-Payment:
-${esc(x.paymentStatus||"unpaid")}
-</span>
+              <h3>
+                💼 ${esc(
+                  x.title ||
+                  "Project"
+                )}
+              </h3>
 
-</div>
 
+              <p>
+                ${esc(
+                  x.description ||
+                  ""
+                )}
+              </p>
 
-<p>
 
-${
-role()==="client"
+              <div class="meta">
 
-?`Freelancer:
-${esc(x.freelancerName||"Not assigned yet")}`
+                ${pill(
+                  x.status ||
+                  "open"
+                )}
 
-:`Client:
-${esc(x.clientName||"Client")}`
+                <span class="pill">
+                  💰 $${Number(
+                    x.budget ||
+                    0
+                  )}
+                </span>
 
-}
+                <span class="pill">
 
-</p>
+                  Payment:
+                  ${esc(
+                    x.paymentStatus ||
+                    "unpaid"
+                  )}
 
+                </span>
 
-${
-x.submissionNote
+              </div>
 
-?`
 
-<div class="card">
+              <p>
 
-<strong>Work Submission</strong>
+                ${
+                  role() === "client"
 
-<p>
-${esc(x.submissionNote)}
-</p>
+                    ? `Freelancer:
+                       ${esc(
+                         x.freelancerName ||
+                         "Not assigned yet"
+                       )}`
 
-${
-x.submissionLink
-?`<p>🔗 ${esc(x.submissionLink)}</p>`
-:""
-}
+                    : `Client:
+                       ${esc(
+                         x.clientName ||
+                         "Client"
+                       )}`
+                }
 
-</div>
+              </p>
 
-`
-:""
 
-}
+              ${
+                x.submissionNote
 
+                  ? `
 
-<div class="card-actions">
+                    <div class="card">
 
-${
-freelancer &&
-x.status==="assigned"
+                      <strong>
+                        Work Submission
+                      </strong>
 
-?`
+                      <p>
+                        ${esc(
+                          x.submissionNote
+                        )}
+                      </p>
 
-<button
-class="primary start-work"
-data-id="${d.id}">
+                      ${
+                        x.submissionLink
 
-▶ Start Work
+                          ? `
+                            <p>
+                              🔗 ${esc(
+                                x.submissionLink
+                              )}
+                            </p>
+                          `
 
-</button>
+                          : ""
+                      }
 
-`
-:""
+                    </div>
 
-}
+                  `
 
+                  : ""
+              }
 
-${
-freelancer &&
-x.status==="in_progress"
 
-?`
+              <div class="card-actions">
 
-<button
-class="primary submit-work"
-data-id="${d.id}">
 
-📤 Submit Work
+                ${
+                  freelancer &&
+                  x.status === "assigned"
 
-</button>
+                    ? `
 
-`
-:""
+                      <button
+                        class="primary start-work"
+                        data-id="${d.id}">
 
-}
+                        ▶ Start Work
 
+                      </button>
 
-${
-!freelancer &&
-x.status==="completed_pending"
+                    `
 
-?`
+                    : ""
+                }
 
-<button
-class="primary approve-work"
-data-id="${d.id}">
 
-✓ Approve & Complete
+                ${
+                  freelancer &&
+                  x.status === "in_progress"
 
-</button>
+                    ? `
 
-`
-:""
+                      <button
+                        class="primary submit-work"
+                        data-id="${d.id}">
 
-}
+                        📤 Submit Work
 
+                      </button>
 
-${
-!freelancer &&
-x.status==="completed" &&
-x.paymentStatus!=="paid"
+                    `
 
-?`
+                    : ""
+                }
 
-<button
-class="primary mark-paid"
-data-id="${d.id}">
 
-💵 Mark Payment Paid
+                ${
+                  !freelancer &&
+                  x.status ===
+                    "completed_pending"
 
-</button>
+                    ? `
 
-`
-:""
+                      <button
+                        class="primary approve-work"
+                        data-id="${d.id}">
 
-}
+                        ✓ Approve & Complete
 
+                      </button>
 
-${
-x.status!=="open"
+                    `
 
-?`
+                    : ""
+                }
 
-<button
-class="secondary project-chat"
-data-id="${d.id}">
 
-💬 Open Chat
+                ${
+                  !freelancer &&
+                  x.status === "completed" &&
+                  x.paymentStatus !== "paid"
 
-</button>
+                    ? `
 
-`
-:""
+                      <button
+                        class="primary mark-paid"
+                        data-id="${d.id}">
 
-}
+                        💵 Mark Payment Paid
 
+                      </button>
 
-${
-!freelancer &&
-x.status==="completed"
+                    `
 
-?`
+                    : ""
+                }
 
-<button
-class="secondary review-project"
-data-id="${d.id}">
 
-★ Leave Review
+                ${
+                  x.status !== "open"
 
-</button>
+                    ? `
 
-`
-:""
+                      <button
+                        class="secondary project-chat"
+                        data-id="${d.id}">
 
-}
+                        💬 Open Chat
 
-</div>
+                      </button>
 
-</div>
+                    `
 
-`;
+                    : ""
+                }
 
-})
-.join("");
 
+                ${
+                  !freelancer &&
+                  x.status === "completed"
 
-box.querySelectorAll(".start-work")
-.forEach(btn=>{
+                    ? `
 
-btn.onclick=()=>updateProjectStatus(
-btn.dataset.id,
-"in_progress"
-);
+                      <button
+                        class="secondary review-project"
+                        data-id="${d.id}">
 
-});
+                        ★ Leave Review
 
+                      </button>
 
-box.querySelectorAll(".submit-work")
-.forEach(btn=>{
+                    `
 
-btn.onclick=()=>submitWork(
-btn.dataset.id
-);
+                    : ""
+                }
 
-});
 
+              </div>
 
-box.querySelectorAll(".approve-work")
-.forEach(btn=>{
+            </div>
 
-btn.onclick=()=>approveWork(
-btn.dataset.id
-);
+          `;
 
-});
+        })
+        .join("");
 
 
-box.querySelectorAll(".mark-paid")
-.forEach(btn=>{
+    box.querySelectorAll(
+      ".start-work"
+    )
+      .forEach(btn => {
 
-btn.onclick=()=>markPaid(
-btn.dataset.id
-);
+        btn.onclick = () =>
+          updateProjectStatus(
+            btn.dataset.id,
+            "in_progress"
+          );
 
-});
+      });
 
 
-box.querySelectorAll(".project-chat")
-.forEach(btn=>{
+    box.querySelectorAll(
+      ".submit-work"
+    )
+      .forEach(btn => {
 
-btn.onclick=async()=>{
+        btn.onclick = () =>
+          submitWork(
+            btn.dataset.id
+          );
 
-await openConversationByProject(
-btn.dataset.id
-);
+      });
 
-go("messagesPage","Messages");
 
-};
+    box.querySelectorAll(
+      ".approve-work"
+    )
+      .forEach(btn => {
 
-});
+        btn.onclick = () =>
+          approveWork(
+            btn.dataset.id
+          );
 
+      });
 
-box.querySelectorAll(".review-project")
-.forEach(btn=>{
 
-btn.onclick=()=>leaveReview(
-btn.dataset.id
-);
+    box.querySelectorAll(
+      ".mark-paid"
+    )
+      .forEach(btn => {
 
-});
+        btn.onclick = () =>
+          markPaid(
+            btn.dataset.id
+          );
 
+      });
 
-}catch(error){
 
-showError(error);
+    box.querySelectorAll(
+      ".project-chat"
+    )
+      .forEach(btn => {
 
-}
+        btn.onclick = async () => {
+
+          await openConversationByProject(
+            btn.dataset.id
+          );
+
+          go(
+            "messagesPage",
+            "Messages"
+          );
+
+        };
+
+      });
+
+
+    box.querySelectorAll(
+      ".review-project"
+    )
+      .forEach(btn => {
+
+        btn.onclick = () =>
+          leaveReview(
+            btn.dataset.id
+          );
+
+      });
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
@@ -1908,39 +2254,46 @@ showError(error);
 ========================================================= */
 
 async function updateProjectStatus(
-id,
-status
-){
+  id,
+  status
+) {
 
-try{
+  try {
 
-await updateDoc(
-doc(db,"jobs",id),
-{
+    await updateDoc(
+      doc(
+        db,
+        "jobs",
+        id
+      ),
+      {
 
-status,
+        status,
 
-updatedAt:
-serverTimestamp()
+        updatedAt:
+          serverTimestamp()
 
-}
-);
+      }
+    );
 
-showToast(
-status==="in_progress"
-?"Work started ✅"
-:"Project updated."
-);
 
-await loadProjects();
+    showToast(
+      status === "in_progress"
+        ? "Work started ✅"
+        : "Project updated."
+    );
 
-await loadDashboard();
 
-}catch(error){
+    await loadProjects();
 
-showError(error);
+    await loadDashboard();
 
-}
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
@@ -1949,60 +2302,74 @@ showError(error);
    SUBMIT WORK
 ========================================================= */
 
-async function submitWork(id){
+async function submitWork(id) {
 
-const note=
-prompt(
-"Describe the work you completed:"
-);
-
-if(note===null)return;
-
-if(!note.trim()){
-
-showToast("Please add a submission note.");
-
-return;
-
-}
-
-const link=
-prompt(
-"Optional: add your work link (GitHub/Drive/etc.):"
-)||"";
+  const note =
+    prompt(
+      "Describe the work you completed:"
+    );
 
 
-try{
+  if (note === null)
+    return;
 
-await updateDoc(
-doc(db,"jobs",id),
-{
 
-status:"completed_pending",
+  if (!note.trim()) {
 
-submissionNote:
-note.trim(),
+    showToast(
+      "Please add a submission note."
+    );
 
-submissionLink:
-link.trim(),
+    return;
 
-submittedAt:
-serverTimestamp()
+  }
 
-}
-);
 
-showToast(
-"Work submitted to client ✅"
-);
+  const link =
+    prompt(
+      "Optional: add your work link (GitHub/Drive/etc.):"
+    ) || "";
 
-await loadProjects();
 
-}catch(error){
+  try {
 
-showError(error);
+    await updateDoc(
+      doc(
+        db,
+        "jobs",
+        id
+      ),
+      {
 
-}
+        status:
+          "completed_pending",
+
+        submissionNote:
+          note.trim(),
+
+        submissionLink:
+          link.trim(),
+
+        submittedAt:
+          serverTimestamp()
+
+      }
+    );
+
+
+    showToast(
+      "Work submitted to client ✅"
+    );
+
+
+    await loadProjects();
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
@@ -2011,33 +2378,46 @@ showError(error);
    APPROVE WORK
 ========================================================= */
 
-async function approveWork(id){
+async function approveWork(id) {
 
-try{
+  try {
 
-await updateDoc(
-doc(db,"jobs",id),
-{
+    await updateDoc(
+      doc(
+        db,
+        "jobs",
+        id
+      ),
+      {
 
-status:"completed",
+        status:
+          "completed",
 
-completedAt:
-serverTimestamp()
+        completedAt:
+          serverTimestamp(),
 
-}
-);
+        paymentStatus:
+          "unpaid"
 
-showToast("Project completed ✅");
+      }
+    );
 
-await loadProjects();
 
-await loadDashboard();
+    showToast(
+      "Project completed ✅"
+    );
 
-}catch(error){
 
-showError(error);
+    await loadProjects();
 
-}
+    await loadDashboard();
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
@@ -2046,45 +2426,455 @@ showError(error);
    MARK PAYMENT PAID
 ========================================================= */
 
-async function markPaid(id){
+async function markPaid(id) {
 
-const confirmPayment=
-confirm(
-"Confirm that you have actually paid this freelancer?"
-);
+  const confirmPayment =
+    confirm(
+      "Confirm that you have actually paid this freelancer?"
+    );
 
-if(!confirmPayment)return;
 
-try{
+  if (!confirmPayment)
+    return;
 
-await updateDoc(
-doc(db,"jobs",id),
-{
 
-paymentStatus:"paid",
+  try {
 
-paymentPaidAt:
-serverTimestamp(),
+    await updateDoc(
+      doc(
+        db,
+        "jobs",
+        id
+      ),
+      {
 
-platformFee:
-10
+        paymentStatus:
+          "paid",
+
+        paymentPaidAt:
+          serverTimestamp(),
+
+        platformFee:
+          0
+
+      }
+    );
+
+
+    showToast(
+      "Payment marked as paid."
+    );
+
+
+    await loadProjects();
+
+    await loadEarnings();
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
-);
 
-showToast(
-"Payment marked as paid."
-);
 
-await loadProjects();
+/* =========================================================
+   CONVERSATIONS
+========================================================= */
 
-await loadEarnings();
+async function ensureConversation(
+  jobId,
+  otherId,
+  otherName,
+  otherEmail
+) {
 
-}catch(error){
+  const existing =
+    await getDocs(
+      query(
+        collection(
+          db,
+          "conversations"
+        ),
 
-showError(error);
+        where(
+          "jobId",
+          "==",
+          jobId
+        )
+      )
+    );
+
+
+  if (!existing.empty) {
+
+    return existing.docs[0].id;
+
+  }
+
+
+  const jobSnap =
+    await getDoc(
+      doc(
+        db,
+        "jobs",
+        jobId
+      )
+    );
+
+
+  const job =
+    jobSnap.exists()
+      ? jobSnap.data()
+      : {};
+
+
+  const participants = [
+    currentUser.uid,
+    otherId
+  ].filter(Boolean);
+
+
+  const ref =
+    await addDoc(
+      collection(
+        db,
+        "conversations"
+      ),
+      {
+
+        jobId,
+
+        jobTitle:
+          job.title ||
+          "Project",
+
+        participants,
+
+        participantNames: {
+
+          [currentUser.uid]:
+            userName(),
+
+          [otherId]:
+            otherName ||
+            "User"
+
+        },
+
+        participantEmails: {
+
+          [currentUser.uid]:
+            userEmail(),
+
+          [otherId]:
+            otherEmail ||
+            ""
+
+        },
+
+        createdAt:
+          serverTimestamp(),
+
+        updatedAt:
+          serverTimestamp()
+
+      }
+    );
+
+
+  return ref.id;
 
 }
+
+
+/* =========================================================
+   LOAD CONVERSATIONS
+========================================================= */
+
+async function loadConversations() {
+
+  const box =
+    $("conversations");
+
+  if (!box) return;
+
+
+  box.innerHTML =
+    `<div class="loading">
+      Loading chats...
+    </div>`;
+
+
+  try {
+
+    const snap =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "conversations"
+          ),
+
+          where(
+            "participants",
+            "array-contains",
+            currentUser.uid
+          )
+        )
+      );
+
+
+    if (snap.empty) {
+
+      box.innerHTML =
+        `<div class="empty">
+          No conversations yet.
+        </div>`;
+
+
+      if ($("composer"))
+        $("composer").style.display =
+          "none";
+
+
+      return;
+
+    }
+
+
+    box.innerHTML =
+      snap.docs
+        .map(d => {
+
+          const x =
+            d.data();
+
+          const names =
+            x.participantNames ||
+            {};
+
+
+          const other =
+            Object.entries(
+              names
+            )
+              .find(
+                ([id]) =>
+                  id !==
+                  currentUser.uid
+              );
+
+
+          return `
+
+            <div
+              class="conversation"
+              data-id="${d.id}">
+
+              <strong>
+                ${esc(
+                  other?.[1] ||
+                  "Project Chat"
+                )}
+              </strong>
+
+              <span>
+                ${esc(
+                  x.jobTitle ||
+                  "Project"
+                )}
+              </span>
+
+            </div>
+
+          `;
+
+        })
+        .join("");
+
+
+    box.querySelectorAll(
+      ".conversation"
+    )
+      .forEach(item => {
+
+        item.onclick = () =>
+          openConversation(
+            item.dataset.id
+          );
+
+      });
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
+
+}
+
+
+/* =========================================================
+   OPEN CONVERSATION BY PROJECT
+========================================================= */
+
+async function openConversationByProject(
+  jobId
+) {
+
+  const snap =
+    await getDocs(
+      query(
+        collection(
+          db,
+          "conversations"
+        ),
+
+        where(
+          "jobId",
+          "==",
+          jobId
+        )
+      )
+    );
+
+
+  if (!snap.empty) {
+
+    await openConversation(
+      snap.docs[0].id
+    );
+
+    return;
+
+  }
+
+
+  const jobSnap =
+    await getDoc(
+      doc(
+        db,
+        "jobs",
+        jobId
+      )
+    );
+
+
+  if (!jobSnap.exists())
+    return;
+
+
+  const job =
+    jobSnap.data();
+
+
+  const otherId =
+    role() === "client"
+      ? job.freelancerId
+      : job.clientId;
+
+
+  const otherName =
+    role() === "client"
+      ? job.freelancerName
+      : job.clientName;
+
+
+  const otherEmail =
+    role() === "client"
+      ? job.freelancerEmail
+      : job.clientEmail || "";
+
+
+  if (!otherId) {
+
+    showToast(
+      "The other user is not assigned yet."
+    );
+
+    return;
+
+  }
+
+
+  const id =
+    await ensureConversation(
+      jobId,
+      otherId,
+      otherName,
+      otherEmail
+    );
+
+
+  await openConversation(id);
+
+}
+
+
+/* =========================================================
+   OPEN CONVERSATION
+========================================================= */
+
+async function openConversation(id) {
+
+  currentConversation =
+    id;
+
+
+  document.querySelectorAll(
+    ".conversation"
+  )
+    .forEach(x => {
+
+      x.classList.toggle(
+        "active",
+        x.dataset.id === id
+      );
+
+    });
+
+
+  const snap =
+    await getDoc(
+      doc(
+        db,
+        "conversations",
+        id
+      )
+    );
+
+
+  if (!snap.exists())
+    return;
+
+
+  const conversation =
+    snap.data();
+
+
+  text(
+    "chatTitle",
+    conversation.jobTitle ||
+    "Project Chat"
+  );
+
+
+  text(
+    "chatSubtitle",
+    "Secure project conversation"
+  );
+
+
+  if ($("composer"))
+    $("composer").style.display =
+      "flex";
+
+
+  await loadMessages(id);
 
 }
 
@@ -2093,435 +2883,245 @@ showError(error);
    MESSAGES
 ========================================================= */
 
-async function ensureConversation(
-jobId,
-otherId,
-otherName,
-otherEmail
-){
+async function loadMessages(id) {
 
-const existing=
-await getDocs(
-query(
-collection(db,"conversations"),
-where(
-"jobId",
-"==",
-jobId
-)
-)
-);
+  const box =
+    $("messages");
 
-if(!existing.empty){
-
-return existing.docs[0].id;
-
-}
+  if (!box) return;
 
 
-const jobSnap=
-await getDoc(
-doc(db,"jobs",jobId)
-);
-
-const job=jobSnap.exists()
-?jobSnap.data()
-:{};
+  box.innerHTML =
+    `<div class="loading">
+      Loading messages...
+    </div>`;
 
 
-const participants=[
-currentUser.uid,
-otherId
-].filter(Boolean);
+  try {
+
+    const snap =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "messages"
+          ),
+
+          where(
+            "conversationId",
+            "==",
+            id
+          )
+        )
+      );
 
 
-const ref=
-await addDoc(
-collection(db,"conversations"),
-{
+    const docs =
+      snap.docs.sort(
+        (a, b) => {
 
-jobId,
+          const ad =
+            a.data()
+              .createdAt
+              ?.toMillis?.() || 0;
 
-jobTitle:
-job.title||"Project",
+          const bd =
+            b.data()
+              .createdAt
+              ?.toMillis?.() || 0;
 
-participants,
+          return ad - bd;
 
-participantNames:{
-[currentUser.uid]:userName(),
-[otherId]:otherName||"User"
-},
-
-participantEmails:{
-[currentUser.uid]:userEmail(),
-[otherId]:otherEmail||""
-},
-
-createdAt:
-serverTimestamp(),
-
-updatedAt:
-serverTimestamp()
-
-}
-);
-
-return ref.id;
-
-}
+        }
+      );
 
 
-async function loadConversations(){
+    if (!docs.length) {
 
-const box=$("conversations");
+      box.innerHTML =
+        `<div class="empty">
+          No messages yet.
+          Start the conversation.
+        </div>`;
 
-if(!box)return;
+      return;
 
-box.innerHTML=
-`<div class="loading">Loading chats...</div>`;
-
-try{
-
-const snap=
-await getDocs(
-query(
-collection(db,"conversations"),
-where(
-"participants",
-"array-contains",
-currentUser.uid
-)
-)
-);
+    }
 
 
-if(snap.empty){
+    box.innerHTML =
+      docs
+        .map(d => {
 
-box.innerHTML=
-`<div class="empty">No conversations yet.</div>`;
+          const x =
+            d.data();
 
-$("composer").style.display="none";
-
-return;
-
-}
-
-
-box.innerHTML=
-snap.docs
-.map(d=>{
-
-const x=d.data();
-
-const names=x.participantNames||{};
-
-const other=
-Object.entries(names)
-.find(([id])=>id!==currentUser.uid);
-
-return `
-
-<div
-class="conversation"
-data-id="${d.id}">
-
-<strong>
-${esc(
-other?.[1]||
-"Project Chat"
-)}
-</strong>
-
-<span>
-${esc(x.jobTitle||"Project")}
-</span>
-
-</div>
-
-`;
-
-})
-.join("");
+          const mine =
+            x.senderId ===
+            currentUser.uid;
 
 
-box.querySelectorAll(".conversation")
-.forEach(item=>{
+          return `
 
-item.onclick=()=>openConversation(
-item.dataset.id
-);
+            <div
+              class="bubble ${
+                mine
+                  ? "mine"
+                  : ""
+              }">
 
-});
+              ${esc(
+                x.text
+              )}
 
-}catch(error){
+              <small>
+                ${esc(
+                  x.senderName ||
+                  "User"
+                )}
+                ·
+                ${dateText(
+                  x.createdAt
+                )}
+              </small>
 
-showError(error);
+            </div>
 
-}
+          `;
+
+        })
+        .join("");
+
+
+    box.scrollTop =
+      box.scrollHeight;
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
 
-async function openConversationByProject(jobId){
+/* =========================================================
+   SEND MESSAGE
+========================================================= */
 
-const snap=
-await getDocs(
-query(
-collection(db,"conversations"),
-where("jobId","==",jobId)
-)
-);
+$("sendMessage")
+  ?.addEventListener(
+    "click",
+    sendMessage
+  );
 
-if(!snap.empty){
 
-await openConversation(
-snap.docs[0].id
-);
+$("messageInput")
+  ?.addEventListener(
+    "keydown",
+    event => {
 
-return;
+      if (
+        event.key === "Enter" &&
+        !event.shiftKey
+      ) {
 
-}
+        event.preventDefault();
 
+        sendMessage();
 
-const jobSnap=
-await getDoc(
-doc(db,"jobs",jobId)
-);
+      }
 
-if(!jobSnap.exists())return;
+    }
+  );
 
-const job=jobSnap.data();
 
-const otherId=
-role()==="client"
-?job.freelancerId
-:job.clientId;
+async function sendMessage() {
 
-const otherName=
-role()==="client"
-?job.freelancerName
-:job.clientName;
+  if (!currentConversation) {
 
-const otherEmail=
-role()==="client"
-?job.freelancerEmail
-:"";
+    showToast(
+      "Select a conversation."
+    );
 
+    return;
 
-if(!otherId)return;
+  }
 
-const id=
-await ensureConversation(
-jobId,
-otherId,
-otherName,
-otherEmail
-);
 
-await openConversation(id);
+  const input =
+    $("messageInput");
 
-}
 
+  if (!input)
+    return;
 
-async function openConversation(id){
 
-currentConversation=id;
+  const textValue =
+    input.value.trim();
 
-document.querySelectorAll(".conversation")
-.forEach(x=>{
 
-x.classList.toggle(
-"active",
-x.dataset.id===id
-);
+  if (!textValue)
+    return;
 
-});
 
+  try {
 
-const snap=
-await getDoc(
-doc(db,"conversations",id)
-);
+    await addDoc(
+      collection(
+        db,
+        "messages"
+      ),
+      {
 
-if(!snap.exists())return;
+        conversationId:
+          currentConversation,
 
-const conversation=snap.data();
+        senderId:
+          currentUser.uid,
 
-text(
-"chatTitle",
-conversation.jobTitle||"Project Chat"
-);
+        senderName:
+          userName(),
 
-text(
-"chatSubtitle",
-"Secure project conversation"
-);
+        text:
+          textValue,
 
-$("composer").style.display="flex";
+        createdAt:
+          serverTimestamp()
 
+      }
+    );
 
-await loadMessages(id);
 
-}
+    await updateDoc(
+      doc(
+        db,
+        "conversations",
+        currentConversation
+      ),
+      {
 
+        updatedAt:
+          serverTimestamp()
 
-async function loadMessages(id){
+      }
+    );
 
-const box=$("messages");
 
-box.innerHTML=
-`<div class="loading">Loading messages...</div>`;
+    input.value = "";
 
-try{
 
-const snap=
-await getDocs(
-query(
-collection(db,"messages"),
-where(
-"conversationId",
-"==",
-id
-)
-)
-);
+    await loadMessages(
+      currentConversation
+    );
 
-const docs=
-snap.docs
-.sort((a,b)=>{
 
-const ad=a.data().createdAt?.toMillis?.()||0;
+  } catch (error) {
 
-const bd=b.data().createdAt?.toMillis?.()||0;
+    showError(error);
 
-return ad-bd;
-
-});
-
-
-if(!docs.length){
-
-box.innerHTML=
-`<div class="empty">No messages yet. Start the conversation.</div>`;
-
-return;
-
-}
-
-
-box.innerHTML=
-docs
-.map(d=>{
-
-const x=d.data();
-
-const mine=
-x.senderId===currentUser.uid;
-
-return `
-
-<div class="bubble ${mine?"mine":""}">
-
-${esc(x.text)}
-
-<small>
-${esc(x.senderName||"User")}
-·
-${dateText(x.createdAt)}
-</small>
-
-</div>
-
-`;
-
-})
-.join("");
-
-box.scrollTop=box.scrollHeight;
-
-}catch(error){
-
-showError(error);
-
-}
-
-}
-
-
-$("sendMessage")?.addEventListener(
-"click",
-sendMessage
-);
-
-
-async function sendMessage(){
-
-if(!currentConversation){
-
-showToast("Select a conversation.");
-
-return;
-
-}
-
-const input=$("messageInput");
-
-const textValue=input.value.trim();
-
-if(!textValue)return;
-
-
-try{
-
-await addDoc(
-collection(db,"messages"),
-{
-
-conversationId:
-currentConversation,
-
-senderId:
-currentUser.uid,
-
-senderName:
-userName(),
-
-text:
-textValue,
-
-createdAt:
-serverTimestamp()
-
-}
-);
-
-
-await updateDoc(
-doc(
-db,
-"conversations",
-currentConversation
-),
-{
-
-updatedAt:
-serverTimestamp()
-
-}
-);
-
-
-input.value="";
-
-await loadMessages(
-currentConversation
-);
-
-}catch(error){
-
-showError(error);
-
-}
+  }
 
 }
 
@@ -2530,337 +3130,520 @@ showError(error);
    POST PROJECT
 ========================================================= */
 
-$("postForm")?.addEventListener(
-"submit",
-async event=>{
+$("postForm")
+  ?.addEventListener(
+    "submit",
+    async event => {
 
-event.preventDefault();
-
-try{
-
-const title=
-$("postTitle").value.trim();
-
-const category=
-$("postCategory").value;
-
-const description=
-$("postDescription").value.trim();
-
-const budget=
-Number($("postBudget").value);
-
-const deadline=
-$("postDeadline").value;
+      event.preventDefault();
 
 
-if(!title||
-!category||
-!description||
-!budget||
-!deadline){
+      try {
 
-showToast(
-"Please complete all project fields."
-);
-
-return;
-
-}
+        const title =
+          $("postTitle")
+            ?.value
+            .trim();
 
 
-await addDoc(
-collection(db,"jobs"),
-{
-
-title,
-
-category,
-
-description,
-
-budget,
-
-deadline,
-
-clientId:
-currentUser.uid,
-
-clientName:
-userName(),
-
-status:
-"open",
-
-freelancerId:"",
-
-freelancerName:"",
-
-freelancerEmail:"",
-
-paymentStatus:
-"unpaid",
-
-platformFee:
-10,
-
-createdAt:
-serverTimestamp()
-
-}
-);
+        const category =
+          $("postCategory")
+            ?.value;
 
 
-$("postForm").reset();
+        const description =
+          $("postDescription")
+            ?.value
+            .trim();
 
-text(
-"postMessage",
-"Project published successfully ✅"
-);
 
-showToast(
-"Project published successfully."
-);
+        const budget =
+          Number(
+            $("postBudget")
+              ?.value
+          );
 
-await loadDashboard();
 
-}catch(error){
+        const deadline =
+          $("postDeadline")
+            ?.value;
 
-showError(error);
 
-}
+        if (
+          !title ||
+          !category ||
+          !description ||
+          !budget ||
+          !deadline
+        ) {
 
-}
-);
+          showToast(
+            "Please complete all project fields."
+          );
+
+          return;
+
+        }
+
+
+        await addDoc(
+          collection(
+            db,
+            "jobs"
+          ),
+          {
+
+            title,
+
+            category,
+
+            description,
+
+            budget,
+
+            deadline,
+
+            clientId:
+              currentUser.uid,
+
+            clientName:
+              userName(),
+
+            clientEmail:
+              userEmail(),
+
+            status:
+              "open",
+
+            freelancerId:
+              "",
+
+            freelancerName:
+              "",
+
+            freelancerEmail:
+              "",
+
+            paymentStatus:
+              "unpaid",
+
+            platformFee:
+              0,
+
+            createdAt:
+              serverTimestamp()
+
+          }
+        );
+
+
+        $("postForm").reset();
+
+
+        text(
+          "postMessage",
+          "Project published successfully ✅"
+        );
+
+
+        showToast(
+          "Project published successfully."
+        );
+
+
+        await loadDashboard();
+
+
+      } catch (error) {
+
+        showError(error);
+
+      }
+
+    }
+  );
 
 
 /* =========================================================
    PROFILE SETTINGS
 ========================================================= */
 
-$("settingsForm")?.addEventListener(
-"submit",
-async event=>{
+$("settingsForm")
+  ?.addEventListener(
+    "submit",
+    async event => {
 
-event.preventDefault();
-
-try{
-
-const updates={
-
-name:
-$("settingsName").value.trim(),
-
-gender:
-$("settingsGender").value,
-
-location:
-$("settingsLocation").value.trim(),
-
-hourlyRate:
-Number($("settingsRate").value||0),
-
-availability:
-$("settingsAvailability").value,
-
-skills:
-$("settingsSkills").value.trim(),
-
-bio:
-$("settingsBio").value.trim()
-
-};
+      event.preventDefault();
 
 
-if(!updates.name){
+      try {
 
-showToast("Name cannot be empty.");
+        const updates = {
 
-return;
+          name:
+            $("settingsName")
+              ?.value
+              .trim(),
 
-}
+          gender:
+            $("settingsGender")
+              ?.value,
+
+          location:
+            $("settingsLocation")
+              ?.value
+              .trim(),
+
+          hourlyRate:
+            Number(
+              $("settingsRate")
+                ?.value || 0
+            ),
+
+          availability:
+            $("settingsAvailability")
+              ?.value,
+
+          skills:
+            $("settingsSkills")
+              ?.value
+              .trim(),
+
+          bio:
+            $("settingsBio")
+              ?.value
+              .trim()
+
+        };
 
 
-await updateDoc(
-doc(db,"users",currentUser.uid),
-updates
-);
+        if (!updates.name) {
 
-userData={
-...userData,
-...updates
-};
+          showToast(
+            "Name cannot be empty."
+          );
 
-applyIdentity();
+          return;
 
-text(
-"settingsMessage",
-"Profile saved successfully ✅"
-);
+        }
 
-showToast("Profile updated.");
 
-}catch(error){
+        await updateDoc(
+          doc(
+            db,
+            "users",
+            currentUser.uid
+          ),
+          updates
+        );
 
-showError(error);
 
-}
+        userData = {
+          ...userData,
+          ...updates
+        };
 
-}
-);
+
+        applyIdentity();
+
+
+        text(
+          "settingsMessage",
+          "Profile saved successfully ✅"
+        );
+
+
+        showToast(
+          "Profile updated."
+        );
+
+
+      } catch (error) {
+
+        showError(error);
+
+      }
+
+    }
+  );
 
 
 /* =========================================================
    PASSWORD RESET
 ========================================================= */
 
-$("resetPasswordBtn")?.addEventListener(
-"click",
-async()=>{
+$("resetPasswordBtn")
+  ?.addEventListener(
+    "click",
+    async () => {
 
-try{
+      try {
 
-await sendPasswordResetEmail(
-auth,
-userEmail()
-);
+        await sendPasswordResetEmail(
+          auth,
+          userEmail()
+        );
 
-text(
-"securityStatus",
-"Password reset email sent successfully."
-);
 
-showToast(
-"Password reset email sent."
-);
+        text(
+          "securityStatus",
+          "Password reset email sent successfully."
+        );
 
-}catch(error){
 
-showError(error);
+        showToast(
+          "Password reset email sent."
+        );
 
-}
 
-}
-);
+      } catch (error) {
+
+        showError(error);
+
+      }
+
+    }
+  );
 
 
 /* =========================================================
    PORTFOLIO
 ========================================================= */
 
-$("portfolioForm")?.addEventListener(
-"submit",
-async event=>{
+$("portfolioForm")
+  ?.addEventListener(
+    "submit",
+    async event => {
 
-event.preventDefault();
+      event.preventDefault();
 
-try{
 
-await addDoc(
-collection(db,"portfolio"),
-{
+      try {
 
-userId:
-currentUser.uid,
+        const title =
+          $("portfolioTitle")
+            ?.value
+            .trim();
 
-title:
-$("portfolioTitle").value.trim(),
 
-category:
-$("portfolioCategory").value.trim(),
+        const category =
+          $("portfolioCategory")
+            ?.value
+            .trim();
 
-description:
-$("portfolioDescription").value.trim(),
 
-createdAt:
-serverTimestamp()
+        const description =
+          $("portfolioDescription")
+            ?.value
+            .trim();
+
+
+        if (!title || !description) {
+
+          showToast(
+            "Please complete your portfolio information."
+          );
+
+          return;
+
+        }
+
+
+        await addDoc(
+          collection(
+            db,
+            "portfolio"
+          ),
+          {
+
+            userId:
+              currentUser.uid,
+
+            title,
+
+            category,
+
+            description,
+
+            createdAt:
+              serverTimestamp()
+
+          }
+        );
+
+
+        $("portfolioForm").reset();
+
+
+        showToast(
+          "Portfolio work added."
+        );
+
+
+        await loadPortfolio();
+
+
+      } catch (error) {
+
+        showError(error);
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   LOAD PORTFOLIO
+========================================================= */
+
+async function loadPortfolio() {
+
+  const box =
+    $("portfolioList");
+
+  if (!box) return;
+
+
+  try {
+
+    const snap =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "portfolio"
+          ),
+
+          where(
+            "userId",
+            "==",
+            currentUser.uid
+          )
+        )
+      );
+
+
+    if (snap.empty) {
+
+      box.innerHTML =
+        `<div class="empty">
+          No portfolio work added yet.
+        </div>`;
+
+      return;
+
+    }
+
+
+    box.innerHTML =
+      snap.docs
+        .map(d => {
+
+          const x =
+            d.data();
+
+
+          return `
+
+            <div class="card">
+
+              <h3>
+                ${esc(
+                  x.title
+                )}
+              </h3>
+
+              <div class="meta">
+
+                <span class="pill">
+                  ${esc(
+                    x.category ||
+                    "Portfolio"
+                  )}
+                </span>
+
+              </div>
+
+              <p>
+                ${esc(
+                  x.description
+                )}
+              </p>
+
+            </div>
+
+          `;
+
+        })
+        .join("");
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
-);
-
-$("portfolioForm").reset();
-
-showToast("Portfolio work added.");
-
-await loadPortfolio();
-
-}catch(error){
-
-showError(error);
-
-}
-
-}
-);
 
 
-async function loadPortfolio(){
+/* =========================================================
+   RATINGS
+========================================================= */
 
-const box=$("portfolioList");
+async function getRating(
+  userId
+) {
 
-if(!box)return;
+  const snap =
+    await getDocs(
+      query(
+        collection(
+          db,
+          "reviews"
+        ),
 
-try{
-
-const snap=
-await getDocs(
-query(
-collection(db,"portfolio"),
-where(
-"userId",
-"==",
-currentUser.uid
-)
-)
-);
-
-
-if(snap.empty){
-
-box.innerHTML=
-`<div class="empty">No portfolio work added yet.</div>`;
-
-return;
-
-}
+        where(
+          "freelancerId",
+          "==",
+          userId
+        )
+      )
+    );
 
 
-box.innerHTML=
-snap.docs
-.map(d=>{
+  if (snap.empty) {
 
-const x=d.data();
+    return {
+      average: 0,
+      count: 0
+    };
 
-return `
+  }
 
-<div class="card">
 
-<h3>
-${esc(x.title)}
-</h3>
+  const total =
+    snap.docs.reduce(
+      (sum, d) =>
+        sum +
+        Number(
+          d.data().rating || 0
+        ),
+      0
+    );
 
-<div class="meta">
-<span class="pill">
-${esc(x.category||"Portfolio")}
-</span>
-</div>
 
-<p>
-${esc(x.description)}
-</p>
+  return {
 
-</div>
+    average:
+      total /
+      snap.size,
 
-`;
+    count:
+      snap.size
 
-})
-.join("");
-
-}catch(error){
-
-showError(error);
-
-}
+  };
 
 }
 
@@ -2869,246 +3652,260 @@ showError(error);
    REVIEWS
 ========================================================= */
 
-async function getRating(userId){
+async function loadReviews() {
 
-const snap=
-await getDocs(
-query(
-collection(db,"reviews"),
-where(
-"freelancerId",
-"==",
-userId
-)
-)
-);
+  const box =
+    $("reviewsList");
 
-if(snap.empty){
-
-return{
-average:0,
-count:0
-};
-
-}
-
-const total=
-snap.docs.reduce(
-(sum,d)=>
-sum+Number(
-d.data().rating||0
-),
-0
-);
-
-return{
-
-average:
-total/snap.size,
-
-count:
-snap.size
-
-};
-
-}
+  if (!box) return;
 
 
-async function loadReviews(){
+  try {
 
-const box=$("reviewsList");
-
-if(!box)return;
-
-try{
-
-const field=
-role()==="client"
-?"authorId"
-:"freelancerId";
-
-const snap=
-await getDocs(
-query(
-collection(db,"reviews"),
-where(
-field,
-"==",
-currentUser.uid
-)
-)
-);
+    const field =
+      role() === "client"
+        ? "authorId"
+        : "freelancerId";
 
 
-if(snap.empty){
+    const snap =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "reviews"
+          ),
 
-box.innerHTML=
-`<div class="empty">No reviews yet.</div>`;
+          where(
+            field,
+            "==",
+            currentUser.uid
+          )
+        )
+      );
 
-return;
 
-}
+    if (snap.empty) {
+
+      box.innerHTML =
+        `<div class="empty">
+          No reviews yet.
+        </div>`;
+
+      return;
+
+    }
 
 
-box.innerHTML=
-snap.docs
-.map(d=>{
+    box.innerHTML =
+      snap.docs
+        .map(d => {
 
-const x=d.data();
+          const x =
+            d.data();
 
-return `
 
-<div class="card">
+          return `
 
-<h3>
-★ ${esc(x.rating)}/5
-</h3>
+            <div class="card">
 
-<p>
-${esc(x.comment||"No written review.")}
-</p>
+              <h3>
+                ★ ${esc(
+                  x.rating
+                )}/5
+              </h3>
 
-<div class="meta">
+              <p>
+                ${esc(
+                  x.comment ||
+                  "No written review."
+                )}
+              </p>
 
-<span class="pill">
-${esc(x.authorName||"User")}
-</span>
+              <div class="meta">
 
-<span class="pill">
-${dateText(x.createdAt)}
-</span>
+                <span class="pill">
+                  ${esc(
+                    x.authorName ||
+                    "User"
+                  )}
+                </span>
 
-</div>
+                <span class="pill">
+                  ${dateText(
+                    x.createdAt
+                  )}
+                </span>
 
-</div>
+              </div>
 
-`;
+            </div>
 
-})
-.join("");
+          `;
 
-}catch(error){
+        })
+        .join("");
 
-showError(error);
 
-}
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
 
-async function leaveReview(jobId){
+/* =========================================================
+   LEAVE REVIEW
+========================================================= */
 
-const rating=
-Number(
-prompt(
-"Give a rating from 1 to 5:"
-)
-);
+async function leaveReview(
+  jobId
+) {
 
-if(!rating||
-rating<1||
-rating>5){
-
-showToast("Rating must be between 1 and 5.");
-
-return;
-
-}
-
-const comment=
-prompt(
-"Write your review:"
-)||"";
+  const rating =
+    Number(
+      prompt(
+        "Give a rating from 1 to 5:"
+      )
+    );
 
 
-try{
+  if (
+    !rating ||
+    rating < 1 ||
+    rating > 5
+  ) {
 
-const jobSnap=
-await getDoc(
-doc(db,"jobs",jobId)
-);
+    showToast(
+      "Rating must be between 1 and 5."
+    );
 
-if(!jobSnap.exists())return;
+    return;
 
-const job=jobSnap.data();
-
-if(
-!job.freelancerId||
-job.status!=="completed"
-){
-
-showToast(
-"Review is available after completion."
-);
-
-return;
-
-}
+  }
 
 
-const old=
-await getDocs(
-query(
-collection(db,"reviews"),
-where(
-"jobId",
-"==",
-jobId
-),
-where(
-"authorId",
-"==",
-currentUser.uid
-)
-)
-);
-
-if(!old.empty){
-
-showToast("You already reviewed this project.");
-
-return;
-
-}
+  const comment =
+    prompt(
+      "Write your review:"
+    ) || "";
 
 
-await addDoc(
-collection(db,"reviews"),
-{
+  try {
 
-jobId,
+    const jobSnap =
+      await getDoc(
+        doc(
+          db,
+          "jobs",
+          jobId
+        )
+      );
 
-freelancerId:
-job.freelancerId,
 
-authorId:
-currentUser.uid,
+    if (!jobSnap.exists())
+      return;
 
-authorName:
-userName(),
 
-rating,
+    const job =
+      jobSnap.data();
 
-comment:
-comment.trim(),
 
-createdAt:
-serverTimestamp()
+    if (
+      !job.freelancerId ||
+      job.status !== "completed"
+    ) {
 
-}
-);
+      showToast(
+        "Review is available after completion."
+      );
 
-showToast("Review submitted ⭐");
+      return;
 
-await loadReviews();
+    }
 
-await loadProjects();
 
-}catch(error){
+    const old =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "reviews"
+          ),
 
-showError(error);
+          where(
+            "jobId",
+            "==",
+            jobId
+          ),
 
-}
+          where(
+            "authorId",
+            "==",
+            currentUser.uid
+          )
+        )
+      );
+
+
+    if (!old.empty) {
+
+      showToast(
+        "You already reviewed this project."
+      );
+
+      return;
+
+    }
+
+
+    await addDoc(
+      collection(
+        db,
+        "reviews"
+      ),
+      {
+
+        jobId,
+
+        freelancerId:
+          job.freelancerId,
+
+        authorId:
+          currentUser.uid,
+
+        authorName:
+          userName(),
+
+        rating,
+
+        comment:
+          comment.trim(),
+
+        createdAt:
+          serverTimestamp()
+
+      }
+    );
+
+
+    showToast(
+      "Review submitted ⭐"
+    );
+
+
+    await loadReviews();
+
+    await loadProjects();
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
@@ -3117,316 +3914,410 @@ showError(error);
    EARNINGS / PAYMENTS
 ========================================================= */
 
-async function loadEarnings(){
+async function loadEarnings() {
 
-const box=$("earningsList");
+  const box =
+    $("earningsList");
 
-if(!box)return;
-
-try{
-
-const field=
-role()==="client"
-?"clientId"
-:"freelancerId";
-
-const snap=
-await getDocs(
-query(
-collection(db,"jobs"),
-where(
-field,
-"==",
-currentUser.uid
-)
-)
-);
+  if (!box) return;
 
 
-const completed=
-snap.docs.filter(
-d=>d.data().status==="completed"
-);
+  try {
+
+    const field =
+      role() === "client"
+        ? "clientId"
+        : "freelancerId";
 
 
-if(!completed.length){
+    const snap =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "jobs"
+          ),
 
-box.innerHTML=
-`<div class="empty">No completed projects yet.</div>`;
+          where(
+            field,
+            "==",
+            currentUser.uid
+          )
+        )
+      );
 
-return;
 
-}
+    const completed =
+      snap.docs.filter(
+        d =>
+          d.data().status ===
+          "completed"
+      );
 
 
-box.innerHTML=
-completed
-.map(d=>{
+    if (!completed.length) {
 
-const x=d.data();
+      box.innerHTML =
+        `<div class="empty">
+          No completed projects yet.
+        </div>`;
 
-const amount=
-Number(x.budget||0);
+      return;
 
-const fee=
-Number(x.platformFee||10);
+    }
 
-const net=
-Math.max(
-0,
-amount-fee
-);
 
-return `
+    box.innerHTML =
+      completed
+        .map(d => {
 
-<div class="card">
+          const x =
+            d.data();
 
-<h3>
-💼 ${esc(x.title||"Project")}
-</h3>
 
-<div class="meta">
+          const amount =
+            Number(
+              x.budget || 0
+            );
 
-<span class="pill completed">
-Completed
-</span>
 
-<span class="pill">
-Budget $${amount}
-</span>
+          /* NO PLATFORM FEE */
 
-<span class="pill">
-Platform Fee $${fee}
-</span>
+          const fee = 0;
 
-<span class="pill ${
-x.paymentStatus==="paid"
-?"paid"
-:"pending"
-}">
-${esc(x.paymentStatus||"unpaid")}
-</span>
 
-</div>
+          const net =
+            Math.max(
+              0,
+              amount - fee
+            );
 
-<p>
 
-${
-role()==="client"
+          return `
 
-?`Project cost: $${amount}`
+            <div class="card">
 
-:`Estimated freelancer amount after $10 platform fee: $${net}`
+              <h3>
+                💼 ${esc(
+                  x.title ||
+                  "Project"
+                )}
+              </h3>
 
-}
+              <div class="meta">
 
-</p>
+                <span class="pill completed">
+                  Completed
+                </span>
 
-</div>
+                <span class="pill">
+                  Budget $${amount}
+                </span>
 
-`;
+                <span class="pill">
+                  Platform Fee $0
+                </span>
 
-})
-.join("");
+                <span class="pill ${
+                  x.paymentStatus ===
+                  "paid"
+                    ? "paid"
+                    : "pending"
+                }">
 
-}catch(error){
+                  ${esc(
+                    x.paymentStatus ||
+                    "unpaid"
+                  )}
 
-showError(error);
+                </span>
 
-}
+              </div>
+
+
+              <p>
+
+                ${
+                  role() === "client"
+
+                    ? `Project cost:
+                       $${amount}`
+
+                    : `Freelancer amount:
+                       $${net}`
+                }
+
+              </p>
+
+            </div>
+
+          `;
+
+        })
+        .join("");
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
 
 /* =========================================================
-   TIMER
+   TIME TRACKER
 ========================================================= */
 
-function renderTimer(){
+function renderTimer() {
 
-const h=
-String(
-Math.floor(timerSeconds/3600)
-).padStart(2,"0");
+  const h =
+    String(
+      Math.floor(
+        timerSeconds / 3600
+      )
+    ).padStart(2, "0");
 
-const m=
-String(
-Math.floor(
-(timerSeconds%3600)/60
-)
-).padStart(2,"0");
 
-const s=
-String(
-timerSeconds%60
-).padStart(2,"0");
+  const m =
+    String(
+      Math.floor(
+        (timerSeconds % 3600) /
+        60
+      )
+    ).padStart(2, "0");
 
-text(
-"timerDisplay",
-`${h}:${m}:${s}`
-);
 
-}
+  const s =
+    String(
+      timerSeconds % 60
+    ).padStart(2, "0");
 
-$("timerStart")?.addEventListener(
-"click",
-()=>{
 
-if(timerInterval)return;
-
-timerInterval=
-setInterval(()=>{
-
-timerSeconds++;
-
-renderTimer();
-
-},1000);
-
-showToast("Timer started.");
+  text(
+    "timerDisplay",
+    `${h}:${m}:${s}`
+  );
 
 }
-);
 
-$("timerStop")?.addEventListener(
-"click",
-()=>{
 
-clearInterval(timerInterval);
+$("timerStart")
+  ?.addEventListener(
+    "click",
+    () => {
 
-timerInterval=null;
+      if (timerInterval)
+        return;
 
-showToast("Timer stopped.");
 
-}
-);
+      timerInterval =
+        setInterval(
+          () => {
 
-$("timerReset")?.addEventListener(
-"click",
-()=>{
+            timerSeconds++;
 
-clearInterval(timerInterval);
+            renderTimer();
 
-timerInterval=null;
+          },
+          1000
+        );
 
-timerSeconds=0;
 
-renderTimer();
+      showToast(
+        "Timer started."
+      );
 
-}
-);
+    }
+  );
+
+
+$("timerStop")
+  ?.addEventListener(
+    "click",
+    () => {
+
+      clearInterval(
+        timerInterval
+      );
+
+      timerInterval =
+        null;
+
+
+      showToast(
+        "Timer stopped."
+      );
+
+    }
+  );
+
+
+$("timerReset")
+  ?.addEventListener(
+    "click",
+    () => {
+
+      clearInterval(
+        timerInterval
+      );
+
+      timerInterval =
+        null;
+
+
+      timerSeconds =
+        0;
+
+
+      renderTimer();
+
+    }
+  );
 
 
 /* =========================================================
    THEME
 ========================================================= */
 
-function applyTheme(){
+function applyTheme() {
 
-const theme=
-localStorage.getItem(
-"elite-theme"
-)||"dark";
+  const theme =
+    localStorage.getItem(
+      "elite-theme"
+    ) || "dark";
 
-document.body.classList.toggle(
-"light",
-theme==="light"
-);
+
+  document.body.classList.toggle(
+    "light",
+    theme === "light"
+  );
 
 }
+
 
 applyTheme();
 
 
-function toggleTheme(){
+function toggleTheme() {
 
-const light=
-document.body.classList.toggle("light");
+  const light =
+    document.body.classList.toggle(
+      "light"
+    );
 
-localStorage.setItem(
-"elite-theme",
-light?"light":"dark"
-);
+
+  localStorage.setItem(
+    "elite-theme",
+    light
+      ? "light"
+      : "dark"
+  );
 
 }
 
-$("themeToggle")?.addEventListener(
-"click",
-toggleTheme
-);
 
-$("settingsThemeBtn")?.addEventListener(
-"click",
-toggleTheme
-);
+$("themeToggle")
+  ?.addEventListener(
+    "click",
+    toggleTheme
+  );
+
+
+$("settingsThemeBtn")
+  ?.addEventListener(
+    "click",
+    toggleTheme
+  );
 
 
 /* =========================================================
    BRAND / PROFILE / HELP
 ========================================================= */
 
-$("brandHome")?.addEventListener(
-"click",
-()=>go("dashboardPage","Dashboard")
-);
+$("brandHome")
+  ?.addEventListener(
+    "click",
+    () =>
+      go(
+        "dashboardPage",
+        "Dashboard"
+      )
+  );
 
-$("topProfileBtn")?.addEventListener(
-"click",
-()=>go("profilePage","Profile")
-);
 
-$("helpBtn")?.addEventListener(
-"click",
-()=>{
+$("topProfileBtn")
+  ?.addEventListener(
+    "click",
+    () =>
+      go(
+        "profilePage",
+        "Profile"
+      )
+  );
 
-alert(
-"ELITE FREELANCE HUB Support\n\nFor account, project or payment issues, contact the platform owner."
-);
 
-}
-);
+$("helpBtn")
+  ?.addEventListener(
+    "click",
+    () => {
 
-$("notificationBtn")?.addEventListener(
-"click",
-()=>{
+      alert(
+        "ELITE FREELANCE HUB Support\n\nFor account, project or payment issues, contact the platform owner."
+      );
 
-showToast(
-"No new notifications."
-);
+    }
+  );
 
-}
-);
+
+$("notificationBtn")
+  ?.addEventListener(
+    "click",
+    () => {
+
+      showToast(
+        "No new notifications."
+      );
+
+    }
+  );
 
 
 /* =========================================================
    LOGOUT
 ========================================================= */
 
-async function logout(){
+async function logout() {
 
-try{
+  try {
 
-await signOut(auth);
+    await signOut(auth);
 
-location.href="login.html";
+    location.href =
+      "login.html";
 
-}catch(error){
+  } catch (error) {
 
-showError(error);
+    showError(error);
+
+  }
 
 }
 
-}
 
-$("logoutBtn")?.addEventListener(
-"click",
-logout
-);
+$("logoutBtn")
+  ?.addEventListener(
+    "click",
+    logout
+  );
 
-$("topLogout")?.addEventListener(
-"click",
-logout
-);
+
+$("topLogout")
+  ?.addEventListener(
+    "click",
+    logout
+  );
 
 
 /* =========================================================
@@ -3434,113 +4325,167 @@ logout
 ========================================================= */
 
 onAuthStateChanged(
-auth,
-async user=>{
+  auth,
+  async user => {
 
-if(!user){
+    if (!user) {
 
-location.href="login.html";
+      location.href =
+        "login.html";
 
-return;
+      return;
 
-}
-
-currentUser=user;
-
-
-try{
-
-const snap=
-await getDoc(
-doc(db,"users",user.uid)
-);
+    }
 
 
-if(!snap.exists()){
-
-if(
-user.email?.toLowerCase()===
-OWNER_EMAIL.toLowerCase()
-){
-
-await setDoc(
-doc(db,"users",user.uid),
-{
-
-name:"AYESHA REHMAN",
-
-email:user.email,
-
-role:"freelancer",
-
-gender:"female",
-
-skills:"Web Development, HTML, CSS, JavaScript",
-
-bio:"Founder and Professional Freelancer at ELITE FREELANCE HUB.",
-
-location:"Pakistan",
-
-hourlyRate:0,
-
-availability:"Available",
-
-createdAt:
-serverTimestamp()
-
-}
-);
-
-}else{
-
-await signOut(auth);
-
-location.href="login.html";
-
-return;
-
-}
-
-}
+    currentUser =
+      user;
 
 
-const fresh=
-await getDoc(
-doc(db,"users",user.uid)
-);
+    try {
 
-userData=fresh.data()||{};
-
-
-const owner=
-user.email?.toLowerCase()===
-OWNER_EMAIL.toLowerCase();
-
-
-if(
-!owner &&
-userData.role!==role()
-){
-
-location.href=
-userData.role==="client"
-?"client-dashboard.html"
-:"index.html";
-
-return;
-
-}
+      let snap =
+        await getDoc(
+          doc(
+            db,
+            "users",
+            user.uid
+          )
+        );
 
 
-applyIdentity();
+      /* =====================================================
+         CREATE OWNER PROFILE AUTOMATICALLY
+      ===================================================== */
 
-loadDashboard();
+      if (!snap.exists()) {
 
-}catch(error){
+        if (
+          user.email?.toLowerCase() ===
+          OWNER_EMAIL.toLowerCase()
+        ) {
 
-showError(error);
+          await setDoc(
+            doc(
+              db,
+              "users",
+              user.uid
+            ),
+            {
 
-}
+              name:
+                "AYESHA REHMAN",
 
-}
+              email:
+                user.email,
+
+              role:
+                "freelancer",
+
+              gender:
+                "female",
+
+              skills:
+                "Web Development, HTML, CSS, JavaScript",
+
+              bio:
+                "Founder and Professional Freelancer at ELITE FREELANCE HUB.",
+
+              location:
+                "Pakistan",
+
+              hourlyRate:
+                0,
+
+              availability:
+                "Available",
+
+              createdAt:
+                serverTimestamp()
+
+            }
+          );
+
+        } else {
+
+          await signOut(auth);
+
+          location.href =
+            "login.html";
+
+          return;
+
+        }
+
+      }
+
+
+      /* =====================================================
+         LOAD USER DATA
+      ===================================================== */
+
+      snap =
+        await getDoc(
+          doc(
+            db,
+            "users",
+            user.uid
+          )
+        );
+
+
+      userData =
+        snap.data() || {};
+
+
+      /* =====================================================
+         OWNER CAN USE BOTH MODES
+      ===================================================== */
+
+      const owner =
+        user.email?.toLowerCase() ===
+        OWNER_EMAIL.toLowerCase();
+
+
+      /*
+        Owner:
+        Can access Freelancer + Client.
+
+        Other users:
+        Must stay in their registered role.
+      */
+
+      if (
+        !owner &&
+        userData.role !== role()
+      ) {
+
+        location.href =
+          userData.role === "client"
+            ? "client-dashboard.html"
+            : "index.html";
+
+        return;
+
+      }
+
+
+      /* =====================================================
+         FINAL UI
+      ===================================================== */
+
+      applyIdentity();
+
+      loadDashboard();
+
+      renderTimer();
+
+
+    } catch (error) {
+
+      showError(error);
+
+    }
+
+  }
 );
