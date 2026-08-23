@@ -4,205 +4,93 @@
 <head>
 
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<meta
-    name="viewport"
-    content="width=device-width,initial-scale=1"
->
+<title>ELITE FREELANCE HUB — Login</title>
 
-<title>
-ELITE FREELANCE HUB — Login
-</title>
-
-<link
-    rel="icon"
-    href="profile.png"
->
-
-<link
-    rel="stylesheet"
-    href="style.css"
->
+<link rel="icon" href="profile.png">
+<link rel="stylesheet" href="style.css">
 
 </head>
 
+<body class="auth-page">
 
-<body>
+<main class="auth-main">
 
-<main
-    class="main login-main"
->
+<div class="auth-card">
 
-<div
-    class="form-box login-box"
->
+<button class="brand auth-brand" id="authBrand" type="button">
 
-<div
-    class="brand login-brand"
->
+<span class="mark">✦</span>
 
-<span class="mark">
-    ✦
+<span>
+<strong>ELITE</strong>
+<small>FREELANCE HUB</small>
 </span>
 
-<div>
-
-<strong>
-    ELITE
-</strong>
-
-<small>
-    FREELANCE HUB
-</small>
-
-</div>
-
-</div>
+</button>
 
 
-<div
-    class="page-head login-head"
->
+<div class="page-head auth-head">
 
-<label>
-    REAL MARKETPLACE
-</label>
+<label>REAL MARKETPLACE</label>
 
 <h2 id="authTitle">
-    Welcome Back
+Welcome Back
 </h2>
 
-<p>
-    Sign in to your real account.
+<p id="authSubtitle">
+Sign in to your real account.
 </p>
 
 </div>
 
 
-<!-- LOGIN -->
-
 <div id="loginBox">
 
 <label class="field">
-
 Email
-
-<input
-    id="loginEmail"
-    type="email"
-    autocomplete="email"
-    required
->
-
+<input id="loginEmail" type="email" autocomplete="email" required>
 </label>
-
 
 <label class="field">
-
 Password
-
-<input
-    id="loginPassword"
-    type="password"
-    autocomplete="current-password"
-    required
->
-
+<input id="loginPassword" type="password" autocomplete="current-password" required>
 </label>
 
-
-<button
-    class="primary login-action"
-    id="loginBtn"
->
-
+<button class="primary auth-button" id="loginBtn">
 Login
-
 </button>
 
-
-<button
-    class="secondary login-action"
-    id="showSignup"
->
-
+<button class="secondary auth-button" id="showSignup">
 Create Account
+</button>
 
+<button class="text-button" id="forgotPassword">
+Forgot Password?
 </button>
 
 </div>
 
 
-<!-- SIGNUP -->
-
-<div
-    id="signupBox"
-    style="display:none"
->
+<div id="signupBox" style="display:none">
 
 <label class="field">
-
-Name
-
-<input
-    id="signupName"
-    autocomplete="name"
->
-
+Full Name
+<input id="signupName" required>
 </label>
 
-
 <label class="field">
-
 Email
-
-<input
-    id="signupEmail"
-    type="email"
-    autocomplete="email"
->
-
+<input id="signupEmail" type="email" required>
 </label>
 
-
 <label class="field">
-
 Password
-
-<input
-    id="signupPassword"
-    type="password"
-    autocomplete="new-password"
->
-
+<input id="signupPassword" type="password" minlength="6" required>
 </label>
 
-
 <label class="field">
-
-Gender
-
-<select id="signupGender">
-
-<option value="">
-Select Gender
-</option>
-
-<option value="female">
-Female
-</option>
-
-<option value="male">
-Male
-</option>
-
-</select>
-
-</label>
-
-
-<label class="field">
-
 Account Type
 
 <select id="signupRole">
@@ -220,33 +108,40 @@ Client
 </label>
 
 
-<button
-    class="primary login-action"
-    id="signupBtn"
->
+<label class="field">
+Avatar / Gender
 
+<select id="signupGender">
+
+<option value="female">
+Female
+</option>
+
+<option value="male">
+Male
+</option>
+
+</select>
+
+</label>
+
+
+<button class="primary auth-button" id="signupBtn">
 Create Account
-
 </button>
 
-
-<button
-    class="secondary login-action"
-    id="showLogin"
->
-
+<button class="secondary auth-button" id="showLogin">
 Back to Login
-
 </button>
 
 </div>
 
 
-<div
-    id="authMessage"
-    class="success auth-message"
-></div>
+<div id="authMessage"></div>
 
+<div class="auth-note">
+Your account data is stored through Firebase Authentication and Cloud Firestore.
+</div>
 
 </div>
 
@@ -256,337 +151,298 @@ Back to Login
 <script type="module">
 
 import {
-    initializeApp
-}
-from
-"https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
+initializeApp
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
 import {
-    getAuth,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    updateProfile
-}
-from
-"https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
+getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 import {
-    getFirestore,
-    doc,
-    setDoc,
-    getDoc,
-    updateDoc,
-    serverTimestamp
-}
-from
-"https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+getFirestore,
+doc,
+setDoc,
+getDoc,
+serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
 const firebaseConfig = {
 
-    apiKey:
-        "AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
+apiKey:"AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
 
-    authDomain:
-        "elite-freelance-hub.firebaseapp.com",
+authDomain:"elite-freelance-hub.firebaseapp.com",
 
-    projectId:
-        "elite-freelance-hub",
+projectId:"elite-freelance-hub",
 
-    storageBucket:
-        "elite-freelance-hub.firebasestorage.app",
+storageBucket:"elite-freelance-hub.firebasestorage.app",
 
-    messagingSenderId:
-        "777611553956",
+messagingSenderId:"777611553956",
 
-    appId:
-        "1:777611553956:web:730b7df36570ff803a8a31"
+appId:"1:777611553956:web:730b7df36570ff803a8a31"
 
 };
 
 
-const app =
-    initializeApp(firebaseConfig);
+const app=initializeApp(firebaseConfig);
+
+const auth=getAuth(app);
+
+const db=getFirestore(app);
+
+const $=id=>document.getElementById(id);
 
 
-const auth =
-    getAuth(app);
+function message(text,type="info"){
+
+const box=$("authMessage");
+
+box.textContent=text;
+
+box.className=type;
+
+}
 
 
-const db =
-    getFirestore(app);
+$("showSignup").onclick=()=>{
 
+$("loginBox").style.display="none";
 
-const $ =
-    id =>
-        document.getElementById(id);
+$("signupBox").style.display="block";
 
+$("authTitle").textContent="Create Account";
 
-const message =
-    text =>
-        $("authMessage").textContent = text;
+$("authSubtitle").textContent="Join ELITE FREELANCE HUB.";
 
-
-$("showSignup").onclick = () => {
-
-    $("loginBox").style.display =
-        "none";
-
-    $("signupBox").style.display =
-        "block";
-
-    $("authTitle").textContent =
-        "Create Account";
-
-    message("");
+message("");
 
 };
 
 
-$("showLogin").onclick = () => {
+$("showLogin").onclick=()=>{
 
-    $("signupBox").style.display =
-        "none";
+$("signupBox").style.display="none";
 
-    $("loginBox").style.display =
-        "block";
+$("loginBox").style.display="block";
 
-    $("authTitle").textContent =
-        "Welcome Back";
+$("authTitle").textContent="Welcome Back";
 
-    message("");
+$("authSubtitle").textContent="Sign in to your real account.";
 
-};
-
-
-$("signupBtn").onclick =
-async () => {
-
-    try {
-
-        const name =
-            $("signupName").value.trim();
-
-        const email =
-            $("signupEmail").value.trim();
-
-        const password =
-            $("signupPassword").value;
-
-        const gender =
-            $("signupGender").value;
-
-        const role =
-            $("signupRole").value;
-
-
-        if (!name || !email || !gender || !role) {
-
-            message(
-                "Please fill all fields."
-            );
-
-            return;
-
-        }
-
-
-        if (password.length < 6) {
-
-            message(
-                "Password must be at least 6 characters."
-            );
-
-            return;
-
-        }
-
-
-        const credential =
-            await createUserWithEmailAndPassword(
-                auth,
-                email,
-                password
-            );
-
-
-        await updateProfile(
-            credential.user,
-            {
-                displayName:name
-            }
-        );
-
-
-        await setDoc(
-            doc(
-                db,
-                "users",
-                credential.user.uid
-            ),
-            {
-
-                name:name,
-
-                email:email,
-
-                role:role,
-
-                gender:gender,
-
-                skills:"",
-
-                createdAt:
-                    serverTimestamp(),
-
-                lastLoginAt:
-                    serverTimestamp()
-
-            }
-        );
-
-
-        location.href =
-            role === "client"
-                ? "client-dashboard.html"
-                : "index.html";
-
-
-    } catch (error) {
-
-        console.error(error);
-
-        message(
-            error?.message ||
-            "Account could not be created."
-        );
-
-    }
+message("");
 
 };
 
 
-$("loginBtn").onclick =
-async () => {
+$("signupBtn").onclick=async()=>{
 
-    try {
+try{
 
-        const email =
-            $("loginEmail").value.trim();
+const name=$("signupName").value.trim();
 
-        const password =
-            $("loginPassword").value;
+const email=$("signupEmail").value.trim().toLowerCase();
 
+const password=$("signupPassword").value;
 
-        if (!email || !password) {
+const role=$("signupRole").value;
 
-            message(
-                "Enter your email and password."
-            );
-
-            return;
-
-        }
+const gender=$("signupGender").value;
 
 
-        const credential =
-            await signInWithEmailAndPassword(
-                auth,
-                email,
-                password
-            );
+if(!name || !email){
+
+message("Please fill all required fields.","error");
+
+return;
+
+}
 
 
-        const user =
-            credential.user;
+if(password.length<6){
+
+message("Password must be at least 6 characters.","error");
+
+return;
+
+}
 
 
-        const userRef =
-            doc(
-                db,
-                "users",
-                user.uid
-            );
+const credential=
+await createUserWithEmailAndPassword(
+auth,
+email,
+password
+);
 
 
-        const snap =
-            await getDoc(userRef);
+await setDoc(
+doc(db,"users",credential.user.uid),
+{
+
+name,
+
+email,
+
+role,
+
+gender,
+
+skills:"",
+
+bio:"",
+
+location:"",
+
+hourlyRate:0,
+
+availability:"Available",
+
+rating:0,
+
+ratingCount:0,
+
+createdAt:serverTimestamp()
+
+}
+);
 
 
-        let data =
-            snap.exists()
-                ? snap.data()
-                : {};
+message("Account created successfully. Opening your dashboard...","success");
 
 
-        if (!snap.exists()) {
+setTimeout(()=>{
 
-            await setDoc(
-                userRef,
-                {
+location.href=
+role==="client"
+?"client-dashboard.html"
+:"index.html";
 
-                    name:
-                        user.displayName ||
-                        email.split("@")[0],
-
-                    email:email,
-
-                    role:"freelancer",
-
-                    gender:"",
-
-                    skills:"",
-
-                    createdAt:
-                        serverTimestamp(),
-
-                    lastLoginAt:
-                        serverTimestamp()
-
-                }
-            );
-
-            data = {
-                role:"freelancer"
-            };
-
-        } else {
-
-            await updateDoc(
-                userRef,
-                {
-                    lastLoginAt:
-                        serverTimestamp()
-                }
-            );
-
-        }
+},500);
 
 
-        const role =
-            data.role === "client"
-                ? "client"
-                : "freelancer";
+}catch(error){
+
+console.error(error);
+
+message(
+error.message.replace("Firebase: ",""),
+"error"
+);
+
+}
+
+};
 
 
-        location.href =
-            role === "client"
-                ? "client-dashboard.html"
-                : "index.html";
+$("loginBtn").onclick=async()=>{
+
+try{
+
+const email=$("loginEmail").value.trim().toLowerCase();
+
+const password=$("loginPassword").value;
 
 
-    } catch (error) {
+if(!email || !password){
 
-        console.error(error);
+message("Enter your email and password.","error");
 
-        message(
-            error?.message ||
-            "Login failed."
-        );
+return;
 
-    }
+}
+
+
+const credential=
+await signInWithEmailAndPassword(
+auth,
+email,
+password
+);
+
+
+const snap=
+await getDoc(
+doc(db,"users",credential.user.uid)
+);
+
+
+if(!snap.exists()){
+
+message("Your account profile is missing. Please contact support.","error");
+
+return;
+
+}
+
+
+const data=snap.data();
+
+const owner=
+email==="ayesharehman123456987@gmail.com";
+
+
+location.href=
+owner
+?"index.html"
+:data.role==="client"
+?"client-dashboard.html"
+:"index.html";
+
+
+}catch(error){
+
+console.error(error);
+
+message(
+error.message.replace("Firebase: ",""),
+"error"
+);
+
+}
+
+};
+
+
+$("forgotPassword").onclick=async()=>{
+
+const email=$("loginEmail").value.trim().toLowerCase();
+
+if(!email){
+
+message("Enter your email first.","error");
+
+return;
+
+}
+
+
+try{
+
+await sendPasswordResetEmail(auth,email);
+
+message(
+"Password reset email sent. Check your inbox.",
+"success"
+);
+
+}catch(error){
+
+message(
+error.message.replace("Firebase: ",""),
+"error"
+);
+
+}
+
+};
+
+
+$("authBrand").onclick=()=>{
+
+location.reload();
 
 };
 
