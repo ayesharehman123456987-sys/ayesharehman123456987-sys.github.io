@@ -1,52 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>ELITE FREELANCE HUB</title>
 
+<link rel="icon" href="data:image/svg+xml,
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+<rect width='100' height='100' rx='22' fill='%23050914'/>
+<text x='50' y='67' text-anchor='middle' font-size='58' fill='%239b5cff'>✦</text>
+</svg>">
+
 <style>
+
+/* =====================================================
+   ELITE FREELANCE HUB
+   OWNER + FREELANCER VERSION
+===================================================== */
 
 *{
     box-sizing:border-box;
-    margin:0;
-    padding:0;
-}
-
-:root{
-    --bg:#050914;
-    --sidebar:#09111f;
-    --panel:#0d1728;
-    --panel2:#111d31;
-    --line:#263750;
-
-    --text:#f5f7ff;
-    --muted:#8b98ad;
-
-    --purple:#8b4fff;
-    --purple2:#7136df;
-
-    --green:#35cf7b;
-    --red:#ff536b;
 }
 
 html{
     scroll-behavior:smooth;
 }
 
+:root{
+
+    --bg:#050914;
+    --sidebar:#09111f;
+    --panel:#0d1627;
+    --panel2:#101b2f;
+    --line:#24324b;
+
+    --text:#f5f7ff;
+    --muted:#8995ab;
+
+    --purple:#8b4fff;
+    --purple2:#6f35dc;
+    --purpleSoft:#b889ff;
+
+    --gold:#f4b914;
+    --green:#35cf7b;
+    --red:#ff536b;
+    --blue:#3d82dc;
+}
+
 body{
+
+    margin:0;
     min-height:100vh;
+
     background:
     radial-gradient(
         circle at 55% -20%,
-        rgba(139,79,255,.14),
+        rgba(139,79,255,.13),
         transparent 35%
     ),
     var(--bg);
 
     color:var(--text);
-    font-family:Inter,Segoe UI,Arial,sans-serif;
+
+    font-family:
+    Inter,
+    Segoe UI,
+    Arial,
+    sans-serif;
+
+    font-size:14px;
 }
 
 button,
@@ -60,20 +86,28 @@ button{
     cursor:pointer;
 }
 
-/* =========================
+button:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+/* =====================================================
    APP
-========================= */
+===================================================== */
 
 .app{
     min-height:100vh;
+    display:flex;
 }
 
-/* =========================
+/* =====================================================
    SIDEBAR
-========================= */
+===================================================== */
 
 .sidebar{
+
     position:fixed;
+
     left:0;
     top:0;
     bottom:0;
@@ -91,19 +125,18 @@ button{
 
     border-right:1px solid #1d2a42;
 
-    z-index:100;
+    z-index:50;
 
     display:flex;
     flex-direction:column;
-
-    transition:.3s ease;
 }
 
-/* =========================
+/* =====================================================
    BRAND
-========================= */
+===================================================== */
 
 .brand{
+
     width:100%;
     min-height:62px;
 
@@ -114,44 +147,74 @@ button{
 
     padding:0 8px;
 
-    background:transparent;
     border:0;
     border-bottom:1px solid #1c2940;
 
-    color:#fff;
+    background:transparent;
+
+    color:var(--text);
 
     text-align:left;
 }
 
-.brand .mark{
-    font-size:30px;
+.brand-mark{
+
+    width:40px;
+    height:40px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:12px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #241044,
+        #10192c
+    );
+
+    border:1px solid #8b4fff;
+
     color:#a866ff;
+
+    font-size:27px;
+
+    box-shadow:
+    0 0 20px rgba(139,79,255,.18);
 }
 
 .brand strong{
+
     display:block;
-    font-size:19px;
-    letter-spacing:.5px;
+
+    font-size:18px;
+
+    line-height:1;
 }
 
 .brand small{
+
     display:block;
 
     font-size:9px;
 
-    letter-spacing:1.5px;
+    letter-spacing:1.3px;
 
     color:#8490a7;
 
     margin-top:5px;
 }
 
-/* =========================
+/* =====================================================
    PROFILE
-========================= */
+===================================================== */
 
 .mini-profile{
+
     display:flex;
+
     align-items:center;
 
     gap:10px;
@@ -170,46 +233,24 @@ button{
 
 .mini-profile small{
     display:block;
-
     font-size:10px;
-
     color:#8792a8;
-
     margin-top:4px;
 }
 
-.owner-badge{
-    display:inline-block;
-
-    margin-top:5px;
-
-    font-size:8px;
-
-    font-weight:900;
-
-    letter-spacing:.7px;
-
-    color:#c79cff;
-
-    background:#241044;
-
-    border:1px solid #7540d6;
-
-    padding:3px 6px;
-
-    border-radius:20px;
-}
-
 .online{
+
     margin-left:auto;
-    color:#36d67b;
+
+    color:#36d67b !important;
 }
 
-/* =========================
+/* =====================================================
    AVATAR
-========================= */
+===================================================== */
 
 .avatar{
+
     width:42px;
     height:42px;
 
@@ -218,6 +259,7 @@ button{
     border-radius:50%;
 
     display:flex;
+
     align-items:center;
     justify-content:center;
 
@@ -234,6 +276,7 @@ button{
 }
 
 .avatar.small{
+
     width:36px;
     height:36px;
 
@@ -242,11 +285,68 @@ button{
     font-size:21px;
 }
 
-/* =========================
+/* =====================================================
+   OWNER BADGE
+===================================================== */
+
+.owner-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:5px;
+
+    margin-top:6px;
+
+    padding:4px 8px;
+
+    border-radius:20px;
+
+    font-size:9px;
+
+    font-weight:900;
+
+    letter-spacing:.5px;
+
+    color:#ffd86a;
+
+    background:rgba(244,185,20,.10);
+
+    border:1px solid rgba(244,185,20,.35);
+}
+
+.freelancer-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:5px;
+
+    margin-left:5px;
+
+    padding:4px 8px;
+
+    border-radius:20px;
+
+    font-size:9px;
+
+    font-weight:900;
+
+    color:#cda9ff;
+
+    background:rgba(139,79,255,.10);
+
+    border:1px solid rgba(139,79,255,.35);
+}
+
+/* =====================================================
    NAV
-========================= */
+===================================================== */
 
 .nav-area{
+
     flex:1;
 
     overflow-y:auto;
@@ -255,6 +355,7 @@ button{
 }
 
 .section-title{
+
     font-size:10px;
 
     font-weight:800;
@@ -267,6 +368,7 @@ button{
 }
 
 .nav{
+
     width:100%;
 
     display:block;
@@ -286,16 +388,17 @@ button{
     text-align:left;
 
     font-size:13px;
-
-    transition:.2s;
 }
 
 .nav:hover{
+
     background:#121d30;
+
     color:#fff;
 }
 
 .nav.active{
+
     background:
     linear-gradient(
         90deg,
@@ -311,17 +414,19 @@ button{
     inset 3px 0 #9b5cff;
 }
 
-/* =========================
+/* =====================================================
    SIDE BOTTOM
-========================= */
+===================================================== */
 
 .side-bottom{
+
     border-top:1px solid #1d2940;
 
     padding-top:8px;
 }
 
 .side-bottom button{
+
     width:100%;
 
     border:0;
@@ -335,48 +440,26 @@ button{
     text-align:left;
 
     border-radius:8px;
-
-    transition:.2s;
 }
 
 .side-bottom button:hover{
+
     background:#111c2e;
+
     color:#fff;
 }
 
 .side-bottom .logout{
+
     color:#ff5b72;
 }
 
-/* =========================
-   MOBILE MENU BUTTON
-========================= */
-
-.mobile-menu{
-    display:none;
-
-    width:44px;
-    height:44px;
-
-    border-radius:10px;
-
-    background:#0d182a;
-
-    border:1px solid #2b3b56;
-
-    color:#fff;
-
-    font-size:22px;
-
-    align-items:center;
-    justify-content:center;
-}
-
-/* =========================
+/* =====================================================
    MAIN
-========================= */
+===================================================== */
 
 .main{
+
     margin-left:250px;
 
     width:calc(100% - 250px);
@@ -384,35 +467,64 @@ button{
     min-height:100vh;
 
     padding:0 28px 40px;
-
-    transition:.3s ease;
 }
 
-/* =========================
+/* =====================================================
    TOPBAR
-========================= */
+===================================================== */
 
 .topbar{
+
     min-height:88px;
 
     display:flex;
+
     align-items:center;
 
     justify-content:space-between;
 
     border-bottom:1px solid #1d2940;
-
-    gap:15px;
 }
 
 .top-left{
+
     display:flex;
+
     align-items:center;
+
     gap:12px;
 }
 
+.top-logo{
+
+    width:46px;
+    height:46px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:13px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #251044,
+        #10182b
+    );
+
+    border:1px solid #8b4fff;
+
+    color:#a866ff;
+
+    font-size:28px;
+
+    box-shadow:
+    0 0 22px rgba(139,79,255,.16);
+}
+
 .top-left small{
-    display:block;
 
     font-size:10px;
 
@@ -424,19 +536,23 @@ button{
 }
 
 .top-left h1{
-    margin-top:4px;
+
+    margin:4px 0 0;
 
     font-size:27px;
 }
 
 .top-right{
+
     display:flex;
+
     align-items:center;
 
     gap:9px;
 }
 
 .round-btn{
+
     position:relative;
 
     width:42px;
@@ -451,7 +567,15 @@ button{
     color:#d8deea;
 }
 
+.round-btn:hover{
+
+    border-color:#8b4fff;
+
+    color:#fff;
+}
+
 .dot{
+
     position:absolute;
 
     right:9px;
@@ -466,7 +590,9 @@ button{
 }
 
 .user-chip{
+
     display:flex;
+
     align-items:center;
 
     gap:8px;
@@ -483,6 +609,7 @@ button{
 }
 
 .logout-top{
+
     height:42px;
 
     padding:0 16px;
@@ -496,25 +623,33 @@ button{
     color:#ff657a;
 }
 
-/* =========================
+/* =====================================================
    PAGES
-========================= */
+===================================================== */
 
 .page{
+
     display:none;
 
     padding-top:22px;
 }
 
 .page.active{
+
     display:block;
 }
 
+/* =====================================================
+   PAGE HEAD
+===================================================== */
+
 .page-head{
+
     margin-bottom:18px;
 }
 
 .page-head label{
+
     color:#a866ff;
 
     font-size:10px;
@@ -525,24 +660,32 @@ button{
 }
 
 .page-head h2{
+
     margin:5px 0;
 
     font-size:28px;
 }
 
 .page-head p{
+
+    margin:0;
+
     color:#8996ac;
 }
 
-/* =========================
+/* =====================================================
    HERO
-========================= */
+===================================================== */
 
 .hero{
-    min-height:280px;
+
+    min-height:300px;
 
     display:flex;
+
     align-items:center;
+
+    justify-content:space-between;
 
     overflow:hidden;
 
@@ -553,6 +696,11 @@ button{
     border-radius:16px;
 
     background:
+    radial-gradient(
+        circle at 90% 20%,
+        rgba(139,79,255,.18),
+        transparent 30%
+    ),
     linear-gradient(
         135deg,
         #0e1728,
@@ -561,13 +709,15 @@ button{
 }
 
 .hero-copy{
+
     padding:45px 30px;
 
-    max-width:720px;
+    max-width:72%;
 }
 
 .hero h2{
-    margin-bottom:12px;
+
+    margin:0 0 12px;
 
     font-size:38px;
 
@@ -575,10 +725,12 @@ button{
 }
 
 .hero h2 span{
+
     color:#995bff;
 }
 
 .hero p{
+
     color:#b5c0d4;
 
     font-size:15px;
@@ -588,33 +740,8 @@ button{
     line-height:1.6;
 }
 
-.owner-title{
-    display:inline-block;
-
-    margin-bottom:12px;
-
-    color:#cba4ff;
-
-    font-size:11px;
-
-    font-weight:900;
-
-    letter-spacing:1px;
-
-    border:1px solid #7040ca;
-
-    background:#211039;
-
-    padding:6px 10px;
-
-    border-radius:20px;
-}
-
-/* =========================
-   BUTTONS
-========================= */
-
 .actions{
+
     display:flex;
 
     gap:10px;
@@ -627,14 +754,18 @@ button{
 .primary,
 .secondary,
 .danger{
+
     border-radius:9px;
 
     padding:11px 18px;
 
     font-weight:800;
+
+    border:1px solid transparent;
 }
 
 .primary{
+
     background:
     linear-gradient(
         135deg,
@@ -643,34 +774,41 @@ button{
     );
 
     color:#fff;
+}
 
-    border:1px solid transparent;
+.primary:hover{
+
+    filter:brightness(1.08);
 }
 
 .secondary{
+
     background:#0e1729;
 
     color:#d9c6ff;
 
-    border:1px solid #8a51ee;
+    border-color:#8a51ee;
 }
 
 .danger{
+
     background:#32111a;
 
     color:#ff7085;
 
-    border:1px solid #9e334b;
+    border-color:#9e334b;
 }
 
-/* =========================
+/* =====================================================
    STATS
-========================= */
+===================================================== */
 
 .stats{
+
     display:grid;
 
-    grid-template-columns:repeat(4,1fr);
+    grid-template-columns:
+    repeat(4,1fr);
 
     gap:12px;
 
@@ -678,6 +816,7 @@ button{
 }
 
 .stat{
+
     background:#0d1728;
 
     border:1px solid #23334e;
@@ -688,10 +827,12 @@ button{
 }
 
 .stat .icon{
+
     width:38px;
     height:38px;
 
     display:flex;
+
     align-items:center;
     justify-content:center;
 
@@ -703,66 +844,99 @@ button{
 }
 
 .stat h3{
+
     font-size:26px;
 
-    margin-bottom:3px;
+    margin:0 0 3px;
 }
 
 .stat p{
+
+    margin:0;
+
     color:#8d9ab1;
 }
 
-/* =========================
+/* =====================================================
    CARDS
-========================= */
+===================================================== */
 
 .cards{
+
     display:grid;
 
-    grid-template-columns:repeat(2,1fr);
+    grid-template-columns:
+    repeat(2,1fr);
 
     gap:12px;
 }
 
 .card{
+
     background:#0d1728;
 
     border:1px solid #23334d;
 
     border-radius:13px;
 
-    padding:20px;
+    padding:17px;
 }
 
 .card h3{
-    margin-bottom:10px;
+
+    margin:0 0 10px;
 }
 
 .card p{
+
     color:#98a5bb;
 
     line-height:1.55;
-
-    margin-bottom:15px;
 }
 
-/* =========================
+.meta{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:6px;
+
+    margin:14px 0;
+}
+
+.pill{
+
+    display:inline-block;
+
+    padding:5px 8px;
+
+    border-radius:20px;
+
+    background:#151f32;
+
+    border:1px solid #2a3a55;
+
+    color:#aab6ca;
+
+    font-size:10px;
+}
+
+.pill.open{
+
+    color:#43d883;
+
+    border-color:#25663f;
+
+    background:#10251b;
+}
+
+/* =====================================================
    FORM
-========================= */
-
-.settings-grid{
-    display:grid;
-
-    grid-template-columns:1fr 1fr;
-
-    gap:15px;
-}
-
-.settings-grid .form-box:first-child{
-    grid-column:1/-1;
-}
+===================================================== */
 
 .form-box{
+
     background:#0d1728;
 
     border:1px solid #23334d;
@@ -770,23 +944,31 @@ button{
     border-radius:14px;
 
     padding:20px;
+
+    margin-bottom:15px;
 }
 
 .form-box h3{
+
+    margin-top:0;
+
     margin-bottom:16px;
 
     font-size:17px;
 }
 
 .form-grid{
+
     display:grid;
 
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:
+    1fr 1fr;
 
     gap:14px;
 }
 
 .field{
+
     display:flex;
 
     flex-direction:column;
@@ -801,12 +983,14 @@ button{
 }
 
 .field.full{
+
     grid-column:1/-1;
 }
 
 .field input,
 .field select,
 .field textarea{
+
     width:100%;
 
     background:#091321;
@@ -822,22 +1006,25 @@ button{
     outline:0;
 }
 
-.field textarea{
-    min-height:130px;
-
-    resize:vertical;
-}
-
 .field input:focus,
 .field select:focus,
 .field textarea:focus{
+
     border-color:#9658f5;
 
     box-shadow:
     0 0 0 3px rgba(139,79,255,.08);
 }
 
+.field textarea{
+
+    min-height:130px;
+
+    resize:vertical;
+}
+
 .form-row{
+
     display:flex;
 
     align-items:center;
@@ -848,74 +1035,141 @@ button{
 }
 
 .success{
+
     color:#43d883;
 
     font-weight:700;
 }
 
 .muted{
+
     color:#8795aa;
 
     line-height:1.6;
+}
+
+/* =====================================================
+   SETTINGS
+===================================================== */
+
+.settings-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    1fr 1fr;
+
+    gap:15px;
+}
+
+.settings-grid .form-box:first-child{
+
+    grid-column:1/-1;
+}
+
+/* =====================================================
+   OWNER PANEL
+===================================================== */
+
+.owner-panel{
+
+    border:1px solid rgba(244,185,20,.35);
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(244,185,20,.08),
+        rgba(139,79,255,.06)
+    );
+
+    border-radius:14px;
+
+    padding:18px;
 
     margin-bottom:15px;
 }
 
-/* =========================
-   OWNER PANEL
-========================= */
+.owner-panel h3{
 
-.owner-panel{
+    margin:0 0 8px;
+
+    color:#ffd86a;
+}
+
+.owner-panel p{
+
+    margin:0;
+
+    color:#aeb9ca;
+
+    line-height:1.6;
+}
+
+.owner-title{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    flex-wrap:wrap;
+}
+
+/* =====================================================
+   MARKETPLACE
+===================================================== */
+
+.marketplace-box{
+
     display:grid;
 
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:
+    repeat(3,1fr);
 
     gap:12px;
-
-    margin-top:18px;
 }
 
-.owner-box{
-    background:#0d1728;
+.market-item{
 
-    border:1px solid #4d2c87;
+    padding:17px;
 
-    border-radius:13px;
+    border-radius:12px;
 
-    padding:18px;
+    background:#111d31;
+
+    border:1px solid #263750;
 }
 
-.owner-box h3{
-    color:#c79cff;
+.market-item strong{
 
-    margin-bottom:8px;
+    display:block;
+
+    font-size:16px;
+
+    margin-bottom:6px;
 }
 
-.owner-box p{
-    color:#8f9bb0;
+.market-item span{
 
-    line-height:1.5;
+    color:#8795aa;
+
+    font-size:12px;
 }
 
-/* =========================
-   POLICY REMOVED
-========================= */
-
-.policy-removed{
-    display:none !important;
-}
-
-/* =========================
+/* =====================================================
    TOAST
-========================= */
+===================================================== */
 
 #toast{
+
     position:fixed;
 
     right:22px;
+
     bottom:22px;
 
-    z-index:999;
+    z-index:100;
 
     background:#131f32;
 
@@ -927,7 +1181,8 @@ button{
 
     border-radius:10px;
 
-    box-shadow:0 15px 40px rgba(0,0,0,.3);
+    box-shadow:
+    0 15px 40px rgba(0,0,0,.3);
 
     opacity:0;
 
@@ -939,89 +1194,124 @@ button{
 }
 
 #toast.show{
+
     opacity:1;
 
     transform:translateY(0);
 }
 
-/* =========================
+/* =====================================================
    LIGHT MODE
-========================= */
+===================================================== */
 
 body.light{
+
     background:#f5f7fb;
 
     color:#172033;
 }
 
 body.light .sidebar{
+
     background:#fff;
 
     border-right-color:#e1e6ee;
+
+    box-shadow:
+    4px 0 18px rgba(25,35,55,.05);
 }
 
 body.light .brand{
+
     border-bottom-color:#e5e9f0;
 
     color:#172033;
 }
 
 body.light .brand small{
+
     color:#7d8798;
 }
 
 body.light .mini-profile{
+
     border-bottom-color:#e5e9f0;
 }
 
 body.light .mini-profile small{
+
     color:#7d8798;
 }
 
 body.light .nav{
+
     color:#586477;
 }
 
 body.light .nav:hover{
+
     background:#f3f5f9;
 
     color:#172033;
 }
 
 body.light .nav.active{
-    background:#f0e8ff;
+
+    background:
+    linear-gradient(
+        90deg,
+        #f0e8ff,
+        #f9f6ff
+    );
 
     color:#6d32d2;
 
     border-color:#d8c9f4;
+
+    box-shadow:
+    inset 3px 0 #8b4fff;
 }
 
 body.light .side-bottom{
+
     border-top-color:#e5e9f0;
 }
 
 body.light .side-bottom button{
+
     color:#697588;
 }
 
+body.light .side-bottom button:hover{
+
+    background:#f2f4f8;
+
+    color:#172033;
+}
+
 body.light .main{
+
     background:#f5f7fb;
 }
 
 body.light .topbar{
+
     border-bottom-color:#e1e6ee;
 }
 
 body.light .top-left small{
+
     color:#8993a5;
 }
 
 body.light .top-left h1{
+
     color:#172033;
 }
 
 body.light .round-btn,
 body.light .user-chip{
+
     background:#fff;
 
     border-color:#dce2eb;
@@ -1030,7 +1320,13 @@ body.light .user-chip{
 }
 
 body.light .hero{
+
     background:
+    radial-gradient(
+        circle at 85% 20%,
+        rgba(139,79,255,.10),
+        transparent 30%
+    ),
     linear-gradient(
         135deg,
         #fff,
@@ -1041,37 +1337,45 @@ body.light .hero{
 }
 
 body.light .hero p{
+
     color:#687386;
 }
 
 body.light .stat,
 body.light .card,
-body.light .form-box,
-body.light .owner-box{
+body.light .form-box{
+
     background:#fff;
 
     border-color:#e0e5ed;
+
+    box-shadow:
+    0 6px 20px rgba(30,40,60,.04);
 }
 
 body.light .stat h3,
 body.light .card h3,
 body.light .form-box h3{
+
     color:#1c2535;
 }
 
 body.light .stat p,
 body.light .card p,
 body.light .muted{
+
     color:#6d788b;
 }
 
 body.light .field{
+
     color:#4f5b6d;
 }
 
 body.light .field input,
 body.light .field select,
 body.light .field textarea{
+
     background:#fff;
 
     color:#202a3b;
@@ -1080,6 +1384,7 @@ body.light .field textarea{
 }
 
 body.light .secondary{
+
     background:#fff;
 
     color:#6d32d2;
@@ -1087,9 +1392,47 @@ body.light .secondary{
     border-color:#bda1ec;
 }
 
-/* =========================
+body.light .owner-panel{
+
+    background:#fff9e8;
+
+    border-color:#e7c65d;
+}
+
+body.light .owner-panel p{
+
+    color:#6d644d;
+}
+
+body.light .market-item{
+
+    background:#f7f8fa;
+
+    border-color:#e0e5ed;
+}
+
+/* =====================================================
+   SCROLLBAR
+===================================================== */
+
+::-webkit-scrollbar{
+    width:7px;
+}
+
+::-webkit-scrollbar-track{
+    background:#070c15;
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#2b3850;
+
+    border-radius:20px;
+}
+
+/* =====================================================
    RESPONSIVE
-========================= */
+===================================================== */
 
 @media(max-width:1080px){
 
@@ -1098,165 +1441,211 @@ body.light .secondary{
     }
 
     .main{
+
         margin-left:220px;
 
         width:calc(100% - 220px);
     }
 
     .stats{
-        grid-template-columns:repeat(2,1fr);
+
+        grid-template-columns:
+        repeat(2,1fr);
     }
 
-    .owner-panel{
-        grid-template-columns:1fr;
+    .marketplace-box{
+
+        grid-template-columns:
+        repeat(2,1fr);
     }
 }
 
 @media(max-width:760px){
 
-    .sidebar{
-        position:fixed;
-
-        left:-280px;
-
-        width:270px;
-
-        box-shadow:15px 0 40px rgba(0,0,0,.4);
+    .app{
+        display:block;
     }
 
-    .sidebar.mobile-open{
-        left:0;
+    .sidebar{
+
+        position:relative;
+
+        width:100%;
+
+        height:auto;
+
+        min-height:auto;
     }
 
     .main{
+
         margin-left:0;
 
         width:100%;
 
-        padding:0 14px 30px;
+        padding:14px;
     }
 
-    .mobile-menu{
-        display:flex;
+    .nav-area{
+
+        display:grid;
+
+        grid-template-columns:
+        repeat(2,1fr);
+    }
+
+    .section-title{
+
+        grid-column:1/-1;
+    }
+
+    .side-bottom{
+
+        display:grid;
+
+        grid-template-columns:
+        1fr 1fr 1fr;
     }
 
     .topbar{
-        min-height:auto;
 
-        padding:14px 0;
+        align-items:flex-start;
 
-        align-items:center;
-    }
+        flex-direction:column;
 
-    .top-left{
-        width:100%;
-    }
+        padding:15px 0;
 
-    .top-left h1{
-        font-size:21px;
-    }
-
-    .top-left small{
-        font-size:8px;
+        gap:12px;
     }
 
     .top-right{
-        width:100%;
-
-        justify-content:flex-end;
 
         flex-wrap:wrap;
     }
 
-    .user-chip{
-        display:none;
-    }
-
     .hero{
-        min-height:auto;
+
+        display:block;
     }
 
     .hero-copy{
-        padding:30px 20px;
 
         max-width:none;
     }
 
-    .hero h2{
-        font-size:30px;
-    }
-
-    .stats{
-        grid-template-columns:1fr 1fr;
-    }
-
     .cards{
+
         grid-template-columns:1fr;
     }
 
     .settings-grid{
+
         grid-template-columns:1fr;
     }
 
     .settings-grid .form-box:first-child{
+
         grid-column:auto;
     }
 
     .form-grid{
+
         grid-template-columns:1fr;
     }
 
     .field.full{
+
         grid-column:auto;
+    }
+
+    .stats{
+
+        grid-template-columns:
+        repeat(2,1fr);
+    }
+
+    .marketplace-box{
+
+        grid-template-columns:1fr;
     }
 }
 
 @media(max-width:480px){
 
     .stats{
+
         grid-template-columns:1fr;
     }
 
-    .top-right{
-        justify-content:flex-start;
+    .nav-area{
+
+        grid-template-columns:1fr;
     }
 
-    .logout-top{
-        padding:0 12px;
+    .side-bottom{
+
+        grid-template-columns:1fr;
     }
 
     .hero h2{
-        font-size:27px;
+
+        font-size:29px;
     }
 
-    .page-head h2{
-        font-size:24px;
+    .top-right{
+
+        width:100%;
+    }
+
+    .top-logo{
+
+        width:40px;
+        height:40px;
+    }
+
+    .top-left h1{
+
+        font-size:23px;
     }
 }
 
 </style>
+
 </head>
+
 
 <body>
 
+
 <div class="app">
 
-<!-- =========================
+
+<!-- =====================================================
      SIDEBAR
-========================= -->
+===================================================== -->
 
-<aside class="sidebar" id="sidebar">
+<aside class="sidebar">
 
-<button class="brand" onclick="showPage('dashboard');closeMobileMenu();">
 
-<span class="mark">✦</span>
+<button
+    class="brand"
+    onclick="showPage('dashboard')"
+>
+
+<span class="brand-mark">✦</span>
 
 <span>
+
 <strong>ELITE</strong>
+
 <small>FREELANCE HUB</small>
+
 </span>
 
 </button>
+
+
+<!-- PROFILE -->
 
 <div class="mini-profile">
 
@@ -1270,13 +1659,21 @@ body.light .secondary{
 AYESHA REHMAN
 </strong>
 
-<small>
-Owner + Professional Freelancer
+<small id="sideRole">
+Owner + Freelancer
 </small>
 
+<div>
+
 <span class="owner-badge">
-OWNER + FREELANCER
+♛ OWNER
 </span>
+
+<span class="freelancer-badge">
+👩🏻‍💻 FREELANCER
+</span>
+
+</div>
 
 </div>
 
@@ -1286,39 +1683,56 @@ OWNER + FREELANCER
 
 </div>
 
+
 <div class="nav-area">
+
 
 <div class="section-title">
 MAIN
 </div>
 
-<button class="nav active"
+
+<button
+class="nav"
 data-page="dashboard"
-onclick="showPage('dashboard')">
+onclick="showPage('dashboard')"
+>
 ⌂ &nbsp; Dashboard
 </button>
 
-<button class="nav"
+
+<button
+class="nav"
 data-page="findwork"
-onclick="showPage('findwork')">
+onclick="showPage('findwork')"
+>
 ⌕ &nbsp; Find Work
 </button>
 
-<button class="nav"
+
+<button
+class="nav"
 data-page="applications"
-onclick="showPage('applications')">
+onclick="showPage('applications')"
+>
 ✉ &nbsp; Applications
 </button>
 
-<button class="nav"
+
+<button
+class="nav"
 data-page="projects"
-onclick="showPage('projects')">
+onclick="showPage('projects')"
+>
 ▣ &nbsp; My Projects
 </button>
 
-<button class="nav"
+
+<button
+class="nav"
 data-page="messages"
-onclick="showPage('messages')">
+onclick="showPage('messages')"
+>
 ◌ &nbsp; Messages
 </button>
 
@@ -1327,33 +1741,48 @@ onclick="showPage('messages')">
 MANAGE
 </div>
 
-<button class="nav"
+
+<button
+class="nav"
 data-page="saved"
-onclick="showPage('saved')">
+onclick="showPage('saved')"
+>
 🔖 &nbsp; Saved Jobs
 </button>
 
-<button class="nav"
+
+<button
+class="nav"
 data-page="proposals"
-onclick="showPage('proposals')">
+onclick="showPage('proposals')"
+>
 ✎ &nbsp; Proposals
 </button>
 
-<button class="nav"
+
+<button
+class="nav"
 data-page="contracts"
-onclick="showPage('contracts')">
+onclick="showPage('contracts')"
+>
 ▤ &nbsp; Contracts
 </button>
 
-<button class="nav"
+
+<button
+class="nav"
 data-page="earnings"
-onclick="showPage('earnings')">
+onclick="showPage('earnings')"
+>
 $ &nbsp; Earnings
 </button>
 
-<button class="nav"
+
+<button
+class="nav"
 data-page="tracker"
-onclick="showPage('tracker')">
+onclick="showPage('tracker')"
+>
 ◷ &nbsp; Time Tracker
 </button>
 
@@ -1362,27 +1791,39 @@ onclick="showPage('tracker')">
 ACCOUNT
 </div>
 
-<button class="nav"
+
+<button
+class="nav"
 data-page="profile"
-onclick="showPage('profile')">
+onclick="showPage('profile')"
+>
 ♙ &nbsp; Profile
 </button>
 
-<button class="nav"
+
+<button
+class="nav"
 data-page="portfolio"
-onclick="showPage('portfolio')">
+onclick="showPage('portfolio')"
+>
 ▦ &nbsp; Portfolio
 </button>
 
-<button class="nav"
+
+<button
+class="nav"
 data-page="reviews"
-onclick="showPage('reviews')">
+onclick="showPage('reviews')"
+>
 ★ &nbsp; Reviews
 </button>
 
-<button class="nav"
+
+<button
+class="nav"
 data-page="settings"
-onclick="showPage('settings')">
+onclick="showPage('settings')"
+>
 ⚙ &nbsp; Settings
 </button>
 
@@ -1391,43 +1832,53 @@ onclick="showPage('settings')">
 
 <div class="side-bottom">
 
+
 <button onclick="switchClient()">
-⇄ &nbsp; Client Mode
+⇄ &nbsp; Switch to Client Mode
 </button>
 
-<button onclick="showToast('Help & Support will be connected soon.')">
+
+<button onclick="showToast('Help & Support is coming soon.')">
 ♧ &nbsp; Help & Support
 </button>
 
-<button class="logout"
-onclick="logout()">
+
+<button
+class="logout"
+onclick="logout()"
+>
 ↪ &nbsp; Logout
 </button>
 
+
 </div>
+
 
 </aside>
 
 
-<!-- =========================
+<!-- =====================================================
      MAIN
-========================= -->
+===================================================== -->
 
 <main class="main">
 
+
+<!-- TOPBAR -->
+
 <header class="topbar">
+
 
 <div class="top-left">
 
-<button class="mobile-menu"
-onclick="toggleMobileMenu()">
-☰
-</button>
+<div class="top-logo">
+✦
+</div>
 
 <div>
 
 <small>
-✦ ELITE FREELANCE HUB
+ELITE FREELANCE HUB
 </small>
 
 <h1 id="topTitle">
@@ -1441,12 +1892,15 @@ Dashboard
 
 <div class="top-right">
 
+
 <button
 class="round-btn"
-onclick="showToast('No new notifications.')">
+onclick="showToast('No new notifications.')"
+>
 ♢
 <span class="dot"></span>
 </button>
+
 
 <div class="user-chip">
 
@@ -1454,64 +1908,105 @@ onclick="showToast('No new notifications.')">
 👩🏻‍💻
 </div>
 
-<strong id="topName">
+<strong>
 AYESHA REHMAN
 </strong>
 
 </div>
 
+
 <button
 class="logout-top"
-onclick="logout()">
+onclick="logout()"
+>
 ↪ Logout
 </button>
 
+
 </div>
+
 
 </header>
 
 
-<!-- =========================
+<!-- =====================================================
      DASHBOARD
-========================= -->
+===================================================== -->
 
-<section class="page active" id="dashboard">
+<section
+class="page active"
+id="dashboard"
+>
+
+
+<div class="owner-panel">
+
+<div class="owner-title">
+
+<h3>
+♛ ELITE FREELANCE HUB OWNER
+</h3>
+
+<span class="owner-badge">
+OWNER
+</span>
+
+<span class="freelancer-badge">
+FREELANCER
+</span>
+
+</div>
+
+<p>
+You are the platform owner and also an active freelancer.
+Your account has owner privileges while you can continue
+using all normal freelancer features.
+</p>
+
+</div>
+
 
 <div class="hero">
 
 <div class="hero-copy">
 
-<div class="owner-title">
-👑 OWNER + FREELANCER
-</div>
-
 <h2>
+
 WELCOME BACK 👋
+
 <br>
+
 <span>AYESHA</span>
+
 </h2>
 
 <p>
-Welcome to your ELITE FREELANCE HUB.
-As the owner of the platform and a professional
-freelancer, you can manage your marketplace,
-find freelance work, manage projects and build
-your professional profile from one place.
+
+Build your freelance career, discover new opportunities,
+manage your projects and grow your professional profile
+with ELITE FREELANCE HUB.
+
 </p>
+
 
 <div class="actions">
 
+
 <button
 class="primary"
-onclick="showPage('findwork')">
+onclick="showPage('findwork')"
+>
 ⌕ Find Work
 </button>
 
+
 <button
 class="secondary"
-onclick="showPage('profile')">
+onclick="showPage('profile')"
+>
 ♙ View Profile
 </button>
+
 
 </div>
 
@@ -1522,15 +2017,20 @@ onclick="showPage('profile')">
 
 <div class="stats">
 
+
 <div class="stat">
 
 <div class="icon">
 ▣
 </div>
 
-<h3>0</h3>
+<h3>
+0
+</h3>
 
-<p>Active Projects</p>
+<p>
+Active Projects
+</p>
 
 </div>
 
@@ -1541,9 +2041,13 @@ onclick="showPage('profile')">
 ✉
 </div>
 
-<h3>0</h3>
+<h3>
+0
+</h3>
 
-<p>Applications Sent</p>
+<p>
+Applications Sent
+</p>
 
 </div>
 
@@ -1554,9 +2058,13 @@ onclick="showPage('profile')">
 $
 </div>
 
-<h3>$0</h3>
+<h3>
+$0
+</h3>
 
-<p>Total Earnings</p>
+<p>
+Total Earnings
+</p>
 
 </div>
 
@@ -1564,67 +2072,44 @@ $
 <div class="stat">
 
 <div class="icon">
-👑
+♛
 </div>
 
-<h3>OWNER</h3>
-
-<p>Account Status</p>
-
-</div>
-
-</div>
-
-
-<div class="owner-panel">
-
-<div class="owner-box">
-
-<h3>👑 Platform Owner</h3>
+<h3>
+Owner
+</h3>
 
 <p>
-You own and manage ELITE FREELANCE HUB.
-Marketplace controls can be connected here.
+Owner + Freelancer
 </p>
 
 </div>
 
-<div class="owner-box">
-
-<h3>👩🏻‍💻 Freelancer</h3>
-
-<p>
-You can also use this same account to find work,
-submit proposals and manage freelance projects.
-</p>
 
 </div>
 
-<div class="owner-box">
-
-<h3>✦ Elite Account</h3>
-
-<p>
-Owner and freelancer functionality is combined
-in this account.
-</p>
-
-</div>
-
-</div>
 
 </section>
 
 
-<!-- FIND WORK -->
+<!-- =====================================================
+     FIND WORK
+===================================================== -->
 
-<section class="page" id="findwork">
+<section
+class="page"
+id="findwork"
+>
 
 <div class="page-head">
 
-<label>MARKETPLACE</label>
+<label>
+MARKETPLACE
+</label>
 
-<h2>Find Work</h2>
+<h2>
+Find Work
+</h2>
 
 <p>
 Discover projects that match your skills.
@@ -1632,19 +2117,40 @@ Discover projects that match your skills.
 
 </div>
 
+
 <div class="cards">
+
 
 <div class="card">
 
-<h3>Website Design</h3>
+<h3>
+Website Design
+</h3>
 
 <p>
 Create a modern responsive website for a small business.
 </p>
 
+<div class="meta">
+
+<span class="pill">
+Web Design
+</span>
+
+<span class="pill">
+HTML / CSS
+</span>
+
+<span class="pill open">
+Open
+</span>
+
+</div>
+
 <button
 class="primary"
-onclick="applyJob('Website Design')">
+onclick="applyJob('Website Design')"
+>
 Apply Now
 </button>
 
@@ -1653,34 +2159,63 @@ Apply Now
 
 <div class="card">
 
-<h3>PDF Conversion</h3>
+<h3>
+PDF Conversion
+</h3>
 
 <p>
 Convert documents into clean editable files.
 </p>
 
+<div class="meta">
+
+<span class="pill">
+Data Entry
+</span>
+
+<span class="pill">
+PDF
+</span>
+
+<span class="pill open">
+Open
+</span>
+
+</div>
+
 <button
 class="primary"
-onclick="applyJob('PDF Conversion')">
+onclick="applyJob('PDF Conversion')"
+>
 Apply Now
 </button>
 
 </div>
+
 
 </div>
 
 </section>
 
 
-<!-- APPLICATIONS -->
+<!-- =====================================================
+     APPLICATIONS
+===================================================== -->
 
-<section class="page" id="applications">
+<section
+class="page"
+id="applications"
+>
 
 <div class="page-head">
 
-<label>WORK</label>
+<label>
+WORK
+</label>
 
-<h2>Applications</h2>
+<h2>
+Applications
+</h2>
 
 <p>
 Track projects you have applied for.
@@ -1688,18 +2223,22 @@ Track projects you have applied for.
 
 </div>
 
+
 <div class="form-box">
 
-<h3>No applications yet</h3>
+<h3>
+No applications yet
+</h3>
 
 <p class="muted">
-When you apply for projects, your applications
+When you apply for a project, your applications
 will appear here.
 </p>
 
 <button
 class="primary"
-onclick="showPage('findwork')">
+onclick="showPage('findwork')"
+>
 Find Projects
 </button>
 
@@ -1708,15 +2247,24 @@ Find Projects
 </section>
 
 
-<!-- PROJECTS -->
+<!-- =====================================================
+     PROJECTS
+===================================================== -->
 
-<section class="page" id="projects">
+<section
+class="page"
+id="projects"
+>
 
 <div class="page-head">
 
-<label>WORKSPACE</label>
+<label>
+WORKSPACE
+</label>
 
-<h2>My Projects</h2>
+<h2>
+My Projects
+</h2>
 
 <p>
 Manage your accepted freelance projects.
@@ -1724,9 +2272,12 @@ Manage your accepted freelance projects.
 
 </div>
 
+
 <div class="form-box">
 
-<h3>No active projects</h3>
+<h3>
+No active projects
+</h3>
 
 <p class="muted">
 Accepted projects will appear here.
@@ -1737,15 +2288,24 @@ Accepted projects will appear here.
 </section>
 
 
-<!-- MESSAGES -->
+<!-- =====================================================
+     MESSAGES
+===================================================== -->
 
-<section class="page" id="messages">
+<section
+class="page"
+id="messages"
+>
 
 <div class="page-head">
 
-<label>COMMUNICATION</label>
+<label>
+COMMUNICATION
+</label>
 
-<h2>Messages</h2>
+<h2>
+Messages
+</h2>
 
 <p>
 Chat with your clients.
@@ -1753,12 +2313,16 @@ Chat with your clients.
 
 </div>
 
+
 <div class="form-box">
 
-<h3>Messages</h3>
+<h3>
+Messages
+</h3>
 
 <p class="muted">
 No conversations yet.
+Your client conversations will appear here.
 </p>
 
 </div>
@@ -1766,15 +2330,24 @@ No conversations yet.
 </section>
 
 
-<!-- SAVED -->
+<!-- =====================================================
+     SAVED
+===================================================== -->
 
-<section class="page" id="saved">
+<section
+class="page"
+id="saved"
+>
 
 <div class="page-head">
 
-<label>MARKETPLACE</label>
+<label>
+MARKETPLACE
+</label>
 
-<h2>Saved Jobs</h2>
+<h2>
+Saved Jobs
+</h2>
 
 <p>
 Jobs you save for later.
@@ -1782,12 +2355,15 @@ Jobs you save for later.
 
 </div>
 
+
 <div class="form-box">
 
-<h3>No saved jobs</h3>
+<h3>
+No saved jobs
+</h3>
 
 <p class="muted">
-Saved projects will appear here.
+Save interesting projects and they will appear here.
 </p>
 
 </div>
@@ -1795,15 +2371,24 @@ Saved projects will appear here.
 </section>
 
 
-<!-- PROPOSALS -->
+<!-- =====================================================
+     PROPOSALS
+===================================================== -->
 
-<section class="page" id="proposals">
+<section
+class="page"
+id="proposals"
+>
 
 <div class="page-head">
 
-<label>WORK</label>
+<label>
+WORK
+</label>
 
-<h2>Proposals</h2>
+<h2>
+Proposals
+</h2>
 
 <p>
 Manage your freelance proposals.
@@ -1811,12 +2396,15 @@ Manage your freelance proposals.
 
 </div>
 
+
 <div class="form-box">
 
-<h3>No proposals yet</h3>
+<h3>
+No proposals yet
+</h3>
 
 <p class="muted">
-Your proposals will appear here.
+Your submitted proposals will appear here.
 </p>
 
 </div>
@@ -1824,15 +2412,24 @@ Your proposals will appear here.
 </section>
 
 
-<!-- CONTRACTS -->
+<!-- =====================================================
+     CONTRACTS
+===================================================== -->
 
-<section class="page" id="contracts">
+<section
+class="page"
+id="contracts"
+>
 
 <div class="page-head">
 
-<label>WORK</label>
+<label>
+WORK
+</label>
 
-<h2>Contracts</h2>
+<h2>
+Contracts
+</h2>
 
 <p>
 Manage your freelance contracts.
@@ -1840,12 +2437,15 @@ Manage your freelance contracts.
 
 </div>
 
+
 <div class="form-box">
 
-<h3>No contracts yet</h3>
+<h3>
+No contracts yet
+</h3>
 
 <p class="muted">
-Your contracts will appear here.
+Your active contracts will appear here.
 </p>
 
 </div>
@@ -1853,15 +2453,24 @@ Your contracts will appear here.
 </section>
 
 
-<!-- EARNINGS -->
+<!-- =====================================================
+     EARNINGS
+===================================================== -->
 
-<section class="page" id="earnings">
+<section
+class="page"
+id="earnings"
+>
 
 <div class="page-head">
 
-<label>FINANCE</label>
+<label>
+FINANCE
+</label>
 
-<h2>Earnings</h2>
+<h2>
+Earnings
+</h2>
 
 <p>
 Track your freelance earnings.
@@ -1869,78 +2478,148 @@ Track your freelance earnings.
 
 </div>
 
+
 <div class="stats">
 
-<div class="stat">
-<div class="icon">$</div>
-<h3>$0</h3>
-<p>Total Earnings</p>
-</div>
 
 <div class="stat">
-<div class="icon">✓</div>
-<h3>$0</h3>
-<p>Paid</p>
+
+<div class="icon">
+$
 </div>
 
-<div class="stat">
-<div class="icon">◷</div>
-<h3>$0</h3>
-<p>Pending</p>
+<h3>
+$0
+</h3>
+
+<p>
+Total Earnings
+</p>
+
 </div>
 
+
 <div class="stat">
-<div class="icon">★</div>
-<h3>$0</h3>
-<p>Available</p>
+
+<div class="icon">
+✓
 </div>
+
+<h3>
+$0
+</h3>
+
+<p>
+Paid
+</p>
+
+</div>
+
+
+<div class="stat">
+
+<div class="icon">
+◷
+</div>
+
+<h3>
+$0
+</h3>
+
+<p>
+Pending
+</p>
+
+</div>
+
+
+<div class="stat">
+
+<div class="icon">
+%
+</div>
+
+<h3>
+$0
+</h3>
+
+<p>
+Platform Fees
+</p>
+
+</div>
+
 
 </div>
 
 </section>
 
 
-<!-- TRACKER -->
+<!-- =====================================================
+     TRACKER
+===================================================== -->
 
-<section class="page" id="tracker">
+<section
+class="page"
+id="tracker"
+>
 
 <div class="page-head">
 
-<label>WORK</label>
+<label>
+WORK
+</label>
 
-<h2>Time Tracker</h2>
+<h2>
+Time Tracker
+</h2>
 
 <p>
-Track time spent on freelance projects.
+Track time spent on your freelance projects.
 </p>
 
 </div>
 
-<div class="form-box" style="text-align:center;">
+
+<div
+class="form-box"
+style="text-align:center;"
+>
 
 <h3 id="timerDisplay">
 00:00:00
 </h3>
 
-<div class="actions" style="justify-content:center;">
+
+<div
+class="actions"
+style="justify-content:center;"
+>
+
 
 <button
 class="primary"
-onclick="startTimer()">
+onclick="startTimer()"
+>
 ▶ Start
 </button>
 
+
 <button
 class="secondary"
-onclick="stopTimer()">
+onclick="stopTimer()"
+>
 ■ Stop
 </button>
 
+
 <button
 class="danger"
-onclick="resetTimer()">
+onclick="resetTimer()"
+>
 ↻ Reset
 </button>
+
 
 </div>
 
@@ -1949,15 +2628,24 @@ onclick="resetTimer()">
 </section>
 
 
-<!-- PROFILE -->
+<!-- =====================================================
+     PROFILE
+===================================================== -->
 
-<section class="page" id="profile">
+<section
+class="page"
+id="profile"
+>
 
 <div class="page-head">
 
-<label>ACCOUNT</label>
+<label>
+ACCOUNT
+</label>
 
-<h2>Profile</h2>
+<h2>
+Profile
+</h2>
 
 <p>
 Your professional freelancer profile.
@@ -1965,73 +2653,133 @@ Your professional freelancer profile.
 
 </div>
 
+
+<div class="owner-panel">
+
+<div class="owner-title">
+
+<h3>
+♛ Owner + Freelancer
+</h3>
+
+</div>
+
+<p>
+This is the official owner account of ELITE FREELANCE HUB.
+You can use the platform as a freelancer while retaining
+owner privileges.
+</p>
+
+</div>
+
+
 <div class="form-box">
 
-<div style="
+
+<div
+style="
 display:flex;
 align-items:center;
 gap:20px;
 flex-wrap:wrap;
-">
+"
+>
 
-<div class="avatar"
+
+<div
+class="avatar"
 style="
 width:100px;
 height:100px;
 font-size:55px;
-">
+"
+>
 👩🏻‍💻
 </div>
 
+
 <div>
 
-<h2 id="profileDisplayName">
+<h2
+id="profileDisplayName"
+style="margin:0 0 5px;"
+>
 AYESHA REHMAN
 </h2>
 
+
 <p class="muted">
-👑 Owner + Professional Freelancer
+Owner + Professional Freelancer
 </p>
+
 
 <p class="muted">
 Available for freelance work
 </p>
 
+
+<div>
+
+<span class="owner-badge">
+♛ OWNER
+</span>
+
+<span class="freelancer-badge">
+👩🏻‍💻 FREELANCER
+</span>
+
+</div>
+
 </div>
 
 </div>
 
-<hr style="
+
+<hr
+style="
 border:0;
 border-top:1px solid #24324b;
 margin:22px 0;
 ">
 
+
 <p class="muted">
-This account is both the ELITE FREELANCE HUB owner
-account and a professional freelancer account.
+Complete your profile from Settings to make your
+freelancer account more attractive to clients.
 </p>
+
 
 <button
 class="primary"
-onclick="showPage('settings')">
+onclick="showPage('settings')"
+>
 ⚙ Edit Settings
 </button>
+
 
 </div>
 
 </section>
 
 
-<!-- PORTFOLIO -->
+<!-- =====================================================
+     PORTFOLIO
+===================================================== -->
 
-<section class="page" id="portfolio">
+<section
+class="page"
+id="portfolio"
+>
 
 <div class="page-head">
 
-<label>SHOWCASE</label>
+<label>
+SHOWCASE
+</label>
 
-<h2>Portfolio</h2>
+<h2>
+Portfolio
+</h2>
 
 <p>
 Show clients what you can create.
@@ -2039,17 +2787,22 @@ Show clients what you can create.
 
 </div>
 
+
 <div class="form-box">
 
-<h3>Your Portfolio</h3>
+<h3>
+Your Portfolio
+</h3>
 
 <p class="muted">
 No portfolio projects added yet.
+Add your best work here when you're ready.
 </p>
 
 <button
 class="primary"
-onclick="showToast('Portfolio editor coming soon.')">
+onclick="showToast('Portfolio editor coming soon.')"
+>
 + Add Portfolio Project
 </button>
 
@@ -2058,15 +2811,24 @@ onclick="showToast('Portfolio editor coming soon.')">
 </section>
 
 
-<!-- REVIEWS -->
+<!-- =====================================================
+     REVIEWS
+===================================================== -->
 
-<section class="page" id="reviews">
+<section
+class="page"
+id="reviews"
+>
 
 <div class="page-head">
 
-<label>REPUTATION</label>
+<label>
+REPUTATION
+</label>
 
-<h2>Reviews</h2>
+<h2>
+Reviews
+</h2>
 
 <p>
 Client feedback and ratings.
@@ -2074,9 +2836,12 @@ Client feedback and ratings.
 
 </div>
 
+
 <div class="form-box">
 
-<h3>★ No reviews yet</h3>
+<h3>
+★ No reviews yet
+</h3>
 
 <p class="muted">
 Reviews will appear after completing projects.
@@ -2087,15 +2852,24 @@ Reviews will appear after completing projects.
 </section>
 
 
-<!-- SETTINGS -->
+<!-- =====================================================
+     SETTINGS
+===================================================== -->
 
-<section class="page" id="settings">
+<section
+class="page"
+id="settings"
+>
 
 <div class="page-head">
 
-<label>ACCOUNT</label>
+<label>
+ACCOUNT
+</label>
 
-<h2>Settings</h2>
+<h2>
+Settings
+</h2>
 
 <p>
 Manage your profile, security and preferences.
@@ -2104,10 +2878,40 @@ Manage your profile, security and preferences.
 </div>
 
 
+<!-- OWNER INFO -->
+
+<div class="owner-panel">
+
+<div class="owner-title">
+
+<h3>
+♛ Account Type
+</h3>
+
+<span class="owner-badge">
+OWNER
+</span>
+
+<span class="freelancer-badge">
+FREELANCER
+</span>
+
+</div>
+
+<p>
+AYESHA REHMAN is the owner of ELITE FREELANCE HUB
+and also uses the platform as a freelancer.
+Other registered users will have their own normal
+Freelancer or Client account type.
+</p>
+
+</div>
+
+
 <div class="settings-grid">
 
 
-<!-- PROFILE -->
+<!-- PROFILE INFORMATION -->
 
 <div class="form-box">
 
@@ -2115,7 +2919,9 @@ Manage your profile, security and preferences.
 Profile Information
 </h3>
 
+
 <div class="form-grid">
+
 
 <label class="field">
 
@@ -2124,6 +2930,7 @@ Display Name
 <input
 type="text"
 id="settingsName"
+placeholder="Your display name"
 value="AYESHA REHMAN"
 >
 
@@ -2137,7 +2944,8 @@ Email
 <input
 type="email"
 id="settingsEmail"
-value="ayesharehman123456987@gmail.com"
+placeholder="Your email"
+value=""
 >
 
 </label>
@@ -2169,6 +2977,7 @@ Location
 <input
 type="text"
 id="settingsLocation"
+placeholder="Pakistan"
 value="Pakistan"
 >
 
@@ -2182,8 +2991,9 @@ Hourly Rate (USD)
 <input
 type="number"
 id="settingsRate"
-value="10"
 min="0"
+placeholder="Enter your rate"
+value=""
 >
 
 </label>
@@ -2219,6 +3029,7 @@ Skills
 <input
 type="text"
 id="settingsSkills"
+placeholder="Web Design, HTML, CSS, JavaScript"
 value="HTML, CSS, JavaScript, Web Design"
 >
 
@@ -2231,29 +3042,37 @@ Professional Bio
 
 <textarea
 id="settingsBio"
->Professional freelancer and owner of ELITE FREELANCE HUB, focused on clean, modern and responsive digital experiences.</textarea>
+placeholder="Tell clients about yourself..."
+>Professional freelancer focused on creating clean, modern and responsive digital experiences.</textarea>
 
 </label>
+
 
 </div>
 
 
 <div class="form-row">
 
+
 <button
 class="primary"
-onclick="saveProfile()">
+onclick="saveProfile()"
+>
 Save Profile
 </button>
+
 
 <span
 class="success"
 id="profileSaved"
-style="display:none;">
+style="display:none;"
+>
 ✓ Profile saved
 </span>
 
+
 </div>
+
 
 </div>
 
@@ -2267,21 +3086,27 @@ Security
 </h3>
 
 <p class="muted">
+
 Your password is managed securely through
 Firebase Authentication.
+
 </p>
+
 
 <button
 class="secondary"
-onclick="sendPasswordReset()">
+onclick="sendPasswordReset()"
+>
 🔐 Send Password Reset Email
 </button>
+
 
 <div
 id="resetMessage"
 class="muted"
-style="margin-top:12px;">
-</div>
+style="margin-top:12px;"
+></div>
+
 
 </div>
 
@@ -2295,483 +3120,835 @@ Appearance
 </h3>
 
 <p class="muted">
+
 Choose how ELITE FREELANCE HUB looks for you.
+
 </p>
+
 
 <button
 class="secondary"
-onclick="toggleTheme()">
+onclick="toggleTheme()"
+>
 ◐ Toggle Light / Dark Mode
 </button>
+
 
 <p
 class="muted"
 id="themeStatus"
-style="margin-top:12px;">
+style="margin-top:12px;"
+>
 Dark Mode
 </p>
 
 </div>
 
 
-<!-- OWNER -->
+<!-- MARKETPLACE -->
 
 <div class="form-box">
 
 <h3>
-👑 Owner Account
+Marketplace
 </h3>
 
-<p class="muted">
-This is the main owner account of ELITE FREELANCE HUB.
-The same account can also work as a freelancer.
+
+<div class="marketplace-box">
+
+
+<div class="market-item">
+
+<strong>
+♛ Owner
+</strong>
+
+<span>
+You manage ELITE FREELANCE HUB.
+</span>
+
+</div>
+
+
+<div class="market-item">
+
+<strong>
+👩🏻‍💻 Freelancer
+</strong>
+
+<span>
+You can apply for and complete projects.
+</span>
+
+</div>
+
+
+<div class="market-item">
+
+<strong>
+♙ Clients
+</strong>
+
+<span>
+Clients can create and manage projects.
+</span>
+
+</div>
+
+
+</div>
+
+
+<p
+class="muted"
+style="margin-bottom:0;margin-top:15px;"
+>
+
+Online payment collection is not connected yet.
+Payment features can be connected later when
+a real payment provider is added.
+
 </p>
 
-<div class="owner-panel">
-
-<div class="owner-box">
-
-<h3>OWNER</h3>
-
-<p>
-Platform owner access.
-</p>
-
-</div>
-
-<div class="owner-box">
-
-<h3>FREELANCER</h3>
-
-<p>
-Can find work and submit proposals.
-</p>
-
-</div>
-
-<div class="owner-box">
-
-<h3>STATUS</h3>
-
-<p>
-Owner + Freelancer
-</p>
-
-</div>
-
-</div>
-
 </div>
 
 
 </div>
+
 
 </section>
+
 
 </main>
 
 </div>
 
 
+<!-- TOAST -->
+
 <div id="toast"></div>
 
 
 <script>
 
-/* =========================
+/* =====================================================
+   OWNER CONFIGURATION
+===================================================== */
+
+/*
+   IMPORTANT:
+
+   This is the owner account.
+
+   When Firebase login is connected, this email should
+   be used to identify the owner account.
+
+   Other users must NOT receive owner privileges.
+*/
+
+const OWNER_EMAIL =
+"ayesharehman123456987@gmail.com";
+
+
+/* =====================================================
    PAGE NAVIGATION
-========================= */
+===================================================== */
 
 function showPage(pageName){
 
-document.querySelectorAll(".page").forEach(page=>{
-    page.classList.remove("active");
-});
+    const pages =
+    document.querySelectorAll(".page");
 
-const target=document.getElementById(pageName);
+    pages.forEach(page => {
 
-if(target){
-    target.classList.add("active");
-}
+        page.classList.remove("active");
 
-document.querySelectorAll(".nav").forEach(nav=>{
-    nav.classList.remove("active");
+    });
 
-    if(nav.dataset.page===pageName){
-        nav.classList.add("active");
+
+    const target =
+    document.getElementById(pageName);
+
+
+    if(target){
+
+        target.classList.add("active");
+
     }
-});
 
-const titles={
-    dashboard:"Dashboard",
-    findwork:"Find Work",
-    applications:"Applications",
-    projects:"My Projects",
-    messages:"Messages",
-    saved:"Saved Jobs",
-    proposals:"Proposals",
-    contracts:"Contracts",
-    earnings:"Earnings",
-    tracker:"Time Tracker",
-    profile:"Profile",
-    portfolio:"Portfolio",
-    reviews:"Reviews",
-    settings:"Settings"
-};
 
-document.getElementById("topTitle").textContent=
-titles[pageName] || "ELITE FREELANCE HUB";
+    const navs =
+    document.querySelectorAll(".nav");
 
-closeMobileMenu();
 
-window.scrollTo({
-    top:0,
-    behavior:"smooth"
-});
+    navs.forEach(nav => {
+
+        nav.classList.remove("active");
+
+
+        if(nav.dataset.page === pageName){
+
+            nav.classList.add("active");
+
+        }
+
+    });
+
+
+    const titles = {
+
+        dashboard:"Dashboard",
+
+        findwork:"Find Work",
+
+        applications:"Applications",
+
+        projects:"My Projects",
+
+        messages:"Messages",
+
+        saved:"Saved Jobs",
+
+        proposals:"Proposals",
+
+        contracts:"Contracts",
+
+        earnings:"Earnings",
+
+        tracker:"Time Tracker",
+
+        profile:"Profile",
+
+        portfolio:"Portfolio",
+
+        reviews:"Reviews",
+
+        settings:"Settings"
+
+    };
+
+
+    document.getElementById(
+        "topTitle"
+    ).textContent =
+    titles[pageName] ||
+    "ELITE FREELANCE HUB";
+
+
+    window.scrollTo({
+
+        top:0,
+
+        behavior:"smooth"
+
+    });
 
 }
 
 
-/* =========================
-   MOBILE MENU
-========================= */
-
-function toggleMobileMenu(){
-
-const sidebar=document.getElementById("sidebar");
-
-sidebar.classList.toggle("mobile-open");
-
-}
-
-
-function closeMobileMenu(){
-
-const sidebar=document.getElementById("sidebar");
-
-if(window.innerWidth<=760){
-    sidebar.classList.remove("mobile-open");
-}
-
-}
-
-
-/* =========================
+/* =====================================================
    TOAST
-========================= */
+===================================================== */
 
 let toastTimer;
 
+
 function showToast(message){
 
-const toast=document.getElementById("toast");
+    const toast =
+    document.getElementById("toast");
 
-toast.textContent=message;
 
-toast.classList.add("show");
+    toast.textContent =
+    message;
 
-clearTimeout(toastTimer);
 
-toastTimer=setTimeout(()=>{
-    toast.classList.remove("show");
-},3000);
+    toast.classList.add("show");
+
+
+    clearTimeout(toastTimer);
+
+
+    toastTimer =
+    setTimeout(() => {
+
+        toast.classList.remove("show");
+
+    },3000);
 
 }
 
 
-/* =========================
-   PROFILE
-========================= */
+/* =====================================================
+   PROFILE SAVE
+===================================================== */
 
 function saveProfile(){
 
-const profile={
+    const name =
+    document
+    .getElementById("settingsName")
+    .value
+    .trim();
 
-name:document.getElementById("settingsName").value.trim(),
 
-email:document.getElementById("settingsEmail").value.trim(),
+    const email =
+    document
+    .getElementById("settingsEmail")
+    .value
+    .trim();
 
-gender:document.getElementById("settingsGender").value,
 
-location:document.getElementById("settingsLocation").value.trim(),
+    const gender =
+    document
+    .getElementById("settingsGender")
+    .value;
 
-rate:document.getElementById("settingsRate").value,
 
-availability:document.getElementById("settingsAvailability").value,
+    const location =
+    document
+    .getElementById("settingsLocation")
+    .value
+    .trim();
 
-skills:document.getElementById("settingsSkills").value.trim(),
 
-bio:document.getElementById("settingsBio").value.trim()
+    const rate =
+    document
+    .getElementById("settingsRate")
+    .value;
 
-};
 
-localStorage.setItem(
-"eliteProfile",
-JSON.stringify(profile)
-);
+    const availability =
+    document
+    .getElementById("settingsAvailability")
+    .value;
 
-updateNames(profile.name);
 
-document.getElementById("profileSaved").style.display="inline";
+    const skills =
+    document
+    .getElementById("settingsSkills")
+    .value
+    .trim();
 
-setTimeout(()=>{
-    document.getElementById("profileSaved").style.display="none";
-},2500);
 
-showToast("✓ Profile saved successfully.");
+    const bio =
+    document
+    .getElementById("settingsBio")
+    .value
+    .trim();
+
+
+    const profile = {
+
+        name:name,
+
+        email:email,
+
+        gender:gender,
+
+        location:location,
+
+        rate:rate,
+
+        availability:availability,
+
+        skills:skills,
+
+        bio:bio
+
+    };
+
+
+    localStorage.setItem(
+
+        "eliteProfile",
+
+        JSON.stringify(profile)
+
+    );
+
+
+    document.getElementById(
+        "sideName"
+    ).textContent =
+    name ||
+    "AYESHA REHMAN";
+
+
+    document.getElementById(
+        "topName"
+    ).textContent =
+    name ||
+    "AYESHA REHMAN";
+
+
+    document.getElementById(
+        "profileDisplayName"
+    ).textContent =
+    name ||
+    "AYESHA REHMAN";
+
+
+    const saved =
+    document.getElementById(
+        "profileSaved"
+    );
+
+
+    saved.style.display =
+    "inline";
+
+
+    setTimeout(() => {
+
+        saved.style.display =
+        "none";
+
+    },2500);
+
+
+    showToast(
+        "✓ Profile saved successfully."
+    );
 
 }
 
 
-function updateNames(name){
-
-const finalName=name || "AYESHA REHMAN";
-
-document.getElementById("sideName").textContent=finalName;
-
-document.getElementById("topName").textContent=finalName;
-
-document.getElementById("profileDisplayName").textContent=finalName;
-
-}
-
-
-/* =========================
+/* =====================================================
    LOAD PROFILE
-========================= */
+===================================================== */
 
 function loadProfile(){
 
-const saved=localStorage.getItem("eliteProfile");
+    const saved =
+    localStorage.getItem(
+        "eliteProfile"
+    );
 
-if(!saved){
-    return;
+
+    if(!saved){
+
+        return;
+
+    }
+
+
+    try{
+
+        const profile =
+        JSON.parse(saved);
+
+
+        document.getElementById(
+            "settingsName"
+        ).value =
+        profile.name ||
+        "AYESHA REHMAN";
+
+
+        document.getElementById(
+            "settingsEmail"
+        ).value =
+        profile.email ||
+        "";
+
+
+        document.getElementById(
+            "settingsGender"
+        ).value =
+        profile.gender ||
+        "female";
+
+
+        document.getElementById(
+            "settingsLocation"
+        ).value =
+        profile.location ||
+        "Pakistan";
+
+
+        /*
+           IMPORTANT:
+
+           No automatic $10.
+
+           If no rate was saved, it remains blank.
+        */
+
+        document.getElementById(
+            "settingsRate"
+        ).value =
+        profile.rate ||
+        "";
+
+
+        document.getElementById(
+            "settingsAvailability"
+        ).value =
+        profile.availability ||
+        "available";
+
+
+        document.getElementById(
+            "settingsSkills"
+        ).value =
+        profile.skills ||
+        "";
+
+
+        document.getElementById(
+            "settingsBio"
+        ).value =
+        profile.bio ||
+        "";
+
+
+        document.getElementById(
+            "sideName"
+        ).textContent =
+        profile.name ||
+        "AYESHA REHMAN";
+
+
+        document.getElementById(
+            "topName"
+        ).textContent =
+        profile.name ||
+        "AYESHA REHMAN";
+
+
+        document.getElementById(
+            "profileDisplayName"
+        ).textContent =
+        profile.name ||
+        "AYESHA REHMAN";
+
+
+    }catch(error){
+
+        console.log(error);
+
+    }
+
 }
 
-try{
 
-const profile=JSON.parse(saved);
-
-document.getElementById("settingsName").value=
-profile.name || "AYESHA REHMAN";
-
-document.getElementById("settingsEmail").value=
-profile.email || "ayesharehman123456987@gmail.com";
-
-document.getElementById("settingsGender").value=
-profile.gender || "female";
-
-document.getElementById("settingsLocation").value=
-profile.location || "Pakistan";
-
-document.getElementById("settingsRate").value=
-profile.rate || "10";
-
-document.getElementById("settingsAvailability").value=
-profile.availability || "available";
-
-document.getElementById("settingsSkills").value=
-profile.skills || "HTML, CSS, JavaScript, Web Design";
-
-document.getElementById("settingsBio").value=
-profile.bio || "";
-
-updateNames(profile.name);
-
-}catch(error){
-
-console.log(error);
-
-}
-
-}
-
-
-/* =========================
+/* =====================================================
    PASSWORD RESET
-========================= */
+===================================================== */
 
 function sendPasswordReset(){
 
-const email=
-document.getElementById("settingsEmail").value.trim();
+    const email =
+    document
+    .getElementById("settingsEmail")
+    .value
+    .trim();
 
-if(!email){
 
-showToast("Please enter your email first.");
+    if(!email){
 
-return;
+        showToast(
+            "Please enter your email first."
+        );
+
+        return;
+
+    }
+
+
+    const message =
+    document.getElementById(
+        "resetMessage"
+    );
+
+
+    message.textContent =
+    "✓ Password reset request prepared for " +
+    email +
+    ". Firebase Authentication will handle the real email when connected.";
+
+
+    showToast(
+        "Password reset ready."
+    );
 
 }
 
-document.getElementById("resetMessage").textContent=
-"✓ Password reset request prepared for "+email+
-". Firebase Authentication can send the real reset email when connected.";
 
-showToast("Password reset ready.");
-
-}
-
-
-/* =========================
+/* =====================================================
    THEME
-========================= */
+===================================================== */
 
 function toggleTheme(){
 
-document.body.classList.toggle("light");
+    document.body.classList.toggle(
+        "light"
+    );
 
-const light=
-document.body.classList.contains("light");
 
-localStorage.setItem(
-"eliteTheme",
-light ? "light" : "dark"
-);
+    const isLight =
+    document.body.classList.contains(
+        "light"
+    );
 
-document.getElementById("themeStatus").textContent=
-light ? "Light Mode" : "Dark Mode";
 
-showToast(
-light
-? "☀ Light Mode enabled."
-: "◐ Dark Mode enabled."
-);
+    localStorage.setItem(
+
+        "eliteTheme",
+
+        isLight
+        ? "light"
+        : "dark"
+
+    );
+
+
+    document.getElementById(
+        "themeStatus"
+    ).textContent =
+
+    isLight
+    ? "Light Mode"
+    : "Dark Mode";
+
+
+    showToast(
+
+        isLight
+        ? "☀ Light Mode enabled."
+        : "◐ Dark Mode enabled."
+
+    );
 
 }
 
 
 function loadTheme(){
 
-const theme=localStorage.getItem("eliteTheme");
+    const theme =
+    localStorage.getItem(
+        "eliteTheme"
+    );
 
-if(theme==="light"){
 
-document.body.classList.add("light");
+    if(theme === "light"){
 
-document.getElementById("themeStatus").textContent=
-"Light Mode";
+        document.body.classList.add(
+            "light"
+        );
+
+
+        document.getElementById(
+            "themeStatus"
+        ).textContent =
+        "Light Mode";
+
+    }
 
 }
 
-}
 
-
-/* =========================
+/* =====================================================
    FIND WORK
-========================= */
+===================================================== */
 
 function applyJob(job){
 
-showToast(
-"✓ Application started for "+job
-);
+    showToast(
+
+        "✓ Application started for " +
+        job
+
+    );
 
 }
 
 
-/* =========================
+/* =====================================================
    CLIENT MODE
-========================= */
+===================================================== */
 
 function switchClient(){
 
-showToast(
-"Client Mode will open the client dashboard."
-);
+    showToast(
+        "Client Mode will open the client dashboard."
+    );
 
 }
 
 
-/* =========================
+/* =====================================================
    LOGOUT
-========================= */
+===================================================== */
 
 function logout(){
 
-showToast(
-"Logout will be connected to Firebase Authentication."
-);
+    showToast(
+        "Logout will be connected to Firebase Authentication."
+    );
 
 }
 
 
-/* =========================
+/* =====================================================
    TIMER
-========================= */
+===================================================== */
 
-let timerSeconds=0;
+let timerSeconds = 0;
 
-let timerInterval=null;
+let timerInterval = null;
 
 
 function updateTimer(){
 
-const hours=Math.floor(timerSeconds/3600);
+    const hours =
+    Math.floor(
+        timerSeconds / 3600
+    );
 
-const minutes=Math.floor(
-(timerSeconds%3600)/60
-);
 
-const seconds=timerSeconds%60;
+    const minutes =
+    Math.floor(
+        (timerSeconds % 3600) / 60
+    );
 
-document.getElementById("timerDisplay").textContent=
 
-String(hours).padStart(2,"0")+":"+
-String(minutes).padStart(2,"0")+":"+
-String(seconds).padStart(2,"0");
+    const seconds =
+    timerSeconds % 60;
+
+
+    const h =
+    String(hours).padStart(
+        2,
+        "0"
+    );
+
+
+    const m =
+    String(minutes).padStart(
+        2,
+        "0"
+    );
+
+
+    const s =
+    String(seconds).padStart(
+        2,
+        "0"
+    );
+
+
+    document.getElementById(
+        "timerDisplay"
+    ).textContent =
+
+    `${h}:${m}:${s}`;
 
 }
 
 
 function startTimer(){
 
-if(timerInterval){
-    return;
-}
+    if(timerInterval){
 
-timerInterval=setInterval(()=>{
+        return;
 
-timerSeconds++;
+    }
 
-updateTimer();
 
-},1000);
+    timerInterval =
+    setInterval(() => {
 
-showToast("▶ Time tracker started.");
+        timerSeconds++;
+
+        updateTimer();
+
+    },1000);
+
+
+    showToast(
+        "▶ Time tracker started."
+    );
 
 }
 
 
 function stopTimer(){
 
-clearInterval(timerInterval);
+    clearInterval(
+        timerInterval
+    );
 
-timerInterval=null;
+    timerInterval = null;
 
-showToast("■ Time tracker stopped.");
+
+    showToast(
+        "■ Time tracker stopped."
+    );
 
 }
 
 
 function resetTimer(){
 
-clearInterval(timerInterval);
+    clearInterval(
+        timerInterval
+    );
 
-timerInterval=null;
+    timerInterval = null;
 
-timerSeconds=0;
+    timerSeconds = 0;
 
-updateTimer();
+    updateTimer();
 
-showToast("↻ Timer reset.");
+
+    showToast(
+        "↻ Timer reset."
+    );
 
 }
 
 
-/* =========================
+/* =====================================================
+   ACCOUNT TYPE
+===================================================== */
+
+/*
+   OWNER ACCOUNT:
+   AYESHA REHMAN
+
+   NORMAL USERS:
+   Freelancer OR Client
+
+   Later, when Firebase is connected, the user's
+   Firebase email/role will determine which dashboard
+   they see.
+
+   Owner privileges are NOT given based on display name.
+*/
+
+function getAccountType(email){
+
+    if(
+        email &&
+        email.toLowerCase() ===
+        OWNER_EMAIL.toLowerCase()
+    ){
+
+        return "owner_freelancer";
+
+    }
+
+
+    return "normal_user";
+
+}
+
+
+/* =====================================================
    START
-========================= */
+===================================================== */
 
 loadProfile();
 
@@ -2781,5 +3958,7 @@ showPage("dashboard");
 
 </script>
 
+
 </body>
+
 </html>
