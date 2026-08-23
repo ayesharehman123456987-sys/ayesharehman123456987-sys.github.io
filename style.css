@@ -1,8 +1,3 @@
-/* =========================================================
-   ELITE FREELANCE HUB
-   FINAL STYLE.CSS
-========================================================= */
-
 *{
     box-sizing:border-box;
 }
@@ -13,23 +8,22 @@ html{
 
 :root{
     --bg:#050914;
-    --sidebar:#0a111f;
-    --panel:#0d1525;
-    --panel-2:#10192b;
-    --line:#202d45;
+    --sidebar:#09111f;
+    --panel:#0d1627;
+    --panel2:#101b2e;
+    --line:#223149;
     --text:#f5f7ff;
-    --muted:#8994ab;
+    --muted:#8d99ae;
 
     --purple:#8b4fff;
-    --purple-dark:#6331c7;
-    --purple-soft:#b883ff;
+    --purple2:#6c35d5;
 
-    --gold:#f5bb22;
-    --gold-dark:#b17c00;
+    --gold:#f3bb21;
+    --gold2:#d89c08;
 
-    --green:#35ca78;
-    --red:#ff546d;
-    --blue:#397bd7;
+    --green:#36c979;
+    --red:#ff5d75;
+    --blue:#3982dc;
 }
 
 body{
@@ -39,8 +33,8 @@ body{
     background:
         radial-gradient(
             circle at 50% -15%,
-            rgba(120,68,255,.12),
-            transparent 33%
+            rgba(120,68,255,.13),
+            transparent 35%
         ),
         var(--bg);
 
@@ -65,56 +59,43 @@ button{
     cursor:pointer;
 }
 
-
-/* =========================================================
-   APP
-========================================================= */
-
 .app{
-    display:flex;
     min-height:100vh;
+    display:flex;
 }
 
 
-/* =========================================================
+/* ================================
    SIDEBAR
-========================================================= */
+================================ */
 
 .sidebar{
     position:fixed;
+    inset:0 auto 0 0;
 
-    left:0;
-    top:0;
-    bottom:0;
-
-    width:250px;
+    width:245px;
 
     background:
         linear-gradient(
             180deg,
-            #0a111f,
-            #070c16
+            #0a1220,
+            #070d18
         );
 
     border-right:
-        1px solid #1d2940;
+        1px solid #1e2b42;
 
-    padding:
-        16px 14px;
+    padding:15px 13px;
 
-    z-index:20;
+    z-index:50;
 
     display:flex;
     flex-direction:column;
 }
 
 
-/* =========================================================
-   BRAND
-========================================================= */
-
 .brand{
-    height:60px;
+    height:62px;
 
     display:flex;
     align-items:center;
@@ -124,26 +105,27 @@ button{
     padding:0 8px;
 
     border-bottom:
-        1px solid #1c2840;
+        1px solid #1d2a41;
 }
 
+
 .brand .mark{
-    font-size:27px;
     color:#ad6dff;
+    font-size:28px;
 }
+
 
 .brand strong{
     display:block;
-
-    font-size:17px;
-
+    font-size:18px;
     line-height:1;
 }
+
 
 .brand small{
     display:block;
 
-    color:#8792a8;
+    color:#7e8ba2;
 
     font-size:9px;
 
@@ -153,10 +135,6 @@ button{
 }
 
 
-/* =========================================================
-   PROFILE
-========================================================= */
-
 .mini-profile{
     display:flex;
 
@@ -164,30 +142,31 @@ button{
 
     gap:10px;
 
-    padding:
-        14px 8px;
+    padding:14px 8px;
 
-    margin:9px 0;
+    margin:8px 0;
 
     border-bottom:
-        1px solid #1c2840;
+        1px solid #1d2a41;
 }
+
 
 .mini-profile strong{
     display:block;
-
     font-size:12px;
 }
+
 
 .mini-profile small{
     display:block;
 
-    color:#8590a7;
+    color:#8490a6;
 
     font-size:10px;
 
     margin-top:4px;
 }
+
 
 .avatar{
     width:40px;
@@ -200,29 +179,23 @@ button{
 
     object-fit:cover;
 
-    display:block;
-
-    background:#161f33;
-
     border:
-        2px solid #995dff;
+        2px solid var(--purple);
 
-    flex:none;
+    background:#151e31;
 }
+
 
 .client .avatar{
-    border-color:#dca313;
+    border-color:var(--gold);
 }
 
+
 .online{
-    color:#41d17a !important;
+    color:#40d47c !important;
     margin-left:auto;
 }
 
-
-/* =========================================================
-   SIDEBAR NAV
-========================================================= */
 
 .nav-area{
     flex:1;
@@ -232,45 +205,39 @@ button{
     padding-right:3px;
 }
 
-.nav-area::-webkit-scrollbar{
-    width:5px;
-}
-
-.nav-area::-webkit-scrollbar-track{
-    background:transparent;
-}
-
-.nav-area::-webkit-scrollbar-thumb{
-    background:#27334a;
-    border-radius:20px;
-}
 
 .section-title{
-    color:#606b82;
+    color:#5e6b83;
 
     font-size:9px;
 
     font-weight:800;
 
-    letter-spacing:1px;
+    letter-spacing:1.3px;
 
     padding:
-        12px 10px 5px;
+        13px 10px 5px;
 }
+
 
 .nav{
     width:100%;
 
-    border:1px solid transparent;
+    display:flex;
+    align-items:center;
 
-    background:none;
+    gap:9px;
 
-    color:#aeb7c8;
+    border:
+        1px solid transparent;
+
+    background:transparent;
+
+    color:#aeb8c9;
 
     text-align:left;
 
-    padding:
-        10px 11px;
+    padding:10px 11px;
 
     border-radius:9px;
 
@@ -281,13 +248,20 @@ button{
     transition:.2s ease;
 }
 
+
+.nav-icon{
+    width:17px;
+    text-align:center;
+}
+
+
 .nav:hover{
     background:#111b2d;
-
     color:#fff;
 
     transform:translateX(2px);
 }
+
 
 .nav.active{
     background:
@@ -297,7 +271,7 @@ button{
             #21163f
         );
 
-    border-color:#5b31a6;
+    border-color:#5c31a8;
 
     color:#fff;
 
@@ -305,31 +279,31 @@ button{
         inset 3px 0 #9b63ff;
 }
 
+
 .client .nav.active{
     background:
         linear-gradient(
             90deg,
             #4a3505,
-            #2a2108
+            #2b2209
         );
 
-    border-color:#7b5b11;
+    border-color:#795a11;
+
+    color:#fff;
 
     box-shadow:
         inset 3px 0 #e7ae22;
 }
 
 
-/* =========================================================
-   SIDEBAR BOTTOM
-========================================================= */
-
 .side-bottom{
     border-top:
-        1px solid #1c2840;
+        1px solid #1d2a41;
 
     padding-top:8px;
 }
+
 
 .side-bottom button{
     width:100%;
@@ -338,85 +312,86 @@ button{
 
     background:none;
 
-    color:#9fa9bb;
+    color:#a1acbd;
 
     text-align:left;
 
-    padding:8px 10px;
+    padding:9px 10px;
 
     border-radius:8px;
 
     transition:.2s ease;
 }
 
-.side-bottom button:hover{
-    background:#111a2c;
 
+.side-bottom button:hover{
+    background:#111a2b;
     color:#fff;
 }
+
 
 .side-bottom .logout{
     color:#ff687d;
 }
 
 
-/* =========================================================
+/* ================================
    MAIN
-========================================================= */
+================================ */
 
 .main{
-    margin-left:250px;
+    flex:1;
 
     min-width:0;
 
-    flex:1;
+    margin-left:245px;
 
     padding:
-        18px 26px 40px;
+        18px 25px 40px;
 }
 
 
-/* =========================================================
+/* ================================
    TOPBAR
-========================================================= */
+================================ */
 
 .topbar{
     min-height:62px;
 
     display:flex;
 
-    justify-content:space-between;
-
     align-items:center;
+
+    justify-content:space-between;
 
     gap:15px;
 
     border-bottom:
-        1px solid #172238;
+        1px solid #19253a;
 
     margin-bottom:15px;
 
     padding-bottom:12px;
 }
 
+
 .top-left small{
-    color:#78849b;
+    color:#7c889f;
+
+    font-size:9px;
 
     font-weight:800;
 
-    letter-spacing:1.6px;
-
-    font-size:9px;
+    letter-spacing:1.5px;
 }
+
 
 .top-left h1{
-    margin:
-        4px 0 0;
+    margin:4px 0 0;
 
     font-size:23px;
-
-    line-height:1.2;
 }
+
 
 .top-right{
     display:flex;
@@ -429,35 +404,32 @@ button{
 }
 
 
-/* =========================================================
-   TOP BUTTONS
-========================================================= */
-
 .round-btn{
-    width:36px;
-    height:36px;
+    width:38px;
+    height:38px;
 
     border-radius:50%;
 
     border:
-        1px solid #25314a;
+        1px solid #28364e;
 
-    background:#0c1424;
+    background:#0d1728;
 
-    color:#c9d0df;
+    color:#d2d8e5;
 
     position:relative;
 
     transition:.2s ease;
 }
 
-.round-btn:hover{
-    border-color:#8954d6;
 
+.round-btn:hover{
+    border-color:#925cff;
     color:#fff;
 
     transform:translateY(-1px);
 }
+
 
 .dot{
     position:absolute;
@@ -470,8 +442,9 @@ button{
     right:5px;
     top:5px;
 
-    background:#9f54ff;
+    background:#a057ff;
 }
+
 
 .user-chip{
     display:flex;
@@ -481,15 +454,15 @@ button{
     gap:7px;
 
     border:
-        1px solid #223048;
+        1px solid #26344b;
 
-    border-radius:19px;
+    border-radius:20px;
 
-    background:#0d1525;
+    background:#0e1728;
 
-    padding:
-        4px 9px 4px 5px;
+    padding:4px 10px 4px 5px;
 }
+
 
 .user-chip .avatar{
     width:30px;
@@ -501,38 +474,35 @@ button{
     border-width:1px;
 }
 
-.user-chip span{
-    font-size:10px;
 
-    color:#cdd4e2;
+.user-chip span{
+    color:#d4d9e4;
+    font-size:10px;
 }
+
 
 .logout-top{
     border:
-        1px solid #7a3041;
+        1px solid #783041;
 
     background:#120e15;
 
-    color:#ff667b;
+    color:#ff687d;
 
-    padding:
-        9px 13px;
+    padding:9px 13px;
 
     border-radius:8px;
-
-    transition:.2s ease;
 }
+
 
 .logout-top:hover{
     background:#21111a;
-
-    border-color:#a54256;
 }
 
 
-/* =========================================================
+/* ================================
    MODE
-========================================================= */
+================================ */
 
 .mode{
     width:max-content;
@@ -544,37 +514,35 @@ button{
 
     z-index:3;
 
-    border:
-        1px solid var(--purple);
-
-    color:#bb83ff;
-
-    background:#150c27;
-
-    padding:
-        6px 17px;
+    padding:6px 18px;
 
     border-radius:20px;
 
-    font-weight:800;
+    border:
+        1px solid var(--purple);
+
+    background:#160c28;
+
+    color:#bd88ff;
 
     font-size:10px;
+
+    font-weight:800;
 
     letter-spacing:1px;
 }
 
+
 .client .mode{
-    border-color:#d89d11;
-
-    color:#ffd34f;
-
+    border-color:#d79f13;
     background:#251905;
+    color:#ffd34d;
 }
 
 
-/* =========================================================
+/* ================================
    PAGE
-========================================================= */
+================================ */
 
 .page{
     display:none;
@@ -583,9 +551,11 @@ button{
         pageIn .2s ease;
 }
 
+
 .page.active{
     display:block;
 }
+
 
 @keyframes pageIn{
 
@@ -598,46 +568,48 @@ button{
         opacity:1;
         transform:translateY(0);
     }
+
 }
 
 
-/* =========================================================
+/* ================================
    HERO
-========================================================= */
+================================ */
 
 .hero{
     display:flex;
 
     min-height:250px;
 
-    border-radius:13px;
-
     overflow:hidden;
 
+    position:relative;
+
+    border-radius:13px;
+
     border:
-        1px solid #26334b;
+        1px solid #26344d;
 
     background:
         radial-gradient(
             circle at 84% 20%,
             rgba(125,72,255,.20),
-            transparent 29%
+            transparent 30%
         ),
         linear-gradient(
             135deg,
             #111a2c,
             #0b1120
         );
-
-    position:relative;
 }
+
 
 .client .hero{
     background:
         radial-gradient(
             circle at 84% 20%,
             rgba(230,165,0,.18),
-            transparent 29%
+            transparent 30%
         ),
         linear-gradient(
             135deg,
@@ -646,35 +618,39 @@ button{
         );
 }
 
+
 .hero-copy{
+    max-width:57%;
+
     padding:
         36px 26px;
 
-    max-width:57%;
-
     display:flex;
-
     flex-direction:column;
 
     justify-content:center;
 }
 
+
 .hero h2{
+    margin:
+        0 0 13px;
+
     font-size:33px;
 
     line-height:1.07;
-
-    margin:
-        0 0 13px;
 }
+
 
 .hero h2 span{
     color:#9b5cff;
 }
 
+
 .client .hero h2 span{
     color:#f4b71e;
 }
+
 
 .hero p{
     color:#aeb8ca;
@@ -687,6 +663,7 @@ button{
         0 0 18px;
 }
 
+
 .actions{
     display:flex;
 
@@ -696,21 +673,12 @@ button{
 }
 
 
-/* =========================================================
+/* ================================
    BUTTONS
-========================================================= */
+================================ */
 
 .primary{
-    background:
-        linear-gradient(
-            135deg,
-            #8a4dff,
-            #6e35de
-        );
-
     border:0;
-
-    color:#fff;
 
     padding:
         10px 16px;
@@ -719,16 +687,27 @@ button{
 
     font-weight:800;
 
+    color:#fff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8a4dff,
+            #6e35de
+        );
+
     transition:.2s ease;
 }
+
 
 .primary:hover{
     transform:translateY(-1px);
 
     box-shadow:
-        0 8px 18px
+        0 8px 20px
         rgba(111,53,222,.25);
 }
+
 
 .client .primary{
     background:
@@ -738,41 +717,44 @@ button{
             #dda004
         );
 
-    color:#221800;
+    color:#261b00;
 }
 
+
 .secondary{
-    background:#0b1220;
-
-    border:
-        1px solid #7f54d8;
-
-    color:#fff;
-
     padding:
         10px 16px;
 
     border-radius:8px;
+
+    border:
+        1px solid #8056da;
+
+    background:#0b1220;
+
+    color:#fff;
 
     font-weight:800;
 
     transition:.2s ease;
 }
 
-.secondary:hover{
-    background:#151b2c;
 
+.secondary:hover{
     transform:translateY(-1px);
+
+    background:#151d2e;
 }
+
 
 .client .secondary{
     border-color:#aa8112;
 }
 
 
-/* =========================================================
+/* ================================
    HERO ART
-========================================================= */
+================================ */
 
 .hero-art{
     position:relative;
@@ -784,11 +766,12 @@ button{
     overflow:hidden;
 }
 
+
 .hero-art .circle{
     position:absolute;
 
-    width:120px;
-    height:120px;
+    width:125px;
+    height:125px;
 
     right:70px;
     top:35px;
@@ -796,15 +779,17 @@ button{
     border-radius:50%;
 
     background:
-        rgba(122,71,255,.24);
+        rgba(122,71,255,.25);
 
     filter:blur(5px);
 }
 
+
 .client .hero-art .circle{
     background:
-        rgba(226,169,18,.20);
+        rgba(226,169,18,.21);
 }
+
 
 .hero-art .person{
     position:absolute;
@@ -812,14 +797,17 @@ button{
     right:105px;
     bottom:24px;
 
+    z-index:3;
+
     font-size:94px;
 
     filter:
         drop-shadow(
             0 15px 15px
-            rgba(0,0,0,.30)
+            rgba(0,0,0,.3)
         );
 }
+
 
 .hero-art .screen{
     position:absolute;
@@ -845,7 +833,10 @@ button{
     transform:skew(-9deg);
 
     opacity:.9;
+
+    z-index:2;
 }
+
 
 .hero-art .float{
     position:absolute;
@@ -853,24 +844,25 @@ button{
     width:38px;
     height:38px;
 
+    display:grid;
+    place-items:center;
+
+    z-index:4;
+
     border-radius:10px;
 
     background:#171f33;
 
     border:
         1px solid #354361;
-
-    display:grid;
-
-    place-items:center;
-
-    z-index:2;
 }
+
 
 .hero-art .a{
     right:200px;
     top:31px;
 }
+
 
 .hero-art .b{
     right:32px;
@@ -878,9 +870,9 @@ button{
 }
 
 
-/* =========================================================
+/* ================================
    STATS
-========================================================= */
+================================ */
 
 .stats{
     display:grid;
@@ -892,6 +884,7 @@ button{
 
     margin-top:15px;
 }
+
 
 .stat{
     border:
@@ -911,21 +904,22 @@ button{
     transition:.2s ease;
 }
 
+
 .stat:hover{
     transform:translateY(-2px);
 
-    border-color:#394a69;
+    border-color:#3a4c6b;
 }
+
 
 .stat .icon{
     width:34px;
     height:34px;
 
-    border-radius:50%;
-
     display:grid;
-
     place-items:center;
+
+    border-radius:50%;
 
     background:#221343;
 
@@ -933,26 +927,31 @@ button{
         1px solid #6941ba;
 }
 
+
 .stat:nth-child(2) .icon{
     background:#0d281a;
     border-color:#268052;
 }
+
 
 .stat:nth-child(3) .icon{
     background:#291906;
     border-color:#a86c09;
 }
 
+
 .stat:nth-child(4) .icon{
     background:#0d2240;
     border-color:#2f72c4;
 }
+
 
 .stat h3{
     margin:9px 0 0;
 
     font-size:25px;
 }
+
 
 .stat p{
     margin:2px 0 0;
@@ -965,9 +964,9 @@ button{
 }
 
 
-/* =========================================================
+/* ================================
    PANELS
-========================================================= */
+================================ */
 
 .grid2{
     display:grid;
@@ -979,6 +978,7 @@ button{
 
     margin-top:12px;
 }
+
 
 .panel{
     border:
@@ -996,12 +996,13 @@ button{
     overflow:hidden;
 }
 
+
 .panel-head{
     display:flex;
 
-    justify-content:space-between;
-
     align-items:center;
+
+    justify-content:space-between;
 
     gap:10px;
 
@@ -1012,11 +1013,12 @@ button{
         1px solid #1c2840;
 }
 
+
 .panel-head h3{
     margin:0;
-
     font-size:13px;
 }
+
 
 .panel-head p{
     margin:4px 0 0;
@@ -1026,6 +1028,7 @@ button{
     font-size:9px;
 }
 
+
 .link{
     border:0;
 
@@ -1034,25 +1037,18 @@ button{
     color:#af74ff;
 
     font-size:11px;
-
-    padding:4px;
 }
+
 
 .link:hover{
-    color:#ca9eff;
+    color:#d0a8ff;
 }
 
-
-/* =========================================================
-   ACTIVITY
-========================================================= */
-
-.activity{
-    padding:0;
-}
 
 .activity-row{
     display:flex;
+
+    align-items:center;
 
     gap:10px;
 
@@ -1061,71 +1057,75 @@ button{
 
     border-bottom:
         1px solid #19243a;
-
-    align-items:center;
 }
+
 
 .activity-row:last-child{
     border-bottom:0;
 }
 
+
 .activity-icon{
     width:30px;
     height:30px;
 
-    border-radius:50%;
-
     display:grid;
-
     place-items:center;
+
+    flex:none;
+
+    border-radius:50%;
 
     background:#151f31;
 
     border:
         1px solid #2a3750;
-
-    flex:none;
 }
+
 
 .activity-row strong{
-    font-size:11px;
-
     display:block;
+
+    font-size:11px;
 }
 
+
 .activity-row span{
-    font-size:9px;
-
-    color:#7d89a0;
-
     display:block;
 
     margin-top:3px;
+
+    color:#7d89a0;
+
+    font-size:9px;
 }
 
 
-/* =========================================================
+/* ================================
    PAGE HEAD
-========================================================= */
+================================ */
 
 .page-head{
     margin:
         11px 0 18px;
 }
 
-.page-head label{
-    font-size:9px;
 
+.page-head label{
     color:#a365ff;
+
+    font-size:9px;
 
     font-weight:800;
 
     letter-spacing:1.4px;
 }
 
+
 .client .page-head label{
     color:#e9b31c;
 }
+
 
 .page-head h2{
     margin:
@@ -1133,6 +1133,7 @@ button{
 
     font-size:23px;
 }
+
 
 .page-head p{
     margin:0;
@@ -1143,9 +1144,9 @@ button{
 }
 
 
-/* =========================================================
+/* ================================
    CARDS
-========================================================= */
+================================ */
 
 .cards{
     display:grid;
@@ -1159,14 +1160,8 @@ button{
     gap:12px;
 }
 
-.card{
-    background:
-        linear-gradient(
-            145deg,
-            #0e1626,
-            #0a111f
-        );
 
+.card{
     border:
         1px solid #233149;
 
@@ -1174,14 +1169,23 @@ button{
 
     padding:15px;
 
+    background:
+        linear-gradient(
+            145deg,
+            #0e1626,
+            #0a111f
+        );
+
     transition:.2s ease;
 }
 
-.card:hover{
-    border-color:#334664;
 
+.card:hover{
     transform:translateY(-2px);
+
+    border-color:#344765;
 }
+
 
 .card h3{
     margin:
@@ -1190,9 +1194,9 @@ button{
     font-size:14px;
 }
 
+
 .card p{
-    margin:
-        7px 0;
+    margin:7px 0;
 
     color:#a7b0c2;
 
@@ -1200,6 +1204,7 @@ button{
 
     line-height:1.5;
 }
+
 
 .meta{
     display:flex;
@@ -1210,6 +1215,7 @@ button{
 
     margin:9px 0;
 }
+
 
 .card-actions{
     display:flex;
@@ -1222,9 +1228,9 @@ button{
 }
 
 
-/* =========================================================
+/* ================================
    PILLS
-========================================================= */
+================================ */
 
 .pill{
     display:inline-flex;
@@ -1246,6 +1252,7 @@ button{
     font-size:9px;
 }
 
+
 .pill.open{
     color:#61db95;
 
@@ -1253,6 +1260,7 @@ button{
 
     background:#0c2117;
 }
+
 
 .pill.pending{
     color:#ffd062;
@@ -1262,6 +1270,7 @@ button{
     background:#241b09;
 }
 
+
 .pill.accepted{
     color:#62dfa0;
 
@@ -1269,6 +1278,7 @@ button{
 
     background:#0c2117;
 }
+
 
 .pill.rejected{
     color:#ff7d90;
@@ -1279,11 +1289,16 @@ button{
 }
 
 
-/* =========================================================
+/* ================================
    DANGER
-========================================================= */
+================================ */
 
 .danger{
+    padding:
+        9px 12px;
+
+    border-radius:7px;
+
     background:#32151f;
 
     border:
@@ -1291,20 +1306,15 @@ button{
 
     color:#ff7083;
 
-    padding:
-        9px 12px;
-
-    border-radius:7px;
-
     font-size:11px;
 
     font-weight:800;
 }
 
 
-/* =========================================================
+/* ================================
    MESSAGES
-========================================================= */
+================================ */
 
 .messages-layout{
     display:grid;
@@ -1317,47 +1327,50 @@ button{
     min-height:520px;
 }
 
+
 .conversations,
 .chat{
+    overflow:hidden;
+
     border:
         1px solid #233149;
 
-    background:#0b1322;
-
     border-radius:11px;
 
-    overflow:hidden;
+    background:#0b1322;
 }
+
 
 .conversation{
     display:block;
 
     width:100%;
 
-    background:none;
-
-    color:#fff;
-
     border:0;
 
     border-bottom:
         1px solid #1a253a;
 
+    background:none;
+
+    color:#fff;
+
     text-align:left;
 
     padding:12px;
-
-    transition:.2s ease;
 }
+
 
 .conversation:hover,
 .conversation.active{
     background:#171f32;
 }
 
+
 .conversation strong{
     font-size:11px;
 }
+
 
 .conversation span{
     display:block;
@@ -1369,11 +1382,13 @@ button{
     font-size:9px;
 }
 
+
 .chat{
     display:flex;
 
     flex-direction:column;
 }
+
 
 .chat-head{
     padding:13px;
@@ -1382,19 +1397,22 @@ button{
         1px solid #1d2840;
 }
 
+
 .chat-head strong{
     font-size:12px;
 }
 
+
 .chat-head span{
     display:block;
+
+    margin-top:3px;
 
     color:#78849a;
 
     font-size:9px;
-
-    margin-top:3px;
 }
+
 
 .messages{
     flex:1;
@@ -1404,23 +1422,25 @@ button{
     overflow:auto;
 }
 
+
 .bubble{
     max-width:72%;
 
+    margin:5px 0;
+
     padding:
         9px 11px;
+
+    border-radius:11px;
 
     background:#172238;
 
     border:
         1px solid #293751;
 
-    border-radius:11px;
-
-    margin:5px 0;
-
     font-size:11px;
 }
+
 
 .bubble.mine{
     margin-left:auto;
@@ -1430,15 +1450,17 @@ button{
     border-color:#63409e;
 }
 
+
 .bubble small{
     display:block;
+
+    margin-top:4px;
 
     color:#9da8bb;
 
     font-size:8px;
-
-    margin-top:4px;
 }
+
 
 .composer{
     display:flex;
@@ -1451,44 +1473,33 @@ button{
         1px solid #1c2840;
 }
 
+
 .composer textarea{
     flex:1;
 
     min-height:48px;
 
-    background:#070d18;
-
-    color:#fff;
-
-    border:
-        1px solid #29364f;
-
-    border-radius:8px;
-
-    padding:9px;
-
     resize:vertical;
-
-    outline:none;
 }
 
 
-/* =========================================================
+/* ================================
    FORMS
-========================================================= */
+================================ */
 
 .form-box{
     max-width:800px;
 
+    padding:18px;
+
     border:
         1px solid #233149;
 
-    background:#0c1423;
-
     border-radius:11px;
 
-    padding:18px;
+    background:#0c1423;
 }
+
 
 .form-grid{
     display:grid;
@@ -1498,6 +1509,7 @@ button{
 
     gap:14px;
 }
+
 
 .field{
     display:flex;
@@ -1513,9 +1525,11 @@ button{
     font-weight:800;
 }
 
+
 .field.full{
     grid-column:1/-1;
 }
+
 
 .field input,
 .field select,
@@ -1523,19 +1537,32 @@ button{
 .composer textarea{
     width:100%;
 
-    background:#070d18;
+    outline:none;
 
-    color:#fff;
+    padding:10px;
+
+    border-radius:8px;
 
     border:
         1px solid #29364f;
 
-    border-radius:8px;
+    background:#070d18;
 
-    padding:10px;
-
-    outline:none;
+    color:#fff;
 }
+
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus,
+.composer textarea:focus{
+    border-color:#965cf4;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(139,79,255,.10);
+}
+
 
 .field textarea{
     min-height:130px;
@@ -1543,17 +1570,19 @@ button{
     resize:vertical;
 }
 
+
 .form-row{
     display:flex;
 
-    gap:10px;
-
     align-items:center;
+
+    gap:10px;
 
     flex-wrap:wrap;
 
     margin-top:14px;
 }
+
 
 .success{
     color:#58d996;
@@ -1562,28 +1591,29 @@ button{
 }
 
 
-/* =========================================================
+/* ================================
    PROFILE
-========================================================= */
+================================ */
 
 .profile-box{
+    max-width:650px;
+
     display:flex;
 
     align-items:center;
 
     gap:18px;
 
-    max-width:650px;
+    padding:20px;
 
     border:
         1px solid #233149;
 
-    background:#0c1423;
-
     border-radius:11px;
 
-    padding:20px;
+    background:#0c1423;
 }
+
 
 .profile-large{
     width:100px;
@@ -1594,33 +1624,45 @@ button{
     object-fit:cover;
 
     border:
-        3px solid #985eff;
+        3px solid var(--purple);
 }
+
 
 .client .profile-large{
-    border-color:#e1ae20;
+    border-color:var(--gold);
 }
 
 
-/* =========================================================
-   STATUS
-========================================================= */
-
-.loading{
-    padding:24px;
-
-    color:#a96aff;
-
-    text-align:center;
+.profile-box h3{
+    margin:0 0 7px;
 }
 
+
+.profile-box p{
+    color:#8995aa;
+
+    font-size:11px;
+}
+
+
+/* ================================
+   EMPTY / ERROR
+================================ */
+
+.loading,
 .empty{
     padding:24px;
 
-    color:#7f8aa0;
-
     text-align:center;
+
+    color:#7f8aa0;
 }
+
+
+.loading{
+    color:#ad6aff;
+}
+
 
 .error{
     padding:20px;
@@ -1629,20 +1671,24 @@ button{
 }
 
 
-/* =========================================================
+/* ================================
    FIREBASE ERROR
-========================================================= */
+================================ */
 
 .firebase-error{
     display:none;
 
     position:fixed;
 
-    left:270px;
+    left:265px;
     right:20px;
     bottom:16px;
 
-    z-index:100;
+    z-index:200;
+
+    padding:12px;
+
+    border-radius:9px;
 
     background:#36151f;
 
@@ -1651,73 +1697,136 @@ button{
     border:
         1px solid #9a334b;
 
-    border-radius:9px;
-
-    padding:12px;
-
     box-shadow:
         0 10px 30px
         rgba(0,0,0,.35);
 }
 
 
-/* =========================================================
+/* ================================
+   LOGIN
+================================ */
+
+.login-main{
+    margin-left:0;
+
+    min-height:100vh;
+
+    display:grid;
+
+    place-items:center;
+
+    padding:25px;
+}
+
+
+.login-box{
+    width:100%;
+
+    max-width:560px;
+
+    padding:28px;
+}
+
+
+.login-brand{
+    justify-content:center;
+
+    border-bottom:0;
+
+    margin-bottom:10px;
+}
+
+
+.login-head{
+    text-align:center;
+}
+
+
+.login-action{
+    width:100%;
+
+    margin-top:12px;
+}
+
+
+.auth-message{
+    margin-top:14px;
+
+    text-align:center;
+
+    min-height:18px;
+}
+
+
+/* ================================
    LIGHT MODE
-========================================================= */
+================================ */
 
 body.light{
     background:#f4f6fb;
 
-    color:#253047;
+    color:#273149;
 }
+
 
 body.light .sidebar{
     background:
         linear-gradient(
             180deg,
-            #ffffff 0%,
-            #f7f8fc 100%
+            #ffffff,
+            #f7f8fc
         );
 
-    border-right:
-        1px solid #dfe4ed;
+    border-right-color:#dfe4ed;
 
     box-shadow:
         4px 0 22px
-        rgba(36,48,70,.05);
+        rgba(36,48,70,.06);
 }
+
 
 body.light .brand{
-    border-bottom-color:#e5e9f0;
+    border-bottom-color:#e4e9f0;
+}
 
+
+body.light .brand strong{
     color:#202a3d;
 }
+
 
 body.light .brand small{
     color:#7b8597;
 }
 
+
 body.light .mini-profile{
     border-bottom-color:#e5e9f0;
 }
 
+
 body.light .mini-profile strong{
-    color:#263147;
+    color:#273149;
 }
+
 
 body.light .mini-profile small{
     color:#7d8799;
 }
 
+
 body.light .nav{
     color:#657086;
 }
+
 
 body.light .nav:hover{
     background:#eef1f6;
 
     color:#263147;
 }
+
 
 body.light .nav.active{
     background:
@@ -1735,6 +1844,7 @@ body.light .nav.active{
         inset 3px 0 #8a4fff;
 }
 
+
 body.client.light .nav.active{
     background:
         linear-gradient(
@@ -1751,37 +1861,44 @@ body.client.light .nav.active{
         inset 3px 0 #e1ad19;
 }
 
+
 body.light .section-title{
-    color:#98a1b1;
+    color:#929cad;
 }
+
 
 body.light .main{
     background:#f4f6fb;
 }
 
+
 body.light .topbar{
     border-bottom-color:#dfe4ec;
 }
+
 
 body.light .top-left small{
     color:#8792a5;
 }
 
+
 body.light .top-left h1{
     color:#273148;
 }
 
+
 body.light .round-btn{
-    background:#ffffff;
+    background:#fff;
 
-    border-color:#d9e0ea;
+    border-color:#d8e0ea;
 
-    color:#5c687c;
+    color:#566277;
 
     box-shadow:
         0 4px 14px
-        rgba(35,46,66,.06);
+        rgba(35,46,66,.07);
 }
+
 
 body.light .round-btn:hover{
     background:#f7f8fb;
@@ -1791,8 +1908,9 @@ body.light .round-btn:hover{
     color:#6c38c7;
 }
 
+
 body.light .user-chip{
-    background:#ffffff;
+    background:#fff;
 
     border-color:#dce2eb;
 
@@ -1803,9 +1921,11 @@ body.light .user-chip{
         rgba(35,46,66,.05);
 }
 
+
 body.light .user-chip span{
     color:#374257;
 }
+
 
 body.light .logout-top{
     background:#fff4f5;
@@ -1815,6 +1935,7 @@ body.light .logout-top{
     color:#bb3d54;
 }
 
+
 body.light .mode{
     background:#f4edff;
 
@@ -1822,6 +1943,7 @@ body.light .mode{
 
     color:#6c35c6;
 }
+
 
 body.client.light .mode{
     background:#fff7dc;
@@ -1831,12 +1953,13 @@ body.client.light .mode{
     color:#966d00;
 }
 
+
 body.light .hero{
     background:
         radial-gradient(
             circle at 84% 18%,
             rgba(139,79,255,.11),
-            transparent 28%
+            transparent 29%
         ),
         linear-gradient(
             135deg,
@@ -1851,24 +1974,28 @@ body.light .hero{
         rgba(42,52,72,.07);
 }
 
+
 body.light .hero h2{
     color:#263148;
 }
+
 
 body.light .hero h2 span{
     color:#7b3fe0;
 }
 
+
 body.light .hero p{
     color:#697589;
 }
+
 
 body.client.light .hero{
     background:
         radial-gradient(
             circle at 84% 18%,
             rgba(227,174,21,.11),
-            transparent 28%
+            transparent 29%
         ),
         linear-gradient(
             135deg,
@@ -1877,21 +2004,28 @@ body.client.light .hero{
         );
 }
 
+
 body.client.light .hero h2{
     color:#2b2f39;
 }
+
 
 body.client.light .hero h2 span{
     color:#d89e0b;
 }
 
+
 body.light .hero-art .circle{
-    background:rgba(124,73,234,.15);
+    background:
+        rgba(124,73,234,.14);
 }
 
+
 body.client.light .hero-art .circle{
-    background:rgba(220,163,20,.14);
+    background:
+        rgba(220,163,20,.13);
 }
+
 
 body.light .hero-art .screen{
     background:
@@ -1904,8 +2038,9 @@ body.light .hero-art .screen{
     border-color:#c6cfdd;
 }
 
+
 body.light .hero-art .float{
-    background:#ffffff;
+    background:#fff;
 
     border-color:#d4dce8;
 
@@ -1916,6 +2051,7 @@ body.light .hero-art .float{
         rgba(32,43,61,.08);
 }
 
+
 body.light .primary{
     background:
         linear-gradient(
@@ -1925,11 +2061,8 @@ body.light .primary{
         );
 
     color:#fff;
-
-    box-shadow:
-        0 8px 20px
-        rgba(111,53,214,.20);
 }
+
 
 body.client.light .primary{
     background:
@@ -1942,13 +2075,15 @@ body.client.light .primary{
     color:#2b2103;
 }
 
+
 body.light .secondary{
-    background:#ffffff;
+    background:#fff;
 
     color:#6c35c6;
 
     border-color:#bda4e8;
 }
+
 
 body.client.light .secondary{
     color:#936d00;
@@ -1956,8 +2091,9 @@ body.client.light .secondary{
     border-color:#d8bd68;
 }
 
+
 body.light .stat{
-    background:#ffffff;
+    background:#fff;
 
     border-color:#dfe5ee;
 
@@ -1966,13 +2102,16 @@ body.light .stat{
         rgba(37,47,66,.05);
 }
 
+
 body.light .stat h3{
     color:#273149;
 }
 
+
 body.light .stat p{
     color:#7b8698;
 }
+
 
 body.light .stat .icon{
     background:#f1eaff;
@@ -1982,8 +2121,36 @@ body.light .stat .icon{
     color:#6d35cf;
 }
 
+
+body.light .stat:nth-child(2) .icon{
+    background:#eaf8ef;
+
+    border-color:#a8dcbc;
+
+    color:#23804a;
+}
+
+
+body.light .stat:nth-child(3) .icon{
+    background:#fff6df;
+
+    border-color:#e5cb83;
+
+    color:#9a7100;
+}
+
+
+body.light .stat:nth-child(4) .icon{
+    background:#eaf3ff;
+
+    border-color:#a8c8ef;
+
+    color:#2768ad;
+}
+
+
 body.light .panel{
-    background:#ffffff;
+    background:#fff;
 
     border-color:#dfe5ee;
 
@@ -1992,29 +2159,36 @@ body.light .panel{
         rgba(37,47,66,.045);
 }
 
+
 body.light .panel-head{
     border-bottom-color:#e7ebf1;
 }
+
 
 body.light .panel-head h3{
     color:#263148;
 }
 
+
 body.light .panel-head p{
     color:#8792a4;
 }
+
 
 body.light .activity-row{
     border-bottom-color:#edf0f4;
 }
 
+
 body.light .activity-row strong{
     color:#2b354a;
 }
 
+
 body.light .activity-row span{
     color:#7b8698;
 }
+
 
 body.light .activity-icon{
     background:#f3f5f9;
@@ -2024,24 +2198,29 @@ body.light .activity-icon{
     color:#58667a;
 }
 
+
 body.light .page-head label{
     color:#7c43d8;
 }
+
 
 body.client.light .page-head label{
     color:#a47600;
 }
 
+
 body.light .page-head h2{
     color:#273149;
 }
+
 
 body.light .page-head p{
     color:#7c8799;
 }
 
+
 body.light .card{
-    background:#ffffff;
+    background:#fff;
 
     border-color:#dfe5ee;
 
@@ -2050,13 +2229,16 @@ body.light .card{
         rgba(37,47,66,.045);
 }
 
+
 body.light .card h3{
     color:#263148;
 }
 
+
 body.light .card p{
     color:#687489;
 }
+
 
 body.light .pill{
     background:#f3f5f8;
@@ -2066,6 +2248,7 @@ body.light .pill{
     color:#5d697c;
 }
 
+
 body.light .pill.open{
     background:#eaf8ef;
 
@@ -2073,6 +2256,7 @@ body.light .pill.open{
 
     color:#24894e;
 }
+
 
 body.light .pill.pending{
     background:#fff7de;
@@ -2082,6 +2266,7 @@ body.light .pill.pending{
     color:#986f00;
 }
 
+
 body.light .pill.accepted{
     background:#eaf8ef;
 
@@ -2089,6 +2274,7 @@ body.light .pill.accepted{
 
     color:#24894e;
 }
+
 
 body.light .pill.rejected{
     background:#fff0f2;
@@ -2098,12 +2284,14 @@ body.light .pill.rejected{
     color:#bd3d52;
 }
 
+
 body.light .conversations,
 body.light .chat{
-    background:#ffffff;
+    background:#fff;
 
     border-color:#dfe5ee;
 }
+
 
 body.light .conversation{
     color:#2c3549;
@@ -2111,39 +2299,48 @@ body.light .conversation{
     border-bottom-color:#e8ecf2;
 }
 
+
 body.light .conversation:hover,
 body.light .conversation.active{
     background:#f3effd;
 }
+
 
 body.client.light .conversation:hover,
 body.client.light .conversation.active{
     background:#fff8e7;
 }
 
+
 body.light .conversation strong{
     color:#2c3549;
 }
+
 
 body.light .conversation span{
     color:#8490a2;
 }
 
+
 body.light .chat-head{
     border-bottom-color:#e5e9f0;
 }
+
 
 body.light .chat-head strong{
     color:#263148;
 }
 
+
 body.light .chat-head span{
     color:#8792a4;
 }
 
+
 body.light .messages{
-    background:#ffffff;
+    background:#fff;
 }
+
 
 body.light .bubble{
     background:#f0f3f7;
@@ -2153,6 +2350,7 @@ body.light .bubble{
     color:#293349;
 }
 
+
 body.light .bubble.mine{
     background:#ece2ff;
 
@@ -2161,14 +2359,16 @@ body.light .bubble.mine{
     color:#3c2c55;
 }
 
+
 body.light .composer{
-    background:#ffffff;
+    background:#fff;
 
     border-top-color:#e5e9f0;
 }
 
+
 body.light .form-box{
-    background:#ffffff;
+    background:#fff;
 
     border-color:#dfe5ee;
 
@@ -2177,20 +2377,23 @@ body.light .form-box{
         rgba(37,47,66,.045);
 }
 
+
 body.light .field{
     color:#4f5b6f;
 }
+
 
 body.light .field input,
 body.light .field select,
 body.light .field textarea,
 body.light .composer textarea{
-    background:#ffffff;
+    background:#fff;
 
     color:#273148;
 
     border-color:#d2dae6;
 }
+
 
 body.light .field input::placeholder,
 body.light .field textarea::placeholder,
@@ -2198,8 +2401,9 @@ body.light .composer textarea::placeholder{
     color:#a0a8b6;
 }
 
+
 body.light .profile-box{
-    background:#ffffff;
+    background:#fff;
 
     border-color:#dfe5ee;
 
@@ -2208,21 +2412,26 @@ body.light .profile-box{
         rgba(37,47,66,.045);
 }
 
+
 body.light .profile-box h3{
     color:#273148;
 }
+
 
 body.light .profile-box p{
     color:#738096;
 }
 
+
 body.light .side-bottom{
     border-top-color:#e5e9f0;
 }
 
+
 body.light .side-bottom button{
     color:#687387;
 }
+
 
 body.light .side-bottom button:hover{
     background:#eef1f6;
@@ -2230,9 +2439,11 @@ body.light .side-bottom button:hover{
     color:#263148;
 }
 
+
 body.light .side-bottom .logout{
     color:#bd4055;
 }
+
 
 body.light .firebase-error{
     background:#fff0f2;
@@ -2243,9 +2454,9 @@ body.light .firebase-error{
 }
 
 
-/* =========================================================
+/* ================================
    SCROLLBAR
-========================================================= */
+================================ */
 
 ::-webkit-scrollbar{
     width:7px;
@@ -2261,20 +2472,22 @@ body.light .firebase-error{
     border-radius:20px;
 }
 
+
 body.light ::-webkit-scrollbar-track{
     background:#eef1f5;
 }
+
 
 body.light ::-webkit-scrollbar-thumb{
     background:#c8d0dc;
 }
 
 
-/* =========================================================
+/* ================================
    RESPONSIVE
-========================================================= */
+================================ */
 
-@media(max-width:1080px){
+@media(max-width:1100px){
 
     .sidebar{
         width:220px;
@@ -2293,19 +2506,8 @@ body.light ::-webkit-scrollbar-thumb{
             repeat(2,1fr);
     }
 
-    .hero-copy{
-        max-width:60%;
-    }
-
-    .hero-art{
-        min-width:260px;
-    }
-
-    .firebase-error{
-        left:240px;
-    }
-
 }
+
 
 @media(max-width:760px){
 
@@ -2406,24 +2608,24 @@ body.light ::-webkit-scrollbar-thumb{
     }
 
     .topbar{
-        min-height:auto;
+        align-items:flex-start;
 
-        padding-bottom:12px;
-
-        gap:10px;
+        flex-direction:column;
     }
 
     .top-right{
+        width:100%;
+
         justify-content:flex-start;
     }
 
     .firebase-error{
         left:15px;
-
         right:15px;
     }
 
 }
+
 
 @media(max-width:480px){
 
@@ -2449,6 +2651,10 @@ body.light ::-webkit-scrollbar-thumb{
 
     .user-chip{
         max-width:150px;
+    }
+
+    .login-box{
+        padding:20px;
     }
 
 }
