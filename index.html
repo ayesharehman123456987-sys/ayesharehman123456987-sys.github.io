@@ -1,290 +1,739 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>ELITE FREELANCE HUB</title>
-<style>
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:#050914;color:#f5f7ff;font-family:Inter,Segoe UI,Arial,sans-serif;font-size:14px}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}
-.app{min-height:100vh;display:flex}.sidebar{position:fixed;inset:0 auto 0 0;width:255px;padding:15px 14px;background:linear-gradient(180deg,#0a1221,#070d17);border-right:1px solid #1d2a42;z-index:1000;display:flex;flex-direction:column}.brand{width:100%;height:64px;display:flex;align-items:center;gap:10px;padding:0 8px;border:0;border-bottom:1px solid #1c2940;background:transparent;color:#fff;text-align:left}.brand .mark{font-size:30px;color:#a866ff;text-shadow:0 0 15px #a866ff80}.brand strong{display:block;font-size:18px}.brand small{display:block;font-size:9px;letter-spacing:1.5px;color:#8490a7;margin-top:4px}
-.logo-img{width:38px;height:38px;object-fit:contain;border-radius:10px;border:1px solid #7040d5;background:#101a2c;display:none}.logo-img.show{display:block}.logo-fallback{display:inline-flex;width:38px;height:38px;align-items:center;justify-content:center;font-size:25px;color:#a866ff}
-.mini-profile{display:flex;align-items:center;gap:9px;padding:13px 8px;margin:7px 0;border-bottom:1px solid #1c2940}.mini-profile strong{display:block;font-size:12px}.mini-profile small{display:block;font-size:10px;color:#8792a8;margin-top:3px}.online{margin-left:auto;color:#36d67b}.owner-badge{display:inline-block;margin-top:4px;padding:3px 7px;border-radius:20px;background:#8b4fff22;border:1px solid #7440d9;color:#bd91ff;font-size:8px;font-weight:900;letter-spacing:.6px}
-.avatar{width:43px;height:43px;min-width:43px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#251447,#111b31);border:1px solid #8b4fff;font-size:22px;overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover}.avatar.big{width:100px;height:100px;min-width:100px;font-size:50px}.nav-area{flex:1;overflow-y:auto;padding-right:2px}.section-title{font-size:10px;font-weight:800;letter-spacing:1.3px;color:#69768f;padding:13px 10px 6px}.nav{width:100%;display:block;border:1px solid transparent;background:transparent;color:#b9c5da;padding:10px 11px;margin:2px 0;border-radius:10px;text-align:left;font-size:13px}.nav:hover{background:#121d30;color:#fff}.nav.active{background:linear-gradient(90deg,#291253,#18122b);color:#fff;border-color:#7440d9;box-shadow:inset 3px 0 #9b5cff}.side-bottom{border-top:1px solid #1d2940;padding-top:8px}.side-bottom button{width:100%;border:0;background:transparent;color:#9aa8bf;padding:10px;text-align:left;border-radius:8px}.side-bottom button:hover{background:#111c2e;color:#fff}.logout{color:#ff5b72!important}
-.main{margin-left:255px;width:calc(100% - 255px);min-height:100vh;padding:0 28px 40px}.topbar{min-height:88px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1d2940;gap:15px}.top-left{display:flex;align-items:center;gap:12px}.top-left h1{margin:5px 0 0;font-size:27px}.top-logo{display:flex;align-items:center;gap:7px;font-weight:900}.top-logo img{width:27px;height:27px;object-fit:contain;border-radius:7px;display:none}.top-logo img.show{display:block}.top-logo .fallback{color:#a866ff;font-size:25px}.top-right{display:flex;align-items:center;gap:8px}.theme-top,.round-btn,.user-chip,.logout-top,.menu-btn{height:42px;border-radius:9px;background:#0d182a;border:1px solid #283750;color:#d8deea}.theme-top{padding:0 12px}.round-btn{position:relative;width:42px}.dot{position:absolute;right:8px;top:8px;width:6px;height:6px;border-radius:50%;background:#a05cff}.user-chip{display:flex;align-items:center;gap:8px;padding:3px 12px 3px 4px;border-radius:24px}.logout-top{padding:0 15px;border-color:#a33b50;color:#ff657a;background:transparent}.menu-btn{display:none;width:42px;font-size:20px}
-.page{display:none;padding-top:22px}.page.active{display:block}.page-head{margin-bottom:18px}.page-head label{color:#a866ff;font-size:10px;font-weight:900;letter-spacing:1.5px}.page-head h2{margin:5px 0;font-size:28px}.page-head p{margin:0;color:#8996ac}.hero{min-height:280px;display:flex;align-items:center;overflow:hidden;border:1px solid #273650;border-radius:16px;background:linear-gradient(135deg,#0e1728,#11172b)}.hero-copy{padding:42px 32px;max-width:850px}.hero h2{margin:0 0 12px;font-size:38px;line-height:1.1}.hero h2 span{color:#995bff}.hero p{color:#b5c0d4;font-size:15px;max-width:720px;line-height:1.6}.owner-hero{display:inline-flex;gap:7px;margin-bottom:13px;padding:7px 12px;border-radius:20px;background:#8b4fff1f;border:1px solid #7440d9;color:#c69cff;font-weight:800}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.primary,.secondary,.danger{border-radius:9px;padding:11px 18px;font-weight:800;border:1px solid transparent}.primary{background:linear-gradient(135deg,#9853ff,#7136df);color:#fff}.secondary{background:#0e1729;color:#d9c6ff;border-color:#8a51ee}.danger{background:#32111a;color:#ff7085;border-color:#9e334b}.success{color:#43d883;font-weight:700}.muted{color:#8795aa;line-height:1.6}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}.stat{background:#0d1728;border:1px solid #23334e;border-radius:13px;padding:17px}.stat .icon{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid #8149e5;margin-bottom:10px}.stat h3{font-size:25px;margin:0 0 3px}.stat p{margin:0;color:#8d9ab1}
-.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.card,.form-box{background:#0d1728;border:1px solid #23334d;border-radius:13px;padding:18px}.card h3,.form-box h3{margin:0 0 10px}.card p{color:#98a5bb;line-height:1.55}.meta{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}.pill{display:inline-block;padding:5px 8px;border-radius:20px;background:#111d31;border:1px solid #2b3a53;color:#aebbd0;font-size:11px}.pill.open{color:#45db83;border-color:#276c4a}.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.settings-grid .form-box:first-child{grid-column:1/-1}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:flex;flex-direction:column;gap:7px;font-size:12px;font-weight:700;color:#c3ccdb}.field.full{grid-column:1/-1}.field input,.field select,.field textarea{width:100%;background:#091321;border:1px solid #2a3a55;border-radius:9px;color:#f4f7ff;padding:11px 12px;outline:0}.field textarea{min-height:120px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{border-color:#9658f5}.form-row{display:flex;align-items:center;gap:12px;margin-top:16px}.owner-panel{border-color:#7440d9;background:linear-gradient(135deg,#8b4fff1f,#14142d66)}.owner-title{color:#c49aff}.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:11px;border-bottom:1px solid #24324b;text-align:left;white-space:nowrap}.table th{color:#9aa8bf;font-size:11px}.small-btn{padding:7px 10px;border-radius:7px;border:1px solid #344967;background:#101c30;color:#d9c6ff}.dropzone{border:1px dashed #7040d5;border-radius:12px;padding:16px;text-align:center;background:#8b4fff0d}.preview{display:flex;align-items:center;gap:14px;margin-bottom:14px}.preview img{width:72px;height:72px;object-fit:cover;border-radius:12px;border:1px solid #7040d5}.hidden{display:none!important}
-#toast{position:fixed;right:22px;bottom:22px;z-index:2000;background:#131f32;border:1px solid #40516e;color:#fff;padding:13px 17px;border-radius:10px;box-shadow:0 15px 40px #0005;opacity:0;pointer-events:none;transform:translateY(15px);transition:.25s}#toast.show{opacity:1;transform:translateY(0)}
-body.light{background:#f5f7fb;color:#172033}body.light .sidebar{background:#fff;border-right-color:#e1e6ee}body.light .brand{border-bottom-color:#e5e9f0;color:#172033}body.light .mini-profile,body.light .side-bottom{border-color:#e5e9f0}body.light .nav{color:#586477}body.light .nav:hover{background:#f3f5f9;color:#172033}body.light .nav.active{background:#f0e8ff;color:#6d32d2;border-color:#d8c9f4}body.light .main{background:#f5f7fb}body.light .topbar{border-color:#e1e6ee}body.light .top-logo,body.light .top-left h1{color:#172033}body.light .theme-top,body.light .round-btn,body.light .user-chip,body.light .menu-btn{background:#fff;border-color:#dce2eb;color:#394559}body.light .hero{background:linear-gradient(135deg,#fff,#f5f1ff);border-color:#dddfea}body.light .hero p{color:#687386}body.light .stat,body.light .card,body.light .form-box{background:#fff;border-color:#e0e5ed}body.light .stat h3,body.light .card h3,body.light .form-box h3{color:#1c2535}body.light .stat p,body.light .card p,body.light .muted{color:#6d788b}body.light .field{color:#4f5b6d}body.light .field input,body.light .field select,body.light .field textarea{background:#fff;color:#202a3b;border-color:#d5dce6}body.light .secondary{background:#fff;color:#6d32d2;border-color:#bda1ec}body.light .table th,body.light .table td{border-color:#e0e5ed}
-@media(max-width:1080px){.sidebar{width:220px}.main{margin-left:220px;width:calc(100% - 220px)}.stats{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:760px){.sidebar{left:-275px;width:270px;transition:.25s}.sidebar.open{left:0}.main{margin-left:0;width:100%;padding:0 14px 40px}.menu-btn{display:block}.topbar{padding:14px 0;align-items:flex-start;flex-direction:column}.top-left,.top-right{width:100%}.top-right{flex-wrap:wrap}.hero{display:block}.hero-copy{padding:30px 22px}.hero h2{font-size:31px}.cards,.settings-grid{grid-template-columns:1fr}.settings-grid .form-box:first-child{grid-column:auto}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}}
-@media(max-width:480px){.stats{grid-template-columns:1fr}.user-chip{max-width:145px}.user-chip strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ELITE FREELANCE HUB — Freelancer</title>
+  <link rel="icon" href="profile.png">
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
+
+<body class="freelancer" data-role="freelancer">
+
 <div class="app">
-<aside class="sidebar" id="sidebar">
-<button class="brand" onclick="showPage('dashboard');closeMenu()">
-<span id="sideLogoFallback" class="logo-fallback">✦</span><img id="sideLogo" class="logo-img" alt="ELITE logo">
-<span><strong>ELITE</strong><small>FREELANCE HUB</small></span>
-</button>
 
-<div class="mini-profile">
-<div class="avatar"><img id="sideAvatarImg" class="hidden" alt="Profile"><span id="sideAvatarEmoji">👩🏻‍💻</span></div>
-<div><strong id="sideName">Loading...</strong><small id="sideRole">Account</small><div id="ownerBadge" class="owner-badge hidden">OWNER + FREELANCER</div></div><span class="online">●</span>
+  <aside class="sidebar" id="sidebar">
+
+    <button class="brand" id="brandHome" type="button">
+      <img src="profile.png" class="brand-logo" alt="ELITE FREELANCE HUB">
+
+      <span>
+        <strong>ELITE</strong>
+        <small>FREELANCE HUB</small>
+      </span>
+    </button>
+
+    <div class="mini-profile">
+      <img src="profile.png" class="avatar" alt="Profile">
+
+      <div>
+        <strong id="sideName">Loading...</strong>
+        <small id="sideRole">Freelancer</small>
+      </div>
+
+      <small class="online">●</small>
+    </div>
+
+    <div class="nav-area" id="navArea"></div>
+
+    <div class="side-bottom">
+
+      <button id="switchMode" type="button" class="owner-only">
+        ⇄ Client Mode
+      </button>
+
+      <button id="helpBtn" type="button">
+        ♧ Help & Support
+      </button>
+
+      <button id="logoutBtn" type="button" class="logout">
+        ↪ Logout
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <main class="main">
+
+    <header class="topbar">
+
+      <div class="top-left">
+        <small>WELCOME BACK 👋</small>
+        <h1 id="pageTitle">Dashboard</h1>
+      </div>
+
+      <div class="top-right">
+
+        <button
+          class="round-btn"
+          id="themeToggle"
+          type="button"
+          title="Toggle theme">
+          ◐
+        </button>
+
+        <button
+          class="round-btn"
+          id="notificationBtn"
+          type="button"
+          title="Notifications">
+          ♢
+          <span class="dot"></span>
+        </button>
+
+        <button
+          class="user-chip"
+          id="topProfileBtn"
+          type="button">
+
+          <img
+            src="profile.png"
+            class="avatar small"
+            alt="Profile">
+
+          <span id="topName">Member</span>
+
+        </button>
+
+        <button
+          class="logout-top"
+          id="topLogout"
+          type="button">
+          ↪ Logout
+        </button>
+
+      </div>
+
+    </header>
+
+
+    <!-- DASHBOARD -->
+
+    <section class="page active" id="dashboardPage">
+
+      <div class="mode">
+        FREELANCER MODE
+
+        <span
+          id="ownerBadge"
+          class="owner-badge owner-only">
+          OWNER
+        </span>
+
+      </div>
+
+
+      <div class="hero">
+
+        <div class="hero-copy">
+
+          <h2>
+            Find Work.
+            <span>Build Your Future.</span>
+          </h2>
+
+          <p>
+            Browse real client projects, apply to work,
+            manage accepted projects and chat with clients
+            from one professional workspace.
+          </p>
+
+          <div class="actions">
+
+            <button
+              class="primary"
+              type="button"
+              data-target="jobsPage">
+              Find Work →
+            </button>
+
+            <button
+              class="secondary"
+              type="button"
+              data-target="applicationsPage">
+              My Applications
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="hero-art">
+
+          <div class="circle"></div>
+
+          <div class="person">
+            💻
+          </div>
+
+          <div class="float a">
+            💼
+          </div>
+
+          <div class="float b">
+            ✓
+          </div>
+
+          <div class="screen">
+            WORK
+            <br>
+            <span>ONLINE</span>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="stats" id="freelancerStats"></div>
+
+
+      <div class="grid2">
+
+        <div class="panel">
+
+          <div class="panel-head">
+
+            <div>
+              <h3>Recommended Work</h3>
+              <p>Open client projects</p>
+            </div>
+
+            <button
+              class="link"
+              type="button"
+              data-target="jobsPage">
+              View All →
+            </button>
+
+          </div>
+
+          <div
+            class="activity"
+            id="recommendedJobs">
+
+            <div class="loading">
+              Loading...
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <div class="panel-head">
+
+            <div>
+              <h3>My Applications</h3>
+              <p>Latest application status</p>
+            </div>
+
+            <button
+              class="link"
+              type="button"
+              data-target="applicationsPage">
+              View All →
+            </button>
+
+          </div>
+
+          <div
+            class="activity"
+            id="recentApplications">
+
+            <div class="loading">
+              Loading...
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- FIND WORK -->
+
+    <section class="page" id="jobsPage">
+
+      <div class="page-head">
+
+        <label>FIND WORK</label>
+
+        <h2>Available Projects</h2>
+
+        <p>
+          Browse open projects posted by clients.
+        </p>
+
+      </div>
+
+      <div
+        class="cards"
+        id="jobsList">
+
+        <div class="loading">
+          Loading projects...
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- APPLICATIONS -->
+
+    <section
+      class="page"
+      id="applicationsPage">
+
+      <div class="page-head">
+
+        <label>APPLICATIONS</label>
+
+        <h2>My Applications</h2>
+
+        <p>
+          Track every project you applied for.
+        </p>
+
+      </div>
+
+      <div
+        class="cards"
+        id="applicationsList">
+
+        <div class="loading">
+          Loading applications...
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- PROJECTS -->
+
+    <section
+      class="page"
+      id="projectsPage">
+
+      <div class="page-head">
+
+        <label>MY PROJECTS</label>
+
+        <h2>Accepted Projects</h2>
+
+        <p>
+          Projects where your application was accepted.
+        </p>
+
+      </div>
+
+      <div
+        class="cards"
+        id="projectsList">
+
+        <div class="loading">
+          Loading projects...
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- MESSAGES -->
+
+    <section
+      class="page"
+      id="messagesPage">
+
+      <div class="page-head">
+
+        <label>MESSAGES</label>
+
+        <h2>Project Inbox</h2>
+
+        <p>
+          Chat with clients about accepted projects.
+        </p>
+
+      </div>
+
+
+      <div class="messages-layout">
+
+        <div
+          class="conversations"
+          id="conversationsList">
+
+          <div class="empty">
+            Loading conversations...
+          </div>
+
+        </div>
+
+
+        <div class="chat">
+
+          <div class="chat-head">
+
+            <strong id="chatTitle">
+              Select a project
+            </strong>
+
+            <span id="chatSubtitle">
+              Choose a conversation.
+            </span>
+
+          </div>
+
+
+          <div
+            class="messages"
+            id="messageList">
+
+            <div class="empty">
+              No conversation selected.
+            </div>
+
+          </div>
+
+
+          <div
+            class="composer"
+            id="composer"
+            style="display:none">
+
+            <textarea
+              id="messageInput"
+              placeholder="Write a message...">
+            </textarea>
+
+            <button
+              class="primary"
+              id="sendMessage"
+              type="button">
+              Send
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- PROFILE -->
+
+    <section
+      class="page"
+      id="profilePage">
+
+      <div class="page-head">
+
+        <label>ACCOUNT</label>
+
+        <h2>Profile</h2>
+
+        <p>
+          Your professional freelancer profile.
+        </p>
+
+      </div>
+
+
+      <div class="profile-box">
+
+        <img
+          src="profile.png"
+          class="profile-avatar-img"
+          alt="Profile">
+
+        <div class="profile-info">
+
+          <h3 id="profileName">
+            Member
+          </h3>
+
+          <p id="profileRole">
+            Professional Freelancer
+          </p>
+
+          <p>
+            ✉
+            <span id="profileEmail"></span>
+          </p>
+
+          <p
+            id="profileSkills"
+            class="muted">
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- SETTINGS -->
+
+    <section
+      class="page"
+      id="settingsPage">
+
+      <div class="page-head">
+
+        <label>ACCOUNT</label>
+
+        <h2>Settings</h2>
+
+        <p>
+          Update your account information.
+        </p>
+
+      </div>
+
+
+      <div class="form-box">
+
+        <form id="settingsForm">
+
+          <div class="form-grid">
+
+            <label class="field">
+              Display Name
+              <input
+                id="settingsName"
+                maxlength="80"
+                required>
+            </label>
+
+            <label class="field">
+              Email
+              <input
+                id="settingsEmail"
+                disabled>
+            </label>
+
+            <label class="field full">
+              Skills
+              <input
+                id="settingsSkills"
+                placeholder="HTML, CSS, JavaScript, Design...">
+            </label>
+
+          </div>
+
+
+          <div class="form-row">
+
+            <button
+              class="primary"
+              type="submit">
+              Save Changes
+            </button>
+
+            <span
+              class="success"
+              id="settingsMessage">
+            </span>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    </section>
+
+
+    <!-- OWNER -->
+
+    <section
+      class="page"
+      id="ownerPage">
+
+      <div class="page-head">
+
+        <label>OWNER CONTROL</label>
+
+        <h2>Owner / Admin Panel</h2>
+
+        <p>
+          Only Ayesha Rehman has Owner access
+          to this platform.
+        </p>
+
+      </div>
+
+
+      <div class="owner-warning">
+
+        👑
+
+        <strong>
+          Owner protected area
+        </strong>
+
+        <span>
+          This panel is available only to
+          the authenticated owner account.
+        </span>
+
+      </div>
+
+
+      <div
+        class="stats"
+        id="ownerStats">
+      </div>
+
+
+      <div class="grid2">
+
+        <div class="panel">
+
+          <div class="panel-head">
+
+            <div>
+              <h3>Platform Rules</h3>
+              <p>Ownership and access</p>
+            </div>
+
+          </div>
+
+
+          <div class="activity">
+
+            <div class="activity-row">
+
+              <div class="activity-icon">
+                👑
+              </div>
+
+              <div>
+                <strong>Ayesha Rehman</strong>
+                <span>
+                  Only Owner + Freelancer access
+                </span>
+              </div>
+
+            </div>
+
+
+            <div class="activity-row">
+
+              <div class="activity-icon">
+                👤
+              </div>
+
+              <div>
+                <strong>Freelancers</strong>
+                <span>
+                  Can find work and apply
+                </span>
+              </div>
+
+            </div>
+
+
+            <div class="activity-row">
+
+              <div class="activity-icon">
+                💼
+              </div>
+
+              <div>
+                <strong>Clients</strong>
+                <span>
+                  Can post projects and manage applications
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <div class="panel-head">
+
+            <div>
+              <h3>Owner Actions</h3>
+              <p>Quick controls</p>
+            </div>
+
+          </div>
+
+
+          <div class="activity">
+
+            <button
+              class="quick-action"
+              type="button"
+              data-target="jobsPage">
+              View marketplace →
+            </button>
+
+            <button
+              class="quick-action"
+              type="button"
+              id="ownerClientMode">
+              Switch to Client Mode →
+            </button>
+
+            <button
+              class="quick-action"
+              type="button"
+              data-target="settingsPage">
+              Open account settings →
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <footer>
+      © 2026
+      <b>ELITE FREELANCE HUB</b>
+      · Connect • Collaborate • Succeed
+    </footer>
+
+  </main>
+
 </div>
 
-<div class="nav-area">
-<div class="section-title">MAIN</div>
-<button class="nav active" data-page="dashboard" onclick="showPage('dashboard');closeMenu()">⌂ &nbsp; Dashboard</button>
-<button class="nav" data-page="findwork" onclick="showPage('findwork');closeMenu()">⌕ &nbsp; Find Work</button>
-<button class="nav" data-page="applications" onclick="showPage('applications');closeMenu()">✉ &nbsp; Applications</button>
-<button class="nav" data-page="projects" onclick="showPage('projects');closeMenu()">▣ &nbsp; My Projects</button>
-<button class="nav" data-page="messages" onclick="showPage('messages');closeMenu()">◌ &nbsp; Messages</button>
-<div class="section-title">MANAGE</div>
-<button class="nav" data-page="saved" onclick="showPage('saved');closeMenu()">🔖 &nbsp; Saved Jobs</button>
-<button class="nav" data-page="proposals" onclick="showPage('proposals');closeMenu()">✎ &nbsp; Proposals</button>
-<button class="nav" data-page="contracts" onclick="showPage('contracts');closeMenu()">▤ &nbsp; Contracts</button>
-<button class="nav" data-page="earnings" onclick="showPage('earnings');closeMenu()">$ &nbsp; Earnings</button>
-<button class="nav" data-page="tracker" onclick="showPage('tracker');closeMenu()">◷ &nbsp; Time Tracker</button>
-<div class="section-title">ACCOUNT</div>
-<button class="nav" data-page="profile" onclick="showPage('profile');closeMenu()">♙ &nbsp; Profile</button>
-<button class="nav" data-page="portfolio" onclick="showPage('portfolio');closeMenu()">▦ &nbsp; Portfolio</button>
-<button class="nav" data-page="reviews" onclick="showPage('reviews');closeMenu()">★ &nbsp; Reviews</button>
-<button class="nav" data-page="settings" onclick="showPage('settings');closeMenu()">⚙ &nbsp; Settings</button>
-
-<div id="ownerNav" class="hidden">
-<div class="section-title">OWNER CONTROL</div>
-<button class="nav" data-page="owner" onclick="showPage('owner');closeMenu()">👑 &nbsp; Owner Dashboard</button>
-<button class="nav" data-page="users" onclick="showPage('users');closeMenu()">♙ &nbsp; Manage Users</button>
-<button class="nav" data-page="ownerJobs" onclick="showPage('ownerJobs');closeMenu()">▤ &nbsp; Manage Jobs</button>
-<button class="nav" data-page="ownerReviews" onclick="showPage('ownerReviews');closeMenu()">★ &nbsp; Platform Reviews</button>
-<button class="nav" data-page="reports" onclick="showPage('reports');closeMenu()">▥ &nbsp; Reports</button>
-</div>
-</div>
-
-<div class="side-bottom">
-<button id="clientSwitchBtn" class="hidden" onclick="showClientMode()">⇄ &nbsp; Switch to Client Mode</button>
-<button onclick="showToast('Help & Support: messaging will appear here when connected.')">♧ &nbsp; Help & Support</button>
-<button class="logout" onclick="logout()">↪ &nbsp; Logout</button>
-</div>
-</aside>
-
-<main class="main">
-<header class="topbar">
-<div class="top-left">
-<button class="menu-btn" onclick="toggleMenu()">☰</button>
-<div><div class="top-logo"><span id="topLogoFallback" class="fallback">✦</span><img id="topLogo" alt="ELITE logo"><span>ELITE FREELANCE HUB</span></div><h1 id="topTitle">Dashboard</h1></div>
-</div>
-<div class="top-right">
-<button class="theme-top" onclick="toggleTheme()"><span id="topThemeIcon">☾</span> <span id="topThemeText">Dark</span></button>
-<button class="round-btn" onclick="showToast('No new notifications.')">♢<span class="dot"></span></button>
-<div class="user-chip"><div class="avatar"><img id="topAvatarImg" class="hidden" alt="Profile"><span id="topAvatarEmoji">👩🏻‍💻</span></div><strong id="topName">Loading...</strong></div>
-<button class="logout-top" onclick="logout()">↪ Logout</button>
-</div>
-</header>
-
-<section class="page active" id="dashboard">
-<div class="hero"><div class="hero-copy">
-<div id="ownerHeroBadge" class="owner-hero hidden">👑 Owner Account · Freelancer</div>
-<h2>WELCOME BACK 👋<br><span id="heroName">USER</span></h2>
-<p id="heroText">Build your freelance career, discover opportunities, manage projects and grow your professional profile with ELITE FREELANCE HUB.</p>
-<div class="actions"><button class="primary" onclick="showPage('findwork')">⌕ Find Work</button><button class="secondary" onclick="showPage('profile')">♙ View Profile</button></div>
-</div></div>
-<div class="stats">
-<div class="stat"><div class="icon">▣</div><h3 id="activeCount">0</h3><p>Active Projects</p></div>
-<div class="stat"><div class="icon">✉</div><h3 id="applicationCount">0</h3><p>Applications Sent</p></div>
-<div class="stat"><div class="icon">$</div><h3>$0</h3><p>Total Earnings</p></div>
-<div class="stat"><div class="icon">★</div><h3 id="statusCard">Freelancer</h3><p id="statusText">Normal Marketplace Account</p></div>
-</div>
-</section>
-
-<section class="page" id="findwork"><div class="page-head"><label>MARKETPLACE</label><h2>Find Work</h2><p>Discover projects that match your skills.</p></div><div id="jobsList" class="cards"><div class="form-box"><h3>Loading jobs...</h3></div></div></section>
-<section class="page" id="applications"><div class="page-head"><label>WORK</label><h2>Applications</h2><p>Track projects you have applied for.</p></div><div id="applicationsBox" class="form-box"><h3>No applications yet</h3><p class="muted">Your submitted applications will appear here.</p></div></section>
-<section class="page" id="projects"><div class="page-head"><label>WORKSPACE</label><h2>My Projects</h2><p>Manage your accepted freelance projects.</p></div><div class="form-box"><h3>No active projects</h3><p class="muted">Accepted projects will appear here.</p></div></section>
-<section class="page" id="messages"><div class="page-head"><label>COMMUNICATION</label><h2>Messages</h2><p>Chat with your clients.</p></div><div class="form-box"><h3>No conversations yet</h3><p class="muted">Your client conversations will appear here.</p></div></section>
-<section class="page" id="saved"><div class="page-head"><label>MARKETPLACE</label><h2>Saved Jobs</h2><p>Jobs you save for later.</p></div><div class="form-box"><h3>No saved jobs</h3><p class="muted">Saved projects will appear here.</p></div></section>
-<section class="page" id="proposals"><div class="page-head"><label>WORK</label><h2>Proposals</h2><p>Manage your freelance proposals.</p></div><div class="form-box"><h3>No proposals yet</h3><p class="muted">Submitted proposals will appear here.</p></div></section>
-<section class="page" id="contracts"><div class="page-head"><label>WORK</label><h2>Contracts</h2><p>Manage your freelance contracts.</p></div><div class="form-box"><h3>No contracts yet</h3><p class="muted">Active contracts will appear here.</p></div></section>
-<section class="page" id="earnings"><div class="page-head"><label>FINANCE</label><h2>Earnings</h2><p>Track your freelance earnings.</p></div><div class="stats"><div class="stat"><div class="icon">$</div><h3>$0</h3><p>Total Earnings</p></div><div class="stat"><div class="icon">✓</div><h3>$0</h3><p>Paid</p></div><div class="stat"><div class="icon">◷</div><h3>$0</h3><p>Pending</p></div><div class="stat"><div class="icon">%</div><h3>$0</h3><p>Platform Fees</p></div></div></section>
-<section class="page" id="tracker"><div class="page-head"><label>WORK</label><h2>Time Tracker</h2><p>Track time spent on projects.</p></div><div class="form-box" style="text-align:center"><h3 id="timerDisplay">00:00:00</h3><div class="actions" style="justify-content:center"><button class="primary" onclick="startTimer()">▶ Start</button><button class="secondary" onclick="stopTimer()">■ Stop</button><button class="danger" onclick="resetTimer()">↻ Reset</button></div></div></section>
-
-<section class="page" id="profile"><div class="page-head"><label>ACCOUNT</label><h2>Profile</h2><p>Your professional marketplace profile.</p></div><div class="form-box"><div class="preview"><div class="avatar big"><img id="profileAvatarImg" class="hidden" alt="Profile"><span id="profileAvatarEmoji">👩🏻‍💻</span></div><div><h2 id="profileDisplayName">User</h2><p class="muted" id="profileRole">Freelancer</p><p class="muted" id="profileBio">Complete your profile from Settings.</p></div></div><button class="primary" onclick="showPage('settings')">⚙ Edit Profile</button></div></section>
-<section class="page" id="portfolio"><div class="page-head"><label>SHOWCASE</label><h2>Portfolio</h2><p>Show clients what you can create.</p></div><div class="form-box"><h3>Your Portfolio</h3><p class="muted">No portfolio projects added yet.</p><button class="primary" onclick="showToast('Portfolio editor is ready for the next marketplace module.')">+ Add Portfolio Project</button></div></section>
-<section class="page" id="reviews"><div class="page-head"><label>REPUTATION</label><h2>Reviews</h2><p>Client feedback and ratings.</p></div><div class="form-box"><h3>★ No reviews yet</h3><p class="muted">Reviews appear after completed projects.</p></div></section>
-
-<section class="page" id="settings"><div class="page-head"><label>ACCOUNT</label><h2>Settings</h2><p>Manage your profile, security, appearance and branding.</p></div>
-<div class="settings-grid">
-<div class="form-box"><h3>Profile Information</h3><div class="form-grid">
-<label class="field">Display Name<input id="settingsName" maxlength="80"></label>
-<label class="field">Email<input id="settingsEmail" type="email" readonly></label>
-<label class="field">Gender / Avatar<select id="settingsGender"><option value="female">Female 👩🏻‍💻</option><option value="male">Male 👨🏻‍💻</option></select></label>
-<label class="field">Location<input id="settingsLocation" placeholder="Pakistan"></label>
-<label class="field">Hourly Rate (USD)<input id="settingsRate" type="number" min="0" placeholder="Enter your rate"></label>
-<label class="field">Availability<select id="settingsAvailability"><option value="available">Available</option><option value="busy">Busy</option><option value="not_available">Not Available</option></select></label>
-<label class="field full">Skills<input id="settingsSkills" placeholder="HTML, CSS, JavaScript, Web Design"></label>
-<label class="field full">Professional Bio<textarea id="settingsBio" placeholder="Tell clients about yourself..."></textarea></label>
-</div><div class="form-row"><button class="primary" onclick="saveProfile()">Save Profile</button><span id="profileSaved" class="success hidden">✓ Profile saved</span></div></div>
-
-<div class="form-box"><h3>Profile Picture</h3><div class="dropzone"><p class="muted">Your personal DP is separate from the website logo.</p><input id="avatarFile" type="file" accept="image/png,image/jpeg,image/webp"></div><div class="form-row"><button class="primary" onclick="saveAvatar()">Save DP</button></div></div>
-
-<div class="form-box" id="brandingBox"><h3>Website Logo</h3><p class="muted">This is the ELITE FREELANCE HUB website logo. It is separate from every user's DP. Only the owner can change it.</p><div class="dropzone"><input id="logoFile" type="file" accept="image/png,image/jpeg,image/webp"></div><div class="form-row"><button class="primary" id="saveLogoBtn" onclick="saveLogo()">Save Website Logo</button></div></div>
-
-<div class="form-box"><h3>Security</h3><p class="muted">Your password is managed by Firebase Authentication.</p><button class="secondary" onclick="sendPasswordReset()">🔐 Send Password Reset Email</button><div id="resetMessage" class="muted" style="margin-top:12px"></div></div>
-<div class="form-box"><h3>Appearance</h3><p class="muted">Light/Dark mode is saved on this device.</p><button class="secondary" onclick="toggleTheme()"><span id="settingsThemeIcon">☾</span> Toggle Light / Dark Mode</button><p class="muted" id="themeStatus">Dark Mode</p></div>
-<div class="form-box"><h3>Marketplace</h3><p class="muted">Online payment collection is not enabled yet. Payment features can be connected later.</p><span class="pill">Payment Provider Not Connected</span></div>
-<div class="form-box owner-panel hidden" id="ownerSettingsPanel"><h3 class="owner-title">👑 Owner Account</h3><p class="muted">This authenticated account is the owner of ELITE FREELANCE HUB and also a professional freelancer.</p><span class="pill">OWNER + FREELANCER</span></div>
-<div class="form-box" id="normalAccountPanel"><h3>Account Type</h3><p class="muted" id="accountTypeDescription">Freelancer account.</p><span class="pill" id="accountTypePill">Freelancer</span></div>
-</div></section>
-
-<section class="page" id="owner"><div class="page-head"><label>OWNER CONTROL</label><h2>Owner Dashboard</h2><p>Private platform controls. Only the authenticated owner can see this area.</p></div><div class="stats"><div class="stat"><div class="icon">♙</div><h3 id="ownerUsers">0</h3><p>Registered Users</p></div><div class="stat"><div class="icon">▤</div><h3 id="ownerJobs">0</h3><p>Marketplace Jobs</p></div><div class="stat"><div class="icon">✉</div><h3 id="ownerApps">0</h3><p>Applications</p></div><div class="stat"><div class="icon">★</div><h3>OWNER</h3><p>Platform Access</p></div></div><div class="form-box" style="margin-top:15px"><h3>Owner Controls</h3><div class="actions"><button class="primary" onclick="showPage('users')">Manage Users</button><button class="secondary" onclick="showPage('ownerJobs')">Manage Jobs</button><button class="secondary" onclick="showPage('ownerReviews')">Platform Reviews</button><button class="secondary" onclick="showPage('reports')">Reports</button></div></div></section>
-
-<section class="page" id="users"><div class="page-head"><label>OWNER CONTROL</label><h2>Manage Users</h2><p>View marketplace accounts. Owner privileges cannot be granted from this page.</p></div><div class="form-box"><div class="table-wrap"><table class="table"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Created</th></tr></thead><tbody id="usersTable"></tbody></table></div></div></section>
-<section class="page" id="ownerJobs"><div class="page-head"><label>OWNER CONTROL</label><h2>Manage Jobs</h2><p>Review projects posted to the marketplace.</p></div><div class="form-box"><div class="table-wrap"><table class="table"><thead><tr><th>Title</th><th>Category</th><th>Status</th><th>Client</th></tr></thead><tbody id="ownerJobsTable"></tbody></table></div></div></section>
-<section class="page" id="ownerReviews"><div class="page-head"><label>OWNER CONTROL</label><h2>Platform Reviews</h2><p>Monitor marketplace reputation.</p></div><div class="form-box"><h3>Reviews Management</h3><p class="muted">No platform reviews have been recorded yet.</p></div></section>
-<section class="page" id="reports"><div class="page-head"><label>OWNER CONTROL</label><h2>Reports</h2><p>Platform overview and operational information.</p></div><div class="form-box"><h3>ELITE FREELANCE HUB</h3><p class="muted">Owner-only reporting area. Registered users, jobs and applications are summarized on the Owner Dashboard.</p></div></section>
-</main></div>
 <div id="toast"></div>
 
-<script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-import {getAuth,onAuthStateChanged,signOut,sendPasswordResetEmail} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-import {getFirestore,doc,getDoc,setDoc,collection,getDocs,addDoc,query,where,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+<div
+  id="firebaseError"
+  class="firebase-error">
+</div>
 
-const firebaseConfig = {
-  apiKey:"AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
-  authDomain:"elite-freelance-hub.firebaseapp.com",
-  projectId:"elite-freelance-hub",
-  storageBucket:"elite-freelance-hub.firebasestorage.app",
-  messagingSenderId:"777611553956",
-  appId:"1:777611553956:web:730b7df36570ff803a8a31",
-  measurementId:"G-PC7G6G6BRD"
-};
-const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
-const OWNER_EMAIL="ayesharehman123456987@gmail.com".toLowerCase();
-const DEFAULT_LOGO="data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a866ff"/><stop offset="1" stop-color="#6f35dc"/></linearGradient></defs><rect x="3" y="3" width="90" height="90" rx="24" fill="#0d1627" stroke="#8b4fff" stroke-width="4"/><path d="M48 15 55 38 79 48 55 58 48 81 41 58 17 48 41 38Z" fill="url(#g)"/><circle cx="48" cy="48" r="6" fill="#fff"/></svg>`);
-let currentUser=null,currentProfile=null,isOwner=false,timerSeconds=0,timerInterval=null;
-const $=id=>document.getElementById(id);
-
-function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove("show"),3000)}
-function ownerOnly(){if(!isOwner){showPage("dashboard");toast("Owner access only.");return false}return true}
-window.showToast=toast;
-
-function setAvatar(imgId,emojiId,data,gender="female"){
-  const img=$(imgId),em=$(emojiId);
-  if(data){img.src=data;img.classList.remove("hidden");em.classList.add("hidden")}
-  else{img.classList.add("hidden");em.classList.remove("hidden");em.textContent=gender==="male"?"👨🏻‍💻":"👩🏻‍💻"}
-}
-function setLogo(data){
-  const logo=data||DEFAULT_LOGO;
-  ["sideLogo","topLogo"].forEach(id=>{const e=$(id);e.src=logo;e.classList.add("show")});
-  $("sideLogoFallback").style.display="none";
-  $("topLogoFallback").style.display="none";
-}
-async function loadLogo(){
-  try{const snap=await getDoc(doc(db,"settings","site"));setLogo(snap.exists()&&snap.data().logo?snap.data().logo:localStorage.getItem("eliteWebsiteLogo")||DEFAULT_LOGO)}catch(e){setLogo(localStorage.getItem("eliteWebsiteLogo")||DEFAULT_LOGO)}
-}
-function compressImage(file,max=320){
- return new Promise((resolve,reject)=>{if(!file)return resolve("");const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement("canvas"),scale=Math.min(1,max/Math.max(im.width,im.height));c.width=Math.round(im.width*scale);c.height=Math.round(im.height*scale);c.getContext("2d").drawImage(im,0,0,c.width,c.height);resolve(c.toDataURL("image/jpeg",.82))};im.onerror=reject;im.src=r.result};r.onerror=reject;r.readAsDataURL(file)})
-}
-
-async function loadUser(){
- const u=currentUser;if(!u)return;
- isOwner=(u.email||"").toLowerCase()===OWNER_EMAIL;
- const ref=doc(db,"users",u.uid),snap=await getDoc(ref);
- let p=snap.exists()?snap.data():{};
- if(!snap.exists()){p={name:u.displayName||"User",email:u.email||"",role:isOwner?"owner_freelancer":"freelancer",gender:"female",location:"",rate:"",availability:"available",skills:"",bio:"",avatar:""};await setDoc(ref,{...p,createdAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true})}
- if(isOwner)p={...p,role:"owner_freelancer",email:u.email};
- currentProfile=p;renderProfile(p);updateRoleUI();await loadLogo();await loadJobs();await loadApplications();if(isOwner)await loadOwnerData();
-}
-function renderProfile(p){
- const name=p.name||"User",first=(name.split(/\s+/)[0]||"USER").toUpperCase(),gender=p.gender||"female";
- $("sideName").textContent=name;$("topName").textContent=name;$("profileDisplayName").textContent=name;$("heroName").textContent=first;
- $("settingsName").value=name;$("settingsEmail").value=p.email||currentUser.email;$("settingsGender").value=gender;$("settingsLocation").value=p.location||"";
- $("settingsRate").value=p.rate??"";$("settingsAvailability").value=p.availability||"available";$("settingsSkills").value=p.skills||"";$("settingsBio").value=p.bio||"";
- $("profileRole").textContent=isOwner?"Owner + Professional Freelancer":(p.role==="client"?"Professional Client":"Professional Freelancer");
- $("profileBio").textContent=p.bio||"Available for marketplace opportunities.";
- $("sideRole").textContent=isOwner?"Owner + Freelancer":(p.role==="client"?"Client":"Freelancer");
- setAvatar("sideAvatarImg","sideAvatarEmoji",p.avatar||"",gender);setAvatar("topAvatarImg","topAvatarEmoji",p.avatar||"",gender);setAvatar("profileAvatarImg","profileAvatarEmoji",p.avatar||"",gender);
-}
-function updateRoleUI(){
- const client=!isOwner && currentProfile?.role==="client";
- $("ownerBadge").classList.toggle("hidden",!isOwner);$("ownerHeroBadge").classList.toggle("hidden",!isOwner);$("ownerNav").classList.toggle("hidden",!isOwner);
- $("ownerSettingsPanel").classList.toggle("hidden",!isOwner);$("normalAccountPanel").classList.toggle("hidden",isOwner);$("brandingBox").classList.toggle("hidden",!isOwner);
- $("clientSwitchBtn").classList.toggle("hidden",!isOwner);
- $("statusCard").textContent=isOwner?"Owner":client?"Client":"Freelancer";
- $("statusText").textContent=isOwner?"Owner + Freelancer":client?"Client Account":"Freelancer Account";
- if($("accountTypeDescription")){
-   $("accountTypeDescription").textContent=client?"Client account.":"Freelancer account.";
-   $("accountTypePill").textContent=client?"Client":"Freelancer";
- }
-}
-window.saveProfile=async function(){
- try{
-  const p={...currentProfile,name:$("settingsName").value.trim()||"User",email:currentUser.email,gender:$("settingsGender").value,location:$("settingsLocation").value.trim(),rate:$("settingsRate").value.trim(),availability:$("settingsAvailability").value,skills:$("settingsSkills").value.trim(),bio:$("settingsBio").value.trim(),updatedAt:serverTimestamp()};
-  p.role=isOwner?"owner_freelancer":(currentProfile?.role==="client"?"client":"freelancer");
-  await setDoc(doc(db,"users",currentUser.uid),p,{merge:true});currentProfile={...p};renderProfile(currentProfile);updateRoleUI();$("profileSaved").classList.remove("hidden");setTimeout(()=>$("profileSaved").classList.add("hidden"),2200);toast("✓ Profile saved.");
- }catch(e){console.error(e);toast("Could not save profile.");}
-}
-window.saveAvatar=async function(){
- try{const f=$("avatarFile").files[0];if(!f){toast("Choose a profile picture first.");return}const data=await compressImage(f,320);await setDoc(doc(db,"users",currentUser.uid),{avatar:data,updatedAt:serverTimestamp()},{merge:true});currentProfile.avatar=data;renderProfile(currentProfile);toast("✓ Your personal DP was saved.");}catch(e){console.error(e);toast("Could not save DP.");}
-}
-window.saveLogo=async function(){
- if(!ownerOnly())return;try{const f=$("logoFile").files[0];if(!f){toast("Choose the website logo first.");return}const data=await compressImage(f,420);await setDoc(doc(db,"settings","site"),{logo:data,updatedAt:serverTimestamp(),updatedBy:currentUser.uid},{merge:true});setLogo(data);toast("✓ Website logo saved for ELITE FREELANCE HUB.");}catch(e){console.error(e);toast("Could not save website logo.");}
-}
-window.sendPasswordReset=async function(){try{await sendPasswordResetEmail(auth,currentUser.email);$("resetMessage").textContent="✓ Password reset email sent to "+currentUser.email;toast("Password reset email sent.");}catch(e){$("resetMessage").textContent="Could not send reset email.";toast("Password reset failed.");}}
-window.toggleTheme=function(){const light=document.body.classList.toggle("light");localStorage.setItem("eliteTheme",light?"light":"dark");updateThemeButtons();toast(light?"☀ Light Mode enabled.":"☾ Dark Mode enabled.")}
-function updateThemeButtons(){const l=document.body.classList.contains("light");$("topThemeIcon").textContent=l?"☀":"☾";$("topThemeText").textContent=l?"Light":"Dark";$("settingsThemeIcon").textContent=l?"☀":"☾";$("themeStatus").textContent=l?"Light Mode":"Dark Mode"}
-function loadTheme(){if(localStorage.getItem("eliteTheme")==="light")document.body.classList.add("light");updateThemeButtons()}
-window.showPage=function(page){
- if(["owner","users","ownerJobs","ownerReviews","reports"].includes(page)&&!isOwner){toast("Owner access only.");return}
- document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));$(page)?.classList.add("active");
- document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("active",x.dataset.page===page));
- const titles={dashboard:"Dashboard",findwork:"Find Work",applications:"Applications",projects:"My Projects",messages:"Messages",saved:"Saved Jobs",proposals:"Proposals",contracts:"Contracts",earnings:"Earnings",tracker:"Time Tracker",profile:"Profile",portfolio:"Portfolio",reviews:"Reviews",settings:"Settings",owner:"Owner Dashboard",users:"Manage Users",ownerJobs:"Manage Jobs",ownerReviews:"Platform Reviews",reports:"Reports"};
- $("topTitle").textContent=titles[page]||"Dashboard";window.scrollTo({top:0,behavior:"smooth"});
-}
-window.toggleMenu=()=> $("sidebar").classList.toggle("open");window.closeMenu=()=> $("sidebar").classList.remove("open");
-window.logout=async()=>{await signOut(auth);location.href="login.html"};
-window.showClientMode=()=>{if(!isOwner)return;toast("Client Mode opened. Your owner identity remains protected.");$("heroText").textContent="Client Mode: manage projects and work as a client. Your owner + freelancer identity is unchanged.";showPage("dashboard")};
-
-async function loadJobs(){
- try{
-  const snap=await getDocs(collection(db,"jobs"));let arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));
-  if(!arr.length)arr=[{id:"sample1",title:"Website Design",description:"Create a modern responsive website for a small business.",category:"Web Design",status:"open",budget:"$100"},{id:"sample2",title:"PDF Conversion",description:"Convert documents into clean editable files.",category:"Data Entry",status:"open",budget:"$50"}];
-  $("jobsList").innerHTML=arr.map(j=>`<div class="card"><h3>${esc(j.title||"Untitled Job")}</h3><p>${esc(j.description||"No description.")}</p><div class="meta"><span class="pill">${esc(j.category||"General")}</span><span class="pill">${esc(j.budget||"Budget not set")}</span><span class="pill open">${esc(j.status||"open")}</span></div><button class="primary" onclick="applyJob('${j.id}')">Apply Now</button></div>`).join("");
-  window.__jobs=arr;
- }catch(e){$("jobsList").innerHTML='<div class="form-box"><h3>Jobs could not be loaded</h3><p class="muted">Check your Firestore connection.</p></div>'}
-}
-window.applyJob=async function(jobId){
- try{
-  const exists=await getDocs(query(collection(db,"applications"),where("jobId","==",jobId),where("freelancerId","==",currentUser.uid)));
-  if(!exists.empty){toast("You already applied to this job.");return}
-  await addDoc(collection(db,"applications"),{jobId,freelancerId:currentUser.uid,freelancerEmail:currentUser.email,status:"pending",createdAt:serverTimestamp()});
-  toast("✓ Application submitted.");loadApplications();
- }catch(e){console.error(e);toast("Application could not be submitted.");}
-}
-async function loadApplications(){
- try{const s=await getDocs(query(collection(db,"applications"),where("freelancerId","==",currentUser.uid)));$("applicationCount").textContent=s.size;
- if(!s.size){$("applicationsBox").innerHTML='<h3>No applications yet</h3><p class="muted">Your submitted applications will appear here.</p>';return}
- let rows=[];s.forEach(d=>rows.push(d.data()));$("applicationsBox").innerHTML="<h3>Your Applications</h3>"+rows.map(a=>`<p class="muted">Job: <b>${esc(a.jobId)}</b> · Status: <span class="pill">${esc(a.status||"pending")}</span></p>`).join("");
- }catch(e){}
-}
-async function loadOwnerData(){
- if(!isOwner)return;
- try{
-  const [u,j,a]=await Promise.all([getDocs(collection(db,"users")),getDocs(collection(db,"jobs")),getDocs(collection(db,"applications"))]);
-  $("ownerUsers").textContent=u.size;$("ownerJobs").textContent=j.size;$("ownerApps").textContent=a.size;
-  $("usersTable").innerHTML="";u.forEach(d=>{const x=d.data();$("usersTable").innerHTML+=`<tr><td>${esc(x.name||"User")}</td><td>${esc(x.email||"")}</td><td>${esc(x.role||"freelancer")}</td><td>${x.createdAt?.toDate?x.createdAt.toDate().toLocaleDateString():"—"}</td></tr>`});
-  $("ownerJobsTable").innerHTML="";j.forEach(d=>{const x=d.data();$("ownerJobsTable").innerHTML+=`<tr><td>${esc(x.title||"Untitled")}</td><td>${esc(x.category||"General")}</td><td>${esc(x.status||"open")}</td><td>${esc(x.clientEmail||x.clientId||"—")}</td></tr>`});
- }catch(e){console.error(e);toast("Owner data could not be loaded. Check Firestore rules.")}
-}
-function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-let timerSeconds=0,timerInterval=null;function updateTimer(){const h=String(Math.floor(timerSeconds/3600)).padStart(2,"0"),m=String(Math.floor(timerSeconds%3600/60)).padStart(2,"0"),s=String(timerSeconds%60).padStart(2,"0");$("timerDisplay").textContent=`${h}:${m}:${s}`}
-window.startTimer=()=>{if(timerInterval)return;timerInterval=setInterval(()=>{timerSeconds++;updateTimer()},1000);toast("▶ Time tracker started.")};window.stopTimer=()=>{clearInterval(timerInterval);timerInterval=null;toast("■ Time tracker stopped.")};window.resetTimer=()=>{clearInterval(timerInterval);timerInterval=null;timerSeconds=0;updateTimer();toast("↻ Timer reset.")};
-
-loadTheme();
-onAuthStateChanged(auth,async user=>{if(!user){location.href="login.html";return}currentUser=user;try{await loadUser()}catch(e){console.error(e);toast("Account data could not be loaded.")}});
+<script
+  type="module"
+  src="script.js">
 </script>
+
 </body>
 </html>
