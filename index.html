@@ -14,30 +14,30 @@
 
 <aside class="sidebar">
 
-    <div class="brand">
-        <span class="mark">✦</span>
-        <div>
-            <strong>ELITE</strong>
-            <small>FREELANCE HUB</small>
-        </div>
-    </div>
+<button class="brand" id="brandHome" type="button">
+    <span class="mark">✦</span>
+    <span>
+        <strong>ELITE</strong>
+        <small>FREELANCE HUB</small>
+    </span>
+</button>
 
-    <div class="mini-profile">
-        <img src="profile.png" class="avatar" alt="Profile">
-        <div>
-            <strong id="sideName">Loading...</strong>
-            <small id="sideRole">Professional Freelancer</small>
-        </div>
-        <small class="online">●</small>
+<div class="mini-profile">
+    <div id="sideAvatar" class="avatar">👩🏻‍💻</div>
+    <div>
+        <strong id="sideName">Loading...</strong>
+        <small id="sideRole">Professional Freelancer</small>
     </div>
+    <small class="online">●</small>
+</div>
 
-    <div class="nav-area" id="navArea"></div>
+<div class="nav-area" id="navArea"></div>
 
-    <div class="side-bottom">
-        <button id="switchMode">⇄ Switch to Client Mode</button>
-        <button id="helpBtn">♧ Help & Support</button>
-        <button class="logout" id="logoutBtn">↪ Logout</button>
-    </div>
+<div class="side-bottom">
+    <button id="switchMode">⇄ Switch to Client Mode</button>
+    <button id="helpBtn">♧ Help & Support</button>
+    <button class="logout" id="logoutBtn">↪ Logout</button>
+</div>
 
 </aside>
 
@@ -45,28 +45,22 @@
 
 <header class="topbar">
 
-    <div class="top-left">
-        <small>WELCOME BACK 👋</small>
-        <h1 id="pageTitle">Dashboard</h1>
-    </div>
+<div class="top-left">
+    <small>WELCOME BACK 👋</small>
+    <h1 id="pageTitle">Dashboard</h1>
+</div>
 
-    <div class="top-right">
+<div class="top-right">
+    <button class="round-btn" id="themeToggle" title="Light / Dark Mode">◐</button>
+    <button class="round-btn" id="notificationBtn">♢<span class="dot"></span></button>
 
-        <button class="round-btn" id="themeToggle" title="Change theme">☾</button>
+    <button class="user-chip" id="topProfileBtn">
+        <span id="topAvatar" class="avatar small">👩🏻‍💻</span>
+        <span id="topName">Member</span>
+    </button>
 
-        <button class="round-btn notification-btn" id="notificationBtn" title="Notifications">
-            ♢
-            <span class="dot"></span>
-        </button>
-
-        <div class="user-chip">
-            <img src="profile.png" class="avatar" alt="Profile">
-            <span id="topName">Member</span>
-        </div>
-
-        <button class="logout-top" id="topLogout">↪ Logout</button>
-
-    </div>
+    <button class="logout-top" id="topLogout">↪ Logout</button>
+</div>
 
 </header>
 
@@ -75,88 +69,84 @@
 
 <section class="page active" id="dashboardPage">
 
-    <div class="mode">FREELANCER MODE</div>
+<div class="mode">FREELANCER MODE</div>
 
-    <div class="hero">
+<div class="hero">
 
-        <div class="hero-copy">
+<div class="hero-copy">
 
-            <h2>
-                Your <span>Freelance</span> Work Hub
-            </h2>
+<h2>Your <span>Freelance</span> Work Hub</h2>
 
-            <p>
-                Find online projects, apply for jobs and manage your professional work.
-            </p>
+<p>
+Find real online projects, apply for jobs and manage your professional work.
+</p>
 
-            <div class="actions">
-                <button class="primary" data-target="jobsPage">
-                    Find Work →
-                </button>
+<div class="actions">
 
-                <button class="secondary" data-target="postPage">
-                    Post a Project ＋
-                </button>
-            </div>
+<button class="primary" data-target="jobsPage">
+Find Work →
+</button>
 
-        </div>
+<button class="secondary" data-target="postPage">
+Post a Project ＋
+</button>
 
-        <div class="hero-art">
-            <div class="circle"></div>
-            <div class="person" id="heroPerson">👩🏻‍💻</div>
-            <div class="float a">💼</div>
-            <div class="float b">✓</div>
-            <div class="screen"></div>
-        </div>
+</div>
 
-    </div>
+</div>
 
-    <div class="stats" id="stats"></div>
+<div class="hero-art">
+<div class="circle"></div>
+<div id="heroPerson" class="person">👩🏻‍💻</div>
+<div class="float a">💼</div>
+<div class="float b">✓</div>
+<div class="screen">01<br>10<br>01</div>
+</div>
 
-    <div class="grid2">
+</div>
 
-        <div class="panel">
+<div class="stats" id="stats"></div>
 
-            <div class="panel-head">
+<div class="grid2">
 
-                <div>
-                    <h3>Recent Work Activity</h3>
-                    <p>Latest activity across your account</p>
-                </div>
+<div class="panel">
 
-                <button class="link" data-target="applicationsPage">
-                    View All →
-                </button>
+<div class="panel-head">
+<div>
+<h3>Recent Work Activity</h3>
+<p>Latest activity across your account</p>
+</div>
 
-            </div>
+<button class="link" data-target="applicationsPage">
+View All →
+</button>
+</div>
 
-            <div class="activity" id="activity"></div>
+<div class="activity" id="activity"></div>
 
-        </div>
+</div>
 
 
-        <div class="panel">
+<div class="panel">
 
-            <div class="panel-head">
+<div class="panel-head">
+<div>
+<h3>Recent Messages</h3>
+<p>Your latest project conversations</p>
+</div>
 
-                <div>
-                    <h3>Recent Messages</h3>
-                    <p>Your latest project conversations</p>
-                </div>
+<button class="link" data-target="messagesPage">
+View All →
+</button>
+</div>
 
-                <button class="link" data-target="messagesPage">
-                    View All →
-                </button>
+<div class="empty">
+Open Messages to see your project chats.
+</div>
 
-            </div>
+</div>
 
-            <div class="empty">
-                Open Messages to see project chats.
-            </div>
-
-        </div>
-
-    </div>
+</div>
 
 </section>
 
@@ -165,13 +155,13 @@
 
 <section class="page" id="jobsPage">
 
-    <div class="page-head">
-        <label>FIND WORK</label>
-        <h2>Available Projects</h2>
-        <p>Browse open projects from real clients.</p>
-    </div>
+<div class="page-head">
+<label>FIND WORK</label>
+<h2>Available Projects</h2>
+<p>Browse real projects posted by clients.</p>
+</div>
 
-    <div class="cards" id="jobs"></div>
+<div class="cards" id="jobs"></div>
 
 </section>
 
@@ -180,13 +170,13 @@
 
 <section class="page" id="applicationsPage">
 
-    <div class="page-head">
-        <label>APPLICATIONS</label>
-        <h2>Applications</h2>
-        <p>Track your project applications.</p>
-    </div>
+<div class="page-head">
+<label>APPLICATIONS</label>
+<h2>Applications</h2>
+<p>Track applications and project decisions.</p>
+</div>
 
-    <div class="cards" id="applications"></div>
+<div class="cards" id="applications"></div>
 
 </section>
 
@@ -195,13 +185,13 @@
 
 <section class="page" id="projectsPage">
 
-    <div class="page-head">
-        <label>MY PROJECTS</label>
-        <h2>My Projects</h2>
-        <p>Manage your current projects.</p>
-    </div>
+<div class="page-head">
+<label>MY PROJECTS</label>
+<h2>My Projects</h2>
+<p>Manage accepted and completed projects.</p>
+</div>
 
-    <div class="cards" id="projects"></div>
+<div class="cards" id="projects"></div>
 
 </section>
 
@@ -210,47 +200,41 @@
 
 <section class="page" id="messagesPage">
 
-    <div class="page-head">
-        <label>MESSAGES</label>
-        <h2>Project Inbox</h2>
-        <p>Chat with clients and freelancers.</p>
-    </div>
+<div class="page-head">
+<label>MESSAGES</label>
+<h2>Project Inbox</h2>
+<p>Chat with clients and freelancers.</p>
+</div>
 
-    <div class="messages-layout">
+<div class="messages-layout">
 
-        <div class="conversations" id="conversations"></div>
+<div class="conversations" id="conversations"></div>
 
-        <div class="chat">
+<div class="chat">
 
-            <div class="chat-head">
-                <strong id="chatTitle">Select a project</strong>
-                <span id="chatSubtitle">
-                    Choose a conversation to start.
-                </span>
-            </div>
+<div class="chat-head">
+<strong id="chatTitle">Select a project</strong>
+<span id="chatSubtitle">Choose a conversation to start.</span>
+</div>
 
-            <div class="messages" id="messages">
-                <div class="empty">
-                    Select a conversation.
-                </div>
-            </div>
+<div class="messages" id="messages">
+<div class="empty">Select a conversation.</div>
+</div>
 
-            <div class="composer" id="composer" style="display:none">
+<div class="composer" id="composer">
 
-                <textarea
-                    id="messageInput"
-                    placeholder="Write a message..."
-                ></textarea>
+<textarea id="messageInput"
+placeholder="Write a professional message..."></textarea>
 
-                <button class="primary" id="sendMessage">
-                    Send
-                </button>
+<button class="primary" id="sendMessage">
+Send
+</button>
 
-            </div>
+</div>
 
-        </div>
+</div>
 
-    </div>
+</div>
 
 </section>
 
@@ -259,68 +243,68 @@
 
 <section class="page" id="postPage">
 
-    <div class="page-head">
-        <label>PROJECT</label>
-        <h2>Post a Project</h2>
-        <p>Publish a real client project.</p>
-    </div>
+<div class="page-head">
+<label>PROJECT</label>
+<h2>Post a Project</h2>
+<p>Publish a project for clients or your own owner account.</p>
+</div>
 
-    <div class="form-box">
+<div class="form-box">
 
-        <form id="postForm">
+<form id="postForm">
 
-            <div class="form-grid">
+<div class="form-grid">
 
-                <label class="field">
-                    Project Title
-                    <input id="postTitle" required>
-                </label>
+<label class="field">
+Project Title
+<input id="postTitle" required>
+</label>
 
-                <label class="field">
-                    Category
+<label class="field">
+Category
+<select id="postCategory" required>
+<option value="">Select</option>
+<option>Web Development</option>
+<option>Graphic Design</option>
+<option>Data Entry</option>
+<option>Content Writing</option>
+<option>Digital Marketing</option>
+<option>Video Editing</option>
+<option>Virtual Assistant</option>
+<option>Other</option>
+</select>
+</label>
 
-                    <select id="postCategory" required>
-                        <option value="">Select</option>
-                        <option>Web Development</option>
-                        <option>Graphic Design</option>
-                        <option>Data Entry</option>
-                        <option>Content Writing</option>
-                        <option>Digital Marketing</option>
-                        <option>Video Editing</option>
-                    </select>
+<label class="field full">
+Description
+<textarea id="postDescription" required></textarea>
+</label>
 
-                </label>
+<label class="field">
+Budget (USD)
+<input id="postBudget" type="number" min="1" required>
+</label>
 
-                <label class="field full">
-                    Description
-                    <textarea id="postDescription" required></textarea>
-                </label>
+<label class="field">
+Deadline
+<input id="postDeadline" type="date" required>
+</label>
 
-                <label class="field">
-                    Budget (USD)
-                    <input id="postBudget" type="number" min="1" required>
-                </label>
+</div>
 
-                <label class="field">
-                    Deadline
-                    <input id="postDeadline" type="date" required>
-                </label>
+<div class="form-row">
 
-            </div>
+<button class="primary">
+🚀 Publish Project
+</button>
 
-            <div class="form-row">
+<span class="success" id="postMessage"></span>
 
-                <button class="primary" id="postBtn">
-                    🚀 Publish Project
-                </button>
+</div>
 
-                <span class="success" id="postMessage"></span>
+</form>
 
-            </div>
-
-        </form>
-
-    </div>
+</div>
 
 </section>
 
@@ -329,24 +313,136 @@
 
 <section class="page" id="profilePage">
 
-    <div class="page-head">
-        <label>ACCOUNT</label>
-        <h2>Profile</h2>
-        <p>Your professional profile.</p>
-    </div>
+<div class="page-head">
+<label>ACCOUNT</label>
+<h2>Profile</h2>
+<p>Your public professional profile.</p>
+</div>
 
-    <div class="profile-box">
+<div class="profile-box">
 
-        <img src="profile.png" class="profile-large" alt="Profile">
+<div id="profileAvatar" class="profile-avatar">👩🏻‍💻</div>
 
-        <div>
-            <h3 id="profileName">Member</h3>
-            <p id="profileRole">Professional Freelancer</p>
-            <p>✉ <span id="profileEmail"></span></p>
-            <p>🛠 <span id="profileSkills">No skills added yet.</span></p>
-        </div>
+<div class="profile-info">
 
-    </div>
+<h3 id="profileName">Member</h3>
+
+<p id="profileRole">Professional Freelancer</p>
+
+<p>✉ <span id="profileEmail"></span></p>
+
+<p>📍 <span id="profileLocation">Location not added</span></p>
+
+<p>💼 <span id="profileSkills">No skills added yet.</span></p>
+
+<p>📝 <span id="profileBio">No professional bio added yet.</span></p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- PORTFOLIO -->
+
+<section class="page" id="portfolioPage">
+
+<div class="page-head">
+<label>PROFESSIONAL</label>
+<h2>Portfolio</h2>
+<p>Show your work and professional experience.</p>
+</div>
+
+<div class="form-box">
+
+<form id="portfolioForm">
+
+<div class="form-grid">
+
+<label class="field">
+Project / Work Title
+<input id="portfolioTitle" required>
+</label>
+
+<label class="field">
+Category
+<input id="portfolioCategory" placeholder="Web Design, Logo, Data Entry...">
+</label>
+
+<label class="field full">
+Description
+<textarea id="portfolioDescription" required></textarea>
+</label>
+
+</div>
+
+<button class="primary">
+＋ Add Portfolio Work
+</button>
+
+</form>
+
+</div>
+
+<div class="cards" id="portfolioList"></div>
+
+</section>
+
+
+<!-- REVIEWS -->
+
+<section class="page" id="reviewsPage">
+
+<div class="page-head">
+<label>REPUTATION</label>
+<h2>Reviews</h2>
+<p>Real reviews from completed projects.</p>
+</div>
+
+<div class="cards" id="reviewsList"></div>
+
+</section>
+
+
+<!-- EARNINGS -->
+
+<section class="page" id="earningsPage">
+
+<div class="page-head">
+<label>FINANCE</label>
+<h2>Earnings</h2>
+<p>Track completed project earnings.</p>
+</div>
+
+<div class="cards" id="earningsList"></div>
+
+</section>
+
+
+<!-- TIME TRACKER -->
+
+<section class="page" id="trackerPage">
+
+<div class="page-head">
+<label>WORK</label>
+<h2>Time Tracker</h2>
+<p>Track your working time for projects.</p>
+</div>
+
+<div class="tracker-box">
+
+<div id="timerDisplay">00:00:00</div>
+
+<div class="actions">
+
+<button class="primary" id="timerStart">Start</button>
+<button class="secondary" id="timerStop">Stop</button>
+<button class="danger" id="timerReset">Reset</button>
+
+</div>
+
+</div>
 
 </section>
 
@@ -355,57 +451,139 @@
 
 <section class="page" id="settingsPage">
 
-    <div class="page-head">
-        <label>ACCOUNT</label>
-        <h2>Settings</h2>
-        <p>Update your account information.</p>
-    </div>
+<div class="page-head">
+<label>ACCOUNT</label>
+<h2>Settings</h2>
+<p>Manage your profile, security and preferences.</p>
+</div>
 
-    <div class="form-box">
+<div class="settings-grid">
 
-        <form id="settingsForm">
+<div class="form-box">
 
-            <div class="form-grid">
+<h3>Profile Information</h3>
 
-                <label class="field">
-                    Display Name
-                    <input id="settingsName" required>
-                </label>
+<form id="settingsForm">
 
-                <label class="field">
-                    Email
-                    <input id="settingsEmail" disabled>
-                </label>
+<div class="form-grid">
 
-                <label class="field full">
-                    Skills
-                    <input
-                        id="settingsSkills"
-                        placeholder="Web Development, HTML, CSS..."
-                    >
-                </label>
+<label class="field">
+Display Name
+<input id="settingsName" required>
+</label>
 
-            </div>
+<label class="field">
+Email
+<input id="settingsEmail" disabled>
+</label>
 
-            <div class="form-row">
+<label class="field">
+Gender / Avatar
+<select id="settingsGender">
+<option value="female">Female</option>
+<option value="male">Male</option>
+</select>
+</label>
 
-                <button class="primary">
-                    Save Changes
-                </button>
+<label class="field">
+Location
+<input id="settingsLocation" placeholder="Pakistan">
+</label>
 
-                <span class="success" id="settingsMessage"></span>
+<label class="field">
+Hourly Rate (USD)
+<input id="settingsRate" type="number" min="0">
+</label>
 
-            </div>
+<label class="field">
+Availability
+<select id="settingsAvailability">
+<option>Available</option>
+<option>Busy</option>
+<option>Not Available</option>
+</select>
+</label>
 
-        </form>
+<label class="field full">
+Skills
+<input id="settingsSkills" placeholder="Web Development, HTML, CSS, JavaScript...">
+</label>
 
-    </div>
+<label class="field full">
+Professional Bio
+<textarea id="settingsBio"></textarea>
+</label>
+
+</div>
+
+<button class="primary">
+Save Profile
+</button>
+
+<span class="success" id="settingsMessage"></span>
+
+</form>
+
+</div>
+
+
+<div class="form-box">
+
+<h3>Security</h3>
+
+<p class="muted">
+Your password is managed securely through Firebase Authentication.
+</p>
+
+<button class="secondary" id="resetPasswordBtn">
+🔐 Send Password Reset Email
+</button>
+
+<div class="security-status" id="securityStatus"></div>
+
+</div>
+
+
+<div class="form-box">
+
+<h3>Appearance</h3>
+
+<p class="muted">
+Choose how ELITE FREELANCE HUB looks for you.
+</p>
+
+<button class="secondary" id="settingsThemeBtn">
+◐ Toggle Light / Dark Mode
+</button>
+
+</div>
+
+
+<div class="form-box">
+
+<h3>Marketplace Policy</h3>
+
+<div class="policy-row">
+<span>Platform Fee</span>
+<strong>$10</strong>
+</div>
+
+<p class="muted">
+The platform fee is currently recorded as a marketplace policy.
+Online payment collection is not connected until a real payment provider is added.
+</p>
+
+</div>
+
+</div>
 
 </section>
+
 
 </main>
 </div>
 
+<div id="toast"></div>
 <div id="firebaseError" class="firebase-error"></div>
 
 <script type="module" src="script.js"></script>
