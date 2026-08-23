@@ -1,12 +1,11 @@
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import {
   getAuth,
   onAuthStateChanged,
-  signOut,
-  sendPasswordResetEmail
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signOut
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 import {
@@ -29,248 +28,262 @@ import {
 ========================================================= */
 
 const firebaseConfig = {
-
-  apiKey: "AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
-
-  authDomain: "elite-freelance-hub.firebaseapp.com",
-
-  projectId: "elite-freelance-hub",
-
-  storageBucket: "elite-freelance-hub.firebasestorage.app",
-
-  messagingSenderId: "777611553956",
-
-  appId: "1:777611553956:web:730b7df36570ff803a8a31"
-
+  apiKey:"AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
+  authDomain:"elite-freelance-hub.firebaseapp.com",
+  projectId:"elite-freelance-hub",
+  storageBucket:"elite-freelance-hub.firebasestorage.app",
+  messagingSenderId:"777611553956",
+  appId:"1:777611553956:web:730b7df36570ff803a8a31",
+  measurementId:"G-PC7G6G6BRD"
 };
-
-const app = initializeApp(firebaseConfig);
-
-const auth = getAuth(app);
-
-const db = getFirestore(app);
 
 
 /* =========================================================
    OWNER
+   IMPORTANT: REPLACE ONLY THIS VALUE
 ========================================================= */
 
-const OWNER_EMAIL =
-  "ayesharehman123456987@gmail.com";
+const OWNER_EMAIL = "YOUR_OWNER_EMAIL";
+
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 
 /* =========================================================
-   GLOBAL STATE
+   GLOBALS
 ========================================================= */
 
+const $ = id => document.getElementById(id);
+
+const pageName =
+  location.pathname.split("/").pop() || "index.html";
+
+const isLogin =
+  pageName === "login.html" ||
+  location.pathname.endsWith("/login.html");
+
+const isClientPage =
+  pageName === "client-dashboard.html";
+
+const isPostPage =
+  pageName === "post-job.html";
+
+const isFreelancerPage =
+  !isLogin &&
+  !isClientPage &&
+  !isPostPage;
+
 let currentUser = null;
-
 let userData = {};
-
 let currentConversation = null;
-
-let timerSeconds = 0;
-
-let timerInterval = null;
 
 
 /* =========================================================
    HELPERS
 ========================================================= */
 
-const $ = id => document.getElementById(id);
+function esc(v){
+  return String(v ?? "").replace(
+    /[&<>"']/g,
+    c => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#039;"
+    }[c])
+  );
+}
 
 
-const role = () => {
+function fmtDate(v){
+  if(!v) return "";
+
+  try{
+    const d =
+      v?.toDate
+        ? v.toDate()
+        : new Date(v);
+
+    return d.toLocaleDateString(
+      undefined,
+      {
+        day:"numeric",
+        month:"short",
+        year:"numeric"
+      }
+    );
+  }catch{
+    return "";
+  }
+}
+
+
+function showError(e){
+  console.error(e);
+
+  const box = $("firebaseError");
+
+  if(box){
+    box.style.display = "block";
+    box.textContent =
+      "Firebase Error: " +
+      (e?.message || e);
+  }
+}
+
+
+function showToast(message){
+  const t = $("toast");
+
+  if(!t) return;
+
+  t.textContent = message;
+  t.classList.add("show");
+
+  setTimeout(
+    () => t.classList.remove("show"),
+    2600
+  );
+}
+
+
+function friendly(e){
+
+  const c = e?.code || "";
+
+  const m = {
+    "auth/invalid-credential":
+      "Email or password is incorrect.",
+
+    "auth/user-not-found":
+      "No account was found with this email.",
+
+    "auth/wrong-password":
+      "Email or password is incorrect.",
+
+    "auth/email-already-in-use":
+      "This email already has an account.",
+
+    "auth/weak-password":
+      "Password must be at least 6 characters.",
+
+    "auth/invalid-email":
+      "Please enter a valid email.",
+
+    "auth/too-many-requests":
+      "Too many attempts. Please try again later.",
+
+    "auth/network-request-failed":
+      "Network error. Check your internet connection."
+  };
+
+  return m[c] ||
+    e?.message ||
+    "Something went wrong.";
+}
+
+
+function setMsg(id,text,ok=false){
+
+  const el = $(id);
+
+  if(el){
+    el.textContent = text;
+    el.style.color =
+      ok ? "#43d883" : "#ff7185";
+  }
+}
+
+
+/* =========================================================
+   THEME
+========================================================= */
+
+function themeInit(){
+
+  const saved =
+    localStorage.getItem("efh_theme") ||
+    "dark";
+
+  document.body.classList.toggle(
+    "light",
+    saved === "light"
+  );
+
+  $("themeToggle")?.addEventListener(
+    "click",
+    () => {
+
+      const light =
+        !document.body.classList.contains("light");
+
+      document.body.classList.toggle(
+        "light",
+        light
+      );
+
+      localStorage.setItem(
+        "efh_theme",
+        light ? "light" : "dark"
+      );
+    }
+  );
+}
+
+themeInit();
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logout(){
+
+  try{
+    await signOut(auth);
+    location.href = "login.html";
+  }catch(e){
+    showError(e);
+  }
+}
+
+$("logoutBtn")?.addEventListener(
+  "click",
+  logout
+);
+
+$("topLogout")?.addEventListener(
+  "click",
+  logout
+);
+
+$("settingsLogout")?.addEventListener(
+  "click",
+  logout
+);
+
+
+/* =========================================================
+   ROLE
+========================================================= */
+
+function role(){
 
   return document.body.dataset.role === "client"
     ? "client"
     : "freelancer";
+}
 
-};
 
-
-const isOwner = () => {
+function isOwner(){
 
   return (
     currentUser?.email?.toLowerCase() ===
     OWNER_EMAIL.toLowerCase()
   );
-
-};
-
-
-const userName = () => {
-
-  return (
-    userData.name ||
-    currentUser?.displayName ||
-    currentUser?.email?.split("@")[0] ||
-    "Member"
-  );
-
-};
-
-
-const userEmail = () => {
-
-  return (
-    userData.email ||
-    currentUser?.email ||
-    ""
-  );
-
-};
-
-
-const esc = value => {
-
-  return String(value ?? "")
-    .replace(/[&<>"']/g, char => ({
-
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;"
-
-    }[char]));
-
-};
-
-
-const dateText = value => {
-
-  if (!value) return "";
-
-  try {
-
-    const d = value.toDate
-      ? value.toDate()
-      : new Date(value);
-
-    return d.toLocaleDateString(
-      undefined,
-      {
-        day: "numeric",
-        month: "short",
-        year: "numeric"
-      }
-    );
-
-  } catch {
-
-    return "";
-
-  }
-
-};
-
-
-const pill = status => {
-
-  const s = status || "pending";
-
-  return `
-    <span class="pill ${esc(s)}">
-      ${esc(s.replaceAll("_", " "))}
-    </span>
-  `;
-
-};
-
-
-function showToast(message) {
-
-  const toast = $("toast");
-
-  if (!toast) return;
-
-  toast.textContent = message;
-
-  toast.classList.add("show");
-
-  setTimeout(
-    () => toast.classList.remove("show"),
-    2600
-  );
-
-}
-
-
-function showError(error) {
-
-  console.error(error);
-
-  const box = $("firebaseError");
-
-  if (box) {
-
-    box.style.display = "block";
-
-    box.textContent =
-      "Firebase Error: " +
-      (error?.message || error);
-
-  }
-
-  showToast("Something went wrong.");
-
-}
-
-
-function text(id, value) {
-
-  if ($(id)) {
-
-    $(id).textContent = value ?? "";
-
-  }
-
-}
-
-
-/* =========================================================
-   AVATAR
-========================================================= */
-
-function avatarEmoji(gender) {
-
-  return gender === "male"
-    ? "👨🏻‍💻"
-    : "👩🏻‍💻";
-
-}
-
-
-function clientAvatarEmoji(gender) {
-
-  return gender === "male"
-    ? "👨🏻‍💼"
-    : "👩🏻‍💼";
-
-}
-
-
-function setAvatar() {
-
-  const emoji =
-    role() === "client"
-      ? clientAvatarEmoji(userData.gender)
-      : avatarEmoji(userData.gender);
-
-  if ($("sideAvatar"))
-    $("sideAvatar").textContent = emoji;
-
-  if ($("topAvatar"))
-    $("topAvatar").textContent = emoji;
-
-  if ($("profileAvatar"))
-    $("profileAvatar").textContent = emoji;
-
-  if ($("heroPerson"))
-    $("heroPerson").textContent = emoji;
-
 }
 
 
@@ -278,264 +291,272 @@ function setAvatar() {
    NAVIGATION
 ========================================================= */
 
-const navGroups = () => {
-
-  if (role() === "client") {
-
-    return [
-
-      [
-        "MAIN",
-        [
-          ["dashboardPage", "⌂", "Dashboard"],
-          ["projectsPage", "▣", "My Projects"],
-          ["applicationsPage", "✉", "Applications"],
-          ["messagesPage", "◌", "Messages"]
-        ]
-      ],
-
-      [
-        "MANAGE",
-        [
-          ["postPage", "＋", "Post a Project"],
-          ["jobsPage", "♙", "Find Freelancers"],
-          ["projectsPage", "▤", "Contracts"]
-        ]
-      ],
-
-      [
-        "ACCOUNT",
-        [
-          ["profilePage", "♙", "Profile"],
-          ["portfolioPage", "▦", "Portfolio"],
-          ["reviewsPage", "★", "Reviews"],
-          ["settingsPage", "⚙", "Settings"]
-        ]
-      ],
-
-      [
-        "FINANCE",
-        [
-          ["earningsPage", "$", "Payments"],
-          ["trackerPage", "◷", "Time Tracker"]
-        ]
-      ]
-
-    ];
-
-  }
-
-
-  return [
-
-    [
-      "MAIN",
-      [
-        ["dashboardPage", "⌂", "Dashboard"],
-        ["jobsPage", "⌕", "Find Work"],
-        ["applicationsPage", "✉", "Applications"],
-        ["projectsPage", "▣", "My Projects"],
-        ["messagesPage", "◌", "Messages"]
-      ]
-    ],
-
-    [
-      "MANAGE",
-      [
-        ["jobsPage", "🔖", "Saved Jobs"],
-        ["applicationsPage", "✎", "Proposals"],
-        ["projectsPage", "▤", "Contracts"],
-        ["earningsPage", "$", "Earnings"],
-        ["trackerPage", "◷", "Time Tracker"]
-      ]
-    ],
-
-    [
-      "ACCOUNT",
-      [
-        ["profilePage", "♙", "Profile"],
-        ["portfolioPage", "▦", "Portfolio"],
-        ["reviewsPage", "★", "Reviews"],
-        ["settingsPage", "⚙", "Settings"]
-      ]
-    ]
-
-  ];
-
-};
-
-
-function buildNav() {
+function buildNav(){
 
   const nav = $("navArea");
 
-  if (!nav) return;
+  if(!nav) return;
+
+  const client =
+    role() === "client";
+
+  const groups = client
+    ? [
+        [
+          "MAIN",
+          [
+            ["dashboardPage","⌂","Dashboard"],
+            ["projectsPage","▣","My Projects"],
+            ["applicationsPage","✉","Applications"],
+            ["messagesPage","◌","Messages"]
+          ]
+        ],
+
+        [
+          "MANAGE",
+          [
+            ["postPage","＋","Post a Project"],
+            ["freelancersPage","♙","Find Freelancers"]
+          ]
+        ],
+
+        [
+          "ACCOUNT",
+          [
+            ["profilePage","♙","Profile"],
+            ["settingsPage","⚙","Settings"]
+          ]
+        ]
+      ]
+
+    : [
+        [
+          "MAIN",
+          [
+            ["dashboardPage","⌂","Dashboard"],
+            ["jobsPage","✓","Find Work"],
+            ["applicationsPage","✉","My Applications"],
+            ["projectsPage","▣","My Projects"],
+            ["messagesPage","◌","Messages"]
+          ]
+        ],
+
+        [
+          "ACCOUNT",
+          [
+            ["profilePage","♙","Profile"],
+            ["settingsPage","⚙","Settings"]
+          ]
+        ]
+      ];
+
+
+  if(isOwner() && !client){
+
+    groups[1][1].push(
+      ["ownerPage","♛","Owner Panel"]
+    );
+  }
+
 
   nav.innerHTML =
-    navGroups()
-      .map(([group, items]) => {
+    groups.map(
+      ([title,items]) => `
 
-        return `
+        <div class="section-title">
+          ${title}
+        </div>
 
-          <div class="section-title">
-            ${group}
-          </div>
-
-          ${items.map(([id, icon, label]) => `
+        ${items.map(
+          ([id,icon,label]) => `
 
             <button
               class="nav"
+              type="button"
               data-target="${id}"
-              data-title="${esc(label)}">
-
+            >
               ${icon}&nbsp; ${label}
-
             </button>
 
-          `).join("")}
+          `
+        ).join("")}
 
-        `;
-
-      })
-      .join("");
-
-
-  nav.querySelectorAll(".nav")
-    .forEach(button => {
-
-      button.onclick = () => {
-
-        go(
-          button.dataset.target,
-          button.dataset.title
-        );
-
-      };
-
-    });
+      `
+    ).join("");
 
 
-  nav.querySelectorAll(".nav")
-    .forEach(button => {
-
-      if (
-        button.dataset.target === "dashboardPage"
-      ) {
-
-        button.classList.add("active");
-
-      }
-
-    });
-
-
-  if ($("switchMode")) {
-
-    $("switchMode").textContent =
-      role() === "client"
-        ? "⇄ Switch to Freelancer Mode"
-        : "⇄ Switch to Client Mode";
+  nav
+    .querySelectorAll(".nav")
+    .forEach(
+      b =>
+        b.addEventListener(
+          "click",
+          () =>
+            go(
+              b.dataset.target,
+              b.textContent
+            )
+        )
+    );
 
 
-    $("switchMode").onclick = () => {
-
-      if (!isOwner()) {
-
-        showToast(
-          "Only the owner can switch between modes."
-        );
-
-        return;
-
-      }
-
-
-      location.href =
-        role() === "client"
-          ? "index.html"
-          : "client-dashboard.html";
-
-    };
-
-  }
-
+  updateActiveNav();
 }
 
 
-function go(id, title) {
+function updateActiveNav(){
 
-  document.querySelectorAll(".page")
-    .forEach(page => {
+  const active =
+    document.querySelector(
+      ".page.active"
+    )?.id;
 
-      page.classList.remove("active");
-
-    });
-
-
-  $(id)?.classList.add("active");
-
-
-  document.querySelectorAll(".nav")
-    .forEach(nav => {
-
-      nav.classList.toggle(
-        "active",
-        nav.dataset.target === id
-      );
-
-    });
+  document
+    .querySelectorAll(".nav")
+    .forEach(
+      n =>
+        n.classList.toggle(
+          "active",
+          n.dataset.target === active
+        )
+    );
+}
 
 
-  text(
-    "pageTitle",
-    title || "Dashboard"
-  );
+async function go(id,title){
+
+  document
+    .querySelectorAll(".page")
+    .forEach(
+      p =>
+        p.classList.toggle(
+          "active",
+          p.id === id
+        )
+    );
 
 
-  if (id === "dashboardPage")
-    loadDashboard();
+  if($("pageTitle")){
 
-  if (id === "jobsPage")
-    loadJobs();
+    $("pageTitle").textContent =
+      String(
+        title || "Dashboard"
+      )
+      .replace(/^[^A-Za-z]+/,"")
+      .trim();
+  }
 
-  if (id === "applicationsPage")
-    loadApplications();
 
-  if (id === "projectsPage")
-    loadProjects();
+  updateActiveNav();
 
-  if (id === "messagesPage")
-    loadConversations();
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
 
-  if (id === "portfolioPage")
-    loadPortfolio();
 
-  if (id === "reviewsPage")
-    loadReviews();
+  if(id === "jobsPage")
+    await loadJobs();
 
-  if (id === "earningsPage")
-    loadEarnings();
+  if(id === "applicationsPage")
+    await loadApplications();
 
+  if(id === "projectsPage")
+    await loadProjects();
+
+  if(id === "messagesPage")
+    await loadConversations();
+
+  if(id === "ownerPage")
+    await loadOwnerStats();
 }
 
 
 document.addEventListener(
   "click",
-  event => {
+  e => {
 
-    const target =
-      event.target.closest("[data-target]");
+    const b =
+      e.target.closest("[data-target]");
 
-    if (target) {
-
+    if(
+      b &&
+      !b.classList.contains("nav")
+    ){
       go(
-        target.dataset.target,
-        target.dataset.title ||
-        target.textContent.trim()
+        b.dataset.target,
+        b.textContent
       );
-
     }
+  }
+);
 
+
+/* =========================================================
+   TOP BUTTONS
+========================================================= */
+
+$("brandHome")?.addEventListener(
+  "click",
+  () =>
+    go(
+      "dashboardPage",
+      "Dashboard"
+    )
+);
+
+
+$("topProfileBtn")?.addEventListener(
+  "click",
+  () =>
+    go(
+      "profilePage",
+      "Profile"
+    )
+);
+
+
+$("helpBtn")?.addEventListener(
+  "click",
+  () =>
+    alert(
+      "ELITE FREELANCE HUB Support\n\n" +
+      "For account, project or payment issues, " +
+      "contact the platform owner."
+    )
+);
+
+
+$("notificationBtn")?.addEventListener(
+  "click",
+  () =>
+    showToast(
+      "No new notifications."
+    )
+);
+
+
+$("switchMode")?.addEventListener(
+  "click",
+  () => {
+
+    if(!isOwner()) return;
+
+    location.href =
+      isClientPage
+        ? "index.html"
+        : "client-dashboard.html";
+  }
+);
+
+
+$("ownerClientMode")?.addEventListener(
+  "click",
+  () => {
+
+    if(isOwner())
+      location.href =
+        "client-dashboard.html";
   }
 );
 
@@ -544,588 +565,755 @@ document.addEventListener(
    IDENTITY
 ========================================================= */
 
-function applyIdentity() {
+async function loadIdentity(){
 
-  const client = role() === "client";
+  const snap =
+    await getDoc(
+      doc(
+        db,
+        "users",
+        currentUser.uid
+      )
+    );
 
 
-  text(
-    "sideName",
-    userName()
+  if(!snap.exists()){
+
+    if(!isOwner())
+      throw new Error(
+        "Account profile was not found."
+      );
+
+
+    userData = {
+      name:"Ayesha Rehman",
+      email:currentUser.email,
+      role:"freelancer",
+      owner:true,
+      skills:
+        "Web Development, HTML, CSS, JavaScript"
+    };
+
+
+    await setDoc(
+      doc(
+        db,
+        "users",
+        currentUser.uid
+      ),
+      {
+        ...userData,
+        createdAt:serverTimestamp()
+      }
+    );
+
+  }else{
+
+    userData =
+      snap.data() || {};
+  }
+
+
+  if(
+    isOwner() &&
+    userData.role !== "freelancer"
+  ){
+
+    userData.role =
+      "freelancer";
+
+    await updateDoc(
+      doc(
+        db,
+        "users",
+        currentUser.uid
+      ),
+      {
+        role:"freelancer",
+        owner:true
+      }
+    );
+  }
+
+
+  const owner =
+    isOwner();
+
+
+  document.body.classList.toggle(
+    "is-owner",
+    owner
   );
 
-  text(
-    "topName",
-    userName()
-  );
 
-  text(
-    "profileName",
-    userName()
-  );
-
-
-  text(
-    "profileRole",
-    client
-      ? "Professional Client"
-      : "Professional Freelancer"
-  );
+  document
+    .querySelectorAll("[id=sideName]")
+    .forEach(
+      x =>
+        x.textContent =
+          userData.name ||
+          currentUser.email.split("@")[0]
+    );
 
 
-  text(
-    "profileEmail",
-    userEmail()
-  );
+  document
+    .querySelectorAll("[id=sideRole]")
+    .forEach(
+      x =>
+        x.textContent =
+          owner
+            ? "Owner • Freelancer"
+            : (
+                role() === "client"
+                  ? "Professional Client"
+                  : "Professional Freelancer"
+              )
+    );
 
 
-  text(
-    "profileLocation",
-    userData.location ||
-    "Location not added"
-  );
-
-
-  text(
-    "profileSkills",
-    userData.skills ||
-    "No skills added yet."
+  $("topName")?.replaceChildren(
+    document.createTextNode(
+      userData.name || "Member"
+    )
   );
 
 
-  text(
-    "profileBio",
-    userData.bio ||
-    "No professional bio added yet."
+  $("profileName")?.replaceChildren(
+    document.createTextNode(
+      userData.name || "Member"
+    )
   );
 
 
-  text(
-    "sideRole",
-    client
-      ? "Professional Client"
-      : "Professional Freelancer"
-  );
+  if($("profileRole"))
+    $("profileRole").textContent =
+      owner
+        ? "Owner + Professional Freelancer"
+        : (
+            role() === "client"
+              ? "Professional Client"
+              : "Professional Freelancer"
+          );
 
 
-  if ($("settingsName"))
-    $("settingsName").value =
-      userName();
+  if($("profileEmail"))
+    $("profileEmail").textContent =
+      currentUser.email || "";
 
 
-  if ($("settingsEmail"))
-    $("settingsEmail").value =
-      userEmail();
-
-
-  if ($("settingsGender"))
-    $("settingsGender").value =
-      userData.gender || "female";
-
-
-  if ($("settingsLocation"))
-    $("settingsLocation").value =
-      userData.location || "";
-
-
-  if ($("settingsRate"))
-    $("settingsRate").value =
-      userData.hourlyRate || 0;
-
-
-  if ($("settingsAvailability"))
-    $("settingsAvailability").value =
-      userData.availability ||
-      "Available";
-
-
-  if ($("settingsSkills"))
-    $("settingsSkills").value =
+  if($("profileSkills"))
+    $("profileSkills").textContent =
       userData.skills || "";
 
 
-  if ($("settingsBio"))
-    $("settingsBio").value =
-      userData.bio || "";
+  if($("settingsName"))
+    $("settingsName").value =
+      userData.name || "";
 
 
-  setAvatar();
+  if($("settingsEmail"))
+    $("settingsEmail").value =
+      currentUser.email || "";
 
-  buildNav();
 
+  if($("settingsSkills"))
+    $("settingsSkills").value =
+      userData.skills || "";
 }
 
 
 /* =========================================================
-   STATS
+   AUTH GUARD
 ========================================================= */
 
-function stat(icon, value, label) {
+async function authGuard(){
 
-  return `
+  onAuthStateChanged(
+    auth,
+    async user => {
 
-    <div class="stat">
+      if(!user){
 
-      <span class="icon">
-        ${icon}
-      </span>
+        location.href =
+          "login.html";
 
-      <h3>
-        ${esc(value)}
-      </h3>
-
-      <p>
-        ${esc(label)}
-      </p>
-
-    </div>
-
-  `;
-
-}
-
-
-/* =========================================================
-   DASHBOARD
-========================================================= */
-
-async function loadDashboard() {
-
-  try {
-
-    if (!currentUser) return;
-
-
-    if (role() === "client") {
-
-      const jobsSnap =
-        await getDocs(
-          query(
-            collection(db, "jobs"),
-            where(
-              "clientId",
-              "==",
-              currentUser.uid
-            )
-          )
-        );
-
-
-      const appsSnap =
-        await getDocs(
-          query(
-            collection(db, "applications"),
-            where(
-              "clientId",
-              "==",
-              currentUser.uid
-            )
-          )
-        );
-
-
-      const accepted =
-        appsSnap.docs.filter(
-          d =>
-            d.data().status === "accepted"
-        ).length;
-
-
-      if ($("stats")) {
-
-        $("stats").innerHTML = [
-
-          stat(
-            "▣",
-            jobsSnap.size,
-            "My Projects"
-          ),
-
-          stat(
-            "♟",
-            appsSnap.size,
-            "Applications"
-          ),
-
-          stat(
-            "✓",
-            accepted,
-            "Accepted"
-          ),
-
-          stat(
-            "★",
-            "—",
-            "Rating"
-          )
-
-        ].join("");
-
+        return;
       }
 
 
-      if ($("activity")) {
+      currentUser = user;
 
-        if (jobsSnap.empty) {
 
-          $("activity").innerHTML = `
+      try{
 
-            <div class="empty">
-              No activity yet.<br>
-              Post your first project.
-            </div>
+        const owner =
+          user.email?.toLowerCase() ===
+          OWNER_EMAIL.toLowerCase();
 
-          `;
 
-        } else {
+        const snap =
+          await getDoc(
+            doc(
+              db,
+              "users",
+              user.uid
+            )
+          );
 
-          $("activity").innerHTML =
-            jobsSnap.docs
-              .slice(-5)
-              .reverse()
-              .map(d => {
 
-                const x = d.data();
+        if(
+          !snap.exists() &&
+          !owner
+        ){
 
-                return `
-
-                  <div class="activity-row">
-
-                    <div class="activity-icon">
-                      ▣
-                    </div>
-
-                    <div>
-
-                      <strong>
-                        ${esc(
-                          x.title ||
-                          "Project"
-                        )}
-                      </strong>
-
-                      <span>
-                        ${pill(x.status)}
-                        ·
-                        ${dateText(
-                          x.createdAt
-                        )}
-                      </span>
-
-                    </div>
-
-                  </div>
-
-                `;
-
-              })
-              .join("");
-
+          throw new Error(
+            "Account profile is missing."
+          );
         }
 
+
+        const data =
+          snap.exists()
+            ? snap.data()
+            : {};
+
+
+        if(
+          !owner &&
+          data.role !== role()
+        ){
+
+          location.href =
+            data.role === "client"
+              ? "client-dashboard.html"
+              : "index.html";
+
+          return;
+        }
+
+
+        await loadIdentity();
+
+        buildNav();
+
+
+        if(isPostPage)
+          await initPostPage();
+
+        else if(isClientPage)
+          await initClient();
+
+        else if(isFreelancerPage)
+          await initFreelancer();
+
+      }catch(e){
+
+        showError(e);
+      }
+    }
+  );
+}
+
+
+/* =========================================================
+   LOGIN / SIGNUP
+========================================================= */
+
+function initAuth(){
+
+  const loginForm =
+    $("loginForm");
+
+  const signupForm =
+    $("signupForm");
+
+
+  if(!loginForm || !signupForm)
+    return;
+
+
+  $("loginTab").onclick =
+    () => {
+
+      loginForm.classList.remove(
+        "hidden"
+      );
+
+      signupForm.classList.add(
+        "hidden"
+      );
+
+      $("loginTab").classList.add(
+        "active"
+      );
+
+      $("signupTab").classList.remove(
+        "active"
+      );
+    };
+
+
+  $("signupTab").onclick =
+    () => {
+
+      loginForm.classList.add(
+        "hidden"
+      );
+
+      signupForm.classList.remove(
+        "hidden"
+      );
+
+      $("loginTab").classList.remove(
+        "active"
+      );
+
+      $("signupTab").classList.add(
+        "active"
+      );
+    };
+
+
+  loginForm.addEventListener(
+    "submit",
+    async e => {
+
+      e.preventDefault();
+
+      setMsg(
+        "loginMsg",
+        ""
+      );
+
+
+      try{
+
+        await signInWithEmailAndPassword(
+          auth,
+          $("loginEmail")
+            .value
+            .trim()
+            .toLowerCase(),
+          $("loginPassword").value
+        );
+
+
+        const email =
+          $("loginEmail")
+            .value
+            .trim()
+            .toLowerCase();
+
+
+        location.href =
+          email === OWNER_EMAIL
+            ? "index.html"
+            : "index.html";
+
+      }catch(err){
+
+        setMsg(
+          "loginMsg",
+          friendly(err)
+        );
+      }
+    }
+  );
+
+
+  $("forgotBtn").onclick =
+    async () => {
+
+      const email =
+        $("loginEmail")
+          .value
+          .trim()
+          .toLowerCase();
+
+
+      if(!email){
+
+        setMsg(
+          "loginMsg",
+          "Enter your email first."
+        );
+
+        return;
       }
 
 
-    } else {
+      try{
+
+        await sendPasswordResetEmail(
+          auth,
+          email
+        );
+
+        setMsg(
+          "loginMsg",
+          "Password reset email sent.",
+          true
+        );
+
+      }catch(e){
+
+        setMsg(
+          "loginMsg",
+          friendly(e)
+        );
+      }
+    };
 
 
-      const jobsSnap =
-        await getDocs(
+  signupForm.addEventListener(
+    "submit",
+    async e => {
+
+      e.preventDefault();
+
+      setMsg(
+        "signupMsg",
+        ""
+      );
+
+
+      const name =
+        $("signupName")
+          .value
+          .trim();
+
+      const email =
+        $("signupEmail")
+          .value
+          .trim()
+          .toLowerCase();
+
+      const password =
+        $("signupPassword")
+          .value;
+
+      const selectedRole =
+        $("signupRole").value;
+
+
+      try{
+
+        const cred =
+          await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+
+
+        const owner =
+          email === OWNER_EMAIL;
+
+
+        await setDoc(
+          doc(
+            db,
+            "users",
+            cred.user.uid
+          ),
+          {
+            name:
+              name || "User",
+
+            email,
+
+            role:
+              owner
+                ? "freelancer"
+                : selectedRole,
+
+            owner,
+
+            skills:"",
+
+            createdAt:
+              serverTimestamp()
+          }
+        );
+
+
+        setMsg(
+          "signupMsg",
+          owner
+            ? "Owner + Freelancer account created."
+            : "Account created successfully.",
+          true
+        );
+
+
+        setTimeout(
+          () =>
+            location.href =
+              owner
+                ? "index.html"
+                : selectedRole === "client"
+                  ? "client-dashboard.html"
+                  : "index.html",
+          500
+        );
+
+      }catch(err){
+
+        setMsg(
+          "signupMsg",
+          friendly(err)
+        );
+      }
+    }
+  );
+}
+
+
+/* =========================================================
+   FREELANCER
+========================================================= */
+
+async function initFreelancer(){
+
+  if($("pageTitle"))
+    $("pageTitle").textContent =
+      "Dashboard";
+
+
+  await loadFreelancerDashboard();
+  await loadJobs();
+  await loadApplications();
+  await loadProjects();
+
+  renderTimerless();
+}
+
+
+async function loadFreelancerDashboard(){
+
+  const stats =
+    $("freelancerStats");
+
+  const rec =
+    $("recommendedJobs");
+
+  const apps =
+    $("recentApplications");
+
+
+  if(!stats) return;
+
+
+  try{
+
+    const [
+      jobsSnap,
+      appSnap,
+      projSnap
+    ] =
+      await Promise.all([
+
+        getDocs(
           query(
-            collection(db, "jobs"),
+            collection(db,"jobs"),
             where(
               "status",
               "==",
               "open"
             )
           )
-        );
+        ),
 
-
-      const appsSnap =
-        await getDocs(
+        getDocs(
           query(
-            collection(db, "applications"),
+            collection(db,"applications"),
             where(
               "freelancerId",
               "==",
               currentUser.uid
             )
           )
-        );
+        ),
 
-
-      const projectsSnap =
-        await getDocs(
+        getDocs(
           query(
-            collection(db, "jobs"),
+            collection(db,"projects"),
             where(
               "freelancerId",
               "==",
               currentUser.uid
             )
           )
-        );
+        )
+      ]);
 
 
-      const rating =
-        await getRating(
-          currentUser.uid
-        );
+    const accepted =
+      appSnap.docs.filter(
+        d =>
+          d.data().status ===
+          "accepted"
+      ).length;
 
 
-      if ($("stats")) {
+    stats.innerHTML =
+      [
+        [
+          "💰",
+          accepted
+            ? "Active Earnings"
+            : "Earnings",
+          "$" +
+            (
+              projSnap.docs.reduce(
+                (s,d) =>
+                  s +
+                  Number(
+                    d.data().budget || 0
+                  ),
+                0
+              )
+            ).toLocaleString(),
+          "From accepted projects"
+        ],
 
-        $("stats").innerHTML = [
+        [
+          "📁",
+          "Active Projects",
+          String(projSnap.size),
+          "Accepted work"
+        ],
 
-          stat(
-            "▣",
-            jobsSnap.size,
-            "Available Jobs"
-          ),
+        [
+          "✉",
+          "Applications",
+          String(appSnap.size),
+          "Sent to clients"
+        ],
 
-          stat(
-            "◈",
-            projectsSnap.size,
-            "Active Projects"
-          ),
+        [
+          "★",
+          "Profile Rating",
+          "—",
+          "Reviews will appear here"
+        ]
 
-          stat(
-            "➤",
-            appsSnap.size,
-            "Applications Sent"
-          ),
-
-          stat(
-            "★",
-            rating.count
-              ? rating.average.toFixed(1)
-              : "—",
-            "Profile Rating"
-          )
-
-        ].join("");
-
-      }
+      ]
+      .map(
+        x =>
+          `<div class="stat">
+            <div class="icon">${x[0]}</div>
+            <h3>${x[2]}</h3>
+            <p>${x[1]}</p>
+            <em>${x[3]}</em>
+          </div>`
+      )
+      .join("");
 
 
-      if ($("activity")) {
+    rec.innerHTML =
+      jobsSnap.docs
+        .slice(0,4)
+        .map(
+          d => {
 
-        if (appsSnap.empty) {
+            const j =
+              d.data();
 
-          $("activity").innerHTML = `
+            return `
+              <div class="activity-row">
+                <div class="activity-icon">
+                  💼
+                </div>
 
-            <div class="empty">
-              No applications yet.<br>
-              Start applying to projects.
-            </div>
+                <div>
+                  <strong>
+                    ${esc(j.title || "Project")}
+                  </strong>
 
-          `;
+                  <span>
+                    $${Number(j.budget || 0)}
+                    •
+                    ${esc(j.category || "General")}
+                    •
+                    ${esc(j.deadline || "No deadline")}
+                  </span>
+                </div>
+              </div>
+            `;
+          }
+        )
+        .join("")
+        ||
+        `<div class="empty">
+          No open projects yet.
+        </div>`;
 
-        } else {
 
-          $("activity").innerHTML =
-            appsSnap.docs
-              .slice(-5)
-              .reverse()
-              .map(d => {
+    apps.innerHTML =
+      appSnap.docs
+        .slice(0,4)
+        .map(
+          d => {
 
-                const x = d.data();
+            const a =
+              d.data();
 
-                return `
+            return `
+              <div class="activity-row">
+                <div class="activity-icon">
+                  ✉
+                </div>
 
-                  <div class="activity-row">
+                <div>
+                  <strong>
+                    ${esc(a.jobTitle || "Application")}
+                  </strong>
 
-                    <div class="activity-icon">
-                      ➤
-                    </div>
+                  <span>
+                    ${esc(a.status || "pending")}
+                    •
+                    ${fmtDate(a.createdAt)}
+                  </span>
+                </div>
+              </div>
+            `;
+          }
+        )
+        .join("")
+        ||
+        `<div class="empty">
+          No applications yet.
+        </div>`;
 
-                    <div>
+  }catch(e){
 
-                      <strong>
-                        Application for
-                        “${esc(
-                          x.jobTitle ||
-                          "Project"
-                        )}”
-                      </strong>
-
-                      <span>
-                        ${pill(x.status)}
-                        ·
-                        ${dateText(
-                          x.createdAt
-                        )}
-                      </span>
-
-                    </div>
-
-                  </div>
-
-                `;
-
-              })
-              .join("");
-
-        }
-
-      }
-
-    }
-
-  } catch (error) {
-
-    showError(error);
-
+    showError(e);
   }
-
 }
 
 
 /* =========================================================
-   JOBS / FIND WORK
+   FIND WORK
 ========================================================= */
 
-async function loadJobs() {
+async function loadJobs(){
 
-  const box = $("jobs");
+  const list =
+    $("jobsList");
 
-  if (!box) return;
+  if(!list) return;
 
-  box.innerHTML =
-    `<div class="loading">
-      Loading live projects...
-    </div>`;
-
-
-  try {
+  list.innerHTML =
+    '<div class="loading">Loading projects...</div>';
 
 
-    /* CLIENT:
-       SHOW FREELANCER APPLICATIONS
-    */
+  try{
 
-    if (role() === "client") {
-
-      const apps =
-        await getDocs(
-          query(
-            collection(db, "applications"),
-            where(
-              "clientId",
-              "==",
-              currentUser.uid
-            )
-          )
-        );
-
-
-      if (apps.empty) {
-
-        box.innerHTML = `
-
-          <div class="empty">
-            No freelancers have applied yet.
-          </div>
-
-        `;
-
-        return;
-
-      }
-
-
-      box.innerHTML =
-        apps.docs
-          .map(d => {
-
-            const x = d.data();
-
-            return `
-
-              <div class="card">
-
-                <h3>
-                  👤 ${esc(
-                    x.freelancerName ||
-                    "Freelancer"
-                  )}
-                </h3>
-
-                <p>
-                  Project:
-                  ${esc(
-                    x.jobTitle ||
-                    "Project"
-                  )}
-                </p>
-
-                <div class="meta">
-                  ${pill(x.status)}
-                </div>
-
-                <p>
-                  ${esc(
-                    x.proposal ||
-                    "No proposal provided."
-                  )}
-                </p>
-
-                <div class="card-actions">
-
-                  <button
-                    class="secondary open-app-chat"
-                    data-job="${esc(
-                      x.jobId
-                    )}">
-
-                    💬 Message
-
-                  </button>
-
-                </div>
-
-              </div>
-
-            `;
-
-          })
-          .join("");
-
-
-      box.querySelectorAll(
-        ".open-app-chat"
-      )
-        .forEach(button => {
-
-          button.onclick = async () => {
-
-            await openConversationByProject(
-              button.dataset.job
-            );
-
-            go(
-              "messagesPage",
-              "Messages"
-            );
-
-          };
-
-        });
-
-      return;
-
-    }
-
-
-    /* FREELANCER:
-       SHOW OPEN PROJECTS
-    */
-
-    const jobsSnap =
+    const snap =
       await getDocs(
         query(
-          collection(db, "jobs"),
+          collection(db,"jobs"),
           where(
             "status",
             "==",
@@ -1135,10 +1323,27 @@ async function loadJobs() {
       );
 
 
-    const applicationsSnap =
+    const docs =
+      snap.docs.filter(
+        d =>
+          d.data().clientId !==
+          currentUser.uid
+      );
+
+
+    if(!docs.length){
+
+      list.innerHTML =
+        '<div class="empty">No open projects available right now.</div>';
+
+      return;
+    }
+
+
+    const appliedSnap =
       await getDocs(
         query(
-          collection(db, "applications"),
+          collection(db,"applications"),
           where(
             "freelancerId",
             "==",
@@ -1150,2650 +1355,130 @@ async function loadJobs() {
 
     const applied =
       new Set(
-        applicationsSnap.docs.map(
+        appliedSnap.docs.map(
           d => d.data().jobId
         )
       );
 
 
-    if (jobsSnap.empty) {
+    list.innerHTML =
+      docs.map(
+        d => {
 
-      box.innerHTML = `
+          const j =
+            d.data();
 
-        <div class="empty">
-          No open projects right now.
-        </div>
+          const isApplied =
+            applied.has(d.id);
 
-      `;
-
-      return;
-
-    }
-
-
-    box.innerHTML =
-      jobsSnap.docs
-        .map(d => {
-
-          const x = d.data();
 
           return `
-
-            <div class="card">
+            <article class="card">
 
               <h3>
-                💼 ${esc(
-                  x.title ||
-                  "Project"
+                💼
+                ${esc(
+                  j.title ||
+                  "Untitled Project"
                 )}
               </h3>
 
               <p>
                 ${esc(
-                  x.description ||
-                  "No description"
+                  j.description ||
+                  "No description provided."
                 )}
               </p>
 
               <div class="meta">
 
-                ${pill("open")}
-
                 <span class="pill">
-                  💰 $${Number(
-                    x.budget || 0
+                  ${esc(
+                    j.category ||
+                    "General"
                   )}
                 </span>
 
                 <span class="pill">
-                  📅 ${esc(
-                    x.deadline ||
+                  💰
+                  $${Number(j.budget || 0)}
+                </span>
+
+                <span class="pill">
+                  📅
+                  ${esc(
+                    j.deadline ||
                     "—"
                   )}
                 </span>
 
-                <span class="pill">
-                  ${esc(
-                    x.category ||
-                    "Other"
-                  )}
-                </span>
-
               </div>
 
-              <p>
+              <small class="muted">
                 Client:
                 ${esc(
-                  x.clientName ||
+                  j.clientName ||
                   "Client"
-                )}
-              </p>
-
-              <div class="card-actions">
-
-                ${
-                  applied.has(d.id)
-
-                    ? `
-
-                      <span class="pill pending">
-                        Application sent
-                      </span>
-
-                    `
-
-                    : `
-
-                      <button
-                        class="primary apply-btn"
-                        data-id="${d.id}">
-
-                        Apply Now
-
-                      </button>
-
-                    `
-                }
-
-              </div>
-
-            </div>
-
-          `;
-
-        })
-        .join("");
-
-
-    box.querySelectorAll(
-      ".apply-btn"
-    )
-      .forEach(button => {
-
-        button.onclick = () =>
-          applyJob(
-            button.dataset.id
-          );
-
-      });
-
-
-  } catch (error) {
-
-    showError(error);
-
-  }
-
-}
-
-
-/* =========================================================
-   APPLY JOB
-========================================================= */
-
-async function applyJob(jobId) {
-
-  try {
-
-    const jobSnap =
-      await getDoc(
-        doc(db, "jobs", jobId)
-      );
-
-
-    if (!jobSnap.exists()) {
-
-      showToast(
-        "Project no longer exists."
-      );
-
-      return;
-
-    }
-
-
-    const job =
-      jobSnap.data();
-
-
-    if (job.status !== "open") {
-
-      showToast(
-        "This project is no longer open."
-      );
-
-      return;
-
-    }
-
-
-    const old =
-      await getDocs(
-        query(
-          collection(
-            db,
-            "applications"
-          ),
-
-          where(
-            "jobId",
-            "==",
-            jobId
-          ),
-
-          where(
-            "freelancerId",
-            "==",
-            currentUser.uid
-          )
-        )
-      );
-
-
-    if (!old.empty) {
-
-      showToast(
-        "You already applied."
-      );
-
-      return;
-
-    }
-
-
-    const proposal =
-      prompt(
-        `Write a short proposal for "${job.title || "Project"}":`
-      );
-
-
-    if (proposal === null)
-      return;
-
-
-    if (!proposal.trim()) {
-
-      showToast(
-        "Please write a proposal."
-      );
-
-      return;
-
-    }
-
-
-    await addDoc(
-      collection(
-        db,
-        "applications"
-      ),
-      {
-
-        jobId,
-
-        jobTitle:
-          job.title ||
-          "Project",
-
-        clientId:
-          job.clientId,
-
-        clientName:
-          job.clientName ||
-          "Client",
-
-        freelancerId:
-          currentUser.uid,
-
-        freelancerName:
-          userName(),
-
-        freelancerEmail:
-          userEmail(),
-
-        proposal:
-          proposal.trim(),
-
-        status:
-          "pending",
-
-        createdAt:
-          serverTimestamp()
-
-      }
-    );
-
-
-    showToast(
-      "Application sent successfully ✅"
-    );
-
-
-    await loadJobs();
-
-    await loadDashboard();
-
-
-  } catch (error) {
-
-    showError(error);
-
-  }
-
-}
-
-
-/* =========================================================
-   APPLICATIONS
-========================================================= */
-
-async function loadApplications() {
-
-  const box =
-    $("applications");
-
-  if (!box) return;
-
-
-  box.innerHTML =
-    `<div class="loading">
-      Loading applications...
-    </div>`;
-
-
-  try {
-
-    const field =
-      role() === "client"
-        ? "clientId"
-        : "freelancerId";
-
-
-    const snap =
-      await getDocs(
-        query(
-          collection(
-            db,
-            "applications"
-          ),
-
-          where(
-            field,
-            "==",
-            currentUser.uid
-          )
-        )
-      );
-
-
-    if (snap.empty) {
-
-      box.innerHTML =
-        `<div class="empty">
-          No applications yet.
-        </div>`;
-
-      return;
-
-    }
-
-
-    box.innerHTML =
-      snap.docs
-        .map(d => {
-
-          const x =
-            d.data();
-
-          const client =
-            role() === "client";
-
-
-          return `
-
-            <div class="card">
-
-              <h3>
-
-                ${client ? "👤" : "✉"}
-
-                ${esc(
-                  client
-                    ? x.freelancerName ||
-                      "Freelancer"
-                    : x.jobTitle ||
-                      "Project"
-                )}
-
-              </h3>
-
-
-              <p>
-
-                ${
-                  client
-                    ? "Project: " +
-                      esc(
-                        x.jobTitle ||
-                        "Project"
-                      )
-                    : "Client: " +
-                      esc(
-                        x.clientName ||
-                        "Client"
-                      )
-                }
-
-              </p>
-
-
-              <div class="meta">
-
-                ${pill(x.status)}
-
-                <span class="pill">
-                  ${dateText(
-                    x.createdAt
-                  )}
-                </span>
-
-              </div>
-
-
-              <p>
-
-                <b>Proposal:</b>
-
-                ${esc(
-                  x.proposal ||
-                  "No proposal"
-                )}
-
-              </p>
-
-
-              ${
-                client &&
-                x.status === "pending"
-
-                  ? `
-
-                    <div class="card-actions">
-
-                      <button
-                        class="primary accept-btn"
-                        data-id="${d.id}"
-                        data-job="${x.jobId}">
-
-                        Accept
-
-                      </button>
-
-                      <button
-                        class="danger reject-btn"
-                        data-id="${d.id}">
-
-                        Reject
-
-                      </button>
-
-                    </div>
-
-                  `
-
-                  : ""
-              }
-
-
-              ${
-                client &&
-                x.status === "accepted"
-
-                  ? `
-
-                    <div class="card-actions">
-
-                      <button
-                        class="secondary app-chat-btn"
-                        data-job="${x.jobId}">
-
-                        💬 Open Chat
-
-                      </button>
-
-                    </div>
-
-                  `
-
-                  : ""
-              }
-
-            </div>
-
-          `;
-
-        })
-        .join("");
-
-
-    box.querySelectorAll(
-      ".accept-btn"
-    )
-      .forEach(button => {
-
-        button.onclick = () =>
-          acceptApplication(
-            button.dataset.id,
-            button.dataset.job
-          );
-
-      });
-
-
-    box.querySelectorAll(
-      ".reject-btn"
-    )
-      .forEach(button => {
-
-        button.onclick = () =>
-          rejectApplication(
-            button.dataset.id
-          );
-
-      });
-
-
-    box.querySelectorAll(
-      ".app-chat-btn"
-    )
-      .forEach(button => {
-
-        button.onclick = async () => {
-
-          await openConversationByProject(
-            button.dataset.job
-          );
-
-          go(
-            "messagesPage",
-            "Messages"
-          );
-
-        };
-
-      });
-
-
-  } catch (error) {
-
-    showError(error);
-
-  }
-
-}
-
-
-/* =========================================================
-   ACCEPT APPLICATION
-========================================================= */
-
-async function acceptApplication(
-  applicationId,
-  jobId
-) {
-
-  try {
-
-    const appSnap =
-      await getDoc(
-        doc(
-          db,
-          "applications",
-          applicationId
-        )
-      );
-
-
-    if (!appSnap.exists())
-      return;
-
-
-    const appData =
-      appSnap.data();
-
-
-    await updateDoc(
-      doc(
-        db,
-        "applications",
-        applicationId
-      ),
-      {
-
-        status:
-          "accepted",
-
-        acceptedAt:
-          serverTimestamp()
-
-      }
-    );
-
-
-    await updateDoc(
-      doc(
-        db,
-        "jobs",
-        jobId
-      ),
-      {
-
-        status:
-          "assigned",
-
-        freelancerId:
-          appData.freelancerId,
-
-        freelancerName:
-          appData.freelancerName ||
-          "Freelancer",
-
-        freelancerEmail:
-          appData.freelancerEmail ||
-          "",
-
-        paymentStatus:
-          "unpaid",
-
-        platformFee:
-          0
-
-      }
-    );
-
-
-    await ensureConversation(
-      jobId,
-      appData.freelancerId,
-      appData.freelancerName,
-      appData.freelancerEmail
-    );
-
-
-    showToast(
-      "Freelancer accepted ✅"
-    );
-
-
-    await loadApplications();
-
-    await loadProjects();
-
-    await loadDashboard();
-
-
-  } catch (error) {
-
-    showError(error);
-
-  }
-
-}
-
-
-/* =========================================================
-   REJECT APPLICATION
-========================================================= */
-
-async function rejectApplication(id) {
-
-  try {
-
-    await updateDoc(
-      doc(
-        db,
-        "applications",
-        id
-      ),
-      {
-
-        status:
-          "rejected",
-
-        rejectedAt:
-          serverTimestamp()
-
-      }
-    );
-
-
-    showToast(
-      "Application rejected."
-    );
-
-
-    await loadApplications();
-
-    await loadDashboard();
-
-
-  } catch (error) {
-
-    showError(error);
-
-  }
-
-}
-
-
-/* =========================================================
-   PROJECTS
-========================================================= */
-
-async function loadProjects() {
-
-  const box =
-    $("projects");
-
-  if (!box) return;
-
-
-  box.innerHTML =
-    `<div class="loading">
-      Loading projects...
-    </div>`;
-
-
-  try {
-
-    const field =
-      role() === "client"
-        ? "clientId"
-        : "freelancerId";
-
-
-    const snap =
-      await getDocs(
-        query(
-          collection(
-            db,
-            "jobs"
-          ),
-
-          where(
-            field,
-            "==",
-            currentUser.uid
-          )
-        )
-      );
-
-
-    if (snap.empty) {
-
-      box.innerHTML =
-        `<div class="empty">
-          No projects here yet.
-        </div>`;
-
-      return;
-
-    }
-
-
-    box.innerHTML =
-      snap.docs
-        .map(d => {
-
-          const x =
-            d.data();
-
-          const freelancer =
-            role() !== "client";
-
-
-          return `
-
-            <div class="card">
-
-              <h3>
-                💼 ${esc(
-                  x.title ||
-                  "Project"
-                )}
-              </h3>
-
-
-              <p>
-                ${esc(
-                  x.description ||
-                  ""
-                )}
-              </p>
-
-
-              <div class="meta">
-
-                ${pill(
-                  x.status ||
-                  "open"
-                )}
-
-                <span class="pill">
-                  💰 $${Number(
-                    x.budget ||
-                    0
-                  )}
-                </span>
-
-                <span class="pill">
-
-                  Payment:
-                  ${esc(
-                    x.paymentStatus ||
-                    "unpaid"
-                  )}
-
-                </span>
-
-              </div>
-
-
-              <p>
-
-                ${
-                  role() === "client"
-
-                    ? `Freelancer:
-                       ${esc(
-                         x.freelancerName ||
-                         "Not assigned yet"
-                       )}`
-
-                    : `Client:
-                       ${esc(
-                         x.clientName ||
-                         "Client"
-                       )}`
-                }
-
-              </p>
-
-
-              ${
-                x.submissionNote
-
-                  ? `
-
-                    <div class="card">
-
-                      <strong>
-                        Work Submission
-                      </strong>
-
-                      <p>
-                        ${esc(
-                          x.submissionNote
-                        )}
-                      </p>
-
-                      ${
-                        x.submissionLink
-
-                          ? `
-                            <p>
-                              🔗 ${esc(
-                                x.submissionLink
-                              )}
-                            </p>
-                          `
-
-                          : ""
-                      }
-
-                    </div>
-
-                  `
-
-                  : ""
-              }
-
-
-              <div class="card-actions">
-
-
-                ${
-                  freelancer &&
-                  x.status === "assigned"
-
-                    ? `
-
-                      <button
-                        class="primary start-work"
-                        data-id="${d.id}">
-
-                        ▶ Start Work
-
-                      </button>
-
-                    `
-
-                    : ""
-                }
-
-
-                ${
-                  freelancer &&
-                  x.status === "in_progress"
-
-                    ? `
-
-                      <button
-                        class="primary submit-work"
-                        data-id="${d.id}">
-
-                        📤 Submit Work
-
-                      </button>
-
-                    `
-
-                    : ""
-                }
-
-
-                ${
-                  !freelancer &&
-                  x.status ===
-                    "completed_pending"
-
-                    ? `
-
-                      <button
-                        class="primary approve-work"
-                        data-id="${d.id}">
-
-                        ✓ Approve & Complete
-
-                      </button>
-
-                    `
-
-                    : ""
-                }
-
-
-                ${
-                  !freelancer &&
-                  x.status === "completed" &&
-                  x.paymentStatus !== "paid"
-
-                    ? `
-
-                      <button
-                        class="primary mark-paid"
-                        data-id="${d.id}">
-
-                        💵 Mark Payment Paid
-
-                      </button>
-
-                    `
-
-                    : ""
-                }
-
-
-                ${
-                  x.status !== "open"
-
-                    ? `
-
-                      <button
-                        class="secondary project-chat"
-                        data-id="${d.id}">
-
-                        💬 Open Chat
-
-                      </button>
-
-                    `
-
-                    : ""
-                }
-
-
-                ${
-                  !freelancer &&
-                  x.status === "completed"
-
-                    ? `
-
-                      <button
-                        class="secondary review-project"
-                        data-id="${d.id}">
-
-                        ★ Leave Review
-
-                      </button>
-
-                    `
-
-                    : ""
-                }
-
-
-              </div>
-
-            </div>
-
-          `;
-
-        })
-        .join("");
-
-
-    box.querySelectorAll(
-      ".start-work"
-    )
-      .forEach(btn => {
-
-        btn.onclick = () =>
-          updateProjectStatus(
-            btn.dataset.id,
-            "in_progress"
-          );
-
-      });
-
-
-    box.querySelectorAll(
-      ".submit-work"
-    )
-      .forEach(btn => {
-
-        btn.onclick = () =>
-          submitWork(
-            btn.dataset.id
-          );
-
-      });
-
-
-    box.querySelectorAll(
-      ".approve-work"
-    )
-      .forEach(btn => {
-
-        btn.onclick = () =>
-          approveWork(
-            btn.dataset.id
-          );
-
-      });
-
-
-    box.querySelectorAll(
-      ".mark-paid"
-    )
-      .forEach(btn => {
-
-        btn.onclick = () =>
-          markPaid(
-            btn.dataset.id
-          );
-
-      });
-
-
-    box.querySelectorAll(
-      ".project-chat"
-    )
-      .forEach(btn => {
-
-        btn.onclick = async () => {
-
-          await openConversationByProject(
-            btn.dataset.id
-          );
-
-          go(
-            "messagesPage",
-            "Messages"
-          );
-
-        };
-
-      });
-
-
-    box.querySelectorAll(
-      ".review-project"
-    )
-      .forEach(btn => {
-
-        btn.onclick = () =>
-          leaveReview(
-            btn.dataset.id
-          );
-
-      });
-
-
-  } catch (error) {
-
-    showError(error);
-
-  }
-
-}
-
-
-/* =========================================================
-   PROJECT STATUS
-========================================================= */
-
-async function updateProjectStatus(
-  id,
-  status
-) {
-
-  try {
-
-    await updateDoc(
-      doc(
-        db,
-        "jobs",
-        id
-      ),
-      {
-
-        status,
-
-        updatedAt:
-          serverTimestamp()
-
-      }
-    );
-
-
-    showToast(
-      status === "in_progress"
-        ? "Work started ✅"
-        : "Project updated."
-    );
-
-
-    await loadProjects();
-
-    await loadDashboard();
-
-
-  } catch (error) {
-
-    showError(error);
-
-  }
-
-}
-
-
-/* =========================================================
-   SUBMIT WORK
-========================================================= */
-
-async function submitWork(id) {
-
-  const note =
-    prompt(
-      "Describe the work you completed:"
-    );
-
-
-  if (note === null)
-    return;
-
-
-  if (!note.trim()) {
-
-    showToast(
-      "Please add a submission note."
-    );
-
-    return;
-
-  }
-
-
-  const link =
-    prompt(
-      "Optional: add your work link (GitHub/Drive/etc.):"
-    ) || "";
-
-
-  try {
-
-    await updateDoc(
-      doc(
-        db,
-        "jobs",
-        id
-      ),
-      {
-
-        status:
-          "completed_pending",
-
-        submissionNote:
-          note.trim(),
-
-        submissionLink:
-          link.trim(),
-
-        submittedAt:
-          serverTimestamp()
-
-      }
-    );
-
-
-    showToast(
-      "Work submitted to client ✅"
-    );
-
-
-    await loadProjects();
-
-
-  } catch (error) {
-
-    showError(error);
-
-  }
-
-}
-
-
-/* =========================================================
-   APPROVE WORK
-========================================================= */
-
-async function approveWork(id) {
-
-  try {
-
-    await updateDoc(
-      doc(
-        db,
-        "jobs",
-        id
-      ),
-      {
-
-        status:
-          "completed",
-
-        completedAt:
-          serverTimestamp(),
-
-        paymentStatus:
-          "unpaid"
-
-      }
-    );
-
-
-    showToast(
-      "Project completed ✅"
-    );
-
-
-    await loadProjects();
-
-    await loadDashboard();
-
-
-  } catch (error) {
-
-    showError(error);
-
-  }
-
-}
-
-
-/* =========================================================
-   MARK PAYMENT PAID
-========================================================= */
-
-async function markPaid(id) {
-
-  const confirmPayment =
-    confirm(
-      "Confirm that you have actually paid this freelancer?"
-    );
-
-
-  if (!confirmPayment)
-    return;
-
-
-  try {
-
-    await updateDoc(
-      doc(
-        db,
-        "jobs",
-        id
-      ),
-      {
-
-        paymentStatus:
-          "paid",
-
-        paymentPaidAt:
-          serverTimestamp(),
-
-        platformFee:
-          0
-
-      }
-    );
-
-
-    showToast(
-      "Payment marked as paid."
-    );
-
-
-    await loadProjects();
-
-    await loadEarnings();
-
-
-  } catch (error) {
-
-    showError(error);
-
-  }
-
-}
-
-
-/* =========================================================
-   CONVERSATIONS
-========================================================= */
-
-async function ensureConversation(
-  jobId,
-  otherId,
-  otherName,
-  otherEmail
-) {
-
-  const existing =
-    await getDocs(
-      query(
-        collection(
-          db,
-          "conversations"
-        ),
-
-        where(
-          "jobId",
-          "==",
-          jobId
-        )
-      )
-    );
-
-
-  if (!existing.empty) {
-
-    return existing.docs[0].id;
-
-  }
-
-
-  const jobSnap =
-    await getDoc(
-      doc(
-        db,
-        "jobs",
-        jobId
-      )
-    );
-
-
-  const job =
-    jobSnap.exists()
-      ? jobSnap.data()
-      : {};
-
-
-  const participants = [
-    currentUser.uid,
-    otherId
-  ].filter(Boolean);
-
-
-  const ref =
-    await addDoc(
-      collection(
-        db,
-        "conversations"
-      ),
-      {
-
-        jobId,
-
-        jobTitle:
-          job.title ||
-          "Project",
-
-        participants,
-
-        participantNames: {
-
-          [currentUser.uid]:
-            userName(),
-
-          [otherId]:
-            otherName ||
-            "User"
-
-        },
-
-        participantEmails: {
-
-          [currentUser.uid]:
-            userEmail(),
-
-          [otherId]:
-            otherEmail ||
-            ""
-
-        },
-
-        createdAt:
-          serverTimestamp(),
-
-        updatedAt:
-          serverTimestamp()
-
-      }
-    );
-
-
-  return ref.id;
-
-}
-
-
-/* =========================================================
-   LOAD CONVERSATIONS
-========================================================= */
-
-async function loadConversations() {
-
-  const box =
-    $("conversations");
-
-  if (!box) return;
-
-
-  box.innerHTML =
-    `<div class="loading">
-      Loading chats...
-    </div>`;
-
-
-  try {
-
-    const snap =
-      await getDocs(
-        query(
-          collection(
-            db,
-            "conversations"
-          ),
-
-          where(
-            "participants",
-            "array-contains",
-            currentUser.uid
-          )
-        )
-      );
-
-
-    if (snap.empty) {
-
-      box.innerHTML =
-        `<div class="empty">
-          No conversations yet.
-        </div>`;
-
-
-      if ($("composer"))
-        $("composer").style.display =
-          "none";
-
-
-      return;
-
-    }
-
-
-    box.innerHTML =
-      snap.docs
-        .map(d => {
-
-          const x =
-            d.data();
-
-          const names =
-            x.participantNames ||
-            {};
-
-
-          const other =
-            Object.entries(
-              names
-            )
-              .find(
-                ([id]) =>
-                  id !==
-                  currentUser.uid
-              );
-
-
-          return `
-
-            <div
-              class="conversation"
-              data-id="${d.id}">
-
-              <strong>
-                ${esc(
-                  other?.[1] ||
-                  "Project Chat"
-                )}
-              </strong>
-
-              <span>
-                ${esc(
-                  x.jobTitle ||
-                  "Project"
-                )}
-              </span>
-
-            </div>
-
-          `;
-
-        })
-        .join("");
-
-
-    box.querySelectorAll(
-      ".conversation"
-    )
-      .forEach(item => {
-
-        item.onclick = () =>
-          openConversation(
-            item.dataset.id
-          );
-
-      });
-
-
-  } catch (error) {
-
-    showError(error);
-
-  }
-
-}
-
-
-/* =========================================================
-   OPEN CONVERSATION BY PROJECT
-========================================================= */
-
-async function openConversationByProject(
-  jobId
-) {
-
-  const snap =
-    await getDocs(
-      query(
-        collection(
-          db,
-          "conversations"
-        ),
-
-        where(
-          "jobId",
-          "==",
-          jobId
-        )
-      )
-    );
-
-
-  if (!snap.empty) {
-
-    await openConversation(
-      snap.docs[0].id
-    );
-
-    return;
-
-  }
-
-
-  const jobSnap =
-    await getDoc(
-      doc(
-        db,
-        "jobs",
-        jobId
-      )
-    );
-
-
-  if (!jobSnap.exists())
-    return;
-
-
-  const job =
-    jobSnap.data();
-
-
-  const otherId =
-    role() === "client"
-      ? job.freelancerId
-      : job.clientId;
-
-
-  const otherName =
-    role() === "client"
-      ? job.freelancerName
-      : job.clientName;
-
-
-  const otherEmail =
-    role() === "client"
-      ? job.freelancerEmail
-      : job.clientEmail || "";
-
-
-  if (!otherId) {
-
-    showToast(
-      "The other user is not assigned yet."
-    );
-
-    return;
-
-  }
-
-
-  const id =
-    await ensureConversation(
-      jobId,
-      otherId,
-      otherName,
-      otherEmail
-    );
-
-
-  await openConversation(id);
-
-}
-
-
-/* =========================================================
-   OPEN CONVERSATION
-========================================================= */
-
-async function openConversation(id) {
-
-  currentConversation =
-    id;
-
-
-  document.querySelectorAll(
-    ".conversation"
-  )
-    .forEach(x => {
-
-      x.classList.toggle(
-        "active",
-        x.dataset.id === id
-      );
-
-    });
-
-
-  const snap =
-    await getDoc(
-      doc(
-        db,
-        "conversations",
-        id
-      )
-    );
-
-
-  if (!snap.exists())
-    return;
-
-
-  const conversation =
-    snap.data();
-
-
-  text(
-    "chatTitle",
-    conversation.jobTitle ||
-    "Project Chat"
-  );
-
-
-  text(
-    "chatSubtitle",
-    "Secure project conversation"
-  );
-
-
-  if ($("composer"))
-    $("composer").style.display =
-      "flex";
-
-
-  await loadMessages(id);
-
-}
-
-
-/* =========================================================
-   MESSAGES
-========================================================= */
-
-async function loadMessages(id) {
-
-  const box =
-    $("messages");
-
-  if (!box) return;
-
-
-  box.innerHTML =
-    `<div class="loading">
-      Loading messages...
-    </div>`;
-
-
-  try {
-
-    const snap =
-      await getDocs(
-        query(
-          collection(
-            db,
-            "messages"
-          ),
-
-          where(
-            "conversationId",
-            "==",
-            id
-          )
-        )
-      );
-
-
-    const docs =
-      snap.docs.sort(
-        (a, b) => {
-
-          const ad =
-            a.data()
-              .createdAt
-              ?.toMillis?.() || 0;
-
-          const bd =
-            b.data()
-              .createdAt
-              ?.toMillis?.() || 0;
-
-          return ad - bd;
-
-        }
-      );
-
-
-    if (!docs.length) {
-
-      box.innerHTML =
-        `<div class="empty">
-          No messages yet.
-          Start the conversation.
-        </div>`;
-
-      return;
-
-    }
-
-
-    box.innerHTML =
-      docs
-        .map(d => {
-
-          const x =
-            d.data();
-
-          const mine =
-            x.senderId ===
-            currentUser.uid;
-
-
-          return `
-
-            <div
-              class="bubble ${
-                mine
-                  ? "mine"
-                  : ""
-              }">
-
-              ${esc(
-                x.text
-              )}
-
-              <small>
-                ${esc(
-                  x.senderName ||
-                  "User"
-                )}
-                ·
-                ${dateText(
-                  x.createdAt
                 )}
               </small>
 
-            </div>
-
-          `;
-
-        })
-        .join("");
-
-
-    box.scrollTop =
-      box.scrollHeight;
-
-
-  } catch (error) {
-
-    showError(error);
-
-  }
-
-}
-
-
-/* =========================================================
-   SEND MESSAGE
-========================================================= */
-
-$("sendMessage")
-  ?.addEventListener(
-    "click",
-    sendMessage
-  );
-
-
-$("messageInput")
-  ?.addEventListener(
-    "keydown",
-    event => {
-
-      if (
-        event.key === "Enter" &&
-        !event.shiftKey
-      ) {
-
-        event.preventDefault();
-
-        sendMessage();
-
-      }
-
-    }
-  );
-
-
-async function sendMessage() {
-
-  if (!currentConversation) {
-
-    showToast(
-      "Select a conversation."
-    );
-
-    return;
-
-  }
-
-
-  const input =
-    $("messageInput");
-
-
-  if (!input)
-    return;
-
-
-  const textValue =
-    input.value.trim();
-
-
-  if (!textValue)
-    return;
-
-
-  try {
-
-    await addDoc(
-      collection(
-        db,
-        "messages"
-      ),
-      {
-
-        conversationId:
-          currentConversation,
-
-        senderId:
-          currentUser.uid,
-
-        senderName:
-          userName(),
-
-        text:
-          textValue,
-
-        createdAt:
-          serverTimestamp()
-
-      }
-    );
-
-
-    await updateDoc(
-      doc(
-        db,
-        "conversations",
-        currentConversation
-      ),
-      {
-
-        updatedAt:
-          serverTimestamp()
-
-      }
-    );
-
-
-    input.value = "";
-
-
-    await loadMessages(
-      currentConversation
-    );
-
-
-  } catch (error) {
-
-    showError(error);
-
-  }
-
-}
-
-
-/* =========================================================
-   POST PROJECT
-========================================================= */
-
-$("postForm")
-  ?.addEventListener(
-    "submit",
-    async event => {
-
-      event.preventDefault();
-
-
-      try {
-
-        const title =
-          $("postTitle")
-            ?.value
-            .trim();
-
-
-        const category =
-          $("postCategory")
-            ?.value;
-
-
-        const description =
-          $("postDescription")
-            ?.value
-            .trim();
-
-
-        const budget =
-          Number(
-            $("postBudget")
-              ?.value
-          );
-
-
-        const deadline =
-          $("postDeadline")
-            ?.value;
-
-
-        if (
-          !title ||
-          !category ||
-          !description ||
-          !budget ||
-          !deadline
-        ) {
-
-          showToast(
-            "Please complete all project fields."
-          );
-
-          return;
-
-        }
-
-
-        await addDoc(
-          collection(
-            db,
-            "jobs"
-          ),
-          {
-
-            title,
-
-            category,
-
-            description,
-
-            budget,
-
-            deadline,
-
-            clientId:
-              currentUser.uid,
-
-            clientName:
-              userName(),
-
-            clientEmail:
-              userEmail(),
-
-            status:
-              "open",
-
-            freelancerId:
-              "",
-
-            freelancerName:
-              "",
-
-            freelancerEmail:
-              "",
-
-            paymentStatus:
-              "unpaid",
-
-            platformFee:
-              0,
-
-            createdAt:
-              serverTimestamp()
-
-          }
-        );
-
-
-        $("postForm").reset();
-
-
-        text(
-          "postMessage",
-          "Project published successfully ✅"
-        );
-
-
-        showToast(
-          "Project published successfully."
-        );
-
-
-        await loadDashboard();
-
-
-      } catch (error) {
-
-        showError(error);
-
-      }
-
-    }
-  );
-
-
-/* =========================================================
-   PROFILE SETTINGS
-========================================================= */
-
-$("settingsForm")
-  ?.addEventListener(
-    "submit",
-    async event => {
-
-      event.preventDefault();
-
-
-      try {
-
-        const updates = {
-
-          name:
-            $("settingsName")
-              ?.value
-              .trim(),
-
-          gender:
-            $("settingsGender")
-              ?.value,
-
-          location:
-            $("settingsLocation")
-              ?.value
-              .trim(),
-
-          hourlyRate:
-            Number(
-              $("settingsRate")
-                ?.value || 0
-            ),
-
-          availability:
-            $("settingsAvailability")
-              ?.value,
-
-          skills:
-            $("settingsSkills")
-              ?.value
-              .trim(),
-
-          bio:
-            $("settingsBio")
-              ?.value
-              .trim()
-
-        };
-
-
-        if (!updates.name) {
-
-          showToast(
-            "Name cannot be empty."
-          );
-
-          return;
-
-        }
-
-
-        await updateDoc(
-          doc(
-            db,
-            "users",
-            currentUser.uid
-          ),
-          updates
-        );
-
-
-        userData = {
-          ...userData,
-          ...updates
-        };
-
-
-        applyIdentity();
-
-
-        text(
-          "settingsMessage",
-          "Profile saved successfully ✅"
-        );
-
-
-        showToast(
-          "Profile updated."
-        );
-
-
-      } catch (error) {
-
-        showError(error);
-
-      }
-
-    }
-  );
-
-
-/* =========================================================
-   PASSWORD RESET
-========================================================= */
-
-$("resetPasswordBtn")
-  ?.addEventListener(
-    "click",
-    async () => {
-
-      try {
-
-        await sendPasswordResetEmail(
-          auth,
-          userEmail()
-        );
-
-
-        text(
-          "securityStatus",
-          "Password reset email sent successfully."
-        );
-
-
-        showToast(
-          "Password reset email sent."
-        );
-
-
-      } catch (error) {
-
-        showError(error);
-
-      }
-
-    }
-  );
-
-
-/* =========================================================
-   PORTFOLIO
-========================================================= */
-
-$("portfolioForm")
-  ?.addEventListener(
-    "submit",
-    async event => {
-
-      event.preventDefault();
-
-
-      try {
-
-        const title =
-          $("portfolioTitle")
-            ?.value
-            .trim();
-
-
-        const category =
-          $("portfolioCategory")
-            ?.value
-            .trim();
-
-
-        const description =
-          $("portfolioDescription")
-            ?.value
-            .trim();
-
-
-        if (!title || !description) {
-
-          showToast(
-            "Please complete your portfolio information."
-          );
-
-          return;
-
-        }
-
-
-        await addDoc(
-          collection(
-            db,
-            "portfolio"
-          ),
-          {
-
-            userId:
-              currentUser.uid,
-
-            title,
-
-            category,
-
-            description,
-
-            createdAt:
-              serverTimestamp()
-
-          }
-        );
-
-
-        $("portfolioForm").reset();
-
-
-        showToast(
-          "Portfolio work added."
-        );
-
-
-        await loadPortfolio();
-
-
-      } catch (error) {
-
-        showError(error);
-
-      }
-
-    }
-  );
-
-
-/* =========================================================
-   LOAD PORTFOLIO
-========================================================= */
-
-async function loadPortfolio() {
-
-  const box =
-    $("portfolioList");
-
-  if (!box) return;
-
-
-  try {
-
-    const snap =
-      await getDocs(
-        query(
-          collection(
-            db,
-            "portfolio"
-          ),
-
-          where(
-            "userId",
-            "==",
-            currentUser.uid
-          )
-        )
-      );
-
-
-    if (snap.empty) {
-
-      box.innerHTML =
-        `<div class="empty">
-          No portfolio work added yet.
-        </div>`;
-
-      return;
-
-    }
-
-
-    box.innerHTML =
-      snap.docs
-        .map(d => {
-
-          const x =
-            d.data();
-
-
-          return `
-
-            <div class="card">
-
-              <h3>
-                ${esc(
-                  x.title
-                )}
-              </h3>
-
-              <div class="meta">
-
-                <span class="pill">
-                  ${esc(
-                    x.category ||
-                    "Portfolio"
-                  )}
-                </span>
+              <div class="card-actions">
+
+                <button
+                  class="${isApplied ? "secondary" : "primary"} apply-btn"
+                  data-job="${d.id}"
+                  ${isApplied ? "disabled" : ""}
+                >
+                  ${
+                    isApplied
+                      ? "Applied ✓"
+                      : "Apply Now"
+                  }
+                </button>
 
               </div>
 
-              <p>
-                ${esc(
-                  x.description
-                )}
-              </p>
-
-            </div>
-
+            </article>
           `;
-
-        })
-        .join("");
-
-
-  } catch (error) {
-
-    showError(error);
-
-  }
-
-}
+        }
+      ).join("");
 
 
-/* =========================================================
-   RATINGS
-========================================================= */
-
-async function getRating(
-  userId
-) {
-
-  const snap =
-    await getDocs(
-      query(
-        collection(
-          db,
-          "reviews"
-        ),
-
-        where(
-          "freelancerId",
-          "==",
-          userId
-        )
-      )
-    );
-
-
-  if (snap.empty) {
-
-    return {
-      average: 0,
-      count: 0
-    };
-
-  }
-
-
-  const total =
-    snap.docs.reduce(
-      (sum, d) =>
-        sum +
-        Number(
-          d.data().rating || 0
-        ),
-      0
-    );
-
-
-  return {
-
-    average:
-      total /
-      snap.size,
-
-    count:
-      snap.size
-
-  };
-
-}
-
-
-/* =========================================================
-   REVIEWS
-========================================================= */
-
-async function loadReviews() {
-
-  const box =
-    $("reviewsList");
-
-  if (!box) return;
-
-
-  try {
-
-    const field =
-      role() === "client"
-        ? "authorId"
-        : "freelancerId";
-
-
-    const snap =
-      await getDocs(
-        query(
-          collection(
-            db,
-            "reviews"
-          ),
-
-          where(
-            field,
-            "==",
-            currentUser.uid
+    list
+      .querySelectorAll(".apply-btn")
+      .forEach(
+        b =>
+          b.addEventListener(
+            "click",
+            () =>
+              applyJob(
+                b.dataset.job,
+                b
+              )
           )
-        )
       );
 
+  }catch(e){
 
-    if (snap.empty) {
+    showError(e);
 
-      box.innerHTML =
-        `<div class="empty">
-          No reviews yet.
-        </div>`;
-
-      return;
-
-    }
-
-
-    box.innerHTML =
-      snap.docs
-        .map(d => {
-
-          const x =
-            d.data();
-
-
-          return `
-
-            <div class="card">
-
-              <h3>
-                ★ ${esc(
-                  x.rating
-                )}/5
-              </h3>
-
-              <p>
-                ${esc(
-                  x.comment ||
-                  "No written review."
-                )}
-              </p>
-
-              <div class="meta">
-
-                <span class="pill">
-                  ${esc(
-                    x.authorName ||
-                    "User"
-                  )}
-                </span>
-
-                <span class="pill">
-                  ${dateText(
-                    x.createdAt
-                  )}
-                </span>
-
-              </div>
-
-            </div>
-
-          `;
-
-        })
-        .join("");
-
-
-  } catch (error) {
-
-    showError(error);
-
+    list.innerHTML =
+      '<div class="error">Unable to load projects.</div>';
   }
-
 }
 
 
-/* =========================================================
-   LEAVE REVIEW
-========================================================= */
+async function applyJob(
+  jobId,
+  button
+){
 
-async function leaveReview(
-  jobId
-) {
+  try{
 
-  const rating =
-    Number(
-      prompt(
-        "Give a rating from 1 to 5:"
-      )
-    );
+    button.disabled = true;
+    button.textContent =
+      "Applying...";
 
-
-  if (
-    !rating ||
-    rating < 1 ||
-    rating > 5
-  ) {
-
-    showToast(
-      "Rating must be between 1 and 5."
-    );
-
-    return;
-
-  }
-
-
-  const comment =
-    prompt(
-      "Write your review:"
-    ) || "";
-
-
-  try {
 
     const jobSnap =
       await getDoc(
@@ -3805,44 +1490,33 @@ async function leaveReview(
       );
 
 
-    if (!jobSnap.exists())
-      return;
+    if(!jobSnap.exists())
+      throw new Error(
+        "Project no longer exists."
+      );
 
 
     const job =
       jobSnap.data();
 
 
-    if (
-      !job.freelancerId ||
-      job.status !== "completed"
-    ) {
-
-      showToast(
-        "Review is available after completion."
+    if(job.status !== "open")
+      throw new Error(
+        "This project is no longer accepting applications."
       );
 
-      return;
 
-    }
-
-
-    const old =
+    const dup =
       await getDocs(
         query(
-          collection(
-            db,
-            "reviews"
-          ),
-
+          collection(db,"applications"),
           where(
             "jobId",
             "==",
             jobId
           ),
-
           where(
-            "authorId",
+            "freelancerId",
             "==",
             currentUser.uid
           )
@@ -3850,96 +1524,108 @@ async function leaveReview(
       );
 
 
-    if (!old.empty) {
+    if(!dup.empty){
 
-      showToast(
-        "You already reviewed this project."
-      );
+      button.textContent =
+        "Applied ✓";
 
       return;
-
     }
 
 
     await addDoc(
-      collection(
-        db,
-        "reviews"
-      ),
+      collection(db,"applications"),
       {
-
         jobId,
 
-        freelancerId:
-          job.freelancerId,
+        clientId:
+          job.clientId,
 
-        authorId:
+        clientEmail:
+          job.clientEmail || "",
+
+        clientName:
+          job.clientName || "Client",
+
+        freelancerId:
           currentUser.uid,
 
-        authorName:
-          userName(),
+        freelancerEmail:
+          currentUser.email || "",
 
-        rating,
+        freelancerName:
+          userData.name ||
+          "Freelancer",
 
-        comment:
-          comment.trim(),
+        jobTitle:
+          job.title ||
+          "Project",
+
+        budget:
+          Number(
+            job.budget || 0
+          ),
+
+        status:
+          "pending",
 
         createdAt:
           serverTimestamp()
-
       }
     );
 
 
+    button.textContent =
+      "Applied ✓";
+
+
     showToast(
-      "Review submitted ⭐"
+      "Application sent successfully."
     );
 
 
-    await loadReviews();
+    await loadApplications();
+    await loadFreelancerDashboard();
 
-    await loadProjects();
+  }catch(e){
 
+    button.disabled = false;
+    button.textContent =
+      "Apply Now";
 
-  } catch (error) {
+    showToast(
+      e.message ||
+      "Application failed."
+    );
 
-    showError(error);
-
+    showError(e);
   }
-
 }
 
 
 /* =========================================================
-   EARNINGS / PAYMENTS
+   MY APPLICATIONS
 ========================================================= */
 
-async function loadEarnings() {
+async function loadApplications(){
 
-  const box =
-    $("earningsList");
+  const list =
+    $("applicationsList");
 
-  if (!box) return;
+  if(!list) return;
+
+  list.innerHTML =
+    '<div class="loading">Loading applications...</div>';
 
 
-  try {
-
-    const field =
-      role() === "client"
-        ? "clientId"
-        : "freelancerId";
-
+  try{
 
     const snap =
       await getDocs(
         query(
-          collection(
-            db,
-            "jobs"
-          ),
-
+          collection(db,"applications"),
           where(
-            field,
+            "freelancerId",
             "==",
             currentUser.uid
           )
@@ -3947,545 +1633,1763 @@ async function loadEarnings() {
       );
 
 
-    const completed =
-      snap.docs.filter(
-        d =>
-          d.data().status ===
-          "completed"
-      );
+    if(snap.empty){
 
-
-    if (!completed.length) {
-
-      box.innerHTML =
-        `<div class="empty">
-          No completed projects yet.
-        </div>`;
+      list.innerHTML =
+        '<div class="empty">You have not applied to any projects yet.</div>';
 
       return;
-
     }
 
 
-    box.innerHTML =
-      completed
-        .map(d => {
+    list.innerHTML =
+      snap.docs.map(
+        d => {
 
-          const x =
+          const a =
             d.data();
 
-
-          const amount =
-            Number(
-              x.budget || 0
-            );
-
-
-          /* NO PLATFORM FEE */
-
-          const fee = 0;
-
-
-          const net =
-            Math.max(
-              0,
-              amount - fee
-            );
+          const status =
+            a.status ||
+            "pending";
 
 
           return `
-
-            <div class="card">
+            <article class="card">
 
               <h3>
-                💼 ${esc(
-                  x.title ||
+                ✉
+                ${esc(
+                  a.jobTitle ||
                   "Project"
                 )}
               </h3>
 
+              <p>
+                Client:
+                ${esc(
+                  a.clientName ||
+                  a.clientEmail ||
+                  "Client"
+                )}
+              </p>
+
               <div class="meta">
 
-                <span class="pill completed">
-                  Completed
+                <span class="pill ${esc(status)}">
+                  ${esc(status)}
                 </span>
 
                 <span class="pill">
-                  Budget $${amount}
-                </span>
-
-                <span class="pill">
-                  Platform Fee $0
-                </span>
-
-                <span class="pill ${
-                  x.paymentStatus ===
-                  "paid"
-                    ? "paid"
-                    : "pending"
-                }">
-
-                  ${esc(
-                    x.paymentStatus ||
-                    "unpaid"
-                  )}
-
+                  💰
+                  $${Number(a.budget || 0)}
                 </span>
 
               </div>
 
+              <small class="muted">
+                Applied
+                ${fmtDate(a.createdAt)}
+              </small>
+
+              ${
+                status === "accepted"
+                  ? `
+                    <div class="card-actions">
+
+                      <button
+                        class="primary message-application"
+                        data-job="${d.id}"
+                      >
+                        💬 Message Client
+                      </button>
+
+                    </div>
+                  `
+                  : ""
+              }
+
+            </article>
+          `;
+        }
+      ).join("");
+
+
+    list
+      .querySelectorAll(
+        ".message-application"
+      )
+      .forEach(
+        b =>
+          b.addEventListener(
+            "click",
+            () =>
+              openApplicationChat(
+                b.dataset.job
+              )
+          )
+      );
+
+  }catch(e){
+
+    showError(e);
+  }
+}
+
+
+/* =========================================================
+   MY PROJECTS
+========================================================= */
+
+async function loadProjects(){
+
+  const list =
+    $("projectsList");
+
+  if(!list) return;
+
+  list.innerHTML =
+    '<div class="loading">Loading projects...</div>';
+
+
+  try{
+
+    const snap =
+      await getDocs(
+        query(
+          collection(db,"projects"),
+          where(
+            "freelancerId",
+            "==",
+            currentUser.uid
+          )
+        )
+      );
+
+
+    if(snap.empty){
+
+      list.innerHTML =
+        '<div class="empty">No accepted projects yet.</div>';
+
+      return;
+    }
+
+
+    list.innerHTML =
+      snap.docs.map(
+        d => {
+
+          const p =
+            d.data();
+
+
+          return `
+            <article class="card">
+
+              <h3>
+                📁
+                ${esc(
+                  p.title ||
+                  p.jobTitle ||
+                  "Project"
+                )}
+              </h3>
 
               <p>
-
-                ${
-                  role() === "client"
-
-                    ? `Project cost:
-                       $${amount}`
-
-                    : `Freelancer amount:
-                       $${net}`
-                }
-
+                ${esc(
+                  p.description ||
+                  "Accepted project"
+                )}
               </p>
 
-            </div>
+              <div class="meta">
 
+                <span class="pill accepted">
+                  ${esc(
+                    p.status ||
+                    "assigned"
+                  )}
+                </span>
+
+                <span class="pill">
+                  💰
+                  $${Number(p.budget || 0)}
+                </span>
+
+                <span class="pill">
+                  Client:
+                  ${esc(
+                    p.clientName ||
+                    "Client"
+                  )}
+                </span>
+
+              </div>
+
+              <div class="card-actions">
+
+                <button
+                  class="primary project-chat"
+                  data-project="${d.id}"
+                >
+                  💬 Open Chat
+                </button>
+
+              </div>
+
+            </article>
           `;
+        }
+      ).join("");
 
-        })
-        .join("");
 
+    list
+      .querySelectorAll(
+        ".project-chat"
+      )
+      .forEach(
+        b =>
+          b.addEventListener(
+            "click",
+            () =>
+              openProjectChat(
+                b.dataset.project
+              )
+          )
+      );
 
-  } catch (error) {
+  }catch(e){
 
-    showError(error);
-
+    showError(e);
   }
-
 }
 
 
 /* =========================================================
-   TIME TRACKER
+   CLIENT
 ========================================================= */
 
-function renderTimer() {
+async function initClient(){
 
-  const h =
-    String(
-      Math.floor(
-        timerSeconds / 3600
-      )
-    ).padStart(2, "0");
-
-
-  const m =
-    String(
-      Math.floor(
-        (timerSeconds % 3600) /
-        60
-      )
-    ).padStart(2, "0");
-
-
-  const s =
-    String(
-      timerSeconds % 60
-    ).padStart(2, "0");
-
-
-  text(
-    "timerDisplay",
-    `${h}:${m}:${s}`
-  );
-
+  await loadClientDashboard();
+  await loadClientProjects();
+  await loadClientApplications();
+  await loadConversations();
 }
 
 
-$("timerStart")
-  ?.addEventListener(
-    "click",
-    () => {
+async function loadClientDashboard(){
 
-      if (timerInterval)
-        return;
+  if(!$("clientStats"))
+    return;
 
 
-      timerInterval =
-        setInterval(
-          () => {
+  try{
 
-            timerSeconds++;
+    const [p,a] =
+      await Promise.all([
 
-            renderTimer();
+        getDocs(
+          query(
+            collection(db,"jobs"),
+            where(
+              "clientId",
+              "==",
+              currentUser.uid
+            )
+          )
+        ),
 
-          },
-          1000
-        );
+        getDocs(
+          query(
+            collection(db,"applications"),
+            where(
+              "clientId",
+              "==",
+              currentUser.uid
+            )
+          )
+        )
+      ]);
 
 
-      showToast(
-        "Timer started."
+    const accepted =
+      a.docs.filter(
+        d =>
+          d.data().status ===
+          "accepted"
+      ).length;
+
+
+    const active =
+      p.docs.filter(
+        d =>
+          d.data().status ===
+          "open"
+      ).length;
+
+
+    const completed =
+      p.docs.filter(
+        d =>
+          d.data().status ===
+          "completed"
+      ).length;
+
+
+    const spent =
+      p.docs.reduce(
+        (s,d) =>
+          s +
+          Number(
+            d.data().budget || 0
+          ),
+        0
       );
 
+
+    $("clientStats").innerHTML =
+      [
+        [
+          "📁",
+          "Total Projects",
+          String(p.size),
+          "All projects"
+        ],
+
+        [
+          "◷",
+          "Open Projects",
+          String(active),
+          "Accepting applications"
+        ],
+
+        [
+          "✓",
+          "Accepted",
+          String(accepted),
+          "Freelancers selected"
+        ],
+
+        [
+          "💰",
+          "Total Budget",
+          "$" +
+            spent.toLocaleString(),
+          "Posted project budgets"
+        ]
+      ]
+      .map(
+        x =>
+          `<div class="stat">
+            <div class="icon">${x[0]}</div>
+            <h3>${x[2]}</h3>
+            <p>${x[1]}</p>
+            <em>${x[3]}</em>
+          </div>`
+      )
+      .join("");
+
+
+    $("clientActivity").innerHTML =
+      p.docs
+        .slice(0,4)
+        .map(
+          d => {
+
+            const j =
+              d.data();
+
+            return `
+              <div class="activity-row">
+
+                <div class="activity-icon">
+                  💼
+                </div>
+
+                <div>
+
+                  <strong>
+                    ${esc(
+                      j.title ||
+                      "Project"
+                    )}
+                  </strong>
+
+                  <span>
+                    ${esc(
+                      j.status ||
+                      "open"
+                    )}
+                    •
+                    $${Number(
+                      j.budget || 0
+                    )}
+                    •
+                    ${esc(
+                      j.deadline ||
+                      "—"
+                    )}
+                  </span>
+
+                </div>
+
+              </div>
+            `;
+          }
+        )
+        .join("")
+        ||
+        `
+          <div class="empty">
+            No projects yet.
+            Post your first project.
+          </div>
+        `;
+
+  }catch(e){
+
+    showError(e);
+  }
+}
+
+
+async function loadClientProjects(){
+
+  const list =
+    $("clientProjects");
+
+  if(!list) return;
+
+  list.innerHTML =
+    '<div class="loading">Loading...</div>';
+
+
+  try{
+
+    const snap =
+      await getDocs(
+        query(
+          collection(db,"jobs"),
+          where(
+            "clientId",
+            "==",
+            currentUser.uid
+          )
+        )
+      );
+
+
+    if(snap.empty){
+
+      list.innerHTML =
+        '<div class="empty">No projects posted yet. Use “Post a Project”.</div>';
+
+      return;
     }
-  );
 
 
-$("timerStop")
-  ?.addEventListener(
-    "click",
-    () => {
+    list.innerHTML =
+      snap.docs.map(
+        d => {
 
-      clearInterval(
-        timerInterval
-      );
-
-      timerInterval =
-        null;
+          const j =
+            d.data();
 
 
-      showToast(
-        "Timer stopped."
-      );
+          return `
+            <article class="card">
 
-    }
-  );
+              <h3>
+                💼
+                ${esc(
+                  j.title ||
+                  "Project"
+                )}
+              </h3>
 
+              <p>
+                ${esc(
+                  j.description ||
+                  ""
+                )}
+              </p>
 
-$("timerReset")
-  ?.addEventListener(
-    "click",
-    () => {
+              <div class="meta">
 
-      clearInterval(
-        timerInterval
-      );
+                <span class="pill ${esc(j.status || "open")}">
+                  ${esc(
+                    j.status ||
+                    "open"
+                  )}
+                </span>
 
-      timerInterval =
-        null;
+                <span class="pill">
+                  💰
+                  $${Number(
+                    j.budget || 0
+                  )}
+                </span>
 
+                <span class="pill">
+                  📅
+                  ${esc(
+                    j.deadline ||
+                    "—"
+                  )}
+                </span>
 
-      timerSeconds =
-        0;
+              </div>
 
+              <small class="muted">
+                ${esc(
+                  j.category ||
+                  "General"
+                )}
+              </small>
 
-      renderTimer();
+            </article>
+          `;
+        }
+      ).join("");
 
-    }
-  );
+  }catch(e){
+
+    showError(e);
+  }
+}
 
 
 /* =========================================================
-   THEME
+   CLIENT APPLICATIONS
 ========================================================= */
 
-function applyTheme() {
+async function loadClientApplications(){
 
-  const theme =
-    localStorage.getItem(
-      "elite-theme"
-    ) || "dark";
+  const list =
+    $("clientApplications");
+
+  if(!list) return;
+
+  list.innerHTML =
+    '<div class="loading">Loading applications...</div>';
 
 
-  document.body.classList.toggle(
-    "light",
-    theme === "light"
-  );
+  try{
 
+    const snap =
+      await getDocs(
+        query(
+          collection(db,"applications"),
+          where(
+            "clientId",
+            "==",
+            currentUser.uid
+          )
+        )
+      );
+
+
+    if(snap.empty){
+
+      list.innerHTML =
+        '<div class="empty">No freelancer applications yet.</div>';
+
+      return;
+    }
+
+
+    list.innerHTML =
+      snap.docs.map(
+        d => {
+
+          const a =
+            d.data();
+
+          const s =
+            a.status ||
+            "pending";
+
+          let buttons = "";
+
+
+          if(s === "pending"){
+
+            buttons = `
+              <button
+                class="primary accept-app"
+                data-id="${d.id}"
+              >
+                Accept ✅
+              </button>
+
+              <button
+                class="danger reject-app"
+                data-id="${d.id}"
+              >
+                Reject ❌
+              </button>
+            `;
+          }
+
+
+          if(s === "accepted"){
+
+            buttons = `
+              <button
+                class="primary chat-app"
+                data-id="${d.id}"
+              >
+                💬 Message Freelancer
+              </button>
+            `;
+          }
+
+
+          return `
+            <article class="card">
+
+              <h3>
+                👤
+                ${esc(
+                  a.freelancerName ||
+                  "Freelancer"
+                )}
+              </h3>
+
+              <p>
+                Applied for:
+                <b>
+                  ${esc(
+                    a.jobTitle ||
+                    "Project"
+                  )}
+                </b>
+              </p>
+
+              <div class="meta">
+
+                <span class="pill ${esc(s)}">
+                  ${esc(s)}
+                </span>
+
+                <span class="pill">
+                  💰
+                  $${Number(
+                    a.budget || 0
+                  )}
+                </span>
+
+              </div>
+
+              <small class="muted">
+                ${esc(
+                  a.freelancerEmail ||
+                  ""
+                )}
+                •
+                ${fmtDate(
+                  a.createdAt
+                )}
+              </small>
+
+              <div class="card-actions">
+                ${buttons}
+              </div>
+
+            </article>
+          `;
+        }
+      ).join("");
+
+
+    list
+      .querySelectorAll(
+        ".accept-app"
+      )
+      .forEach(
+        b =>
+          b.addEventListener(
+            "click",
+            () =>
+              updateApplicationStatus(
+                b.dataset.id,
+                "accepted"
+              )
+          )
+      );
+
+
+    list
+      .querySelectorAll(
+        ".reject-app"
+      )
+      .forEach(
+        b =>
+          b.addEventListener(
+            "click",
+            () =>
+              updateApplicationStatus(
+                b.dataset.id,
+                "rejected"
+              )
+          )
+      );
+
+
+    list
+      .querySelectorAll(
+        ".chat-app"
+      )
+      .forEach(
+        b =>
+          b.addEventListener(
+            "click",
+            () =>
+              openApplicationChat(
+                b.dataset.id
+              )
+          )
+      );
+
+  }catch(e){
+
+    showError(e);
+  }
 }
 
 
-applyTheme();
+/* =========================================================
+   ACCEPT / REJECT APPLICATION
+========================================================= */
+
+async function updateApplicationStatus(
+  appId,
+  status
+){
+
+  try{
+
+    const aSnap =
+      await getDoc(
+        doc(
+          db,
+          "applications",
+          appId
+        )
+      );
 
 
-function toggleTheme() {
+    if(!aSnap.exists())
+      throw new Error(
+        "Application not found."
+      );
 
-  const light =
-    document.body.classList.toggle(
-      "light"
+
+    const a =
+      aSnap.data();
+
+
+    if(
+      a.clientId !==
+      currentUser.uid &&
+      !isOwner()
+    ){
+
+      throw new Error(
+        "You cannot change this application."
+      );
+    }
+
+
+    await updateDoc(
+      doc(
+        db,
+        "applications",
+        appId
+      ),
+      {
+        status,
+        updatedAt:
+          serverTimestamp()
+      }
     );
 
 
-  localStorage.setItem(
-    "elite-theme",
-    light
-      ? "light"
-      : "dark"
-  );
+    if(status === "accepted"){
 
-}
-
-
-$("themeToggle")
-  ?.addEventListener(
-    "click",
-    toggleTheme
-  );
-
-
-$("settingsThemeBtn")
-  ?.addEventListener(
-    "click",
-    toggleTheme
-  );
-
-
-/* =========================================================
-   BRAND / PROFILE / HELP
-========================================================= */
-
-$("brandHome")
-  ?.addEventListener(
-    "click",
-    () =>
-      go(
-        "dashboardPage",
-        "Dashboard"
-      )
-  );
-
-
-$("topProfileBtn")
-  ?.addEventListener(
-    "click",
-    () =>
-      go(
-        "profilePage",
-        "Profile"
-      )
-  );
-
-
-$("helpBtn")
-  ?.addEventListener(
-    "click",
-    () => {
-
-      alert(
-        "ELITE FREELANCE HUB Support\n\nFor account, project or payment issues, contact the platform owner."
+      await updateDoc(
+        doc(
+          db,
+          "jobs",
+          a.jobId
+        ),
+        {
+          status:"assigned",
+          assignedFreelancerId:
+            a.freelancerId,
+          assignedFreelancerName:
+            a.freelancerName ||
+            "Freelancer"
+        }
       );
 
-    }
-  );
+
+      const existing =
+        await getDocs(
+          query(
+            collection(
+              db,
+              "projects"
+            ),
+            where(
+              "jobId",
+              "==",
+              a.jobId
+            ),
+            where(
+              "freelancerId",
+              "==",
+              a.freelancerId
+            )
+          )
+        );
 
 
-$("notificationBtn")
-  ?.addEventListener(
-    "click",
-    () => {
+      if(existing.empty){
+
+        await addDoc(
+          collection(
+            db,
+            "projects"
+          ),
+          {
+            jobId:
+              a.jobId,
+
+            title:
+              a.jobTitle ||
+              "Project",
+
+            budget:
+              Number(
+                a.budget || 0
+              ),
+
+            description:
+              "Accepted project",
+
+            clientId:
+              a.clientId,
+
+            clientName:
+              userData.name ||
+              "Client",
+
+            clientEmail:
+              currentUser.email ||
+              "",
+
+            freelancerId:
+              a.freelancerId,
+
+            freelancerName:
+              a.freelancerName ||
+              "Freelancer",
+
+            status:
+              "in_progress",
+
+            createdAt:
+              serverTimestamp()
+          }
+        );
+      }
+
 
       showToast(
-        "No new notifications."
+        "Freelancer accepted. Project is now in progress."
       );
 
+    }else{
+
+      showToast(
+        "Application rejected."
+      );
     }
-  );
 
 
-/* =========================================================
-   LOGOUT
-========================================================= */
+    await loadClientApplications();
+    await loadClientProjects();
+    await loadClientDashboard();
+    await loadConversations();
 
-async function logout() {
+  }catch(e){
 
-  try {
+    showError(e);
 
-    await signOut(auth);
-
-    location.href =
-      "login.html";
-
-  } catch (error) {
-
-    showError(error);
-
+    showToast(
+      e.message ||
+      "Could not update application."
+    );
   }
-
 }
 
 
-$("logoutBtn")
-  ?.addEventListener(
-    "click",
-    logout
-  );
+/* =========================================================
+   MESSAGES
+========================================================= */
+
+async function loadConversations(){
+
+  const list =
+    $("conversationsList");
+
+  if(!list) return;
+
+  list.innerHTML =
+    '<div class="empty">Loading conversations...</div>';
 
 
-$("topLogout")
-  ?.addEventListener(
-    "click",
-    logout
+  try{
+
+    const snap =
+      role() === "client"
+
+        ? await getDocs(
+            query(
+              collection(db,"projects"),
+              where(
+                "clientId",
+                "==",
+                currentUser.uid
+              )
+            )
+          )
+
+        : await getDocs(
+            query(
+              collection(db,"projects"),
+              where(
+                "freelancerId",
+                "==",
+                currentUser.uid
+              )
+            )
+          );
+
+
+    if(snap.empty){
+
+      list.innerHTML =
+        '<div class="empty">No accepted projects yet.</div>';
+
+      return;
+    }
+
+
+    list.innerHTML =
+      snap.docs.map(
+        d => {
+
+          const p =
+            d.data();
+
+          const other =
+            role() === "client"
+              ? (
+                  p.freelancerName ||
+                  "Freelancer"
+                )
+              : (
+                  p.clientName ||
+                  "Client"
+                );
+
+
+          return `
+            <div
+              class="conversation"
+              data-project="${d.id}"
+            >
+
+              <strong>
+                ${esc(
+                  p.title ||
+                  "Project"
+                )}
+              </strong>
+
+              <span>
+                Chat with
+                ${esc(other)}
+              </span>
+
+            </div>
+          `;
+        }
+      ).join("");
+
+
+    list
+      .querySelectorAll(
+        ".conversation"
+      )
+      .forEach(
+        c =>
+          c.addEventListener(
+            "click",
+            () =>
+              openProjectChat(
+                c.dataset.project
+              )
+          )
+      );
+
+  }catch(e){
+
+    showError(e);
+  }
+}
+
+
+async function openProjectChat(
+  projectId
+){
+
+  const snap =
+    await getDoc(
+      doc(
+        db,
+        "projects",
+        projectId
+      )
+    );
+
+
+  if(!snap.exists())
+    return;
+
+
+  const p =
+    snap.data();
+
+
+  currentConversation = {
+    id:projectId,
+    ...p
+  };
+
+
+  document
+    .querySelectorAll(
+      ".conversation"
+    )
+    .forEach(
+      c =>
+        c.classList.toggle(
+          "active",
+          c.dataset.project ===
+          projectId
+        )
+    );
+
+
+  $("chatTitle").textContent =
+    p.title ||
+    "Project";
+
+
+  $("chatSubtitle").textContent =
+    role() === "client"
+      ? `Freelancer: ${
+          p.freelancerName ||
+          "Freelancer"
+        }`
+      : `Client: ${
+          p.clientName ||
+          "Client"
+        }`;
+
+
+  $("composer").style.display =
+    "flex";
+
+
+  await loadMessages(
+    projectId
   );
+}
+
+
+async function openApplicationChat(
+  appId
+){
+
+  const a =
+    await getDoc(
+      doc(
+        db,
+        "applications",
+        appId
+      )
+    );
+
+
+  if(!a.exists())
+    return;
+
+
+  const data =
+    a.data();
+
+
+  const q =
+    await getDocs(
+      query(
+        collection(
+          db,
+          "projects"
+        ),
+        where(
+          "jobId",
+          "==",
+          data.jobId
+        ),
+        where(
+          "freelancerId",
+          "==",
+          data.freelancerId
+        )
+      )
+    );
+
+
+  if(!q.empty){
+
+    await go(
+      "messagesPage",
+      "Messages"
+    );
+
+    await openProjectChat(
+      q.docs[0].id
+    );
+
+  }else{
+
+    showToast(
+      "Chat becomes available after the project is accepted."
+    );
+  }
+}
+
+
+async function loadMessages(
+  projectId
+){
+
+  const list =
+    $("messageList");
+
+  if(!list) return;
+
+  list.innerHTML =
+    '<div class="loading">Loading messages...</div>';
+
+
+  try{
+
+    const snap =
+      await getDocs(
+        query(
+          collection(db,"messages"),
+          where(
+            "projectId",
+            "==",
+            projectId
+          )
+        )
+      );
+
+
+    if(snap.empty){
+
+      list.innerHTML =
+        '<div class="empty">No messages yet. Start the conversation.</div>';
+
+      return;
+    }
+
+
+    const docs =
+      [...snap.docs].sort(
+        (a,b) => {
+
+          const x =
+            a.data()
+             .createdAt
+             ?.toMillis?.() ||
+            0;
+
+          const y =
+            b.data()
+             .createdAt
+             ?.toMillis?.() ||
+            0;
+
+          return x-y;
+        }
+      );
+
+
+    list.innerHTML =
+      docs.map(
+        d => {
+
+          const m =
+            d.data();
+
+          const mine =
+            m.senderId ===
+            currentUser.uid;
+
+
+          return `
+            <div
+              class="bubble ${
+                mine ? "mine" : ""
+              }"
+            >
+
+              <div>
+                ${esc(
+                  m.text || ""
+                )}
+              </div>
+
+              <small>
+                ${
+                  mine
+                    ? "You"
+                    : esc(
+                        m.senderName ||
+                        "Member"
+                      )
+                }
+                •
+                ${fmtDate(
+                  m.createdAt
+                )}
+              </small>
+
+            </div>
+          `;
+        }
+      ).join("");
+
+
+    list.scrollTop =
+      list.scrollHeight;
+
+  }catch(e){
+
+    showError(e);
+  }
+}
 
 
 /* =========================================================
-   AUTH STATE
+   SEND MESSAGE
 ========================================================= */
 
-onAuthStateChanged(
-  auth,
-  async user => {
+$("sendMessage")?.addEventListener(
+  "click",
+  async () => {
 
-    if (!user) {
+    if(!currentConversation){
 
-      location.href =
-        "login.html";
+      showToast(
+        "Select a project first."
+      );
 
       return;
-
     }
 
 
-    currentUser =
-      user;
+    const input =
+      $("messageInput");
+
+    const text =
+      input.value.trim();
 
 
-    try {
-
-      let snap =
-        await getDoc(
-          doc(
-            db,
-            "users",
-            user.uid
-          )
-        );
+    if(!text) return;
 
 
-      /* =====================================================
-         CREATE OWNER PROFILE AUTOMATICALLY
-      ===================================================== */
+    const p =
+      currentConversation;
 
-      if (!snap.exists()) {
 
-        if (
-          user.email?.toLowerCase() ===
-          OWNER_EMAIL.toLowerCase()
-        ) {
+    const receiverId =
+      role() === "client"
+        ? p.freelancerId
+        : p.clientId;
 
-          await setDoc(
-            doc(
-              db,
-              "users",
-              user.uid
-            ),
-            {
 
-              name:
-                "AYESHA REHMAN",
+    const receiverEmail =
+      role() === "client"
+        ? p.freelancerEmail
+        : p.clientEmail;
 
-              email:
-                user.email,
 
-              role:
-                "freelancer",
+    try{
 
-              gender:
-                "female",
+      $("sendMessage").disabled =
+        true;
 
-              skills:
-                "Web Development, HTML, CSS, JavaScript",
 
-              bio:
-                "Founder and Professional Freelancer at ELITE FREELANCE HUB.",
+      await addDoc(
+        collection(
+          db,
+          "messages"
+        ),
+        {
+          projectId:
+            p.id,
 
-              location:
-                "Pakistan",
+          jobId:
+            p.jobId,
 
-              hourlyRate:
-                0,
+          senderId:
+            currentUser.uid,
 
-              availability:
-                "Available",
+          senderName:
+            userData.name ||
+            "Member",
 
-              createdAt:
-                serverTimestamp()
+          senderEmail:
+            currentUser.email ||
+            "",
 
-            }
-          );
+          receiverId:
+            receiverId ||
+            "",
 
-        } else {
+          receiverEmail:
+            receiverEmail ||
+            "",
 
-          await signOut(auth);
+          text,
 
-          location.href =
-            "login.html";
-
-          return;
-
+          createdAt:
+            serverTimestamp()
         }
-
-      }
-
-
-      /* =====================================================
-         LOAD USER DATA
-      ===================================================== */
-
-      snap =
-        await getDoc(
-          doc(
-            db,
-            "users",
-            user.uid
-          )
-        );
+      );
 
 
-      userData =
-        snap.data() || {};
+      input.value = "";
 
 
-      /* =====================================================
-         OWNER CAN USE BOTH MODES
-      ===================================================== */
+      await loadMessages(
+        p.id
+      );
 
-      const owner =
-        user.email?.toLowerCase() ===
-        OWNER_EMAIL.toLowerCase();
+    }catch(e){
 
+      showError(e);
 
-      /*
-        Owner:
-        Can access Freelancer + Client.
+      showToast(
+        "Message could not be sent."
+      );
 
-        Other users:
-        Must stay in their registered role.
-      */
+    }finally{
 
-      if (
-        !owner &&
-        userData.role !== role()
-      ) {
-
-        location.href =
-          userData.role === "client"
-            ? "client-dashboard.html"
-            : "index.html";
-
-        return;
-
-      }
-
-
-      /* =====================================================
-         FINAL UI
-      ===================================================== */
-
-      applyIdentity();
-
-      loadDashboard();
-
-      renderTimer();
-
-
-    } catch (error) {
-
-      showError(error);
-
+      $("sendMessage").disabled =
+        false;
     }
-
   }
 );
+
+
+$("messageInput")?.addEventListener(
+  "keydown",
+  e => {
+
+    if(
+      e.key === "Enter" &&
+      !e.shiftKey
+    ){
+
+      e.preventDefault();
+
+      $("sendMessage")?.click();
+    }
+  }
+);
+
+
+/* =========================================================
+   POST PROJECT
+========================================================= */
+
+async function initPostPage(){
+
+  if(!currentUser)
+    return;
+
+
+  const form =
+    $("postForm");
+
+  if(!form)
+    return;
+
+
+  const owner =
+    isOwner();
+
+
+  const clientAllowed =
+    role() === "client" ||
+    owner;
+
+
+  if(!clientAllowed){
+
+    location.href =
+      "index.html";
+
+    return;
+  }
+
+
+  form.addEventListener(
+    "submit",
+    async e => {
+
+      e.preventDefault();
+
+
+      const btn =
+        $("postBtn");
+
+
+      btn.disabled =
+        true;
+
+
+      btn.textContent =
+        "Publishing...";
+
+
+      try{
+
+        const title =
+          $("postTitle")
+            .value
+            .trim();
+
+        const category =
+          $("postCategory").value;
+
+        const description =
+          $("postDescription")
+            .value
+            .trim();
+
+        const budget =
+          Number(
+            $("postBudget").value
+          );
+
+        const deadline =
+          $("postDeadline").value;
+
+
+        if(
+          !title ||
+          !category ||
+          !description ||
+          !budget ||
+          !deadline
+        ){
+
+          throw new Error(
+            "Please complete every field."
+          );
+        }
+
+
+        await addDoc(
+          collection(
+            db,
+            "jobs"
+          ),
+          {
+            title,
+            category,
+            description,
+            budget,
+            deadline,
+            status:"open",
+
+            clientId:
+              currentUser.uid,
+
+            clientEmail:
+              currentUser.email ||
+              "",
+
+            clientName:
+              userData.name ||
+              "Client",
+
+            createdAt:
+              serverTimestamp()
+          }
+        );
+
+
+        $("postMessage").textContent =
+          "Project published successfully!";
+
+
+        form.reset();
+
+
+        showToast(
+          "Project published."
+        );
+
+
+        setTimeout(
+          () => {
+            location.href =
+              "client-dashboard.html";
+          },
+          700
+        );
+
+      }catch(e){
+
+        showError(e);
+
+        $("postMessage").textContent =
+          e.message ||
+          "Could not publish project.";
+
+      }finally{
+
+        btn.disabled =
+          false;
+
+        btn.textContent =
+          "🚀 Publish Project";
+      }
+    }
+  );
+}
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+$("settingsForm")?.addEventListener(
+  "submit",
+  async e => {
+
+    e.preventDefault();
+
+
+    try{
+
+      await updateDoc(
+        doc(
+          db,
+          "users",
+          currentUser.uid
+        ),
+        {
+          name:
+            $("settingsName")
+              .value
+              .trim(),
+
+          skills:
+            $("settingsSkills")
+              .value
+              .trim(),
+
+          updatedAt:
+            serverTimestamp()
+        }
+      );
+
+
+      userData.name =
+        $("settingsName")
+          .value
+          .trim();
+
+
+      userData.skills =
+        $("settingsSkills")
+          .value
+          .trim();
+
+
+      $("settingsMessage").textContent =
+        "Saved successfully.";
+
+
+      showToast(
+        "Profile updated."
+      );
+
+
+      await loadIdentity();
+
+    }catch(err){
+
+      showError(err);
+
+      $("settingsMessage").textContent =
+        err.message ||
+        "Could not save.";
+    }
+  }
+);
+
+
+/* =========================================================
+   OWNER PANEL
+========================================================= */
+
+async function loadOwnerStats(){
+
+  if(
+    !$("ownerStats") ||
+    !isOwner()
+  )
+    return;
+
+
+  try{
+
+    const [
+      u,
+      j,
+      a,
+      p
+    ] =
+      await Promise.all([
+
+        getDocs(
+          collection(
+            db,
+            "users"
+          )
+        ),
+
+        getDocs(
+          collection(
+            db,
+            "jobs"
+          )
+        ),
+
+        getDocs(
+          collection(
+            db,
+            "applications"
+          )
+        ),
+
+        getDocs(
+          collection(
+            db,
+            "projects"
+          )
+        )
+      ]);
+
+
+    $("ownerStats").innerHTML =
+      [
+        [
+          "👥",
+          "Users",
+          u.size,
+          "Registered accounts"
+        ],
+
+        [
+          "💼",
+          "Projects",
+          j.size,
+          "All posted projects"
+        ],
+
+        [
+          "✉",
+          "Applications",
+          a.size,
+          "All applications"
+        ],
+
+        [
+          "✓",
+          "Projects in Work",
+          p.size,
+          "Accepted projects"
+        ]
+      ]
+      .map(
+        x =>
+          `<div class="stat">
+
+            <div class="icon">
+              ${x[0]}
+            </div>
+
+            <h3>
+              ${x[2]}
+            </h3>
+
+            <p>
+              ${x[1]}
+            </p>
+
+            <em>
+              ${x[3]}
+            </em>
+
+          </div>`
+      )
+      .join("");
+
+  }catch(e){
+
+    showError(e);
+  }
+}
+
+
+/* =========================================================
+   TIMER PLACEHOLDER
+========================================================= */
+
+function renderTimerless(){}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+if(isLogin)
+  initAuth();
+else
+  authGuard();
