@@ -1,845 +1,833 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>ELITE FREELANCE HUB</title>
 
 <style>
+
 *{
-    box-sizing:border-box;
+box-sizing:border-box;
 }
 
 html{
-    scroll-behavior:smooth;
+scroll-behavior:smooth;
 }
 
 :root{
-    --bg:#050914;
-    --sidebar:#09111f;
-    --panel:#0d1627;
-    --panel2:#101b2f;
-    --line:#24324b;
-    --text:#f5f7ff;
-    --muted:#8995ab;
-    --purple:#8b4fff;
-    --purple2:#6f35dc;
-    --purpleSoft:#b889ff;
-    --gold:#f4b914;
-    --green:#35cf7b;
-    --red:#ff536b;
+--bg:#050914;
+--sidebar:#09111f;
+--panel:#0d1627;
+--panel2:#101b2f;
+--line:#24324b;
+--text:#f5f7ff;
+--muted:#8995ab;
+--purple:#8b4fff;
+--purple2:#6f35dc;
+--green:#35cf7b;
+--red:#ff536b;
 }
 
 body{
-    margin:0;
-    min-height:100vh;
-    background:
-        radial-gradient(
-            circle at 55% -20%,
-            rgba(139,79,255,.13),
-            transparent 35%
-        ),
-        var(--bg);
-    color:var(--text);
-    font-family:Inter,Segoe UI,Arial,sans-serif;
-    font-size:14px;
+margin:0;
+min-height:100vh;
+background:
+radial-gradient(circle at 55% -20%,rgba(139,79,255,.13),transparent 35%),
+var(--bg);
+color:var(--text);
+font-family:Inter,Segoe UI,Arial,sans-serif;
+font-size:14px;
 }
 
-button,
-input,
-select,
-textarea{
-    font:inherit;
+button,input,select,textarea{
+font:inherit;
 }
 
 button{
-    cursor:pointer;
+cursor:pointer;
 }
 
 button:disabled{
-    opacity:.5;
-    cursor:not-allowed;
+opacity:.5;
+cursor:not-allowed;
 }
 
-/* =========================
-   MOBILE OVERLAY
-========================= */
-
-.mobile-overlay{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.65);
-    z-index:90;
-}
-
-/* =========================
-   MOBILE MENU BUTTON
-========================= */
-
-.mobile-menu-btn{
-    display:none;
-    width:44px;
-    height:44px;
-    border:1px solid #293750;
-    border-radius:10px;
-    background:#0d182a;
-    color:#fff;
-    font-size:22px;
-    align-items:center;
-    justify-content:center;
-}
 
 /* =========================
    APP
 ========================= */
 
 .app{
-    min-height:100vh;
-    display:flex;
+min-height:100vh;
+display:flex;
 }
+
 
 /* =========================
    SIDEBAR
 ========================= */
 
 .sidebar{
-    position:fixed;
-    left:0;
-    top:0;
-    bottom:0;
-    width:250px;
-    padding:16px 14px;
-    background:linear-gradient(180deg,#0a1221,#070d17);
-    border-right:1px solid #1d2a42;
-    z-index:100;
-    display:flex;
-    flex-direction:column;
-    transition:transform .3s ease;
+position:fixed;
+left:0;
+top:0;
+bottom:0;
+width:250px;
+padding:16px 14px;
+background:linear-gradient(180deg,#0a1221,#070d17);
+border-right:1px solid #1d2a42;
+z-index:1000;
+display:flex;
+flex-direction:column;
+transition:.3s ease;
 }
 
-/* BRAND */
+
+/* =========================
+   BRAND
+========================= */
 
 .brand{
-    width:100%;
-    height:60px;
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:0 8px;
-    border:0;
-    border-bottom:1px solid #1c2940;
-    background:transparent;
-    color:var(--text);
-    text-align:left;
+width:100%;
+height:60px;
+display:flex;
+align-items:center;
+gap:10px;
+padding:0 8px;
+border:0;
+border-bottom:1px solid #1c2940;
+background:transparent;
+color:var(--text);
+text-align:left;
 }
 
 .brand .mark{
-    font-size:28px;
-    color:#a866ff;
+font-size:30px;
+color:#a866ff;
+text-shadow:0 0 18px rgba(168,102,255,.5);
 }
 
 .brand strong{
-    display:block;
-    font-size:18px;
-    line-height:1;
+display:block;
+font-size:18px;
+line-height:1;
 }
 
 .brand small{
-    display:block;
-    font-size:9px;
-    letter-spacing:1.3px;
-    color:#8490a7;
-    margin-top:5px;
+display:block;
+font-size:9px;
+letter-spacing:1.5px;
+color:#8490a7;
+margin-top:5px;
 }
 
-/* PROFILE */
+
+/* =========================
+   MOBILE HEADER
+========================= */
+
+.mobile-header{
+display:none;
+}
+
+
+/* =========================
+   PROFILE
+========================= */
 
 .mini-profile{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:14px 8px;
-    margin:8px 0;
-    border-bottom:1px solid #1c2940;
+display:flex;
+align-items:center;
+gap:10px;
+padding:14px 8px;
+margin:8px 0;
+border-bottom:1px solid #1c2940;
 }
 
 .mini-profile strong{
-    display:block;
-    font-size:12px;
+display:block;
+font-size:12px;
 }
 
 .mini-profile small{
-    display:block;
-    font-size:10px;
-    color:#8792a8;
-    margin-top:4px;
+display:block;
+font-size:10px;
+color:#8792a8;
+margin-top:4px;
 }
 
 .online{
-    margin-left:auto;
-    color:#36d67b!important;
+margin-left:auto;
+color:#36d67b !important;
 }
 
-/* AVATAR */
+
+/* =========================
+   AVATAR
+========================= */
 
 .avatar{
-    width:42px;
-    height:42px;
-    min-width:42px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:linear-gradient(135deg,#251447,#111b31);
-    border:1px solid #8b4fff;
-    font-size:24px;
+width:42px;
+height:42px;
+min-width:42px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:linear-gradient(135deg,#251447,#111b31);
+border:1px solid #8b4fff;
+font-size:24px;
 }
 
 .avatar.small{
-    width:36px;
-    height:36px;
-    min-width:36px;
-    font-size:21px;
+width:36px;
+height:36px;
+min-width:36px;
+font-size:21px;
 }
 
-/* NAV */
+
+/* =========================
+   NAV
+========================= */
 
 .nav-area{
-    flex:1;
-    overflow-y:auto;
-    padding-right:2px;
+flex:1;
+overflow-y:auto;
+padding-right:2px;
 }
 
 .section-title{
-    font-size:10px;
-    font-weight:800;
-    letter-spacing:1.3px;
-    color:#69768f;
-    padding:14px 10px 7px;
+font-size:10px;
+font-weight:800;
+letter-spacing:1.3px;
+color:#69768f;
+padding:14px 10px 7px;
 }
 
 .nav{
-    width:100%;
-    display:block;
-    border:1px solid transparent;
-    background:transparent;
-    color:#b9c5da;
-    padding:10px 11px;
-    margin:2px 0;
-    border-radius:10px;
-    text-align:left;
-    font-size:13px;
+width:100%;
+display:block;
+border:1px solid transparent;
+background:transparent;
+color:#b9c5da;
+padding:10px 11px;
+margin:2px 0;
+border-radius:10px;
+text-align:left;
+font-size:13px;
 }
 
 .nav:hover{
-    background:#121d30;
-    color:#fff;
+background:#121d30;
+color:#fff;
 }
 
 .nav.active{
-    background:linear-gradient(90deg,#291253,#18122b);
-    color:#fff;
-    border-color:#7440d9;
-    box-shadow:inset 3px 0 #9b5cff;
+background:linear-gradient(90deg,#291253,#18122b);
+color:#fff;
+border-color:#7440d9;
+box-shadow:inset 3px 0 #9b5cff;
 }
 
-/* SIDE BOTTOM */
+
+/* =========================
+   SIDE BOTTOM
+========================= */
 
 .side-bottom{
-    border-top:1px solid #1d2940;
-    padding-top:8px;
+border-top:1px solid #1d2940;
+padding-top:8px;
 }
 
 .side-bottom button{
-    width:100%;
-    border:0;
-    background:transparent;
-    color:#9aa8bf;
-    padding:10px;
-    text-align:left;
-    border-radius:8px;
+width:100%;
+border:0;
+background:transparent;
+color:#9aa8bf;
+padding:10px;
+text-align:left;
+border-radius:8px;
 }
 
 .side-bottom button:hover{
-    background:#111c2e;
-    color:#fff;
+background:#111c2e;
+color:#fff;
 }
 
 .side-bottom .logout{
-    color:#ff5b72;
+color:#ff5b72;
 }
+
 
 /* =========================
    MAIN
 ========================= */
 
 .main{
-    margin-left:250px;
-    width:calc(100% - 250px);
-    min-height:100vh;
-    padding:0 28px 40px;
+margin-left:250px;
+width:calc(100% - 250px);
+min-height:100vh;
+padding:0 28px 40px;
 }
 
-/* TOPBAR */
+
+/* =========================
+   TOPBAR
+========================= */
 
 .topbar{
-    min-height:88px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    border-bottom:1px solid #1d2940;
-}
-
-.top-left{
-    display:flex;
-    flex-direction:column;
+min-height:88px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+border-bottom:1px solid #1d2940;
 }
 
 .top-left small{
-    font-size:10px;
-    font-weight:800;
-    letter-spacing:1.5px;
-    color:#8290aa;
+font-size:10px;
+font-weight:800;
+letter-spacing:1.5px;
+color:#8290aa;
 }
 
 .top-left h1{
-    margin:4px 0 0;
-    font-size:27px;
+margin:4px 0 0;
+font-size:27px;
 }
 
 .top-right{
-    display:flex;
-    align-items:center;
-    gap:9px;
+display:flex;
+align-items:center;
+gap:9px;
 }
 
 .round-btn{
-    position:relative;
-    width:42px;
-    height:42px;
-    border-radius:50%;
-    background:#0d182a;
-    border:1px solid #283750;
-    color:#d8deea;
+position:relative;
+width:42px;
+height:42px;
+border-radius:50%;
+background:#0d182a;
+border:1px solid #283750;
+color:#d8deea;
 }
 
 .round-btn:hover{
-    border-color:#8b4fff;
-    color:#fff;
+border-color:#8b4fff;
+color:#fff;
 }
 
 .dot{
-    position:absolute;
-    right:9px;
-    top:8px;
-    width:6px;
-    height:6px;
-    border-radius:50%;
-    background:#a05cff;
+position:absolute;
+right:9px;
+top:8px;
+width:6px;
+height:6px;
+border-radius:50%;
+background:#a05cff;
 }
 
 .user-chip{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    padding:4px 12px 4px 5px;
-    background:#0d182a;
-    border:1px solid #283750;
-    border-radius:24px;
-    color:#fff;
+display:flex;
+align-items:center;
+gap:8px;
+padding:4px 12px 4px 5px;
+background:#0d182a;
+border:1px solid #283750;
+border-radius:24px;
+color:#fff;
 }
 
 .logout-top{
-    height:42px;
-    padding:0 16px;
-    border-radius:8px;
-    background:transparent;
-    border:1px solid #a33b50;
-    color:#ff657a;
+height:42px;
+padding:0 16px;
+border-radius:8px;
+background:transparent;
+border:1px solid #a33b50;
+color:#ff657a;
 }
+
 
 /* =========================
    PAGES
 ========================= */
 
 .page{
-    display:none;
-    padding-top:22px;
+display:none;
+padding-top:22px;
 }
 
 .page.active{
-    display:block;
+display:block;
 }
 
-/* PAGE HEAD */
+
+/* =========================
+   PAGE HEAD
+========================= */
 
 .page-head{
-    margin-bottom:18px;
+margin-bottom:18px;
 }
 
 .page-head label{
-    color:#a866ff;
-    font-size:10px;
-    font-weight:900;
-    letter-spacing:1.5px;
+color:#a866ff;
+font-size:10px;
+font-weight:900;
+letter-spacing:1.5px;
 }
 
 .page-head h2{
-    margin:5px 0;
-    font-size:28px;
+margin:5px 0;
+font-size:28px;
 }
 
 .page-head p{
-    margin:0;
-    color:#8996ac;
+margin:0;
+color:#8996ac;
 }
+
 
 /* =========================
    SETTINGS
 ========================= */
 
 .settings-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:15px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
 }
 
 .settings-grid .form-box:first-child{
-    grid-column:1/-1;
+grid-column:1/-1;
 }
 
-/* FORM */
+
+/* =========================
+   FORM
+========================= */
 
 .form-box{
-    background:#0d1728;
-    border:1px solid #23334d;
-    border-radius:14px;
-    padding:20px;
-    margin-bottom:0;
+background:#0d1728;
+border:1px solid #23334d;
+border-radius:14px;
+padding:20px;
 }
 
 .form-box h3{
-    margin-top:0;
-    margin-bottom:16px;
-    font-size:17px;
+margin-top:0;
+margin-bottom:16px;
+font-size:17px;
 }
 
 .form-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:14px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:14px;
 }
 
 .field{
-    display:flex;
-    flex-direction:column;
-    gap:7px;
-    font-size:12px;
-    font-weight:700;
-    color:#c3ccdb;
+display:flex;
+flex-direction:column;
+gap:7px;
+font-size:12px;
+font-weight:700;
+color:#c3ccdb;
 }
 
 .field.full{
-    grid-column:1/-1;
+grid-column:1/-1;
 }
 
 .field input,
 .field select,
 .field textarea{
-    width:100%;
-    background:#091321;
-    border:1px solid #2a3a55;
-    border-radius:9px;
-    color:#f4f7ff;
-    padding:11px 12px;
-    outline:0;
+width:100%;
+background:#091321;
+border:1px solid #2a3a55;
+border-radius:9px;
+color:#f4f7ff;
+padding:11px 12px;
+outline:0;
 }
 
 .field input:focus,
 .field select:focus,
 .field textarea:focus{
-    border-color:#9658f5;
-    box-shadow:0 0 0 3px rgba(139,79,255,.08);
+border-color:#9658f5;
+box-shadow:0 0 0 3px rgba(139,79,255,.08);
 }
 
 .field textarea{
-    min-height:130px;
-    resize:vertical;
+min-height:130px;
+resize:vertical;
 }
 
 .form-row{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin-top:16px;
+display:flex;
+align-items:center;
+gap:12px;
+margin-top:16px;
 }
 
 .primary,
 .secondary,
 .danger{
-    border-radius:9px;
-    padding:11px 18px;
-    font-weight:800;
-    border:1px solid transparent;
+border-radius:9px;
+padding:11px 18px;
+font-weight:800;
+border:1px solid transparent;
 }
 
 .primary{
-    background:linear-gradient(135deg,#9853ff,#7136df);
-    color:#fff;
+background:linear-gradient(135deg,#9853ff,#7136df);
+color:#fff;
 }
 
 .primary:hover{
-    filter:brightness(1.08);
+filter:brightness(1.08);
 }
 
 .secondary{
-    background:#0e1729;
-    color:#d9c6ff;
-    border-color:#8a51ee;
+background:#0e1729;
+color:#d9c6ff;
+border-color:#8a51ee;
 }
 
 .danger{
-    background:#32111a;
-    color:#ff7085;
-    border-color:#9e334b;
+background:#32111a;
+color:#ff7085;
+border-color:#9e334b;
 }
 
 .success{
-    color:#43d883;
-    font-weight:700;
+color:#43d883;
+font-weight:700;
 }
 
 .muted{
-    color:#8795aa;
-    line-height:1.6;
+color:#8795aa;
+line-height:1.6;
 }
 
+
 /* =========================
-   HERO
+   DASHBOARD
 ========================= */
 
 .hero{
-    min-height:276px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    overflow:hidden;
-    position:relative;
-    border:1px solid #273650;
-    border-radius:16px;
-    background:linear-gradient(135deg,#0e1728,#11172b);
+min-height:276px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+overflow:hidden;
+position:relative;
+border:1px solid #273650;
+border-radius:16px;
+background:linear-gradient(135deg,#0e1728,#11172b);
 }
 
 .hero-copy{
-    padding:45px 30px;
-    max-width:67%;
+padding:45px 30px;
+max-width:67%;
 }
 
 .hero h2{
-    margin:0 0 12px;
-    font-size:38px;
-    line-height:1.1;
+margin:0 0 12px;
+font-size:38px;
+line-height:1.1;
 }
 
 .hero h2 span{
-    color:#995bff;
+color:#995bff;
 }
 
 .hero p{
-    color:#b5c0d4;
-    font-size:15px;
-    max-width:650px;
-    line-height:1.6;
+color:#b5c0d4;
+font-size:15px;
+max-width:650px;
+line-height:1.6;
 }
 
 .actions{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    margin-top:20px;
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:20px;
 }
 
-/* =========================
-   STATS
-========================= */
-
 .stats{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:12px;
-    margin-top:18px;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:12px;
+margin-top:18px;
 }
 
 .stat{
-    background:#0d1728;
-    border:1px solid #23334e;
-    border-radius:13px;
-    padding:17px;
+background:#0d1728;
+border:1px solid #23334e;
+border-radius:13px;
+padding:17px;
 }
 
 .stat .icon{
-    width:38px;
-    height:38px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border-radius:50%;
-    border:1px solid #8149e5;
-    margin-bottom:10px;
+width:38px;
+height:38px;
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:50%;
+border:1px solid #8149e5;
+margin-bottom:10px;
 }
 
 .stat h3{
-    font-size:26px;
-    margin:0 0 3px;
+font-size:26px;
+margin:0 0 3px;
 }
 
 .stat p{
-    margin:0;
-    color:#8d9ab1;
+margin:0;
+color:#8d9ab1;
 }
 
-/* =========================
-   CARDS
-========================= */
-
 .cards{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:12px;
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
 }
 
 .card{
-    background:#0d1728;
-    border:1px solid #23334d;
-    border-radius:13px;
-    padding:17px;
+background:#0d1728;
+border:1px solid #23334d;
+border-radius:13px;
+padding:17px;
 }
 
 .card h3{
-    margin:0 0 10px;
+margin:0 0 10px;
 }
 
 .card p{
-    color:#98a5bb;
-    line-height:1.55;
+color:#98a5bb;
+line-height:1.55;
 }
 
 .meta{
-    display:flex;
-    gap:7px;
-    flex-wrap:wrap;
-    margin:14px 0;
+display:flex;
+gap:7px;
+flex-wrap:wrap;
+margin:15px 0;
 }
 
 .pill{
-    padding:5px 9px;
-    border-radius:20px;
-    background:#172239;
-    border:1px solid #2a3c59;
-    color:#b8c5d9;
-    font-size:11px;
+display:inline-block;
+padding:5px 9px;
+border-radius:20px;
+background:#18243a;
+border:1px solid #2b3b57;
+font-size:11px;
+color:#bdc8da;
 }
 
 .pill.open{
-    color:#45d985;
-    border-color:#246b48;
-    background:#10281d;
+color:#42d985;
+border-color:#27754e;
 }
+
+
+/* =========================
+   POLICY REMOVED
+========================= */
+
+.marketplace-note{
+background:#0d1728;
+border:1px solid #23334d;
+border-radius:14px;
+padding:20px;
+}
+
+.marketplace-note strong{
+font-size:16px;
+}
+
 
 /* =========================
    TOAST
 ========================= */
 
 #toast{
-    position:fixed;
-    right:22px;
-    bottom:22px;
-    z-index:200;
-    background:#131f32;
-    border:1px solid #40516e;
-    color:#fff;
-    padding:13px 17px;
-    border-radius:10px;
-    box-shadow:0 15px 40px rgba(0,0,0,.3);
-    opacity:0;
-    pointer-events:none;
-    transform:translateY(15px);
-    transition:.25s;
+position:fixed;
+right:22px;
+bottom:22px;
+z-index:2000;
+background:#131f32;
+border:1px solid #40516e;
+color:#fff;
+padding:13px 17px;
+border-radius:10px;
+box-shadow:0 15px 40px rgba(0,0,0,.3);
+opacity:0;
+pointer-events:none;
+transform:translateY(15px);
+transition:.25s;
 }
 
 #toast.show{
-    opacity:1;
-    transform:translateY(0);
+opacity:1;
+transform:translateY(0);
 }
+
 
 /* =========================
    LIGHT MODE
 ========================= */
 
 body.light{
-    background:#f5f7fb;
-    color:#172033;
+background:#f5f7fb;
+color:#172033;
 }
 
 body.light .sidebar{
-    background:#fff;
-    border-right-color:#e1e6ee;
-    box-shadow:4px 0 18px rgba(25,35,55,.05);
+background:#fff;
+border-right-color:#e1e6ee;
+box-shadow:4px 0 18px rgba(25,35,55,.05);
 }
 
 body.light .brand{
-    border-bottom-color:#e5e9f0;
-    color:#172033;
+border-bottom-color:#e5e9f0;
+color:#172033;
 }
 
 body.light .brand small,
 body.light .mini-profile small{
-    color:#7d8798;
+color:#7d8798;
 }
 
 body.light .mini-profile{
-    border-bottom-color:#e5e9f0;
+border-bottom-color:#e5e9f0;
 }
 
 body.light .nav{
-    color:#586477;
+color:#586477;
 }
 
 body.light .nav:hover{
-    background:#f3f5f9;
-    color:#172033;
+background:#f3f5f9;
+color:#172033;
 }
 
 body.light .nav.active{
-    background:linear-gradient(90deg,#f0e8ff,#f9f6ff);
-    color:#6d32d2;
-    border-color:#d8c9f4;
-    box-shadow:inset 3px 0 #8b4fff;
+background:linear-gradient(90deg,#f0e8ff,#f9f6ff);
+color:#6d32d2;
+border-color:#d8c9f4;
+box-shadow:inset 3px 0 #8b4fff;
 }
 
 body.light .side-bottom{
-    border-top-color:#e5e9f0;
+border-top-color:#e5e9f0;
 }
 
 body.light .side-bottom button{
-    color:#697588;
+color:#697588;
 }
 
 body.light .side-bottom button:hover{
-    background:#f2f4f8;
-    color:#172033;
+background:#f2f4f8;
+color:#172033;
 }
 
 body.light .topbar{
-    border-bottom-color:#e1e6ee;
+border-bottom-color:#e1e6ee;
 }
 
 body.light .top-left small{
-    color:#8993a5;
+color:#8993a5;
 }
 
 body.light .top-left h1{
-    color:#172033;
+color:#172033;
 }
 
 body.light .round-btn,
 body.light .user-chip{
-    background:#fff;
-    border-color:#dce2eb;
-    color:#394559;
-}
-
-body.light .mobile-menu-btn{
-    background:#fff;
-    color:#172033;
-    border-color:#dce2eb;
+background:#fff;
+border-color:#dce2eb;
+color:#394559;
 }
 
 body.light .hero{
-    background:
-        radial-gradient(
-            circle at 85% 20%,
-            rgba(139,79,255,.10),
-            transparent 30%
-        ),
-        linear-gradient(135deg,#fff,#f5f1ff);
-    border-color:#dddfea;
+background:
+radial-gradient(circle at 85% 20%,rgba(139,79,255,.10),transparent 30%),
+linear-gradient(135deg,#fff,#f5f1ff);
+border-color:#dddfea;
 }
 
 body.light .hero p{
-    color:#687386;
+color:#687386;
 }
 
 body.light .stat,
 body.light .card,
-body.light .form-box{
-    background:#fff;
-    border-color:#e0e5ed;
-    box-shadow:0 6px 20px rgba(30,40,60,.04);
+body.light .form-box,
+body.light .marketplace-note{
+background:#fff;
+border-color:#e0e5ed;
+box-shadow:0 6px 20px rgba(30,40,60,.04);
 }
 
 body.light .stat h3,
 body.light .card h3,
 body.light .form-box h3{
-    color:#1c2535;
+color:#1c2535;
 }
 
 body.light .stat p,
 body.light .card p,
 body.light .muted{
-    color:#6d788b;
+color:#6d788b;
 }
 
 body.light .field{
-    color:#4f5b6d;
+color:#4f5b6d;
 }
 
 body.light .field input,
 body.light .field select,
 body.light .field textarea{
-    background:#fff;
-    color:#202a3b;
-    border-color:#d5dce6;
+background:#fff;
+color:#202a3b;
+border-color:#d5dce6;
 }
 
 body.light .secondary{
-    background:#fff;
-    color:#6d32d2;
-    border-color:#bda1ec;
+background:#fff;
+color:#6d32d2;
+border-color:#bda1ec;
 }
 
-body.light .pill{
-    background:#f1f3f8;
-    border-color:#dce1e9;
-    color:#596477;
-}
 
 /* =========================
    SCROLLBAR
 ========================= */
 
 ::-webkit-scrollbar{
-    width:7px;
+width:7px;
 }
 
 ::-webkit-scrollbar-track{
-    background:#070c15;
+background:#070c15;
 }
 
 ::-webkit-scrollbar-thumb{
-    background:#2b3850;
-    border-radius:20px;
+background:#2b3850;
+border-radius:20px;
 }
 
-body.light ::-webkit-scrollbar-track{
-    background:#edf0f4;
-}
-
-body.light ::-webkit-scrollbar-thumb{
-    background:#c5cedb;
-}
 
 /* =========================
    TABLET
@@ -847,23 +835,25 @@ body.light ::-webkit-scrollbar-thumb{
 
 @media(max-width:1080px){
 
-    .sidebar{
-        width:220px;
-    }
-
-    .main{
-        margin-left:220px;
-        width:calc(100% - 220px);
-    }
-
-    .stats{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .hero-copy{
-        max-width:60%;
-    }
+.sidebar{
+width:220px;
 }
+
+.main{
+margin-left:220px;
+width:calc(100% - 220px);
+}
+
+.stats{
+grid-template-columns:repeat(2,1fr);
+}
+
+.hero-copy{
+max-width:60%;
+}
+
+}
+
 
 /* =========================
    MOBILE
@@ -871,132 +861,156 @@ body.light ::-webkit-scrollbar-thumb{
 
 @media(max-width:760px){
 
-    .app{
-        display:block;
-    }
-
-    .sidebar{
-        position:fixed;
-        width:280px;
-        max-width:85%;
-        height:100vh;
-        top:0;
-        bottom:0;
-        left:0;
-        transform:translateX(-105%);
-        transition:transform .3s ease;
-        box-shadow:15px 0 45px rgba(0,0,0,.35);
-    }
-
-    .sidebar.mobile-open{
-        transform:translateX(0);
-    }
-
-    .mobile-overlay{
-        display:block;
-        opacity:0;
-        visibility:hidden;
-        transition:.3s;
-    }
-
-    .mobile-overlay.active{
-        opacity:1;
-        visibility:visible;
-    }
-
-    .mobile-menu-btn{
-        display:flex;
-    }
-
-    .main{
-        margin-left:0;
-        width:100%;
-        padding:0 14px 30px;
-    }
-
-    .topbar{
-        min-height:70px;
-        padding:12px 0;
-        gap:12px;
-    }
-
-    .top-left{
-        flex:1;
-    }
-
-    .top-left h1{
-        font-size:21px;
-    }
-
-    .top-right{
-        gap:6px;
-        flex-wrap:wrap;
-    }
-
-    .user-chip{
-        display:none;
-    }
-
-    .logout-top{
-        height:40px;
-        padding:0 10px;
-    }
-
-    .round-btn{
-        width:40px;
-        height:40px;
-    }
-
-    .page{
-        padding-top:18px;
-    }
-
-    .page-head h2{
-        font-size:25px;
-    }
-
-    .hero{
-        display:block;
-        min-height:auto;
-    }
-
-    .hero-copy{
-        max-width:none;
-        padding:30px 22px;
-    }
-
-    .hero h2{
-        font-size:30px;
-    }
-
-    .stats{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .cards{
-        grid-template-columns:1fr;
-    }
-
-    .settings-grid{
-        grid-template-columns:1fr;
-    }
-
-    .settings-grid .form-box:first-child{
-        grid-column:auto;
-    }
-
-    .form-grid{
-        grid-template-columns:1fr;
-    }
-
-    .field.full{
-        grid-column:auto;
-    }
-
-    .form-box{
-        padding:17px;
-    }
+body{
+overflow-x:hidden;
 }
+
+.app{
+display:block;
+}
+
+.sidebar{
+position:fixed;
+left:-285px;
+top:0;
+bottom:0;
+width:270px;
+height:100vh;
+padding:14px;
+box-shadow:10px 0 35px rgba(0,0,0,.35);
+transition:left .3s ease;
+}
+
+.sidebar.mobile-open{
+left:0;
+}
+
+.main{
+margin-left:0;
+width:100%;
+padding:0 14px 35px;
+}
+
+.mobile-header{
+height:64px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+position:sticky;
+top:0;
+z-index:900;
+background:#080f1c;
+border-bottom:1px solid #1d2940;
+margin:0 -14px;
+padding:0 14px;
+}
+
+.mobile-brand{
+display:flex;
+align-items:center;
+gap:8px;
+font-weight:900;
+}
+
+.mobile-brand .mark{
+font-size:24px;
+color:#a866ff;
+}
+
+.mobile-brand small{
+display:block;
+font-size:8px;
+letter-spacing:1px;
+color:#8490a7;
+margin-top:3px;
+}
+
+.menu-btn{
+width:42px;
+height:42px;
+border:1px solid #34445e;
+border-radius:10px;
+background:#0d182a;
+color:#fff;
+font-size:22px;
+}
+
+.menu-btn:hover{
+border-color:#8b4fff;
+}
+
+.menu-overlay{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.55);
+z-index:950;
+}
+
+.menu-overlay.show{
+display:block;
+}
+
+.topbar{
+min-height:auto;
+padding:18px 0;
+align-items:flex-start;
+flex-direction:column;
+gap:15px;
+}
+
+.top-left h1{
+font-size:25px;
+}
+
+.top-right{
+width:100%;
+flex-wrap:wrap;
+}
+
+.user-chip{
+flex:1;
+}
+
+.hero{
+display:block;
+}
+
+.hero-copy{
+max-width:none;
+padding:30px 22px;
+}
+
+.hero h2{
+font-size:30px;
+}
+
+.cards{
+grid-template-columns:1fr;
+}
+
+.settings-grid{
+grid-template-columns:1fr;
+}
+
+.settings-grid .form-box:first-child{
+grid-column:auto;
+}
+
+.form-grid{
+grid-template-columns:1fr;
+}
+
+.field.full{
+grid-column:auto;
+}
+
+.stats{
+grid-template-columns:repeat(2,1fr);
+}
+
+}
+
 
 /* =========================
    SMALL MOBILE
@@ -1004,53 +1018,53 @@ body.light ::-webkit-scrollbar-thumb{
 
 @media(max-width:480px){
 
-    .stats{
-        grid-template-columns:1fr;
-    }
-
-    .hero h2{
-        font-size:27px;
-    }
-
-    .actions{
-        flex-direction:column;
-    }
-
-    .actions button{
-        width:100%;
-    }
-
-    .top-left small{
-        font-size:8px;
-    }
-
-    .top-left h1{
-        font-size:19px;
-    }
-
-    .logout-top{
-        font-size:12px;
-    }
-
-    .mobile-menu-btn{
-        width:40px;
-        height:40px;
-    }
+.stats{
+grid-template-columns:1fr;
 }
+
+.hero h2{
+font-size:27px;
+}
+
+.logout-top{
+padding:0 12px;
+}
+
+.form-box{
+padding:16px;
+}
+
+.actions{
+flex-direction:column;
+}
+
+.actions button{
+width:100%;
+}
+
+.top-right{
+gap:7px;
+}
+
+}
+
 </style>
+
 </head>
+
 
 <body>
 
-<div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileMenu()"></div>
 
 <div class="app">
+
 
 <!-- =========================
      SIDEBAR
 ========================= -->
 
 <aside class="sidebar" id="sidebar">
+
 
 <button class="brand" onclick="showPage('dashboard');closeMobileMenu();">
 
@@ -1063,6 +1077,7 @@ body.light ::-webkit-scrollbar-thumb{
 
 </button>
 
+
 <div class="mini-profile">
 
 <div class="avatar small">
@@ -1070,103 +1085,157 @@ body.light ::-webkit-scrollbar-thumb{
 </div>
 
 <div>
-<strong id="sideName">AYESHA REHMAN</strong>
-<small>Professional Freelancer</small>
+
+<strong id="sideName">
+AYESHA REHMAN
+</strong>
+
+<small>
+Professional Freelancer
+</small>
+
 </div>
 
-<span class="online">●</span>
+<span class="online">
+●
+</span>
 
 </div>
+
 
 <div class="nav-area">
+
 
 <div class="section-title">
 MAIN
 </div>
 
-<button class="nav" data-page="dashboard" onclick="showPage('dashboard');closeMobileMenu();">
+
+<button class="nav" data-page="dashboard"
+onclick="showPage('dashboard')">
 ⌂ &nbsp; Dashboard
 </button>
 
-<button class="nav" data-page="findwork" onclick="showPage('findwork');closeMobileMenu();">
+
+<button class="nav" data-page="findwork"
+onclick="showPage('findwork')">
 ⌕ &nbsp; Find Work
 </button>
 
-<button class="nav" data-page="applications" onclick="showPage('applications');closeMobileMenu();">
+
+<button class="nav" data-page="applications"
+onclick="showPage('applications')">
 ✉ &nbsp; Applications
 </button>
 
-<button class="nav" data-page="projects" onclick="showPage('projects');closeMobileMenu();">
+
+<button class="nav" data-page="projects"
+onclick="showPage('projects')">
 ▣ &nbsp; My Projects
 </button>
 
-<button class="nav" data-page="messages" onclick="showPage('messages');closeMobileMenu();">
+
+<button class="nav" data-page="messages"
+onclick="showPage('messages')">
 ◌ &nbsp; Messages
 </button>
+
 
 <div class="section-title">
 MANAGE
 </div>
 
-<button class="nav" data-page="saved" onclick="showPage('saved');closeMobileMenu();">
+
+<button class="nav" data-page="saved"
+onclick="showPage('saved')">
 🔖 &nbsp; Saved Jobs
 </button>
 
-<button class="nav" data-page="proposals" onclick="showPage('proposals');closeMobileMenu();">
+
+<button class="nav" data-page="proposals"
+onclick="showPage('proposals')">
 ✎ &nbsp; Proposals
 </button>
 
-<button class="nav" data-page="contracts" onclick="showPage('contracts');closeMobileMenu();">
+
+<button class="nav" data-page="contracts"
+onclick="showPage('contracts')">
 ▤ &nbsp; Contracts
 </button>
 
-<button class="nav" data-page="earnings" onclick="showPage('earnings');closeMobileMenu();">
+
+<button class="nav" data-page="earnings"
+onclick="showPage('earnings')">
 $ &nbsp; Earnings
 </button>
 
-<button class="nav" data-page="tracker" onclick="showPage('tracker');closeMobileMenu();">
+
+<button class="nav" data-page="tracker"
+onclick="showPage('tracker')">
 ◷ &nbsp; Time Tracker
 </button>
+
 
 <div class="section-title">
 ACCOUNT
 </div>
 
-<button class="nav" data-page="profile" onclick="showPage('profile');closeMobileMenu();">
+
+<button class="nav" data-page="profile"
+onclick="showPage('profile')">
 ♙ &nbsp; Profile
 </button>
 
-<button class="nav" data-page="portfolio" onclick="showPage('portfolio');closeMobileMenu();">
+
+<button class="nav" data-page="portfolio"
+onclick="showPage('portfolio')">
 ▦ &nbsp; Portfolio
 </button>
 
-<button class="nav" data-page="reviews" onclick="showPage('reviews');closeMobileMenu();">
+
+<button class="nav" data-page="reviews"
+onclick="showPage('reviews')">
 ★ &nbsp; Reviews
 </button>
 
-<button class="nav" data-page="settings" onclick="showPage('settings');closeMobileMenu();">
+
+<button class="nav active" data-page="settings"
+onclick="showPage('settings')">
 ⚙ &nbsp; Settings
 </button>
 
+
 </div>
+
 
 <div class="side-bottom">
 
-<button onclick="switchClient();closeMobileMenu();">
+<button onclick="switchClient()">
 ⇄ &nbsp; Switch to Client Mode
 </button>
 
-<button onclick="showToast('Help & Support is coming soon.');closeMobileMenu();">
+<button onclick="showToast('Help & Support is coming soon.')">
 ♧ &nbsp; Help & Support
 </button>
 
-<button class="logout" onclick="logout();closeMobileMenu();">
+<button class="logout" onclick="logout()">
 ↪ &nbsp; Logout
 </button>
 
 </div>
 
+
 </aside>
+
+
+<!-- MOBILE OVERLAY -->
+
+<div
+class="menu-overlay"
+id="menuOverlay"
+onclick="closeMobileMenu()">
+</div>
+
 
 <!-- =========================
      MAIN
@@ -1174,33 +1243,59 @@ ACCOUNT
 
 <main class="main">
 
+
+<!-- MOBILE HEADER -->
+
+<div class="mobile-header">
+
+<div class="mobile-brand">
+
+<span class="mark">✦</span>
+
+<span>
+<strong>ELITE</strong>
+<small>FREELANCE HUB</small>
+</span>
+
+</div>
+
+
+<button
+class="menu-btn"
+onclick="toggleMobileMenu()">
+☰
+</button>
+
+</div>
+
+
+<!-- TOPBAR -->
+
 <header class="topbar">
 
 <div class="top-left">
 
-<button
-class="mobile-menu-btn"
-onclick="toggleMobileMenu()"
-aria-label="Open menu"
->
-☰
-</button>
+<small>
+ELITE FREELANCE HUB
+</small>
 
-<small>ELITE FREELANCE HUB</small>
-
-<h1 id="topTitle">Settings</h1>
+<h1 id="topTitle">
+Settings
+</h1>
 
 </div>
 
+
 <div class="top-right">
+
 
 <button
 class="round-btn"
-onclick="showToast('No new notifications.')"
->
+onclick="showToast('No new notifications.')">
 ♢
 <span class="dot"></span>
 </button>
+
 
 <div class="user-chip">
 
@@ -1214,16 +1309,18 @@ AYESHA REHMAN
 
 </div>
 
+
 <button
 class="logout-top"
-onclick="logout()"
->
+onclick="logout()">
 ↪ Logout
 </button>
+
 
 </div>
 
 </header>
+
 
 <!-- =========================
      DASHBOARD
@@ -1249,17 +1346,13 @@ with ELITE FREELANCE HUB.
 
 <div class="actions">
 
-<button
-class="primary"
-onclick="showPage('findwork')"
->
+<button class="primary"
+onclick="showPage('findwork')">
 ⌕ Find Work
 </button>
 
-<button
-class="secondary"
-onclick="showPage('profile')"
->
+<button class="secondary"
+onclick="showPage('profile')">
 ♙ View Profile
 </button>
 
@@ -1269,17 +1362,18 @@ onclick="showPage('profile')"
 
 </div>
 
+
 <div class="stats">
 
 <div class="stat">
 <div class="icon">▣</div>
-<h3 id="activeProjects">0</h3>
+<h3>0</h3>
 <p>Active Projects</p>
 </div>
 
 <div class="stat">
 <div class="icon">✉</div>
-<h3 id="applicationsCount">0</h3>
+<h3>0</h3>
 <p>Applications Sent</p>
 </div>
 
@@ -1299,7 +1393,10 @@ onclick="showPage('profile')"
 
 </section>
 
-<!-- FIND WORK -->
+
+<!-- =========================
+     FIND WORK
+========================= -->
 
 <section class="page" id="findwork">
 
@@ -1315,7 +1412,9 @@ Discover projects that match your skills.
 
 </div>
 
+
 <div class="cards">
+
 
 <div class="card">
 
@@ -1335,12 +1434,12 @@ Create a modern responsive website for a small business.
 
 <button
 class="primary"
-onclick="applyJob('Website Design')"
->
+onclick="applyJob('Website Design')">
 Apply Now
 </button>
 
 </div>
+
 
 <div class="card">
 
@@ -1360,34 +1459,27 @@ Convert documents into clean editable files.
 
 <button
 class="primary"
-onclick="applyJob('PDF Conversion')"
->
+onclick="applyJob('PDF Conversion')">
 Apply Now
 </button>
 
 </div>
 
+
 </div>
 
 </section>
+
 
 <!-- APPLICATIONS -->
 
 <section class="page" id="applications">
 
 <div class="page-head">
-
 <label>WORK</label>
-
 <h2>Applications</h2>
-
-<p>
-Track projects you have applied for.
-</p>
-
+<p>Track projects you have applied for.</p>
 </div>
-
-<div id="applicationsContainer">
 
 <div class="form-box">
 
@@ -1398,33 +1490,24 @@ When you apply for a project, your applications
 will appear here.
 </p>
 
-<button
-class="primary"
-onclick="showPage('findwork')"
->
+<button class="primary"
+onclick="showPage('findwork')">
 Find Projects
 </button>
 
 </div>
 
-</div>
-
 </section>
+
 
 <!-- PROJECTS -->
 
 <section class="page" id="projects">
 
 <div class="page-head">
-
 <label>WORKSPACE</label>
-
 <h2>My Projects</h2>
-
-<p>
-Manage your accepted freelance projects.
-</p>
-
+<p>Manage your accepted freelance projects.</p>
 </div>
 
 <div class="form-box">
@@ -1439,20 +1522,15 @@ Accepted projects will appear here.
 
 </section>
 
+
 <!-- MESSAGES -->
 
 <section class="page" id="messages">
 
 <div class="page-head">
-
 <label>COMMUNICATION</label>
-
 <h2>Messages</h2>
-
-<p>
-Chat with your clients.
-</p>
-
+<p>Chat with your clients.</p>
 </div>
 
 <div class="form-box">
@@ -1468,20 +1546,15 @@ Your client conversations will appear here.
 
 </section>
 
+
 <!-- SAVED -->
 
 <section class="page" id="saved">
 
 <div class="page-head">
-
 <label>MARKETPLACE</label>
-
 <h2>Saved Jobs</h2>
-
-<p>
-Jobs you save for later.
-</p>
-
+<p>Jobs you save for later.</p>
 </div>
 
 <div class="form-box">
@@ -1496,20 +1569,15 @@ Save interesting projects and they will appear here.
 
 </section>
 
+
 <!-- PROPOSALS -->
 
 <section class="page" id="proposals">
 
 <div class="page-head">
-
 <label>WORK</label>
-
 <h2>Proposals</h2>
-
-<p>
-Manage your freelance proposals.
-</p>
-
+<p>Manage your freelance proposals.</p>
 </div>
 
 <div class="form-box">
@@ -1524,20 +1592,15 @@ Your submitted proposals will appear here.
 
 </section>
 
+
 <!-- CONTRACTS -->
 
 <section class="page" id="contracts">
 
 <div class="page-head">
-
 <label>WORK</label>
-
 <h2>Contracts</h2>
-
-<p>
-Manage your freelance contracts.
-</p>
-
+<p>Manage your freelance contracts.</p>
 </div>
 
 <div class="form-box">
@@ -1552,20 +1615,15 @@ Your active contracts will appear here.
 
 </section>
 
+
 <!-- EARNINGS -->
 
 <section class="page" id="earnings">
 
 <div class="page-head">
-
 <label>FINANCE</label>
-
 <h2>Earnings</h2>
-
-<p>
-Track your freelance earnings.
-</p>
-
+<p>Track your freelance earnings.</p>
 </div>
 
 <div class="stats">
@@ -1598,20 +1656,15 @@ Track your freelance earnings.
 
 </section>
 
-<!-- TRACKER -->
+
+<!-- TIMER -->
 
 <section class="page" id="tracker">
 
 <div class="page-head">
-
 <label>WORK</label>
-
 <h2>Time Tracker</h2>
-
-<p>
-Track time spent on your freelance projects.
-</p>
-
+<p>Track time spent on your freelance projects.</p>
 </div>
 
 <div class="form-box" style="text-align:center;">
@@ -1622,24 +1675,18 @@ Track time spent on your freelance projects.
 
 <div class="actions" style="justify-content:center;">
 
-<button
-class="primary"
-onclick="startTimer()"
->
+<button class="primary"
+onclick="startTimer()">
 ▶ Start
 </button>
 
-<button
-class="secondary"
-onclick="stopTimer()"
->
+<button class="secondary"
+onclick="stopTimer()">
 ■ Stop
 </button>
 
-<button
-class="danger"
-onclick="resetTimer()"
->
+<button class="danger"
+onclick="resetTimer()">
 ↻ Reset
 </button>
 
@@ -1649,48 +1696,30 @@ onclick="resetTimer()"
 
 </section>
 
+
 <!-- PROFILE -->
 
 <section class="page" id="profile">
 
 <div class="page-head">
-
 <label>ACCOUNT</label>
-
 <h2>Profile</h2>
-
-<p>
-Your professional freelancer profile.
-</p>
-
+<p>Your professional freelancer profile.</p>
 </div>
 
 <div class="form-box">
 
-<div style="
-display:flex;
-align-items:center;
-gap:20px;
-flex-wrap:wrap;
-">
+<div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
 
-<div
-class="avatar"
-style="
-width:100px;
-height:100px;
-font-size:55px;
-"
->
+<div class="avatar"
+style="width:100px;height:100px;font-size:55px;">
 👩🏻‍💻
 </div>
 
 <div>
 
-<h2
-id="profileDisplayName"
-style="margin:0 0 5px;"
->
+<h2 id="profileDisplayName"
+style="margin:0 0 5px;">
 AYESHA REHMAN
 </h2>
 
@@ -1706,21 +1735,15 @@ Available for freelance work
 
 </div>
 
-<hr style="
-border:0;
-border-top:1px solid #24324b;
-margin:22px 0;
-">
+<hr style="border:0;border-top:1px solid #24324b;margin:22px 0;">
 
 <p class="muted">
 Complete your profile from Settings to make your
 freelancer account more attractive to clients.
 </p>
 
-<button
-class="primary"
-onclick="showPage('settings')"
->
+<button class="primary"
+onclick="showPage('settings')">
 ⚙ Edit Settings
 </button>
 
@@ -1728,20 +1751,15 @@ onclick="showPage('settings')"
 
 </section>
 
+
 <!-- PORTFOLIO -->
 
 <section class="page" id="portfolio">
 
 <div class="page-head">
-
 <label>SHOWCASE</label>
-
 <h2>Portfolio</h2>
-
-<p>
-Show clients what you can create.
-</p>
-
+<p>Show clients what you can create.</p>
 </div>
 
 <div class="form-box">
@@ -1753,10 +1771,8 @@ No portfolio projects added yet.
 Add your best work here when you're ready.
 </p>
 
-<button
-class="primary"
-onclick="showToast('Portfolio editor coming soon.')"
->
+<button class="primary"
+onclick="showToast('Portfolio editor coming soon.')">
 + Add Portfolio Project
 </button>
 
@@ -1764,20 +1780,15 @@ onclick="showToast('Portfolio editor coming soon.')"
 
 </section>
 
+
 <!-- REVIEWS -->
 
 <section class="page" id="reviews">
 
 <div class="page-head">
-
 <label>REPUTATION</label>
-
 <h2>Reviews</h2>
-
-<p>
-Client feedback and ratings.
-</p>
-
+<p>Client feedback and ratings.</p>
 </div>
 
 <div class="form-box">
@@ -1791,6 +1802,7 @@ Reviews will appear after completing projects.
 </div>
 
 </section>
+
 
 <!-- =========================
      SETTINGS
@@ -1810,9 +1822,11 @@ Manage your profile, security and preferences.
 
 </div>
 
+
 <div class="settings-grid">
 
-<!-- PROFILE INFORMATION -->
+
+<!-- PROFILE -->
 
 <div class="form-box">
 
@@ -1822,6 +1836,7 @@ Profile Information
 
 <div class="form-grid">
 
+
 <label class="field">
 
 Display Name
@@ -1830,10 +1845,10 @@ Display Name
 type="text"
 id="settingsName"
 placeholder="Your display name"
-value="AYESHA REHMAN"
->
+value="AYESHA REHMAN">
 
 </label>
+
 
 <label class="field">
 
@@ -1843,10 +1858,10 @@ Email
 type="email"
 id="settingsEmail"
 placeholder="Your email"
-value="ayesharehman123456987@gmail.com"
->
+value="ayesharehman123456987@gmail.com">
 
 </label>
+
 
 <label class="field">
 
@@ -1866,6 +1881,7 @@ Male 👨🏻‍💻
 
 </label>
 
+
 <label class="field">
 
 Location
@@ -1874,10 +1890,10 @@ Location
 type="text"
 id="settingsLocation"
 placeholder="Pakistan"
-value="Pakistan"
->
+value="Pakistan">
 
 </label>
+
 
 <label class="field">
 
@@ -1888,10 +1904,10 @@ type="number"
 id="settingsRate"
 min="0"
 placeholder="10"
-value="10"
->
+value="10">
 
 </label>
+
 
 <label class="field">
 
@@ -1915,6 +1931,7 @@ Not Available
 
 </label>
 
+
 <label class="field full">
 
 Skills
@@ -1923,10 +1940,10 @@ Skills
 type="text"
 id="settingsSkills"
 placeholder="Web Design, HTML, CSS, JavaScript"
-value="HTML, CSS, JavaScript, Web Design"
->
+value="HTML, CSS, JavaScript, Web Design">
 
 </label>
+
 
 <label class="field full">
 
@@ -1934,33 +1951,33 @@ Professional Bio
 
 <textarea
 id="settingsBio"
-placeholder="Tell clients about yourself..."
->Professional freelancer focused on creating clean, modern and responsive digital experiences.</textarea>
+placeholder="Tell clients about yourself...">Professional freelancer focused on creating clean, modern and responsive digital experiences.</textarea>
 
 </label>
 
+
 </div>
+
 
 <div class="form-row">
 
 <button
 class="primary"
-onclick="saveProfile()"
->
+onclick="saveProfile()">
 Save Profile
 </button>
 
 <span
 class="success"
 id="profileSaved"
-style="display:none;"
->
+style="display:none;">
 ✓ Profile saved
 </span>
 
 </div>
 
 </div>
+
 
 <!-- SECURITY -->
 
@@ -1977,18 +1994,18 @@ Firebase Authentication.
 
 <button
 class="secondary"
-onclick="sendPasswordReset()"
->
+onclick="sendPasswordReset()">
 🔐 Send Password Reset Email
 </button>
 
 <div
 id="resetMessage"
 class="muted"
-style="margin-top:12px;"
-></div>
+style="margin-top:12px;">
+</div>
 
 </div>
+
 
 <!-- APPEARANCE -->
 
@@ -2004,32 +2021,57 @@ Choose how ELITE FREELANCE HUB looks for you.
 
 <button
 class="secondary"
-onclick="toggleTheme()"
->
+onclick="toggleTheme()">
 ◐ Toggle Light / Dark Mode
 </button>
 
 <p
 class="muted"
 id="themeStatus"
-style="margin-top:12px;"
->
+style="margin-top:12px;">
 Dark Mode
 </p>
 
 </div>
 
+
+<!-- MARKETPLACE -->
+
+<div class="marketplace-note">
+
+<h3>
+Marketplace
+</h3>
+
+<strong>
+ELITE FREELANCE HUB
+</strong>
+
+<p class="muted">
+Your freelance marketplace is currently running
+without online payment collection. Payment
+features can be connected later when a real
+payment provider is added.
+</p>
+
+</div>
+
+
 </div>
 
 </section>
+
 
 </main>
 
 </div>
 
+
 <div id="toast"></div>
 
+
 <script>
+
 
 /* =========================
    MOBILE MENU
@@ -2037,27 +2079,25 @@ Dark Mode
 
 function toggleMobileMenu(){
 
-    const sidebar =
-        document.getElementById("sidebar");
+const sidebar=document.getElementById("sidebar");
+const overlay=document.getElementById("menuOverlay");
 
-    const overlay =
-        document.getElementById("mobileOverlay");
+sidebar.classList.toggle("mobile-open");
+overlay.classList.toggle("show");
 
-    sidebar.classList.toggle("mobile-open");
-    overlay.classList.toggle("active");
 }
+
 
 function closeMobileMenu(){
 
-    const sidebar =
-        document.getElementById("sidebar");
+const sidebar=document.getElementById("sidebar");
+const overlay=document.getElementById("menuOverlay");
 
-    const overlay =
-        document.getElementById("mobileOverlay");
+sidebar.classList.remove("mobile-open");
+overlay.classList.remove("show");
 
-    sidebar.classList.remove("mobile-open");
-    overlay.classList.remove("active");
 }
+
 
 /* =========================
    PAGE NAVIGATION
@@ -2065,60 +2105,66 @@ function closeMobileMenu(){
 
 function showPage(pageName){
 
-    const pages =
-        document.querySelectorAll(".page");
+const pages=document.querySelectorAll(".page");
 
-    pages.forEach(page=>{
-        page.classList.remove("active");
-    });
+pages.forEach(page=>{
+page.classList.remove("active");
+});
 
-    const target =
-        document.getElementById(pageName);
 
-    if(target){
-        target.classList.add("active");
-    }
+const target=document.getElementById(pageName);
 
-    const navs =
-        document.querySelectorAll(".nav");
-
-    navs.forEach(nav=>{
-
-        nav.classList.remove("active");
-
-        if(nav.dataset.page === pageName){
-            nav.classList.add("active");
-        }
-
-    });
-
-    const titles = {
-
-        dashboard:"Dashboard",
-        findwork:"Find Work",
-        applications:"Applications",
-        projects:"My Projects",
-        messages:"Messages",
-        saved:"Saved Jobs",
-        proposals:"Proposals",
-        contracts:"Contracts",
-        earnings:"Earnings",
-        tracker:"Time Tracker",
-        profile:"Profile",
-        portfolio:"Portfolio",
-        reviews:"Reviews",
-        settings:"Settings"
-
-    };
-
-    document.getElementById("topTitle").textContent =
-        titles[pageName] || "ELITE FREELANCE HUB";
-
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
+if(target){
+target.classList.add("active");
 }
+
+
+const navs=document.querySelectorAll(".nav");
+
+navs.forEach(nav=>{
+
+nav.classList.remove("active");
+
+if(nav.dataset.page===pageName){
+nav.classList.add("active");
+}
+
+});
+
+
+const titles={
+
+dashboard:"Dashboard",
+findwork:"Find Work",
+applications:"Applications",
+projects:"My Projects",
+messages:"Messages",
+saved:"Saved Jobs",
+proposals:"Proposals",
+contracts:"Contracts",
+earnings:"Earnings",
+tracker:"Time Tracker",
+profile:"Profile",
+portfolio:"Portfolio",
+reviews:"Reviews",
+settings:"Settings"
+
+};
+
+
+document.getElementById("topTitle").textContent=
+titles[pageName] || "ELITE FREELANCE HUB";
+
+
+closeMobileMenu();
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+
 
 /* =========================
    TOAST
@@ -2128,20 +2174,20 @@ let toastTimer;
 
 function showToast(message){
 
-    const toast =
-        document.getElementById("toast");
+const toast=document.getElementById("toast");
 
-    toast.textContent = message;
+toast.textContent=message;
 
-    toast.classList.add("show");
+toast.classList.add("show");
 
-    clearTimeout(toastTimer);
+clearTimeout(toastTimer);
 
-    toastTimer =
-        setTimeout(()=>{
-            toast.classList.remove("show");
-        },3000);
+toastTimer=setTimeout(()=>{
+toast.classList.remove("show");
+},3000);
+
 }
+
 
 /* =========================
    PROFILE
@@ -2149,68 +2195,64 @@ function showToast(message){
 
 function saveProfile(){
 
-    const name =
-        document.getElementById("settingsName").value.trim();
+const name=document.getElementById("settingsName").value.trim();
 
-    const email =
-        document.getElementById("settingsEmail").value.trim();
+const email=document.getElementById("settingsEmail").value.trim();
 
-    const gender =
-        document.getElementById("settingsGender").value;
+const gender=document.getElementById("settingsGender").value;
 
-    const location =
-        document.getElementById("settingsLocation").value.trim();
+const location=document.getElementById("settingsLocation").value.trim();
 
-    const rate =
-        document.getElementById("settingsRate").value;
+const rate=document.getElementById("settingsRate").value;
 
-    const availability =
-        document.getElementById("settingsAvailability").value;
+const availability=document.getElementById("settingsAvailability").value;
 
-    const skills =
-        document.getElementById("settingsSkills").value.trim();
+const skills=document.getElementById("settingsSkills").value.trim();
 
-    const bio =
-        document.getElementById("settingsBio").value.trim();
+const bio=document.getElementById("settingsBio").value.trim();
 
-    const profile = {
 
-        name,
-        email,
-        gender,
-        location,
-        rate,
-        availability,
-        skills,
-        bio
+const profile={
+name,
+email,
+gender,
+location,
+rate,
+availability,
+skills,
+bio
+};
 
-    };
 
-    localStorage.setItem(
-        "eliteProfile",
-        JSON.stringify(profile)
-    );
+localStorage.setItem(
+"eliteProfile",
+JSON.stringify(profile)
+);
 
-    document.getElementById("sideName").textContent =
-        name || "AYESHA REHMAN";
 
-    document.getElementById("topName").textContent =
-        name || "AYESHA REHMAN";
+document.getElementById("sideName").textContent=
+name || "AYESHA REHMAN";
 
-    document.getElementById("profileDisplayName").textContent =
-        name || "AYESHA REHMAN";
+document.getElementById("topName").textContent=
+name || "AYESHA REHMAN";
 
-    const saved =
-        document.getElementById("profileSaved");
+document.getElementById("profileDisplayName").textContent=
+name || "AYESHA REHMAN";
 
-    saved.style.display = "inline";
 
-    setTimeout(()=>{
-        saved.style.display = "none";
-    },2500);
+const saved=document.getElementById("profileSaved");
 
-    showToast("✓ Profile saved successfully.");
+saved.style.display="inline";
+
+setTimeout(()=>{
+saved.style.display="none";
+},2500);
+
+
+showToast("✓ Profile saved successfully.");
+
 }
+
 
 /* =========================
    LOAD PROFILE
@@ -2218,57 +2260,62 @@ function saveProfile(){
 
 function loadProfile(){
 
-    const saved =
-        localStorage.getItem("eliteProfile");
+const saved=localStorage.getItem("eliteProfile");
 
-    if(!saved){
-        return;
-    }
-
-    try{
-
-        const profile =
-            JSON.parse(saved);
-
-        document.getElementById("settingsName").value =
-            profile.name || "AYESHA REHMAN";
-
-        document.getElementById("settingsEmail").value =
-            profile.email || "ayesharehman123456987@gmail.com";
-
-        document.getElementById("settingsGender").value =
-            profile.gender || "female";
-
-        document.getElementById("settingsLocation").value =
-            profile.location || "Pakistan";
-
-        document.getElementById("settingsRate").value =
-            profile.rate || "10";
-
-        document.getElementById("settingsAvailability").value =
-            profile.availability || "available";
-
-        document.getElementById("settingsSkills").value =
-            profile.skills || "";
-
-        document.getElementById("settingsBio").value =
-            profile.bio || "";
-
-        document.getElementById("sideName").textContent =
-            profile.name || "AYESHA REHMAN";
-
-        document.getElementById("topName").textContent =
-            profile.name || "AYESHA REHMAN";
-
-        document.getElementById("profileDisplayName").textContent =
-            profile.name || "AYESHA REHMAN";
-
-    }catch(error){
-
-        console.log(error);
-
-    }
+if(!saved){
+return;
 }
+
+
+try{
+
+const profile=JSON.parse(saved);
+
+
+document.getElementById("settingsName").value=
+profile.name || "AYESHA REHMAN";
+
+document.getElementById("settingsEmail").value=
+profile.email || "ayesharehman123456987@gmail.com";
+
+document.getElementById("settingsGender").value=
+profile.gender || "female";
+
+document.getElementById("settingsLocation").value=
+profile.location || "Pakistan";
+
+document.getElementById("settingsRate").value=
+profile.rate || "10";
+
+document.getElementById("settingsAvailability").value=
+profile.availability || "available";
+
+document.getElementById("settingsSkills").value=
+profile.skills || "HTML, CSS, JavaScript, Web Design";
+
+document.getElementById("settingsBio").value=
+profile.bio ||
+"Professional freelancer focused on creating clean, modern and responsive digital experiences.";
+
+
+document.getElementById("sideName").textContent=
+profile.name || "AYESHA REHMAN";
+
+document.getElementById("topName").textContent=
+profile.name || "AYESHA REHMAN";
+
+document.getElementById("profileDisplayName").textContent=
+profile.name || "AYESHA REHMAN";
+
+
+}catch(error){
+
+console.log(error);
+
+}
+
+}
+
 
 /* =========================
    PASSWORD RESET
@@ -2276,31 +2323,33 @@ function loadProfile(){
 
 function sendPasswordReset(){
 
-    const email =
-        document.getElementById("settingsEmail")
-        .value.trim();
+const email=
+document.getElementById("settingsEmail").value.trim();
 
-    if(!email){
 
-        showToast(
-            "Please enter your email first."
-        );
+if(!email){
 
-        return;
-    }
+showToast("Please enter your email first.");
 
-    const message =
-        document.getElementById("resetMessage");
+return;
 
-    message.textContent =
-        "✓ Password reset request created for " +
-        email +
-        ". Connect Firebase Authentication to send the real email.";
-
-    showToast(
-        "Password reset ready."
-    );
 }
+
+
+const message=
+document.getElementById("resetMessage");
+
+
+message.textContent=
+"✓ Password reset request created for "+
+email+
+". Connect Firebase Authentication to send the real email.";
+
+
+showToast("Password reset ready.");
+
+}
+
 
 /* =========================
    THEME
@@ -2308,143 +2357,59 @@ function sendPasswordReset(){
 
 function toggleTheme(){
 
-    document.body.classList.toggle("light");
+document.body.classList.toggle("light");
 
-    const isLight =
-        document.body.classList.contains("light");
 
-    localStorage.setItem(
-        "eliteTheme",
-        isLight ? "light" : "dark"
-    );
+const isLight=
+document.body.classList.contains("light");
 
-    document.getElementById("themeStatus").textContent =
-        isLight ? "Light Mode" : "Dark Mode";
 
-    showToast(
-        isLight
-        ? "☀ Light Mode enabled."
-        : "◐ Dark Mode enabled."
-    );
+localStorage.setItem(
+"eliteTheme",
+isLight ? "light" : "dark"
+);
+
+
+document.getElementById("themeStatus").textContent=
+isLight ? "Light Mode" : "Dark Mode";
+
+
+showToast(
+isLight
+? "☀ Light Mode enabled."
+: "◐ Dark Mode enabled."
+);
+
 }
+
 
 function loadTheme(){
 
-    const theme =
-        localStorage.getItem("eliteTheme");
+const theme=localStorage.getItem("eliteTheme");
 
-    if(theme === "light"){
 
-        document.body.classList.add("light");
+if(theme==="light"){
 
-        document.getElementById("themeStatus")
-            .textContent = "Light Mode";
-    }
+document.body.classList.add("light");
+
+document.getElementById("themeStatus").textContent=
+"Light Mode";
+
 }
 
-/* =========================
-   APPLICATIONS
-========================= */
+}
 
-let applications =
-    JSON.parse(
-        localStorage.getItem("eliteApplications") || "[]"
-    );
+
+/* =========================
+   FIND WORK
+========================= */
 
 function applyJob(job){
 
-    if(applications.includes(job)){
+showToast("✓ Application started for "+job);
 
-        showToast(
-            "You already applied for " + job + "."
-        );
-
-        return;
-    }
-
-    applications.push(job);
-
-    localStorage.setItem(
-        "eliteApplications",
-        JSON.stringify(applications)
-    );
-
-    document.getElementById("applicationsCount")
-        .textContent = applications.length;
-
-    renderApplications();
-
-    showToast(
-        "✓ Application submitted for " + job
-    );
 }
 
-function renderApplications(){
-
-    const container =
-        document.getElementById("applicationsContainer");
-
-    if(!applications.length){
-
-        container.innerHTML = `
-
-            <div class="form-box">
-
-                <h3>No applications yet</h3>
-
-                <p class="muted">
-                    When you apply for a project,
-                    your applications will appear here.
-                </p>
-
-                <button
-                    class="primary"
-                    onclick="showPage('findwork')"
-                >
-                    Find Projects
-                </button>
-
-            </div>
-
-        `;
-
-        return;
-    }
-
-    container.innerHTML = `
-
-        <div class="cards">
-
-            ${applications.map(job=>`
-
-                <div class="card">
-
-                    <h3>${job}</h3>
-
-                    <p>
-                        Your application has been submitted.
-                    </p>
-
-                    <div class="meta">
-
-                        <span class="pill">
-                            Application
-                        </span>
-
-                        <span class="pill open">
-                            Submitted
-                        </span>
-
-                    </div>
-
-                </div>
-
-            `).join("")}
-
-        </div>
-
-    `;
-}
 
 /* =========================
    CLIENT MODE
@@ -2452,10 +2417,12 @@ function renderApplications(){
 
 function switchClient(){
 
-    showToast(
-        "Client Mode will be connected to the client dashboard."
-    );
+showToast(
+"Client Mode will be connected to the client dashboard."
+);
+
 }
+
 
 /* =========================
    LOGOUT
@@ -2463,91 +2430,89 @@ function switchClient(){
 
 function logout(){
 
-    showToast(
-        "Logout will be connected to Firebase Authentication."
-    );
+showToast(
+"Logout will be connected to Firebase Authentication."
+);
+
 }
+
 
 /* =========================
    TIMER
 ========================= */
 
-let timerSeconds = 0;
-let timerInterval = null;
+let timerSeconds=0;
+let timerInterval=null;
+
 
 function updateTimer(){
 
-    const hours =
-        Math.floor(timerSeconds / 3600);
+const hours=Math.floor(timerSeconds/3600);
 
-    const minutes =
-        Math.floor(
-            (timerSeconds % 3600) / 60
-        );
+const minutes=Math.floor(
+(timerSeconds%3600)/60
+);
 
-    const seconds =
-        timerSeconds % 60;
+const seconds=timerSeconds%60;
 
-    const h =
-        String(hours).padStart(2,"0");
 
-    const m =
-        String(minutes).padStart(2,"0");
+const h=String(hours).padStart(2,"0");
+const m=String(minutes).padStart(2,"0");
+const s=String(seconds).padStart(2,"0");
 
-    const s =
-        String(seconds).padStart(2,"0");
 
-    document.getElementById(
-        "timerDisplay"
-    ).textContent =
-        `${h}:${m}:${s}`;
+document.getElementById("timerDisplay").textContent=
+`${h}:${m}:${s}`;
+
 }
+
 
 function startTimer(){
 
-    if(timerInterval){
-        return;
-    }
-
-    timerInterval =
-        setInterval(()=>{
-
-            timerSeconds++;
-
-            updateTimer();
-
-        },1000);
-
-    showToast(
-        "▶ Time tracker started."
-    );
+if(timerInterval){
+return;
 }
+
+
+timerInterval=setInterval(()=>{
+
+timerSeconds++;
+
+updateTimer();
+
+},1000);
+
+
+showToast("▶ Time tracker started.");
+
+}
+
 
 function stopTimer(){
 
-    clearInterval(timerInterval);
+clearInterval(timerInterval);
 
-    timerInterval = null;
+timerInterval=null;
 
-    showToast(
-        "■ Time tracker stopped."
-    );
+showToast("■ Time tracker stopped.");
+
 }
+
 
 function resetTimer(){
 
-    clearInterval(timerInterval);
+clearInterval(timerInterval);
 
-    timerInterval = null;
+timerInterval=null;
 
-    timerSeconds = 0;
+timerSeconds=0;
 
-    updateTimer();
+updateTimer();
 
-    showToast(
-        "↻ Timer reset."
-    );
+showToast("↻ Timer reset.");
+
 }
+
 
 /* =========================
    START
@@ -2557,14 +2522,11 @@ loadProfile();
 
 loadTheme();
 
-document.getElementById("applicationsCount")
-    .textContent = applications.length;
-
-renderApplications();
-
 showPage("settings");
 
 </script>
 
+
 </body>
+
 </html>
