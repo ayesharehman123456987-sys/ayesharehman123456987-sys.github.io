@@ -1,828 +1,278 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
 
-<title>ELITE FREELANCE HUB — Login</title>
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1">
 
-<style>
+<title>
+Login / Sign Up — ELITE FREELANCE HUB
+</title>
 
-*{
-    box-sizing:border-box;
-}
+<link
+  rel="icon"
+  href="profile.png">
 
-body{
-    margin:0;
-    min-height:100vh;
-    font-family:Inter,Segoe UI,Arial,sans-serif;
-    background:#050914;
-    color:#f5f7ff;
-    display:grid;
-    place-items:center;
-    padding:20px;
-}
-
-.wrap{
-    width:min(980px,100%);
-    display:grid;
-    grid-template-columns:1.05fr .95fr;
-    background:#0b1322;
-    border:1px solid #263653;
-    border-radius:22px;
-    overflow:hidden;
-    box-shadow:0 25px 80px #0008;
-}
-
-.brand{
-    padding:55px 45px;
-    background:
-        radial-gradient(
-            circle at 20% 20%,
-            #8b4fff22,
-            transparent 35%
-        ),
-        linear-gradient(145deg,#0d1729,#090f1c);
-}
-
-.mark{
-    font-size:48px;
-    color:#a866ff;
-}
-
-h1{
-    margin:10px 0 6px;
-    font-size:36px;
-}
-
-.sub{
-    color:#9aa8bf;
-    line-height:1.7;
-}
-
-.points{
-    margin-top:30px;
-    display:grid;
-    gap:12px;
-}
-
-.point{
-    padding:13px 15px;
-    border:1px solid #273751;
-    border-radius:12px;
-    background:#101b2d;
-}
-
-.card{
-    padding:42px;
-}
-
-.tabs{
-    display:flex;
-    gap:8px;
-    margin-bottom:25px;
-}
-
-.tab{
-    flex:1;
-    padding:11px;
-    border-radius:10px;
-    border:1px solid #2a3a55;
-    background:#0d182a;
-    color:#b9c5da;
-    font-weight:800;
-    cursor:pointer;
-}
-
-.tab.active{
-    border-color:#8b4fff;
-    color:#fff;
-    background:#241342;
-}
-
-h2{
-    margin:0 0 8px;
-}
-
-.muted{
-    color:#8996ac;
-    line-height:1.5;
-}
-
-label{
-    display:block;
-    margin:14px 0 7px;
-    font-size:12px;
-    font-weight:800;
-    color:#cbd4e3;
-}
-
-input,
-select{
-    width:100%;
-    padding:12px;
-    border-radius:9px;
-    border:1px solid #2a3a55;
-    background:#091321;
-    color:#fff;
-    outline:0;
-}
-
-input:focus,
-select:focus{
-    border-color:#9658f5;
-}
-
-.btn{
-    width:100%;
-    margin-top:18px;
-    padding:13px;
-    border:0;
-    border-radius:10px;
-    background:linear-gradient(135deg,#9853ff,#7136df);
-    color:#fff;
-    font-weight:900;
-    cursor:pointer;
-}
-
-.msg{
-    min-height:22px;
-    margin-top:12px;
-    color:#ff7185;
-    font-size:13px;
-}
-
-.fine{
-    font-size:11px;
-    color:#77849b;
-    margin-top:18px;
-}
-
-.hidden{
-    display:none;
-}
-
-@media(max-width:760px){
-
-    .wrap{
-        grid-template-columns:1fr;
-    }
-
-    .brand{
-        padding:30px;
-    }
-
-    .card{
-        padding:30px;
-    }
-
-}
-
-</style>
+<link
+  rel="stylesheet"
+  href="style.css">
 
 </head>
 
-<body>
 
-<div class="wrap">
+<body class="auth-page">
 
-<section class="brand">
+<main class="auth-main">
 
-    <div class="mark">
-        ✦
-    </div>
+<section class="auth-card">
 
-    <h1>
-        ELITE FREELANCE HUB
-    </h1>
+<div class="auth-brand">
 
-    <p class="sub">
-        A professional marketplace for clients and freelancers.
-        Every user has their own account and profile.
-        The website logo always stays separate from personal profile photos.
-    </p>
+<img
+  src="profile.png"
+  class="auth-logo"
+  alt="ELITE FREELANCE HUB">
 
-    <div class="points">
+<div>
 
-        <div class="point">
-            👑 <b>Website Owner</b>
-            — protected owner account
-        </div>
+<strong>
+ELITE FREELANCE HUB
+</strong>
 
-        <div class="point">
-            👩🏻‍💻 <b>Freelancer</b>
-            — find work and submit proposals
-        </div>
+<small>
+CONNECT • COLLABORATE • SUCCEED
+</small>
 
-        <div class="point">
-            💼 <b>Client</b>
-            — post projects and hire freelancers
-        </div>
-
-    </div>
-
-</section>
-
-
-<section class="card">
-
-    <div class="tabs">
-
-        <button
-            class="tab active"
-            id="loginTab">
-            Login
-        </button>
-
-        <button
-            class="tab"
-            id="signupTab">
-            Create Account
-        </button>
-
-    </div>
-
-
-    <!-- LOGIN -->
-
-    <form id="loginForm">
-
-        <h2>
-            Welcome back
-        </h2>
-
-        <p class="muted">
-            Login to ELITE FREELANCE HUB.
-        </p>
-
-        <label>
-            Email
-        </label>
-
-        <input
-            id="loginEmail"
-            type="email"
-            required
-            autocomplete="email"
-        >
-
-
-        <label>
-            Password
-        </label>
-
-        <input
-            id="loginPassword"
-            type="password"
-            required
-            autocomplete="current-password"
-        >
-
-
-        <button
-            class="btn"
-            type="submit">
-            Login
-        </button>
-
-        <div
-            class="msg"
-            id="loginMsg">
-        </div>
-
-    </form>
-
-
-    <!-- CREATE ACCOUNT -->
-
-    <form
-        id="signupForm"
-        class="hidden">
-
-        <h2>
-            Create your account
-        </h2>
-
-        <p class="muted">
-            Choose your account type.
-        </p>
-
-
-        <label>
-            Display Name
-        </label>
-
-        <input
-            id="signupName"
-            required
-            maxlength="80"
-        >
-
-
-        <label>
-            Email
-        </label>
-
-        <input
-            id="signupEmail"
-            type="email"
-            required
-            autocomplete="email"
-        >
-
-
-        <label>
-            Password
-        </label>
-
-        <input
-            id="signupPassword"
-            type="password"
-            minlength="6"
-            required
-            autocomplete="new-password"
-        >
-
-
-        <label>
-            Account Type
-        </label>
-
-        <select id="signupRole">
-
-            <option value="freelancer">
-                Freelancer
-            </option>
-
-            <option value="client">
-                Client
-            </option>
-
-        </select>
-
-
-        <button
-            class="btn"
-            type="submit">
-            Create Account
-        </button>
-
-        <div
-            class="msg"
-            id="signupMsg">
-        </div>
-
-    </form>
-
-
-    <p class="fine">
-
-        Owner status is protected by the authenticated
-        Firebase account email. There is no Owner option
-        during normal signup.
-
-    </p>
-
-</section>
+</div>
 
 </div>
 
 
-<script type="module">
+<div class="auth-tabs">
 
-import {
-    initializeApp
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+<button
+  id="loginTab"
+  class="active"
+  type="button">
+Login
+</button>
 
+<button
+  id="signupTab"
+  type="button">
+Create Account
+</button>
 
-import {
-    getAuth,
-    onAuthStateChanged,
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+</div>
 
 
-import {
-    getFirestore,
-    doc,
-    setDoc,
-    serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+<form id="loginForm">
 
+<div class="auth-head">
 
-/* =====================================================
-   FIREBASE
-===================================================== */
+<h2>
+Welcome Back! 👋
+</h2>
 
-const firebaseConfig = {
+<p>
+Login to your account.
+</p>
 
-    apiKey:
-        "AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
+</div>
 
-    authDomain:
-        "elite-freelance-hub.firebaseapp.com",
 
-    projectId:
-        "elite-freelance-hub",
+<label class="field">
 
-    storageBucket:
-        "elite-freelance-hub.firebasestorage.app",
+Email
 
-    messagingSenderId:
-        "777611553956",
+<input
+  id="loginEmail"
+  type="email"
+  required
+  autocomplete="email"
+  placeholder="you@example.com">
 
-    appId:
-        "1:777611553956:web:730b7df36570ff803a8a31",
+</label>
 
-    measurementId:
-        "G-PC7G6G6BRD"
 
-};
+<label class="field">
 
+Password
 
-const app =
-    initializeApp(firebaseConfig);
+<input
+  id="loginPassword"
+  type="password"
+  required
+  autocomplete="current-password"
+  placeholder="Your password">
 
+</label>
 
-const auth =
-    getAuth(app);
 
+<div class="auth-options">
 
-const db =
-    getFirestore(app);
+<label>
 
+<input
+  id="rememberMe"
+  type="checkbox">
 
-/* =====================================================
-   ONLY OWNER
-===================================================== */
+Remember me
 
-const OWNER_EMAIL =
-    "ayesharehman123456987@gmail.com";
+</label>
 
 
-/* =====================================================
-   ELEMENTS
-===================================================== */
+<button
+  id="forgotBtn"
+  class="link"
+  type="button">
 
-const loginForm =
-    document.getElementById("loginForm");
+Forgot Password?
 
-const signupForm =
-    document.getElementById("signupForm");
+</button>
 
-const loginTab =
-    document.getElementById("loginTab");
+</div>
 
-const signupTab =
-    document.getElementById("signupTab");
 
+<button
+  class="primary auth-button"
+  type="submit">
+Login
+</button>
 
-/* =====================================================
-   TABS
-===================================================== */
 
-loginTab.onclick = () => {
+<div
+  id="loginMsg"
+  class="auth-message">
+</div>
 
-    showMode("login");
+</form>
 
-};
 
+<form
+  id="signupForm"
+  class="hidden">
 
-signupTab.onclick = () => {
+<div class="auth-head">
 
-    showMode("signup");
+<h2>
+Create Your Account 🚀
+</h2>
 
-};
+<p>
+Join ELITE FREELANCE HUB.
+</p>
 
+</div>
 
-function showMode(mode){
 
-    const login =
-        mode === "login";
+<label class="field">
 
+Display Name
 
-    loginForm.classList.toggle(
-        "hidden",
-        !login
-    );
+<input
+  id="signupName"
+  required
+  maxlength="80"
+  autocomplete="name"
+  placeholder="Your name">
 
+</label>
 
-    signupForm.classList.toggle(
-        "hidden",
-        login
-    );
 
+<label class="field">
 
-    loginTab.classList.toggle(
-        "active",
-        login
-    );
+Email
 
+<input
+  id="signupEmail"
+  type="email"
+  required
+  autocomplete="email"
+  placeholder="you@example.com">
 
-    signupTab.classList.toggle(
-        "active",
-        !login
-    );
+</label>
 
-}
 
+<label class="field">
 
-/* =====================================================
-   MESSAGE
-===================================================== */
+Password
 
-function message(
-    id,
-    text,
-    error = true
-){
+<input
+  id="signupPassword"
+  type="password"
+  minlength="6"
+  required
+  autocomplete="new-password"
+  placeholder="Minimum 6 characters">
 
-    const element =
-        document.getElementById(id);
+</label>
 
 
-    element.textContent =
-        text;
+<label class="field">
 
+Account Type
 
-    element.style.color =
-        error
-            ? "#ff7185"
-            : "#43d883";
+<select id="signupRole">
 
-}
+<option value="freelancer">
+Freelancer
+</option>
 
+<option value="client">
+Client
+</option>
 
-/* =====================================================
-   LOGIN
-===================================================== */
+</select>
 
-loginForm.addEventListener(
-    "submit",
-    async event => {
+</label>
 
-        event.preventDefault();
 
+<button
+  class="primary auth-button"
+  type="submit">
+Create Account
+</button>
 
-        message(
-            "loginMsg",
-            ""
-        );
 
+<div
+  id="signupMsg"
+  class="auth-message">
+</div>
 
-        try{
+</form>
 
-            await signInWithEmailAndPassword(
-                auth,
-                document
-                    .getElementById("loginEmail")
-                    .value
-                    .trim(),
 
-                document
-                    .getElementById("loginPassword")
-                    .value
-            );
+<div class="auth-note">
 
+👑
+<b>Owner:</b>
+Ayesha Rehman — Owner + Freelancer access only.
 
-            window.location.href =
-                "index.html";
+<br>
 
+All other accounts are either Freelancer or Client.
 
-        }catch(error){
+</div>
 
-            message(
-                "loginMsg",
-                friendlyError(error)
-            );
+</section>
 
-        }
+</main>
 
-    }
-);
 
+<div
+  id="firebaseError"
+  class="firebase-error">
+</div>
 
-/* =====================================================
-   CREATE ACCOUNT
-===================================================== */
 
-signupForm.addEventListener(
-    "submit",
-    async event => {
-
-        event.preventDefault();
-
-
-        message(
-            "signupMsg",
-            ""
-        );
-
-
-        const name =
-            document
-                .getElementById("signupName")
-                .value
-                .trim();
-
-
-        const email =
-            document
-                .getElementById("signupEmail")
-                .value
-                .trim()
-                .toLowerCase();
-
-
-        const password =
-            document
-                .getElementById("signupPassword")
-                .value;
-
-
-        const selectedRole =
-            document
-                .getElementById("signupRole")
-                .value;
-
-
-        try{
-
-            const credential =
-                await createUserWithEmailAndPassword(
-                    auth,
-                    email,
-                    password
-                );
-
-
-            /*
-                IMPORTANT:
-
-                User can select ONLY:
-                freelancer
-                OR
-                client
-
-                Owner is NEVER shown as an option.
-
-                If the authenticated email is the
-                real owner's email, Firebase profile
-                becomes owner_freelancer automatically.
-            */
-
-            const owner =
-                email === OWNER_EMAIL.toLowerCase();
-
-
-            const finalRole =
-                owner
-                    ? "owner_freelancer"
-                    : selectedRole;
-
-
-            await setDoc(
-                doc(
-                    db,
-                    "users",
-                    credential.user.uid
-                ),
-                {
-
-                    name:
-                        name || "User",
-
-                    email:
-                        email,
-
-                    role:
-                        finalRole,
-
-                    avatar:
-                        "",
-
-                    location:
-                        "",
-
-                    rate:
-                        "",
-
-                    availability:
-                        "available",
-
-                    skills:
-                        "",
-
-                    bio:
-                        "",
-
-                    createdAt:
-                        serverTimestamp(),
-
-                    updatedAt:
-                        serverTimestamp()
-
-                },
-                {
-                    merge:true
-                }
-            );
-
-
-            window.location.href =
-                "index.html";
-
-
-        }catch(error){
-
-            message(
-                "signupMsg",
-                friendlyError(error)
-            );
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   FRIENDLY FIREBASE ERRORS
-===================================================== */
-
-function friendlyError(error){
-
-    const code =
-        error?.code || "";
-
-
-    if(
-        code.includes(
-            "auth/email-already-in-use"
-        )
-    ){
-
-        return "This email already has an account.";
-
-    }
-
-
-    if(
-        code.includes(
-            "auth/invalid-credential"
-        )
-    ){
-
-        return "Email or password is incorrect.";
-
-    }
-
-
-    if(
-        code.includes(
-            "auth/weak-password"
-        )
-    ){
-
-        return "Password must be at least 6 characters.";
-
-    }
-
-
-    if(
-        code.includes(
-            "auth/invalid-email"
-        )
-    ){
-
-        return "Please enter a valid email.";
-
-    }
-
-
-    return "Something went wrong. Please try again.";
-
-}
-
-
-/* =====================================================
-   AUTH STATE
-===================================================== */
-
-onAuthStateChanged(
-    auth,
-    user => {
-
-        /*
-            Firebase remains the source of truth.
-            No localStorage owner trick is used.
-        */
-
-    }
-);
-
+<script
+  type="module"
+  src="script.js">
 </script>
 
 </body>
