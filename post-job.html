@@ -1,1 +1,202 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Post a Project — ELITE FREELANCE HUB</title><link rel="icon" href="profile.png"><link rel="stylesheet" href="style.css"></head><body class="client" data-role="client"><main class="main"><div class="page-head"><label>PROJECT</label><h2>Post a Project</h2><p>Publish a real client project to Firebase.</p></div><div class="form-box"><form id="postForm"><div class="form-grid"><label class="field">Project Title<input id="postTitle" required></label><label class="field">Category<select id="postCategory" required><option value="">Select</option><option>Web Development</option><option>Graphic Design</option><option>Data Entry</option><option>Content Writing</option><option>Digital Marketing</option><option>Video Editing</option></select></label><label class="field full">Description<textarea id="postDescription" required></textarea></label><label class="field">Budget (USD)<input id="postBudget" type="number" min="1" required></label><label class="field">Deadline<input id="postDeadline" type="date" required></label></div><div class="form-row"><button class="primary" id="postBtn">🚀 Publish Project</button><a href="client-dashboard.html" class="secondary" style="text-decoration:none">Back</a><span class="success" id="postMessage"></span></div></form></div></main><div id="firebaseError" class="firebase-error"></div><script type="module" src="script.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1">
+
+<title>
+Post a Project — ELITE FREELANCE HUB
+</title>
+
+<link
+  rel="icon"
+  href="profile.png">
+
+<link
+  rel="stylesheet"
+  href="style.css">
+
+</head>
+
+
+<body
+  class="client standalone-page"
+  data-role="client">
+
+<main class="main standalone-main">
+
+<div class="page-head">
+
+<label>
+PROJECT
+</label>
+
+<h2>
+Post a Project
+</h2>
+
+<p>
+Publish a real client project to Firebase.
+</p>
+
+</div>
+
+
+<div class="form-box">
+
+<form id="postForm">
+
+<div class="form-grid">
+
+<label class="field">
+
+Project Title
+
+<input
+  id="postTitle"
+  required
+  maxlength="120">
+
+</label>
+
+
+<label class="field">
+
+Category
+
+<select
+  id="postCategory"
+  required>
+
+<option value="">
+Select
+</option>
+
+<option>
+Web Development
+</option>
+
+<option>
+Graphic Design
+</option>
+
+<option>
+Data Entry
+</option>
+
+<option>
+Content Writing
+</option>
+
+<option>
+Digital Marketing
+</option>
+
+<option>
+Video Editing
+</option>
+
+<option>
+Mobile App Development
+</option>
+
+<option>
+Other
+</option>
+
+</select>
+
+</label>
+
+
+<label class="field full">
+
+Description
+
+<textarea
+  id="postDescription"
+  required
+  maxlength="5000">
+</textarea>
+
+</label>
+
+
+<label class="field">
+
+Budget (USD)
+
+<input
+  id="postBudget"
+  type="number"
+  min="1"
+  step="1"
+  required>
+
+</label>
+
+
+<label class="field">
+
+Deadline
+
+<input
+  id="postDeadline"
+  type="date"
+  required>
+
+</label>
+
+</div>
+
+
+<div class="form-row">
+
+<button
+  class="primary"
+  id="postBtn"
+  type="submit">
+🚀 Publish Project
+</button>
+
+<a
+  href="client-dashboard.html"
+  class="secondary"
+  style="text-decoration:none">
+Back
+</a>
+
+<span
+  class="success"
+  id="postMessage">
+</span>
+
+</div>
+
+</form>
+
+</div>
+
+</main>
+
+
+<div id="toast"></div>
+
+<div
+  id="firebaseError"
+  class="firebase-error">
+</div>
+
+
+<script
+  type="module"
+  src="script.js">
+</script>
+
+</body>
+</html>
