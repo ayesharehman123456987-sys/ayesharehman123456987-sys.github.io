@@ -1,26 +1,36 @@
-import {initializeApp} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import {
-  getAuth,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  sendPasswordResetEmail,
-  signOut
+initializeApp
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+import {
+getAuth,
+onAuthStateChanged,
+signInWithEmailAndPassword,
+createUserWithEmailAndPassword,
+sendPasswordResetEmail,
+signOut
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 import {
-  getFirestore,
-  collection,
-  query,
-  where,
-  getDocs,
-  getDoc,
-  doc,
-  setDoc,
-  addDoc,
-  updateDoc,
-  serverTimestamp
+getFirestore,
+collection,
+query,
+where,
+getDocs,
+getDoc,
+doc,
+setDoc,
+addDoc,
+updateDoc,
+serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+import {
+getStorage,
+ref,
+uploadBytes,
+getDownloadURL
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-storage.js";
 
 
 /* =========================================================
@@ -28,55 +38,53 @@ import {
 ========================================================= */
 
 const firebaseConfig = {
-  apiKey:"AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
-  authDomain:"elite-freelance-hub.firebaseapp.com",
-  projectId:"elite-freelance-hub",
-  storageBucket:"elite-freelance-hub.firebasestorage.app",
-  messagingSenderId:"777611553956",
-  appId:"1:777611553956:web:730b7df36570ff803a8a31",
-  measurementId:"G-PC7G6G6BRD"
+apiKey:"AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
+authDomain:"elite-freelance-hub.firebaseapp.com",
+projectId:"elite-freelance-hub",
+storageBucket:"elite-freelance-hub.firebasestorage.app",
+messagingSenderId:"777611553956",
+appId:"1:777611553956:web:730b7df36570ff803a8a31",
+measurementId:"G-PC7G6G6BRD"
 };
 
 
-/* =========================================================
-   OWNER
-   IMPORTANT: REPLACE ONLY THIS VALUE
-========================================================= */
+const app =
+initializeApp(firebaseConfig);
 
-const OWNER_EMAIL = "YOUR_OWNER_EMAIL";
+const auth =
+getAuth(app);
 
+const db =
+getFirestore(app);
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const storage =
+getStorage(app);
 
 
 /* =========================================================
    GLOBALS
 ========================================================= */
 
-const $ = id => document.getElementById(id);
+const $ =
+id => document.getElementById(id);
 
 const pageName =
-  location.pathname.split("/").pop() || "index.html";
+location.pathname.split("/").pop() ||
+"index.html";
 
 const isLogin =
-  pageName === "login.html" ||
-  location.pathname.endsWith("/login.html");
+pageName === "login.html";
 
 const isClientPage =
-  pageName === "client-dashboard.html";
+pageName === "client-dashboard.html";
 
 const isPostPage =
-  pageName === "post-job.html";
-
-const isFreelancerPage =
-  !isLogin &&
-  !isClientPage &&
-  !isPostPage;
+pageName === "post-job.html";
 
 let currentUser = null;
+
 let userData = {};
+
 let currentConversation = null;
 
 
@@ -84,117 +92,143 @@ let currentConversation = null;
    HELPERS
 ========================================================= */
 
-function esc(v){
-  return String(v ?? "").replace(
-    /[&<>"']/g,
-    c => ({
-      "&":"&amp;",
-      "<":"&lt;",
-      ">":"&gt;",
-      '"':"&quot;",
-      "'":"&#039;"
-    }[c])
-  );
+function esc(value){
+
+return String(value ?? "").replace(
+/[&<>"']/g,
+
+c => ({
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#039;"
+}[c])
+
+);
+
 }
 
 
-function fmtDate(v){
-  if(!v) return "";
+function fmtDate(value){
 
-  try{
-    const d =
-      v?.toDate
-        ? v.toDate()
-        : new Date(v);
+try{
 
-    return d.toLocaleDateString(
-      undefined,
-      {
-        day:"numeric",
-        month:"short",
-        year:"numeric"
-      }
-    );
-  }catch{
-    return "";
-  }
+if(!value)
+return "";
+
+const d =
+value?.toDate
+? value.toDate()
+: new Date(value);
+
+return d.toLocaleDateString(
+undefined,
+{
+day:"numeric",
+month:"short",
+year:"numeric"
+}
+);
+
+}catch{
+
+return "";
+
+}
+
 }
 
 
-function showError(e){
-  console.error(e);
+function showError(error){
 
-  const box = $("firebaseError");
+console.error(error);
 
-  if(box){
-    box.style.display = "block";
-    box.textContent =
-      "Firebase Error: " +
-      (e?.message || e);
-  }
+const box =
+$("firebaseError");
+
+if(box){
+
+box.style.display =
+"block";
+
+box.textContent =
+"Firebase Error: " +
+(error?.message || error);
+
+}
+
 }
 
 
-function showToast(message){
-  const t = $("toast");
+function toast(message){
 
-  if(!t) return;
+const t =
+$("toast");
 
-  t.textContent = message;
-  t.classList.add("show");
+if(t){
 
-  setTimeout(
-    () => t.classList.remove("show"),
-    2600
-  );
+t.textContent =
+message;
+
+t.classList.add("show");
+
+setTimeout(
+() => t.classList.remove("show"),
+2500
+);
+
+}else{
+
+alert(message);
+
+}
+
 }
 
 
-function friendly(e){
+function msg(
+id,
+text,
+ok=false
+){
 
-  const c = e?.code || "";
+const x =
+$(id);
 
-  const m = {
-    "auth/invalid-credential":
-      "Email or password is incorrect.",
+if(x){
 
-    "auth/user-not-found":
-      "No account was found with this email.",
+x.textContent =
+text;
 
-    "auth/wrong-password":
-      "Email or password is incorrect.",
+x.style.color =
+ok
+? "#43d883"
+: "#ff7185";
 
-    "auth/email-already-in-use":
-      "This email already has an account.",
+}
 
-    "auth/weak-password":
-      "Password must be at least 6 characters.",
-
-    "auth/invalid-email":
-      "Please enter a valid email.",
-
-    "auth/too-many-requests":
-      "Too many attempts. Please try again later.",
-
-    "auth/network-request-failed":
-      "Network error. Check your internet connection."
-  };
-
-  return m[c] ||
-    e?.message ||
-    "Something went wrong.";
 }
 
 
-function setMsg(id,text,ok=false){
+/* =========================================================
+   ROLE
+========================================================= */
 
-  const el = $(id);
+function role(){
 
-  if(el){
-    el.textContent = text;
-    el.style.color =
-      ok ? "#43d883" : "#ff7185";
-  }
+return document.body.dataset.role === "client"
+? "client"
+: "freelancer";
+
+}
+
+
+function isOwner(){
+
+return currentUser?.uid &&
+userData?.owner === true;
+
 }
 
 
@@ -204,33 +238,37 @@ function setMsg(id,text,ok=false){
 
 function themeInit(){
 
-  const saved =
-    localStorage.getItem("efh_theme") ||
-    "dark";
+const light =
+localStorage.getItem("efh_theme") ===
+"light";
 
-  document.body.classList.toggle(
-    "light",
-    saved === "light"
-  );
+document.body.classList.toggle(
+"light",
+light
+);
 
-  $("themeToggle")?.addEventListener(
-    "click",
-    () => {
+$("themeToggle")?.addEventListener(
+"click",
+() => {
 
-      const light =
-        !document.body.classList.contains("light");
+const next =
+!document.body.classList.contains("light");
 
-      document.body.classList.toggle(
-        "light",
-        light
-      );
+document.body.classList.toggle(
+"light",
+next
+);
 
-      localStorage.setItem(
-        "efh_theme",
-        light ? "light" : "dark"
-      );
-    }
-  );
+localStorage.setItem(
+"efh_theme",
+next
+? "light"
+: "dark"
+);
+
+}
+);
+
 }
 
 themeInit();
@@ -240,324 +278,414 @@ themeInit();
    LOGOUT
 ========================================================= */
 
-async function logout(){
+function logout(){
 
-  try{
-    await signOut(auth);
-    location.href = "login.html";
-  }catch(e){
-    showError(e);
-  }
+signOut(auth)
+.then(
+() =>
+location.href =
+"login.html"
+)
+.catch(showError);
+
 }
 
+
 $("logoutBtn")?.addEventListener(
-  "click",
-  logout
+"click",
+logout
 );
 
 $("topLogout")?.addEventListener(
-  "click",
-  logout
+"click",
+logout
 );
-
-$("settingsLogout")?.addEventListener(
-  "click",
-  logout
-);
-
-
-/* =========================================================
-   ROLE
-========================================================= */
-
-function role(){
-
-  return document.body.dataset.role === "client"
-    ? "client"
-    : "freelancer";
-}
-
-
-function isOwner(){
-
-  return (
-    currentUser?.email?.toLowerCase() ===
-    OWNER_EMAIL.toLowerCase()
-  );
-}
 
 
 /* =========================================================
    NAVIGATION
 ========================================================= */
 
-function buildNav(){
-
-  const nav = $("navArea");
-
-  if(!nav) return;
-
-  const client =
-    role() === "client";
-
-  const groups = client
-    ? [
-        [
-          "MAIN",
-          [
-            ["dashboardPage","⌂","Dashboard"],
-            ["projectsPage","▣","My Projects"],
-            ["applicationsPage","✉","Applications"],
-            ["messagesPage","◌","Messages"]
-          ]
-        ],
-
-        [
-          "MANAGE",
-          [
-            ["postPage","＋","Post a Project"],
-            ["freelancersPage","♙","Find Freelancers"]
-          ]
-        ],
-
-        [
-          "ACCOUNT",
-          [
-            ["profilePage","♙","Profile"],
-            ["settingsPage","⚙","Settings"]
-          ]
-        ]
-      ]
-
-    : [
-        [
-          "MAIN",
-          [
-            ["dashboardPage","⌂","Dashboard"],
-            ["jobsPage","✓","Find Work"],
-            ["applicationsPage","✉","My Applications"],
-            ["projectsPage","▣","My Projects"],
-            ["messagesPage","◌","Messages"]
-          ]
-        ],
-
-        [
-          "ACCOUNT",
-          [
-            ["profilePage","♙","Profile"],
-            ["settingsPage","⚙","Settings"]
-          ]
-        ]
-      ];
-
-
-  if(isOwner() && !client){
-
-    groups[1][1].push(
-      ["ownerPage","♛","Owner Panel"]
-    );
-  }
-
-
-  nav.innerHTML =
-    groups.map(
-      ([title,items]) => `
-
-        <div class="section-title">
-          ${title}
-        </div>
-
-        ${items.map(
-          ([id,icon,label]) => `
-
-            <button
-              class="nav"
-              type="button"
-              data-target="${id}"
-            >
-              ${icon}&nbsp; ${label}
-            </button>
-
-          `
-        ).join("")}
-
-      `
-    ).join("");
-
-
-  nav
-    .querySelectorAll(".nav")
-    .forEach(
-      b =>
-        b.addEventListener(
-          "click",
-          () =>
-            go(
-              b.dataset.target,
-              b.textContent
-            )
-        )
-    );
-
-
-  updateActiveNav();
-}
-
-
-function updateActiveNav(){
-
-  const active =
-    document.querySelector(
-      ".page.active"
-    )?.id;
-
-  document
-    .querySelectorAll(".nav")
-    .forEach(
-      n =>
-        n.classList.toggle(
-          "active",
-          n.dataset.target === active
-        )
-    );
-}
-
-
-async function go(id,title){
-
-  document
-    .querySelectorAll(".page")
-    .forEach(
-      p =>
-        p.classList.toggle(
-          "active",
-          p.id === id
-        )
-    );
-
-
-  if($("pageTitle")){
-
-    $("pageTitle").textContent =
-      String(
-        title || "Dashboard"
-      )
-      .replace(/^[^A-Za-z]+/,"")
-      .trim();
-  }
-
-
-  updateActiveNav();
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-
-
-  if(id === "jobsPage")
-    await loadJobs();
-
-  if(id === "applicationsPage")
-    await loadApplications();
-
-  if(id === "projectsPage")
-    await loadProjects();
-
-  if(id === "messagesPage")
-    await loadConversations();
-
-  if(id === "ownerPage")
-    await loadOwnerStats();
-}
-
-
-document.addEventListener(
-  "click",
-  e => {
-
-    const b =
-      e.target.closest("[data-target]");
-
-    if(
-      b &&
-      !b.classList.contains("nav")
-    ){
-      go(
-        b.dataset.target,
-        b.textContent
-      );
-    }
-  }
-);
-
-
-/* =========================================================
-   TOP BUTTONS
-========================================================= */
-
 $("brandHome")?.addEventListener(
-  "click",
-  () =>
-    go(
-      "dashboardPage",
-      "Dashboard"
-    )
+"click",
+() =>
+go(
+"dashboardPage",
+"Dashboard"
+)
 );
 
 
 $("topProfileBtn")?.addEventListener(
-  "click",
-  () =>
-    go(
-      "profilePage",
-      "Profile"
-    )
+"click",
+() =>
+go(
+"profilePage",
+"Profile"
+)
 );
 
 
 $("helpBtn")?.addEventListener(
-  "click",
-  () =>
-    alert(
-      "ELITE FREELANCE HUB Support\n\n" +
-      "For account, project or payment issues, " +
-      "contact the platform owner."
-    )
+"click",
+() =>
+alert(
+"ELITE FREELANCE HUB Support\n\n" +
+"Contact the platform owner for account, " +
+"project or payment issues."
+)
 );
 
 
 $("notificationBtn")?.addEventListener(
-  "click",
-  () =>
-    showToast(
-      "No new notifications."
-    )
+"click",
+() =>
+toast(
+"No new notifications."
+)
 );
 
 
 $("switchMode")?.addEventListener(
-  "click",
-  () => {
+"click",
+() => {
 
-    if(!isOwner()) return;
+if(!isOwner())
+return;
 
-    location.href =
-      isClientPage
-        ? "index.html"
-        : "client-dashboard.html";
-  }
+location.href =
+isClientPage
+? "index.html"
+: "client-dashboard.html";
+
+}
 );
 
 
-$("ownerClientMode")?.addEventListener(
-  "click",
-  () => {
+function buildNav(){
 
-    if(isOwner())
-      location.href =
-        "client-dashboard.html";
-  }
+const nav =
+$("navArea");
+
+if(!nav)
+return;
+
+
+const client =
+role() === "client";
+
+
+const groups =
+client
+
+? [
+
+[
+"MAIN",
+[
+[
+"dashboardPage",
+"⌂",
+"Dashboard"
+],
+
+[
+"projectsPage",
+"▣",
+"My Projects"
+],
+
+[
+"applicationsPage",
+"✉",
+"Applications"
+],
+
+[
+"messagesPage",
+"◌",
+"Messages"
+]
+
+]
+],
+
+[
+"MANAGE",
+[
+[
+"postPage",
+"＋",
+"Post a Project"
+]
+]
+],
+
+[
+"ACCOUNT",
+[
+[
+"profilePage",
+"♙",
+"Profile"
+],
+
+[
+"settingsPage",
+"⚙",
+"Settings"
+]
+]
+]
+
+]
+
+:
+
+[
+
+[
+"MAIN",
+[
+[
+"dashboardPage",
+"⌂",
+"Dashboard"
+],
+
+[
+"jobsPage",
+"✓",
+"Find Work"
+],
+
+[
+"applicationsPage",
+"✉",
+"My Applications"
+],
+
+[
+"projectsPage",
+"▣",
+"My Projects"
+],
+
+[
+"messagesPage",
+"◌",
+"Messages"
+]
+]
+],
+
+[
+"ACCOUNT",
+[
+[
+"profilePage",
+"♙",
+"Profile"
+],
+
+[
+"settingsPage",
+"⚙",
+"Settings"
+]
+]
+]
+
+];
+
+
+if(
+isOwner() &&
+!client
+){
+
+groups.push(
+[
+"OWNER",
+[
+[
+"ownerPage",
+"♛",
+"Owner Panel"
+]
+]
+]
+);
+
+}
+
+
+nav.innerHTML =
+groups
+.map(
+group => {
+
+return `
+<div class="section-title">
+${group[0]}
+</div>
+
+${group[1]
+.map(
+item => `
+
+<button
+class="nav"
+type="button"
+data-target="${item[0]}"
+>
+${item[1]}&nbsp; ${item[2]}
+</button>
+
+`
+)
+.join("")}
+
+`;
+
+}
+)
+.join("");
+
+
+nav
+.querySelectorAll(".nav")
+.forEach(
+button =>
+button.addEventListener(
+"click",
+() =>
+go(
+button.dataset.target,
+button.textContent
+)
+)
+);
+
+
+updateActive();
+
+}
+
+
+function updateActive(){
+
+const active =
+document.querySelector(
+".page.active"
+)?.id;
+
+document
+.querySelectorAll(".nav")
+.forEach(
+n =>
+n.classList.toggle(
+"active",
+n.dataset.target === active
+)
+);
+
+}
+
+
+async function go(
+id,
+title
+){
+
+document
+.querySelectorAll(".page")
+.forEach(
+page =>
+page.classList.toggle(
+"active",
+page.id === id
+)
+);
+
+
+if($("pageTitle")){
+
+$("pageTitle").textContent =
+String(
+title ||
+"Dashboard"
+)
+.replace(
+/^[^A-Za-z]+/,
+""
+)
+.trim();
+
+}
+
+
+updateActive();
+
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+
+const map = {
+
+jobsPage:
+loadJobs,
+
+applicationsPage:
+role() === "client"
+? loadClientApplications
+: loadApplications,
+
+projectsPage:
+role() === "client"
+? loadClientProjects
+: loadProjects,
+
+messagesPage:
+loadConversations,
+
+ownerPage:
+loadOwnerStats
+
+};
+
+
+if(map[id])
+await map[id]();
+
+}
+
+
+document.addEventListener(
+"click",
+event => {
+
+const button =
+event.target.closest(
+"[data-target]"
+);
+
+if(
+button &&
+!button.classList.contains("nav")
+){
+
+go(
+button.dataset.target,
+button.textContent
+);
+
+}
+
+}
 );
 
 
@@ -567,158 +695,204 @@ $("ownerClientMode")?.addEventListener(
 
 async function loadIdentity(){
 
-  const snap =
-    await getDoc(
-      doc(
-        db,
-        "users",
-        currentUser.uid
-      )
-    );
+const userRef =
+doc(
+db,
+"users",
+currentUser.uid
+);
+
+const snap =
+await getDoc(userRef);
 
 
-  if(!snap.exists()){
+if(!snap.exists()){
 
-    if(!isOwner())
-      throw new Error(
-        "Account profile was not found."
-      );
+userData = {
 
+name:
+currentUser.displayName ||
+currentUser.email?.split("@")[0] ||
+"Member",
 
-    userData = {
-      name:"Ayesha Rehman",
-      email:currentUser.email,
-      role:"freelancer",
-      owner:true,
-      skills:
-        "Web Development, HTML, CSS, JavaScript"
-    };
+email:
+currentUser.email || "",
 
+role:
+role(),
 
-    await setDoc(
-      doc(
-        db,
-        "users",
-        currentUser.uid
-      ),
-      {
-        ...userData,
-        createdAt:serverTimestamp()
-      }
-    );
+owner:
+false,
 
-  }else{
+skills:
+"",
 
-    userData =
-      snap.data() || {};
-  }
+photoURL:
+""
+
+};
 
 
-  if(
-    isOwner() &&
-    userData.role !== "freelancer"
-  ){
+await setDoc(
+userRef,
+{
+...userData,
+createdAt:
+serverTimestamp()
+}
+);
 
-    userData.role =
-      "freelancer";
+}else{
 
-    await updateDoc(
-      doc(
-        db,
-        "users",
-        currentUser.uid
-      ),
-      {
-        role:"freelancer",
-        owner:true
-      }
-    );
-  }
+userData =
+snap.data() || {};
+
+}
 
 
-  const owner =
-    isOwner();
+if(!userData.role)
+userData.role =
+role();
 
 
-  document.body.classList.toggle(
-    "is-owner",
-    owner
-  );
+if(
+!isOwner() &&
+userData.role !== role()
+){
+
+location.href =
+userData.role === "client"
+? "client-dashboard.html"
+: "index.html";
+
+return;
+
+}
 
 
-  document
-    .querySelectorAll("[id=sideName]")
-    .forEach(
-      x =>
-        x.textContent =
-          userData.name ||
-          currentUser.email.split("@")[0]
-    );
+const photo =
+userData.photoURL ||
+"profile.png";
 
 
-  document
-    .querySelectorAll("[id=sideRole]")
-    .forEach(
-      x =>
-        x.textContent =
-          owner
-            ? "Owner • Freelancer"
-            : (
-                role() === "client"
-                  ? "Professional Client"
-                  : "Professional Freelancer"
-              )
-    );
+[
+"sideAvatar",
+"topAvatar",
+"profileAvatar"
+]
+.forEach(
+id => {
+
+if($(id))
+$(id).src =
+photo;
+
+}
+);
 
 
-  $("topName")?.replaceChildren(
-    document.createTextNode(
-      userData.name || "Member"
-    )
-  );
+document
+.querySelectorAll(
+"#sideName"
+)
+.forEach(
+x =>
+x.textContent =
+userData.name ||
+"Member"
+);
 
 
-  $("profileName")?.replaceChildren(
-    document.createTextNode(
-      userData.name || "Member"
-    )
-  );
+document
+.querySelectorAll(
+"#sideRole"
+)
+.forEach(
+x =>
+x.textContent =
+isOwner()
+? "Owner • Freelancer"
+: role() === "client"
+? "Professional Client"
+: "Professional Freelancer"
+);
 
 
-  if($("profileRole"))
-    $("profileRole").textContent =
-      owner
-        ? "Owner + Professional Freelancer"
-        : (
-            role() === "client"
-              ? "Professional Client"
-              : "Professional Freelancer"
-          );
+if($("topName"))
+$("topName").textContent =
+userData.name ||
+"Member";
 
 
-  if($("profileEmail"))
-    $("profileEmail").textContent =
-      currentUser.email || "";
+if($("profileName"))
+$("profileName").textContent =
+userData.name ||
+"Member";
 
 
-  if($("profileSkills"))
-    $("profileSkills").textContent =
-      userData.skills || "";
+if($("profileRole"))
+$("profileRole").textContent =
+isOwner()
+? "Owner + Professional Freelancer"
+: role() === "client"
+? "Professional Client"
+: "Professional Freelancer";
 
 
-  if($("settingsName"))
-    $("settingsName").value =
-      userData.name || "";
+if($("profileEmail"))
+$("profileEmail").textContent =
+currentUser.email ||
+"";
 
 
-  if($("settingsEmail"))
-    $("settingsEmail").value =
-      currentUser.email || "";
+if($("profileSkills"))
+$("profileSkills").textContent =
+userData.skills ||
+"Not added";
 
 
-  if($("settingsSkills"))
-    $("settingsSkills").value =
-      userData.skills || "";
+if($("settingsName"))
+$("settingsName").value =
+userData.name ||
+"";
+
+
+if($("settingsEmail"))
+$("settingsEmail").value =
+currentUser.email ||
+"";
+
+
+if($("settingsSkills"))
+$("settingsSkills").value =
+userData.skills ||
+"";
+
+
+if($("switchMode")){
+
+$("switchMode").textContent =
+isOwner()
+? (
+isClientPage
+? "⇄ Switch to Freelancer Mode"
+: "⇄ Switch to Client Mode"
+)
+: "";
+
+}
+
+
+if(
+$("switchMode") &&
+!isOwner()
+){
+
+$("switchMode").style.display =
+"none";
+
+}
+
 }
 
 
@@ -726,92 +900,116 @@ async function loadIdentity(){
    AUTH GUARD
 ========================================================= */
 
-async function authGuard(){
+function authGuard(){
 
-  onAuthStateChanged(
-    auth,
-    async user => {
+onAuthStateChanged(
+auth,
+async user => {
 
-      if(!user){
+if(!user){
 
-        location.href =
-          "login.html";
+location.href =
+"login.html";
 
-        return;
-      }
+return;
 
-
-      currentUser = user;
+}
 
 
-      try{
-
-        const owner =
-          user.email?.toLowerCase() ===
-          OWNER_EMAIL.toLowerCase();
+currentUser =
+user;
 
 
-        const snap =
-          await getDoc(
-            doc(
-              db,
-              "users",
-              user.uid
-            )
-          );
+try{
+
+const userRef =
+doc(
+db,
+"users",
+user.uid
+);
+
+const snap =
+await getDoc(userRef);
 
 
-        if(
-          !snap.exists() &&
-          !owner
-        ){
+if(!snap.exists()){
 
-          throw new Error(
-            "Account profile is missing."
-          );
-        }
+await setDoc(
+userRef,
+{
+name:
+user.email?.split("@")[0] ||
+"Member",
 
+email:
+user.email || "",
 
-        const data =
-          snap.exists()
-            ? snap.data()
-            : {};
+role:
+role(),
 
+owner:
+false,
 
-        if(
-          !owner &&
-          data.role !== role()
-        ){
+skills:
+"",
 
-          location.href =
-            data.role === "client"
-              ? "client-dashboard.html"
-              : "index.html";
+photoURL:
+"",
 
-          return;
-        }
+createdAt:
+serverTimestamp()
+}
+);
 
-
-        await loadIdentity();
-
-        buildNav();
+}
 
 
-        if(isPostPage)
-          await initPostPage();
+await loadIdentity();
 
-        else if(isClientPage)
-          await initClient();
+buildNav();
 
-        else if(isFreelancerPage)
-          await initFreelancer();
 
-      }catch(e){
+if(isPostPage){
 
-        showError(e);
-      }
-    }
-  );
+if(
+role() !== "client" &&
+!isOwner()
+){
+
+location.href =
+"index.html";
+
+return;
+
+}
+
+await initPost();
+
+}
+
+else if(isClientPage){
+
+await initClient();
+
+}
+
+else{
+
+await initFreelancer();
+
+}
+
+
+}catch(error){
+
+showError(error);
+
+}
+
+}
+);
+
 }
 
 
@@ -821,475 +1019,533 @@ async function authGuard(){
 
 function initAuth(){
 
-  const loginForm =
-    $("loginForm");
+const loginForm =
+$("loginForm");
 
-  const signupForm =
-    $("signupForm");
+const signupForm =
+$("signupForm");
 
 
-  if(!loginForm || !signupForm)
-    return;
+if(!loginForm ||
+!signupForm)
+return;
 
 
-  $("loginTab").onclick =
-    () => {
+const showLogin =
+() => {
 
-      loginForm.classList.remove(
-        "hidden"
-      );
+loginForm.classList.remove(
+"hidden"
+);
 
-      signupForm.classList.add(
-        "hidden"
-      );
+signupForm.classList.add(
+"hidden"
+);
 
-      $("loginTab").classList.add(
-        "active"
-      );
+$("loginTab")?.classList.add(
+"active"
+);
 
-      $("signupTab").classList.remove(
-        "active"
-      );
-    };
+$("signupTab")?.classList.remove(
+"active"
+);
 
+};
 
-  $("signupTab").onclick =
-    () => {
 
-      loginForm.classList.add(
-        "hidden"
-      );
+const showSignup =
+() => {
 
-      signupForm.classList.remove(
-        "hidden"
-      );
+loginForm.classList.add(
+"hidden"
+);
 
-      $("loginTab").classList.remove(
-        "active"
-      );
+signupForm.classList.remove(
+"hidden"
+);
 
-      $("signupTab").classList.add(
-        "active"
-      );
-    };
+$("loginTab")?.classList.remove(
+"active"
+);
 
+$("signupTab")?.classList.add(
+"active"
+);
 
-  loginForm.addEventListener(
-    "submit",
-    async e => {
+};
 
-      e.preventDefault();
 
-      setMsg(
-        "loginMsg",
-        ""
-      );
+$("loginTab")?.addEventListener(
+"click",
+showLogin
+);
 
+$("signupTab")?.addEventListener(
+"click",
+showSignup
+);
 
-      try{
+$("goSignup")?.addEventListener(
+"click",
+showSignup
+);
 
-        await signInWithEmailAndPassword(
-          auth,
-          $("loginEmail")
-            .value
-            .trim()
-            .toLowerCase(),
-          $("loginPassword").value
-        );
+$("goLogin")?.addEventListener(
+"click",
+showLogin
+);
 
 
-        const email =
-          $("loginEmail")
-            .value
-            .trim()
-            .toLowerCase();
+loginForm.addEventListener(
+"submit",
+async event => {
 
+event.preventDefault();
 
-        location.href =
-          email === OWNER_EMAIL
-            ? "index.html"
-            : "index.html";
 
-      }catch(err){
+try{
 
-        setMsg(
-          "loginMsg",
-          friendly(err)
-        );
-      }
-    }
-  );
+await signInWithEmailAndPassword(
+auth,
+$("loginEmail")
+.value
+.trim()
+.toLowerCase(),
 
+$("loginPassword")
+.value
+);
 
-  $("forgotBtn").onclick =
-    async () => {
 
-      const email =
-        $("loginEmail")
-          .value
-          .trim()
-          .toLowerCase();
+location.href =
+"index.html";
 
 
-      if(!email){
+}catch(error){
 
-        setMsg(
-          "loginMsg",
-          "Enter your email first."
-        );
+msg(
+"loginMsg",
+friendly(error)
+);
 
-        return;
-      }
+}
 
+}
+);
 
-      try{
 
-        await sendPasswordResetEmail(
-          auth,
-          email
-        );
+$("forgotBtn")?.addEventListener(
+"click",
+async () => {
 
-        setMsg(
-          "loginMsg",
-          "Password reset email sent.",
-          true
-        );
+const email =
+$("loginEmail")
+.value
+.trim()
+.toLowerCase();
 
-      }catch(e){
 
-        setMsg(
-          "loginMsg",
-          friendly(e)
-        );
-      }
-    };
+if(!email){
 
+msg(
+"loginMsg",
+"Enter your email first."
+);
 
-  signupForm.addEventListener(
-    "submit",
-    async e => {
+return;
 
-      e.preventDefault();
+}
 
-      setMsg(
-        "signupMsg",
-        ""
-      );
 
+try{
 
-      const name =
-        $("signupName")
-          .value
-          .trim();
+await sendPasswordResetEmail(
+auth,
+email
+);
 
-      const email =
-        $("signupEmail")
-          .value
-          .trim()
-          .toLowerCase();
+msg(
+"loginMsg",
+"Password reset email sent.",
+true
+);
 
-      const password =
-        $("signupPassword")
-          .value;
+}catch(error){
 
-      const selectedRole =
-        $("signupRole").value;
+msg(
+"loginMsg",
+friendly(error)
+);
 
+}
 
-      try{
+}
+);
 
-        const cred =
-          await createUserWithEmailAndPassword(
-            auth,
-            email,
-            password
-          );
 
+signupForm.addEventListener(
+"submit",
+async event => {
 
-        const owner =
-          email === OWNER_EMAIL;
+event.preventDefault();
 
 
-        await setDoc(
-          doc(
-            db,
-            "users",
-            cred.user.uid
-          ),
-          {
-            name:
-              name || "User",
+try{
 
-            email,
+const email =
+$("signupEmail")
+.value
+.trim()
+.toLowerCase();
 
-            role:
-              owner
-                ? "freelancer"
-                : selectedRole,
+const name =
+$("signupName")
+.value
+.trim();
 
-            owner,
+const selected =
+$("signupRole")
+.value;
 
-            skills:"",
 
-            createdAt:
-              serverTimestamp()
-          }
-        );
+const credential =
+await createUserWithEmailAndPassword(
+auth,
+email,
+$("signupPassword").value
+);
 
 
-        setMsg(
-          "signupMsg",
-          owner
-            ? "Owner + Freelancer account created."
-            : "Account created successfully.",
-          true
-        );
+await setDoc(
+doc(
+db,
+"users",
+credential.user.uid
+),
+{
 
+name,
 
-        setTimeout(
-          () =>
-            location.href =
-              owner
-                ? "index.html"
-                : selectedRole === "client"
-                  ? "client-dashboard.html"
-                  : "index.html",
-          500
-        );
+email,
 
-      }catch(err){
+role:
+selected,
 
-        setMsg(
-          "signupMsg",
-          friendly(err)
-        );
-      }
-    }
-  );
+owner:
+false,
+
+skills:
+"",
+
+photoURL:
+"",
+
+createdAt:
+serverTimestamp()
+
+}
+);
+
+
+msg(
+"signupMsg",
+"Account created successfully.",
+true
+);
+
+
+setTimeout(
+() =>
+location.href =
+selected === "client"
+? "client-dashboard.html"
+: "index.html",
+500
+);
+
+
+}catch(error){
+
+msg(
+"signupMsg",
+friendly(error)
+);
+
+}
+
+}
+);
+
+}
+
+
+function friendly(error){
+
+const messages = {
+
+"auth/invalid-credential":
+"Email or password is incorrect.",
+
+"auth/user-not-found":
+"No account was found with this email.",
+
+"auth/wrong-password":
+"Email or password is incorrect.",
+
+"auth/email-already-in-use":
+"This email already has an account.",
+
+"auth/weak-password":
+"Password must be at least 6 characters.",
+
+"auth/invalid-email":
+"Please enter a valid email.",
+
+"auth/too-many-requests":
+"Too many attempts. Please try again later.",
+
+"auth/network-request-failed":
+"Network error. Check your internet connection."
+
+};
+
+
+return messages[error?.code] ||
+error?.message ||
+"Something went wrong.";
+
 }
 
 
 /* =========================================================
-   FREELANCER
+   FREELANCER DASHBOARD
 ========================================================= */
-
-async function initFreelancer(){
-
-  if($("pageTitle"))
-    $("pageTitle").textContent =
-      "Dashboard";
-
-
-  await loadFreelancerDashboard();
-  await loadJobs();
-  await loadApplications();
-  await loadProjects();
-
-  renderTimerless();
-}
-
 
 async function loadFreelancerDashboard(){
 
-  const stats =
-    $("freelancerStats");
+const [
+jobs,
+applications,
+projects
+] =
+await Promise.all([
 
-  const rec =
-    $("recommendedJobs");
+getDocs(
+query(
+collection(db,"jobs"),
+where(
+"status",
+"==",
+"open"
+)
+)
+),
 
-  const apps =
-    $("recentApplications");
+getDocs(
+query(
+collection(db,"applications"),
+where(
+"freelancerId",
+"==",
+currentUser.uid
+)
+)
+),
 
+getDocs(
+query(
+collection(db,"projects"),
+where(
+"freelancerId",
+"==",
+currentUser.uid
+)
+)
+)
 
-  if(!stats) return;
-
-
-  try{
-
-    const [
-      jobsSnap,
-      appSnap,
-      projSnap
-    ] =
-      await Promise.all([
-
-        getDocs(
-          query(
-            collection(db,"jobs"),
-            where(
-              "status",
-              "==",
-              "open"
-            )
-          )
-        ),
-
-        getDocs(
-          query(
-            collection(db,"applications"),
-            where(
-              "freelancerId",
-              "==",
-              currentUser.uid
-            )
-          )
-        ),
-
-        getDocs(
-          query(
-            collection(db,"projects"),
-            where(
-              "freelancerId",
-              "==",
-              currentUser.uid
-            )
-          )
-        )
-      ]);
+]);
 
 
-    const accepted =
-      appSnap.docs.filter(
-        d =>
-          d.data().status ===
-          "accepted"
-      ).length;
+const active =
+projects.docs.filter(
+d =>
+d.data().status !==
+"completed"
+).length;
 
 
-    stats.innerHTML =
-      [
-        [
-          "💰",
-          accepted
-            ? "Active Earnings"
-            : "Earnings",
-          "$" +
-            (
-              projSnap.docs.reduce(
-                (s,d) =>
-                  s +
-                  Number(
-                    d.data().budget || 0
-                  ),
-                0
-              )
-            ).toLocaleString(),
-          "From accepted projects"
-        ],
-
-        [
-          "📁",
-          "Active Projects",
-          String(projSnap.size),
-          "Accepted work"
-        ],
-
-        [
-          "✉",
-          "Applications",
-          String(appSnap.size),
-          "Sent to clients"
-        ],
-
-        [
-          "★",
-          "Profile Rating",
-          "—",
-          "Reviews will appear here"
-        ]
-
-      ]
-      .map(
-        x =>
-          `<div class="stat">
-            <div class="icon">${x[0]}</div>
-            <h3>${x[2]}</h3>
-            <p>${x[1]}</p>
-            <em>${x[3]}</em>
-          </div>`
-      )
-      .join("");
+const earnings =
+projects.docs.reduce(
+(sum,d) =>
+sum +
+Number(
+d.data().budget ||
+0
+),
+0
+);
 
 
-    rec.innerHTML =
-      jobsSnap.docs
-        .slice(0,4)
-        .map(
-          d => {
+$("freelancerStats").innerHTML =
+[
 
-            const j =
-              d.data();
+[
+"💰",
+"Earnings",
+"$" +
+earnings.toLocaleString(),
+"Accepted project budgets"
+],
 
-            return `
-              <div class="activity-row">
-                <div class="activity-icon">
-                  💼
-                </div>
+[
+"📁",
+"Active Projects",
+active,
+"Assigned work"
+],
 
-                <div>
-                  <strong>
-                    ${esc(j.title || "Project")}
-                  </strong>
+[
+"✉",
+"Applications",
+applications.size,
+"Sent to clients"
+],
 
-                  <span>
-                    $${Number(j.budget || 0)}
-                    •
-                    ${esc(j.category || "General")}
-                    •
-                    ${esc(j.deadline || "No deadline")}
-                  </span>
-                </div>
-              </div>
-            `;
-          }
-        )
-        .join("")
-        ||
-        `<div class="empty">
-          No open projects yet.
-        </div>`;
+[
+"★",
+"Profile Rating",
+"—",
+"Reviews will appear here"
+]
+
+]
+.map(
+x =>
+`
+<div class="stat">
+
+<div class="icon">
+${x[0]}
+</div>
+
+<h3>
+${x[2]}
+</h3>
+
+<p>
+${x[1]}
+</p>
+
+<em>
+${x[3]}
+</em>
+
+</div>
+`
+)
+.join("");
 
 
-    apps.innerHTML =
-      appSnap.docs
-        .slice(0,4)
-        .map(
-          d => {
+$("recommendedJobs").innerHTML =
+jobs.docs
+.slice(0,5)
+.map(
+d => {
 
-            const a =
-              d.data();
+const x =
+d.data();
 
-            return `
-              <div class="activity-row">
-                <div class="activity-icon">
-                  ✉
-                </div>
+return `
+<div class="activity-row">
 
-                <div>
-                  <strong>
-                    ${esc(a.jobTitle || "Application")}
-                  </strong>
+<div class="activity-icon">
+💼
+</div>
 
-                  <span>
-                    ${esc(a.status || "pending")}
-                    •
-                    ${fmtDate(a.createdAt)}
-                  </span>
-                </div>
-              </div>
-            `;
-          }
-        )
-        .join("")
-        ||
-        `<div class="empty">
-          No applications yet.
-        </div>`;
+<div>
 
-  }catch(e){
+<strong>
+${esc(x.title || "Project")}
+</strong>
 
-    showError(e);
-  }
+<span>
+$${Number(x.budget || 0)}
+•
+${esc(x.category || "General")}
+</span>
+
+</div>
+
+</div>
+`;
+
+}
+)
+.join("")
+||
+`
+<div class="empty">
+No open projects yet.
+</div>
+`;
+
+
+$("recentApplications").innerHTML =
+applications.docs
+.slice(0,5)
+.map(
+d => {
+
+const x =
+d.data();
+
+return `
+<div class="activity-row">
+
+<div class="activity-icon">
+✉
+</div>
+
+<div>
+
+<strong>
+${esc(x.jobTitle || "Project")}
+</strong>
+
+<span>
+${esc(x.status || "pending")}
+•
+${fmtDate(x.createdAt)}
+</span>
+
+</div>
+
+</div>
+`;
+
+}
+)
+.join("")
+||
+`
+<div class="empty">
+No applications yet.
+</div>
+`;
+
+}
+
+
+async function initFreelancer(){
+
+await loadFreelancerDashboard();
+
+await loadJobs();
+
+await loadApplications();
+
+await loadProjects();
+
 }
 
 
@@ -1299,570 +1555,611 @@ async function loadFreelancerDashboard(){
 
 async function loadJobs(){
 
-  const list =
-    $("jobsList");
+const list =
+$("jobsList");
 
-  if(!list) return;
-
-  list.innerHTML =
-    '<div class="loading">Loading projects...</div>';
+if(!list)
+return;
 
 
-  try{
-
-    const snap =
-      await getDocs(
-        query(
-          collection(db,"jobs"),
-          where(
-            "status",
-            "==",
-            "open"
-          )
-        )
-      );
+list.innerHTML =
+'<div class="loading">Loading projects...</div>';
 
 
-    const docs =
-      snap.docs.filter(
-        d =>
-          d.data().clientId !==
-          currentUser.uid
-      );
+try{
+
+const snap =
+await getDocs(
+query(
+collection(db,"jobs"),
+where(
+"status",
+"==",
+"open"
+)
+)
+);
 
 
-    if(!docs.length){
-
-      list.innerHTML =
-        '<div class="empty">No open projects available right now.</div>';
-
-      return;
-    }
-
-
-    const appliedSnap =
-      await getDocs(
-        query(
-          collection(db,"applications"),
-          where(
-            "freelancerId",
-            "==",
-            currentUser.uid
-          )
-        )
-      );
+const docs =
+snap.docs.filter(
+d =>
+d.data().clientId !==
+currentUser.uid
+);
 
 
-    const applied =
-      new Set(
-        appliedSnap.docs.map(
-          d => d.data().jobId
-        )
-      );
+if(!docs.length){
+
+list.innerHTML =
+`
+<div class="empty">
+No open projects available right now.
+</div>
+`;
+
+return;
+
+}
 
 
-    list.innerHTML =
-      docs.map(
-        d => {
-
-          const j =
-            d.data();
-
-          const isApplied =
-            applied.has(d.id);
-
-
-          return `
-            <article class="card">
-
-              <h3>
-                💼
-                ${esc(
-                  j.title ||
-                  "Untitled Project"
-                )}
-              </h3>
-
-              <p>
-                ${esc(
-                  j.description ||
-                  "No description provided."
-                )}
-              </p>
-
-              <div class="meta">
-
-                <span class="pill">
-                  ${esc(
-                    j.category ||
-                    "General"
-                  )}
-                </span>
-
-                <span class="pill">
-                  💰
-                  $${Number(j.budget || 0)}
-                </span>
-
-                <span class="pill">
-                  📅
-                  ${esc(
-                    j.deadline ||
-                    "—"
-                  )}
-                </span>
-
-              </div>
-
-              <small class="muted">
-                Client:
-                ${esc(
-                  j.clientName ||
-                  "Client"
-                )}
-              </small>
-
-              <div class="card-actions">
-
-                <button
-                  class="${isApplied ? "secondary" : "primary"} apply-btn"
-                  data-job="${d.id}"
-                  ${isApplied ? "disabled" : ""}
-                >
-                  ${
-                    isApplied
-                      ? "Applied ✓"
-                      : "Apply Now"
-                  }
-                </button>
-
-              </div>
-
-            </article>
-          `;
-        }
-      ).join("");
+const applicationSnap =
+await getDocs(
+query(
+collection(db,"applications"),
+where(
+"freelancerId",
+"==",
+currentUser.uid
+)
+)
+);
 
 
-    list
-      .querySelectorAll(".apply-btn")
-      .forEach(
-        b =>
-          b.addEventListener(
-            "click",
-            () =>
-              applyJob(
-                b.dataset.job,
-                b
-              )
-          )
-      );
+const applied =
+new Set(
+applicationSnap.docs.map(
+d =>
+d.data().jobId
+)
+);
 
-  }catch(e){
 
-    showError(e);
+list.innerHTML =
+docs
+.map(
+d => {
 
-    list.innerHTML =
-      '<div class="error">Unable to load projects.</div>';
-  }
+const x =
+d.data();
+
+const yes =
+applied.has(d.id);
+
+
+return `
+<article class="card">
+
+<h3>
+💼 ${esc(x.title || "Project")}
+</h3>
+
+<p>
+${esc(
+x.description ||
+"No description provided."
+)}
+</p>
+
+<div class="meta">
+
+<span class="pill">
+${esc(x.category || "General")}
+</span>
+
+<span class="pill">
+💰 $${Number(x.budget || 0)}
+</span>
+
+<span class="pill">
+📅 ${esc(x.deadline || "—")}
+</span>
+
+</div>
+
+<small class="muted">
+Client:
+${esc(x.clientName || "Client")}
+</small>
+
+<div class="card-actions">
+
+<button
+class="${yes ? "secondary" : "primary"} apply-btn"
+data-job="${d.id}"
+${yes ? "disabled" : ""}
+>
+
+${yes ? "Applied ✓" : "Apply Now"}
+
+</button>
+
+</div>
+
+</article>
+`;
+
+}
+)
+.join("");
+
+
+list
+.querySelectorAll(".apply-btn")
+.forEach(
+button =>
+button.addEventListener(
+"click",
+() =>
+applyJob(
+button.dataset.job,
+button
+)
+)
+);
+
+
+}catch(error){
+
+showError(error);
+
+list.innerHTML =
+`
+<div class="empty">
+Unable to load projects.
+</div>
+`;
+
+}
+
 }
 
 
 async function applyJob(
-  jobId,
-  button
+jobId,
+button
 ){
 
-  try{
+try{
 
-    button.disabled = true;
-    button.textContent =
-      "Applying...";
+button.disabled =
+true;
 
-
-    const jobSnap =
-      await getDoc(
-        doc(
-          db,
-          "jobs",
-          jobId
-        )
-      );
+button.textContent =
+"Applying...";
 
 
-    if(!jobSnap.exists())
-      throw new Error(
-        "Project no longer exists."
-      );
+const snap =
+await getDoc(
+doc(
+db,
+"jobs",
+jobId
+)
+);
 
 
-    const job =
-      jobSnap.data();
+if(!snap.exists())
+throw new Error(
+"Project no longer exists."
+);
 
 
-    if(job.status !== "open")
-      throw new Error(
-        "This project is no longer accepting applications."
-      );
+const job =
+snap.data();
 
 
-    const dup =
-      await getDocs(
-        query(
-          collection(db,"applications"),
-          where(
-            "jobId",
-            "==",
-            jobId
-          ),
-          where(
-            "freelancerId",
-            "==",
-            currentUser.uid
-          )
-        )
-      );
+if(job.status !== "open")
+throw new Error(
+"This project is no longer accepting applications."
+);
 
 
-    if(!dup.empty){
+const duplicate =
+await getDocs(
+query(
+collection(db,"applications"),
 
-      button.textContent =
-        "Applied ✓";
+where(
+"jobId",
+"==",
+jobId
+),
 
-      return;
-    }
-
-
-    await addDoc(
-      collection(db,"applications"),
-      {
-        jobId,
-
-        clientId:
-          job.clientId,
-
-        clientEmail:
-          job.clientEmail || "",
-
-        clientName:
-          job.clientName || "Client",
-
-        freelancerId:
-          currentUser.uid,
-
-        freelancerEmail:
-          currentUser.email || "",
-
-        freelancerName:
-          userData.name ||
-          "Freelancer",
-
-        jobTitle:
-          job.title ||
-          "Project",
-
-        budget:
-          Number(
-            job.budget || 0
-          ),
-
-        status:
-          "pending",
-
-        createdAt:
-          serverTimestamp()
-      }
-    );
+where(
+"freelancerId",
+"==",
+currentUser.uid
+)
+)
+);
 
 
-    button.textContent =
-      "Applied ✓";
+if(!duplicate.empty){
+
+button.textContent =
+"Applied ✓";
+
+return;
+
+}
 
 
-    showToast(
-      "Application sent successfully."
-    );
+await addDoc(
+collection(
+db,
+"applications"
+),
+{
+
+jobId,
+
+clientId:
+job.clientId,
+
+clientEmail:
+job.clientEmail || "",
+
+clientName:
+job.clientName || "Client",
+
+freelancerId:
+currentUser.uid,
+
+freelancerEmail:
+currentUser.email || "",
+
+freelancerName:
+userData.name ||
+"Freelancer",
+
+jobTitle:
+job.title ||
+"Project",
+
+budget:
+Number(
+job.budget ||
+0
+),
+
+status:
+"pending",
+
+createdAt:
+serverTimestamp()
+
+}
+);
 
 
-    await loadApplications();
-    await loadFreelancerDashboard();
+button.textContent =
+"Applied ✓";
 
-  }catch(e){
 
-    button.disabled = false;
-    button.textContent =
-      "Apply Now";
+toast(
+"Application sent successfully."
+);
 
-    showToast(
-      e.message ||
-      "Application failed."
-    );
 
-    showError(e);
-  }
+await loadApplications();
+
+await loadFreelancerDashboard();
+
+
+}catch(error){
+
+button.disabled =
+false;
+
+button.textContent =
+"Apply Now";
+
+showError(error);
+
+toast(
+error.message ||
+"Application failed."
+);
+
+}
+
 }
 
 
 /* =========================================================
-   MY APPLICATIONS
+   APPLICATIONS
 ========================================================= */
 
 async function loadApplications(){
 
-  const list =
-    $("applicationsList");
+const list =
+$("applicationsList");
 
-  if(!list) return;
-
-  list.innerHTML =
-    '<div class="loading">Loading applications...</div>';
+if(!list)
+return;
 
 
-  try{
-
-    const snap =
-      await getDocs(
-        query(
-          collection(db,"applications"),
-          where(
-            "freelancerId",
-            "==",
-            currentUser.uid
-          )
-        )
-      );
+list.innerHTML =
+'<div class="loading">Loading applications...</div>';
 
 
-    if(snap.empty){
+try{
 
-      list.innerHTML =
-        '<div class="empty">You have not applied to any projects yet.</div>';
-
-      return;
-    }
-
-
-    list.innerHTML =
-      snap.docs.map(
-        d => {
-
-          const a =
-            d.data();
-
-          const status =
-            a.status ||
-            "pending";
+const snap =
+await getDocs(
+query(
+collection(db,"applications"),
+where(
+"freelancerId",
+"==",
+currentUser.uid
+)
+)
+);
 
 
-          return `
-            <article class="card">
+if(snap.empty){
 
-              <h3>
-                ✉
-                ${esc(
-                  a.jobTitle ||
-                  "Project"
-                )}
-              </h3>
+list.innerHTML =
+`
+<div class="empty">
+You have not applied to any projects yet.
+</div>
+`;
 
-              <p>
-                Client:
-                ${esc(
-                  a.clientName ||
-                  a.clientEmail ||
-                  "Client"
-                )}
-              </p>
+return;
 
-              <div class="meta">
-
-                <span class="pill ${esc(status)}">
-                  ${esc(status)}
-                </span>
-
-                <span class="pill">
-                  💰
-                  $${Number(a.budget || 0)}
-                </span>
-
-              </div>
-
-              <small class="muted">
-                Applied
-                ${fmtDate(a.createdAt)}
-              </small>
-
-              ${
-                status === "accepted"
-                  ? `
-                    <div class="card-actions">
-
-                      <button
-                        class="primary message-application"
-                        data-job="${d.id}"
-                      >
-                        💬 Message Client
-                      </button>
-
-                    </div>
-                  `
-                  : ""
-              }
-
-            </article>
-          `;
-        }
-      ).join("");
+}
 
 
-    list
-      .querySelectorAll(
-        ".message-application"
-      )
-      .forEach(
-        b =>
-          b.addEventListener(
-            "click",
-            () =>
-              openApplicationChat(
-                b.dataset.job
-              )
-          )
-      );
+list.innerHTML =
+snap.docs
+.map(
+d => {
 
-  }catch(e){
+const a =
+d.data();
 
-    showError(e);
-  }
+const status =
+a.status ||
+"pending";
+
+
+return `
+<article class="card">
+
+<h3>
+✉ ${esc(
+a.jobTitle ||
+"Project"
+)}
+</h3>
+
+<p>
+Client:
+${esc(
+a.clientName ||
+"Client"
+)}
+</p>
+
+<div class="meta">
+
+<span class="pill ${status}">
+${esc(status)}
+</span>
+
+<span class="pill">
+💰 $${Number(a.budget || 0)}
+</span>
+
+</div>
+
+<small class="muted">
+Applied ${fmtDate(a.createdAt)}
+</small>
+
+${
+status === "accepted"
+?
+
+`
+<div class="card-actions">
+
+<button
+class="primary message-application"
+data-id="${d.id}"
+type="button"
+>
+💬 Message Client
+</button>
+
+</div>
+`
+
+: ""
+
+}
+
+</article>
+`;
+
+}
+)
+.join("");
+
+
+list
+.querySelectorAll(
+".message-application"
+)
+.forEach(
+button =>
+button.addEventListener(
+"click",
+() =>
+openApplicationChat(
+button.dataset.id
+)
+)
+);
+
+
+}catch(error){
+
+showError(error);
+
+}
+
 }
 
 
 /* =========================================================
-   MY PROJECTS
+   PROJECTS
 ========================================================= */
 
 async function loadProjects(){
 
-  const list =
-    $("projectsList");
+const list =
+$("projectsList");
 
-  if(!list) return;
-
-  list.innerHTML =
-    '<div class="loading">Loading projects...</div>';
+if(!list)
+return;
 
 
-  try{
+try{
 
-    const snap =
-      await getDocs(
-        query(
-          collection(db,"projects"),
-          where(
-            "freelancerId",
-            "==",
-            currentUser.uid
-          )
-        )
-      );
-
-
-    if(snap.empty){
-
-      list.innerHTML =
-        '<div class="empty">No accepted projects yet.</div>';
-
-      return;
-    }
+const snap =
+await getDocs(
+query(
+collection(db,"projects"),
+where(
+"freelancerId",
+"==",
+currentUser.uid
+)
+)
+);
 
 
-    list.innerHTML =
-      snap.docs.map(
-        d => {
+if(snap.empty){
 
-          const p =
-            d.data();
+list.innerHTML =
+`
+<div class="empty">
+No accepted projects yet.
+</div>
+`;
 
+return;
 
-          return `
-            <article class="card">
-
-              <h3>
-                📁
-                ${esc(
-                  p.title ||
-                  p.jobTitle ||
-                  "Project"
-                )}
-              </h3>
-
-              <p>
-                ${esc(
-                  p.description ||
-                  "Accepted project"
-                )}
-              </p>
-
-              <div class="meta">
-
-                <span class="pill accepted">
-                  ${esc(
-                    p.status ||
-                    "assigned"
-                  )}
-                </span>
-
-                <span class="pill">
-                  💰
-                  $${Number(p.budget || 0)}
-                </span>
-
-                <span class="pill">
-                  Client:
-                  ${esc(
-                    p.clientName ||
-                    "Client"
-                  )}
-                </span>
-
-              </div>
-
-              <div class="card-actions">
-
-                <button
-                  class="primary project-chat"
-                  data-project="${d.id}"
-                >
-                  💬 Open Chat
-                </button>
-
-              </div>
-
-            </article>
-          `;
-        }
-      ).join("");
+}
 
 
-    list
-      .querySelectorAll(
-        ".project-chat"
-      )
-      .forEach(
-        b =>
-          b.addEventListener(
-            "click",
-            () =>
-              openProjectChat(
-                b.dataset.project
-              )
-          )
-      );
+list.innerHTML =
+snap.docs
+.map(
+d => {
 
-  }catch(e){
+const p =
+d.data();
 
-    showError(e);
-  }
+return `
+<article class="card">
+
+<h3>
+📁 ${esc(
+p.title ||
+"Project"
+)}
+</h3>
+
+<p>
+${esc(
+p.description ||
+"Accepted project"
+)}
+</p>
+
+<div class="meta">
+
+<span class="pill accepted">
+${esc(
+p.status ||
+"in_progress"
+)}
+</span>
+
+<span class="pill">
+💰 $${Number(
+p.budget ||
+0
+)}
+</span>
+
+<span class="pill">
+Client:
+${esc(
+p.clientName ||
+"Client"
+)}
+</span>
+
+</div>
+
+<div class="card-actions">
+
+<button
+class="primary project-chat"
+data-id="${d.id}"
+type="button"
+>
+💬 Open Chat
+</button>
+
+</div>
+
+</article>
+`;
+
+}
+)
+.join("");
+
+
+list
+.querySelectorAll(
+".project-chat"
+)
+.forEach(
+button =>
+button.addEventListener(
+"click",
+() =>
+openProjectChat(
+button.dataset.id
+)
+)
+);
+
+
+}catch(error){
+
+showError(error);
+
+}
+
 }
 
 
@@ -1872,292 +2169,361 @@ async function loadProjects(){
 
 async function initClient(){
 
-  await loadClientDashboard();
-  await loadClientProjects();
-  await loadClientApplications();
-  await loadConversations();
+await loadClientDashboard();
+
+await loadClientProjects();
+
+await loadClientApplications();
+
+await loadConversations();
+
 }
 
 
 async function loadClientDashboard(){
 
-  if(!$("clientStats"))
-    return;
+if(!$("clientStats"))
+return;
 
 
-  try{
+try{
 
-    const [p,a] =
-      await Promise.all([
+const [
+projects,
+applications
+] =
+await Promise.all([
 
-        getDocs(
-          query(
-            collection(db,"jobs"),
-            where(
-              "clientId",
-              "==",
-              currentUser.uid
-            )
-          )
-        ),
+getDocs(
+query(
+collection(db,"jobs"),
+where(
+"clientId",
+"==",
+currentUser.uid
+)
+)
+),
 
-        getDocs(
-          query(
-            collection(db,"applications"),
-            where(
-              "clientId",
-              "==",
-              currentUser.uid
-            )
-          )
-        )
-      ]);
+getDocs(
+query(
+collection(db,"applications"),
+where(
+"clientId",
+"==",
+currentUser.uid
+)
+)
+)
 
-
-    const accepted =
-      a.docs.filter(
-        d =>
-          d.data().status ===
-          "accepted"
-      ).length;
+]);
 
 
-    const active =
-      p.docs.filter(
-        d =>
-          d.data().status ===
-          "open"
-      ).length;
+const accepted =
+applications.docs.filter(
+d =>
+d.data().status ===
+"accepted"
+).length;
 
 
-    const completed =
-      p.docs.filter(
-        d =>
-          d.data().status ===
-          "completed"
-      ).length;
+const open =
+projects.docs.filter(
+d =>
+d.data().status ===
+"open"
+).length;
 
 
-    const spent =
-      p.docs.reduce(
-        (s,d) =>
-          s +
-          Number(
-            d.data().budget || 0
-          ),
-        0
-      );
+const budget =
+projects.docs.reduce(
+(sum,d) =>
+sum +
+Number(
+d.data().budget ||
+0
+),
+0
+);
 
 
-    $("clientStats").innerHTML =
-      [
-        [
-          "📁",
-          "Total Projects",
-          String(p.size),
-          "All projects"
-        ],
+$("clientStats").innerHTML =
+[
 
-        [
-          "◷",
-          "Open Projects",
-          String(active),
-          "Accepting applications"
-        ],
+[
+"📁",
+"Total Projects",
+projects.size,
+"Posted projects"
+],
 
-        [
-          "✓",
-          "Accepted",
-          String(accepted),
-          "Freelancers selected"
-        ],
+[
+"◷",
+"Open Projects",
+open,
+"Accepting applications"
+],
 
-        [
-          "💰",
-          "Total Budget",
-          "$" +
-            spent.toLocaleString(),
-          "Posted project budgets"
-        ]
-      ]
-      .map(
-        x =>
-          `<div class="stat">
-            <div class="icon">${x[0]}</div>
-            <h3>${x[2]}</h3>
-            <p>${x[1]}</p>
-            <em>${x[3]}</em>
-          </div>`
-      )
-      .join("");
+[
+"✓",
+"Accepted",
+accepted,
+"Freelancers selected"
+],
+
+[
+"💰",
+"Total Budget",
+"$" +
+budget.toLocaleString(),
+"Posted budgets"
+]
+
+]
+.map(
+x =>
+`
+<div class="stat">
+
+<div class="icon">
+${x[0]}
+</div>
+
+<h3>
+${x[2]}
+</h3>
+
+<p>
+${x[1]}
+</p>
+
+<em>
+${x[3]}
+</em>
+
+</div>
+`
+)
+.join("");
 
 
-    $("clientActivity").innerHTML =
-      p.docs
-        .slice(0,4)
-        .map(
-          d => {
+$("clientActivity").innerHTML =
+projects.docs
+.slice(0,5)
+.map(
+d => {
 
-            const j =
-              d.data();
+const x =
+d.data();
 
-            return `
-              <div class="activity-row">
+return `
+<div class="activity-row">
 
-                <div class="activity-icon">
-                  💼
-                </div>
+<div class="activity-icon">
+💼
+</div>
 
-                <div>
+<div>
 
-                  <strong>
-                    ${esc(
-                      j.title ||
-                      "Project"
-                    )}
-                  </strong>
+<strong>
+${esc(x.title || "Project")}
+</strong>
 
-                  <span>
-                    ${esc(
-                      j.status ||
-                      "open"
-                    )}
-                    •
-                    $${Number(
-                      j.budget || 0
-                    )}
-                    •
-                    ${esc(
-                      j.deadline ||
-                      "—"
-                    )}
-                  </span>
+<span>
+${esc(x.status || "open")}
+•
+$${Number(x.budget || 0)}
+•
+${esc(x.deadline || "—")}
+</span>
 
-                </div>
+</div>
 
-              </div>
-            `;
-          }
-        )
-        .join("")
-        ||
-        `
-          <div class="empty">
-            No projects yet.
-            Post your first project.
-          </div>
-        `;
+</div>
+`;
 
-  }catch(e){
+}
+)
+.join("")
+||
+`
+<div class="empty">
+No projects yet.
+</div>
+`;
 
-    showError(e);
-  }
+
+$("clientRecentApplications").innerHTML =
+applications.docs
+.slice(0,5)
+.map(
+d => {
+
+const x =
+d.data();
+
+return `
+<div class="activity-row">
+
+<div class="activity-icon">
+👤
+</div>
+
+<div>
+
+<strong>
+${esc(
+x.freelancerName ||
+"Freelancer"
+)}
+</strong>
+
+<span>
+${esc(
+x.jobTitle ||
+"Project"
+)}
+•
+${esc(
+x.status ||
+"pending"
+)}
+</span>
+
+</div>
+
+</div>
+`;
+
+}
+)
+.join("")
+||
+`
+<div class="empty">
+No applications yet.
+</div>
+`;
+
+
+}catch(error){
+
+showError(error);
+
+}
+
 }
 
 
 async function loadClientProjects(){
 
-  const list =
-    $("clientProjects");
+const list =
+$("clientProjects");
 
-  if(!list) return;
-
-  list.innerHTML =
-    '<div class="loading">Loading...</div>';
+if(!list)
+return;
 
 
-  try{
+try{
 
-    const snap =
-      await getDocs(
-        query(
-          collection(db,"jobs"),
-          where(
-            "clientId",
-            "==",
-            currentUser.uid
-          )
-        )
-      );
-
-
-    if(snap.empty){
-
-      list.innerHTML =
-        '<div class="empty">No projects posted yet. Use “Post a Project”.</div>';
-
-      return;
-    }
+const snap =
+await getDocs(
+query(
+collection(db,"jobs"),
+where(
+"clientId",
+"==",
+currentUser.uid
+)
+)
+);
 
 
-    list.innerHTML =
-      snap.docs.map(
-        d => {
+if(snap.empty){
 
-          const j =
-            d.data();
+list.innerHTML =
+`
+<div class="empty">
+No projects posted yet.
+</div>
+`;
+
+return;
+
+}
 
 
-          return `
-            <article class="card">
+list.innerHTML =
+snap.docs
+.map(
+d => {
 
-              <h3>
-                💼
-                ${esc(
-                  j.title ||
-                  "Project"
-                )}
-              </h3>
+const x =
+d.data();
 
-              <p>
-                ${esc(
-                  j.description ||
-                  ""
-                )}
-              </p>
+return `
+<article class="card">
 
-              <div class="meta">
+<h3>
+💼 ${esc(
+x.title ||
+"Project"
+)}
+</h3>
 
-                <span class="pill ${esc(j.status || "open")}">
-                  ${esc(
-                    j.status ||
-                    "open"
-                  )}
-                </span>
+<p>
+${esc(
+x.description ||
+""
+)}
+</p>
 
-                <span class="pill">
-                  💰
-                  $${Number(
-                    j.budget || 0
-                  )}
-                </span>
+<div class="meta">
 
-                <span class="pill">
-                  📅
-                  ${esc(
-                    j.deadline ||
-                    "—"
-                  )}
-                </span>
+<span class="pill">
+${esc(
+x.status ||
+"open"
+)}
+</span>
 
-              </div>
+<span class="pill">
+💰 $${Number(
+x.budget ||
+0
+)}
+</span>
 
-              <small class="muted">
-                ${esc(
-                  j.category ||
-                  "General"
-                )}
-              </small>
+<span class="pill">
+📅 ${esc(
+x.deadline ||
+"—"
+)}
+</span>
 
-            </article>
-          `;
-        }
-      ).join("");
+</div>
 
-  }catch(e){
+<small class="muted">
+${esc(
+x.category ||
+"General"
+)}
+</small>
 
-    showError(e);
-  }
+</article>
+`;
+
+}
+)
+.join("");
+
+
+}catch(error){
+
+showError(error);
+
+}
+
 }
 
 
@@ -2167,373 +2533,422 @@ async function loadClientProjects(){
 
 async function loadClientApplications(){
 
-  const list =
-    $("clientApplications");
+const list =
+$("clientApplications");
 
-  if(!list) return;
-
-  list.innerHTML =
-    '<div class="loading">Loading applications...</div>';
+if(!list)
+return;
 
 
-  try{
+try{
 
-    const snap =
-      await getDocs(
-        query(
-          collection(db,"applications"),
-          where(
-            "clientId",
-            "==",
-            currentUser.uid
-          )
-        )
-      );
-
-
-    if(snap.empty){
-
-      list.innerHTML =
-        '<div class="empty">No freelancer applications yet.</div>';
-
-      return;
-    }
+const snap =
+await getDocs(
+query(
+collection(db,"applications"),
+where(
+"clientId",
+"==",
+currentUser.uid
+)
+)
+);
 
 
-    list.innerHTML =
-      snap.docs.map(
-        d => {
+if(snap.empty){
 
-          const a =
-            d.data();
+list.innerHTML =
+`
+<div class="empty">
+No freelancer applications yet.
+</div>
+`;
 
-          const s =
-            a.status ||
-            "pending";
+return;
 
-          let buttons = "";
-
-
-          if(s === "pending"){
-
-            buttons = `
-              <button
-                class="primary accept-app"
-                data-id="${d.id}"
-              >
-                Accept ✅
-              </button>
-
-              <button
-                class="danger reject-app"
-                data-id="${d.id}"
-              >
-                Reject ❌
-              </button>
-            `;
-          }
+}
 
 
-          if(s === "accepted"){
+list.innerHTML =
+snap.docs
+.map(
+d => {
 
-            buttons = `
-              <button
-                class="primary chat-app"
-                data-id="${d.id}"
-              >
-                💬 Message Freelancer
-              </button>
-            `;
-          }
+const a =
+d.data();
 
-
-          return `
-            <article class="card">
-
-              <h3>
-                👤
-                ${esc(
-                  a.freelancerName ||
-                  "Freelancer"
-                )}
-              </h3>
-
-              <p>
-                Applied for:
-                <b>
-                  ${esc(
-                    a.jobTitle ||
-                    "Project"
-                  )}
-                </b>
-              </p>
-
-              <div class="meta">
-
-                <span class="pill ${esc(s)}">
-                  ${esc(s)}
-                </span>
-
-                <span class="pill">
-                  💰
-                  $${Number(
-                    a.budget || 0
-                  )}
-                </span>
-
-              </div>
-
-              <small class="muted">
-                ${esc(
-                  a.freelancerEmail ||
-                  ""
-                )}
-                •
-                ${fmtDate(
-                  a.createdAt
-                )}
-              </small>
-
-              <div class="card-actions">
-                ${buttons}
-              </div>
-
-            </article>
-          `;
-        }
-      ).join("");
+const status =
+a.status ||
+"pending";
 
 
-    list
-      .querySelectorAll(
-        ".accept-app"
-      )
-      .forEach(
-        b =>
-          b.addEventListener(
-            "click",
-            () =>
-              updateApplicationStatus(
-                b.dataset.id,
-                "accepted"
-              )
-          )
-      );
+let buttons =
+"";
 
 
-    list
-      .querySelectorAll(
-        ".reject-app"
-      )
-      .forEach(
-        b =>
-          b.addEventListener(
-            "click",
-            () =>
-              updateApplicationStatus(
-                b.dataset.id,
-                "rejected"
-              )
-          )
-      );
+if(status === "pending"){
+
+buttons = `
+
+<button
+class="primary accept-app"
+data-id="${d.id}"
+type="button"
+>
+Accept ✅
+</button>
+
+<button
+class="secondary reject-app"
+data-id="${d.id}"
+type="button"
+>
+Reject ❌
+</button>
+
+`;
+
+}
 
 
-    list
-      .querySelectorAll(
-        ".chat-app"
-      )
-      .forEach(
-        b =>
-          b.addEventListener(
-            "click",
-            () =>
-              openApplicationChat(
-                b.dataset.id
-              )
-          )
-      );
+if(status === "accepted"){
 
-  }catch(e){
+buttons = `
 
-    showError(e);
-  }
+<button
+class="primary chat-app"
+data-id="${d.id}"
+type="button"
+>
+💬 Message Freelancer
+</button>
+
+`;
+
+}
+
+
+return `
+<article class="card">
+
+<h3>
+👤 ${esc(
+a.freelancerName ||
+"Freelancer"
+)}
+</h3>
+
+<p>
+Applied for:
+<b>
+${esc(
+a.jobTitle ||
+"Project"
+)}
+</b>
+</p>
+
+<div class="meta">
+
+<span class="pill">
+${esc(status)}
+</span>
+
+<span class="pill">
+💰 $${Number(
+a.budget ||
+0
+)}
+</span>
+
+</div>
+
+<small class="muted">
+
+${esc(
+a.freelancerEmail ||
+""
+)}
+
+•
+${fmtDate(
+a.createdAt
+)}
+
+</small>
+
+<div class="card-actions">
+${buttons}
+</div>
+
+</article>
+`;
+
+}
+)
+.join("");
+
+
+list
+.querySelectorAll(
+".accept-app"
+)
+.forEach(
+button =>
+button.addEventListener(
+"click",
+() =>
+updateApplicationStatus(
+button.dataset.id,
+"accepted"
+)
+)
+);
+
+
+list
+.querySelectorAll(
+".reject-app"
+)
+.forEach(
+button =>
+button.addEventListener(
+"click",
+() =>
+updateApplicationStatus(
+button.dataset.id,
+"rejected"
+)
+)
+);
+
+
+list
+.querySelectorAll(
+".chat-app"
+)
+.forEach(
+button =>
+button.addEventListener(
+"click",
+() =>
+openApplicationChat(
+button.dataset.id
+)
+)
+);
+
+
+}catch(error){
+
+showError(error);
+
+}
+
 }
 
 
 /* =========================================================
-   ACCEPT / REJECT APPLICATION
+   ACCEPT / REJECT
 ========================================================= */
 
 async function updateApplicationStatus(
-  appId,
-  status
+appId,
+status
 ){
 
-  try{
+try{
 
-    const aSnap =
-      await getDoc(
-        doc(
-          db,
-          "applications",
-          appId
-        )
-      );
-
-
-    if(!aSnap.exists())
-      throw new Error(
-        "Application not found."
-      );
+const appSnap =
+await getDoc(
+doc(
+db,
+"applications",
+appId
+)
+);
 
 
-    const a =
-      aSnap.data();
+if(!appSnap.exists())
+throw new Error(
+"Application not found."
+);
 
 
-    if(
-      a.clientId !==
-      currentUser.uid &&
-      !isOwner()
-    ){
-
-      throw new Error(
-        "You cannot change this application."
-      );
-    }
+const application =
+appSnap.data();
 
 
-    await updateDoc(
-      doc(
-        db,
-        "applications",
-        appId
-      ),
-      {
-        status,
-        updatedAt:
-          serverTimestamp()
-      }
-    );
+if(
+application.clientId !==
+currentUser.uid &&
+!isOwner()
+){
+
+throw new Error(
+"You cannot change this application."
+);
+
+}
 
 
-    if(status === "accepted"){
+await updateDoc(
+doc(
+db,
+"applications",
+appId
+),
+{
 
-      await updateDoc(
-        doc(
-          db,
-          "jobs",
-          a.jobId
-        ),
-        {
-          status:"assigned",
-          assignedFreelancerId:
-            a.freelancerId,
-          assignedFreelancerName:
-            a.freelancerName ||
-            "Freelancer"
-        }
-      );
+status,
+
+updatedAt:
+serverTimestamp()
+
+}
+);
 
 
-      const existing =
-        await getDocs(
-          query(
-            collection(
-              db,
-              "projects"
-            ),
-            where(
-              "jobId",
-              "==",
-              a.jobId
-            ),
-            where(
-              "freelancerId",
-              "==",
-              a.freelancerId
-            )
-          )
-        );
+if(status === "accepted"){
+
+await updateDoc(
+doc(
+db,
+"jobs",
+application.jobId
+),
+{
+
+status:
+"assigned",
+
+assignedFreelancerId:
+application.freelancerId,
+
+assignedFreelancerName:
+application.freelancerName ||
+"Freelancer"
+
+}
+);
 
 
-      if(existing.empty){
+const existing =
+await getDocs(
+query(
+collection(
+db,
+"projects"
+),
 
-        await addDoc(
-          collection(
-            db,
-            "projects"
-          ),
-          {
-            jobId:
-              a.jobId,
+where(
+"jobId",
+"==",
+application.jobId
+),
 
-            title:
-              a.jobTitle ||
-              "Project",
-
-            budget:
-              Number(
-                a.budget || 0
-              ),
-
-            description:
-              "Accepted project",
-
-            clientId:
-              a.clientId,
-
-            clientName:
-              userData.name ||
-              "Client",
-
-            clientEmail:
-              currentUser.email ||
-              "",
-
-            freelancerId:
-              a.freelancerId,
-
-            freelancerName:
-              a.freelancerName ||
-              "Freelancer",
-
-            status:
-              "in_progress",
-
-            createdAt:
-              serverTimestamp()
-          }
-        );
-      }
+where(
+"freelancerId",
+"==",
+application.freelancerId
+)
+)
+);
 
 
-      showToast(
-        "Freelancer accepted. Project is now in progress."
-      );
+if(existing.empty){
 
-    }else{
+await addDoc(
+collection(
+db,
+"projects"
+),
+{
 
-      showToast(
-        "Application rejected."
-      );
-    }
+jobId:
+application.jobId,
+
+title:
+application.jobTitle ||
+"Project",
+
+budget:
+Number(
+application.budget ||
+0
+),
+
+description:
+"Accepted project",
+
+clientId:
+application.clientId,
+
+clientName:
+userData.name ||
+"Client",
+
+clientEmail:
+currentUser.email ||
+"",
+
+freelancerId:
+application.freelancerId,
+
+freelancerName:
+application.freelancerName ||
+"Freelancer",
+
+freelancerEmail:
+application.freelancerEmail ||
+"",
+
+status:
+"in_progress",
+
+createdAt:
+serverTimestamp()
+
+}
+);
+
+}
 
 
-    await loadClientApplications();
-    await loadClientProjects();
-    await loadClientDashboard();
-    await loadConversations();
+toast(
+"Freelancer accepted. Project is now in progress."
+);
 
-  }catch(e){
 
-    showError(e);
+}else{
 
-    showToast(
-      e.message ||
-      "Could not update application."
-    );
-  }
+toast(
+"Application rejected."
+);
+
+}
+
+
+await loadClientApplications();
+
+await loadClientProjects();
+
+await loadClientDashboard();
+
+await loadConversations();
+
+
+}catch(error){
+
+showError(error);
+
+toast(
+error.message ||
+"Could not update application."
+);
+
+}
+
 }
 
 
@@ -2543,360 +2958,393 @@ async function updateApplicationStatus(
 
 async function loadConversations(){
 
-  const list =
-    $("conversationsList");
+const list =
+$("conversationsList");
 
-  if(!list) return;
-
-  list.innerHTML =
-    '<div class="empty">Loading conversations...</div>';
+if(!list)
+return;
 
 
-  try{
-
-    const snap =
-      role() === "client"
-
-        ? await getDocs(
-            query(
-              collection(db,"projects"),
-              where(
-                "clientId",
-                "==",
-                currentUser.uid
-              )
-            )
-          )
-
-        : await getDocs(
-            query(
-              collection(db,"projects"),
-              where(
-                "freelancerId",
-                "==",
-                currentUser.uid
-              )
-            )
-          );
+list.innerHTML =
+`
+<div class="empty">
+Loading conversations...
+</div>
+`;
 
 
-    if(snap.empty){
+try{
 
-      list.innerHTML =
-        '<div class="empty">No accepted projects yet.</div>';
-
-      return;
-    }
-
-
-    list.innerHTML =
-      snap.docs.map(
-        d => {
-
-          const p =
-            d.data();
-
-          const other =
-            role() === "client"
-              ? (
-                  p.freelancerName ||
-                  "Freelancer"
-                )
-              : (
-                  p.clientName ||
-                  "Client"
-                );
+const field =
+role() === "client"
+? "clientId"
+: "freelancerId";
 
 
-          return `
-            <div
-              class="conversation"
-              data-project="${d.id}"
-            >
-
-              <strong>
-                ${esc(
-                  p.title ||
-                  "Project"
-                )}
-              </strong>
-
-              <span>
-                Chat with
-                ${esc(other)}
-              </span>
-
-            </div>
-          `;
-        }
-      ).join("");
+const snap =
+await getDocs(
+query(
+collection(db,"projects"),
+where(
+field,
+"==",
+currentUser.uid
+)
+)
+);
 
 
-    list
-      .querySelectorAll(
-        ".conversation"
-      )
-      .forEach(
-        c =>
-          c.addEventListener(
-            "click",
-            () =>
-              openProjectChat(
-                c.dataset.project
-              )
-          )
-      );
+if(snap.empty){
 
-  }catch(e){
+list.innerHTML =
+`
+<div class="empty">
+No accepted projects yet.
+</div>
+`;
 
-    showError(e);
-  }
+return;
+
+}
+
+
+list.innerHTML =
+snap.docs
+.map(
+d => {
+
+const p =
+d.data();
+
+const other =
+role() === "client"
+? p.freelancerName ||
+"Freelancer"
+: p.clientName ||
+"Client";
+
+
+return `
+<div
+class="conversation"
+data-id="${d.id}"
+>
+
+<strong>
+${esc(
+p.title ||
+"Project"
+)}
+</strong>
+
+<span>
+Chat with
+${esc(other)}
+</span>
+
+</div>
+`;
+
+}
+)
+.join("");
+
+
+list
+.querySelectorAll(
+".conversation"
+)
+.forEach(
+conversation =>
+conversation.addEventListener(
+"click",
+() =>
+openProjectChat(
+conversation.dataset.id
+)
+)
+);
+
+
+}catch(error){
+
+showError(error);
+
+}
+
 }
 
 
 async function openProjectChat(
-  projectId
+projectId
 ){
 
-  const snap =
-    await getDoc(
-      doc(
-        db,
-        "projects",
-        projectId
-      )
-    );
+const snap =
+await getDoc(
+doc(
+db,
+"projects",
+projectId
+)
+);
 
 
-  if(!snap.exists())
-    return;
+if(!snap.exists())
+return;
 
 
-  const p =
-    snap.data();
+const project =
+snap.data();
 
 
-  currentConversation = {
-    id:projectId,
-    ...p
-  };
+currentConversation = {
+
+id:
+projectId,
+
+...project
+
+};
 
 
-  document
-    .querySelectorAll(
-      ".conversation"
-    )
-    .forEach(
-      c =>
-        c.classList.toggle(
-          "active",
-          c.dataset.project ===
-          projectId
-        )
-    );
+document
+.querySelectorAll(
+".conversation"
+)
+.forEach(
+conversation =>
+conversation.classList.toggle(
+"active",
+conversation.dataset.id ===
+projectId
+)
+);
 
 
-  $("chatTitle").textContent =
-    p.title ||
-    "Project";
+if($("chatTitle"))
+$("chatTitle").textContent =
+project.title ||
+"Project";
 
 
-  $("chatSubtitle").textContent =
-    role() === "client"
-      ? `Freelancer: ${
-          p.freelancerName ||
-          "Freelancer"
-        }`
-      : `Client: ${
-          p.clientName ||
-          "Client"
-        }`;
+if($("chatSubtitle"))
+$("chatSubtitle").textContent =
+role() === "client"
+? `Freelancer: ${
+project.freelancerName ||
+"Freelancer"
+}`
+: `Client: ${
+project.clientName ||
+"Client"
+}`;
 
 
-  $("composer").style.display =
-    "flex";
+if($("composer"))
+$("composer").style.display =
+"flex";
 
 
-  await loadMessages(
-    projectId
-  );
+await loadMessages(
+projectId
+);
+
 }
 
 
 async function openApplicationChat(
-  appId
+applicationId
 ){
 
-  const a =
-    await getDoc(
-      doc(
-        db,
-        "applications",
-        appId
-      )
-    );
+const snap =
+await getDoc(
+doc(
+db,
+"applications",
+applicationId
+)
+);
 
 
-  if(!a.exists())
-    return;
+if(!snap.exists())
+return;
 
 
-  const data =
-    a.data();
+const application =
+snap.data();
 
 
-  const q =
-    await getDocs(
-      query(
-        collection(
-          db,
-          "projects"
-        ),
-        where(
-          "jobId",
-          "==",
-          data.jobId
-        ),
-        where(
-          "freelancerId",
-          "==",
-          data.freelancerId
-        )
-      )
-    );
+const projects =
+await getDocs(
+query(
+collection(db,"projects"),
+
+where(
+"jobId",
+"==",
+application.jobId
+),
+
+where(
+"freelancerId",
+"==",
+application.freelancerId
+)
+)
+);
 
 
-  if(!q.empty){
+if(projects.empty){
 
-    await go(
-      "messagesPage",
-      "Messages"
-    );
+toast(
+"Chat becomes available after the project is accepted."
+);
 
-    await openProjectChat(
-      q.docs[0].id
-    );
+return;
 
-  }else{
+}
 
-    showToast(
-      "Chat becomes available after the project is accepted."
-    );
-  }
+
+await go(
+"messagesPage",
+"Messages"
+);
+
+
+await openProjectChat(
+projects.docs[0].id
+);
+
 }
 
 
 async function loadMessages(
-  projectId
+projectId
 ){
 
-  const list =
-    $("messageList");
+const list =
+$("messageList");
 
-  if(!list) return;
-
-  list.innerHTML =
-    '<div class="loading">Loading messages...</div>';
+if(!list)
+return;
 
 
-  try{
+try{
 
-    const snap =
-      await getDocs(
-        query(
-          collection(db,"messages"),
-          where(
-            "projectId",
-            "==",
-            projectId
-          )
-        )
-      );
-
-
-    if(snap.empty){
-
-      list.innerHTML =
-        '<div class="empty">No messages yet. Start the conversation.</div>';
-
-      return;
-    }
+const snap =
+await getDocs(
+query(
+collection(db,"messages"),
+where(
+"projectId",
+"==",
+projectId
+)
+)
+);
 
 
-    const docs =
-      [...snap.docs].sort(
-        (a,b) => {
+if(snap.empty){
 
-          const x =
-            a.data()
-             .createdAt
-             ?.toMillis?.() ||
-            0;
+list.innerHTML =
+`
+<div class="empty">
+No messages yet. Start the conversation.
+</div>
+`;
 
-          const y =
-            b.data()
-             .createdAt
-             ?.toMillis?.() ||
-            0;
+return;
 
-          return x-y;
-        }
-      );
+}
 
 
-    list.innerHTML =
-      docs.map(
-        d => {
-
-          const m =
-            d.data();
-
-          const mine =
-            m.senderId ===
-            currentUser.uid;
-
-
-          return `
-            <div
-              class="bubble ${
-                mine ? "mine" : ""
-              }"
-            >
-
-              <div>
-                ${esc(
-                  m.text || ""
-                )}
-              </div>
-
-              <small>
-                ${
-                  mine
-                    ? "You"
-                    : esc(
-                        m.senderName ||
-                        "Member"
-                      )
-                }
-                •
-                ${fmtDate(
-                  m.createdAt
-                )}
-              </small>
-
-            </div>
-          `;
-        }
-      ).join("");
+const docs =
+[
+...snap.docs
+]
+.sort(
+(a,b) =>
+(
+a.data()
+.createdAt
+?.toMillis?.() ||
+0
+)
+-
+(
+b.data()
+.createdAt
+?.toMillis?.() ||
+0
+)
+);
 
 
-    list.scrollTop =
-      list.scrollHeight;
+list.innerHTML =
+docs
+.map(
+d => {
 
-  }catch(e){
+const m =
+d.data();
 
-    showError(e);
-  }
+const mine =
+m.senderId ===
+currentUser.uid;
+
+
+return `
+<div
+class="bubble ${
+mine
+? "mine"
+: ""
+}"
+>
+
+<div>
+${esc(
+m.text ||
+""
+)}
+</div>
+
+<small>
+
+${
+mine
+? "You"
+: esc(
+m.senderName ||
+"Member"
+)
+}
+
+•
+${fmtDate(
+m.createdAt
+)}
+
+</small>
+
+</div>
+`;
+
+}
+)
+.join("");
+
+
+list.scrollTop =
+list.scrollHeight;
+
+
+}catch(error){
+
+showError(error);
+
+}
+
 }
 
 
@@ -2905,128 +3353,130 @@ async function loadMessages(
 ========================================================= */
 
 $("sendMessage")?.addEventListener(
-  "click",
-  async () => {
+"click",
+async () => {
 
-    if(!currentConversation){
+if(!currentConversation){
 
-      showToast(
-        "Select a project first."
-      );
+toast(
+"Select a project first."
+);
 
-      return;
-    }
+return;
 
-
-    const input =
-      $("messageInput");
-
-    const text =
-      input.value.trim();
+}
 
 
-    if(!text) return;
+const input =
+$("messageInput");
+
+const text =
+input.value.trim();
 
 
-    const p =
-      currentConversation;
+if(!text)
+return;
 
 
-    const receiverId =
-      role() === "client"
-        ? p.freelancerId
-        : p.clientId;
+const project =
+currentConversation;
 
 
-    const receiverEmail =
-      role() === "client"
-        ? p.freelancerEmail
-        : p.clientEmail;
+try{
+
+$("sendMessage").disabled =
+true;
 
 
-    try{
-
-      $("sendMessage").disabled =
-        true;
-
-
-      await addDoc(
-        collection(
-          db,
-          "messages"
-        ),
-        {
-          projectId:
-            p.id,
-
-          jobId:
-            p.jobId,
-
-          senderId:
-            currentUser.uid,
-
-          senderName:
-            userData.name ||
-            "Member",
-
-          senderEmail:
-            currentUser.email ||
-            "",
-
-          receiverId:
-            receiverId ||
-            "",
-
-          receiverEmail:
-            receiverEmail ||
-            "",
-
-          text,
-
-          createdAt:
-            serverTimestamp()
-        }
-      );
+const receiverId =
+role() === "client"
+? project.freelancerId
+: project.clientId;
 
 
-      input.value = "";
+await addDoc(
+collection(
+db,
+"messages"
+),
+{
+
+projectId:
+project.id,
+
+jobId:
+project.jobId ||
+"",
+
+senderId:
+currentUser.uid,
+
+senderName:
+userData.name ||
+"Member",
+
+senderEmail:
+currentUser.email ||
+"",
+
+receiverId:
+receiverId ||
+"",
+
+text,
+
+createdAt:
+serverTimestamp()
+
+}
+);
 
 
-      await loadMessages(
-        p.id
-      );
+input.value =
+"";
 
-    }catch(e){
 
-      showError(e);
+await loadMessages(
+project.id
+);
 
-      showToast(
-        "Message could not be sent."
-      );
 
-    }finally{
+}catch(error){
 
-      $("sendMessage").disabled =
-        false;
-    }
-  }
+showError(error);
+
+toast(
+"Message could not be sent."
+);
+
+
+}finally{
+
+$("sendMessage").disabled =
+false;
+
+}
+
+}
 );
 
 
 $("messageInput")?.addEventListener(
-  "keydown",
-  e => {
+"keydown",
+event => {
 
-    if(
-      e.key === "Enter" &&
-      !e.shiftKey
-    ){
+if(
+event.key === "Enter" &&
+!event.shiftKey
+){
 
-      e.preventDefault();
+event.preventDefault();
 
-      $("sendMessage")?.click();
-    }
-  }
+$("sendMessage")?.click();
+
+}
+
+}
 );
 
 
@@ -3034,162 +3484,164 @@ $("messageInput")?.addEventListener(
    POST PROJECT
 ========================================================= */
 
-async function initPostPage(){
+async function initPost(){
 
-  if(!currentUser)
-    return;
+const form =
+$("postForm");
 
-
-  const form =
-    $("postForm");
-
-  if(!form)
-    return;
+if(!form)
+return;
 
 
-  const owner =
-    isOwner();
+form.addEventListener(
+"submit",
+async event => {
+
+event.preventDefault();
 
 
-  const clientAllowed =
-    role() === "client" ||
-    owner;
+const button =
+$("postBtn");
 
 
-  if(!clientAllowed){
+try{
 
-    location.href =
-      "index.html";
+button.disabled =
+true;
 
-    return;
-  }
-
-
-  form.addEventListener(
-    "submit",
-    async e => {
-
-      e.preventDefault();
+button.textContent =
+"Publishing...";
 
 
-      const btn =
-        $("postBtn");
+const title =
+$("postTitle")
+.value
+.trim();
 
 
-      btn.disabled =
-        true;
+const category =
+$("postCategory")
+.value;
 
 
-      btn.textContent =
-        "Publishing...";
+const description =
+$("postDescription")
+.value
+.trim();
 
 
-      try{
-
-        const title =
-          $("postTitle")
-            .value
-            .trim();
-
-        const category =
-          $("postCategory").value;
-
-        const description =
-          $("postDescription")
-            .value
-            .trim();
-
-        const budget =
-          Number(
-            $("postBudget").value
-          );
-
-        const deadline =
-          $("postDeadline").value;
+const budget =
+Number(
+$("postBudget")
+.value
+);
 
 
-        if(
-          !title ||
-          !category ||
-          !description ||
-          !budget ||
-          !deadline
-        ){
-
-          throw new Error(
-            "Please complete every field."
-          );
-        }
+const deadline =
+$("postDeadline")
+.value;
 
 
-        await addDoc(
-          collection(
-            db,
-            "jobs"
-          ),
-          {
-            title,
-            category,
-            description,
-            budget,
-            deadline,
-            status:"open",
+if(
+!title ||
+!category ||
+!description ||
+!budget ||
+!deadline
+){
 
-            clientId:
-              currentUser.uid,
+throw new Error(
+"Please complete every field."
+);
 
-            clientEmail:
-              currentUser.email ||
-              "",
-
-            clientName:
-              userData.name ||
-              "Client",
-
-            createdAt:
-              serverTimestamp()
-          }
-        );
+}
 
 
-        $("postMessage").textContent =
-          "Project published successfully!";
+await addDoc(
+collection(
+db,
+"jobs"
+),
+{
+
+title,
+
+category,
+
+description,
+
+budget,
+
+deadline,
+
+status:
+"open",
+
+clientId:
+currentUser.uid,
+
+clientEmail:
+currentUser.email ||
+"",
+
+clientName:
+userData.name ||
+"Client",
+
+createdAt:
+serverTimestamp()
+
+}
+);
 
 
-        form.reset();
+msg(
+"postMessage",
+"Project published successfully!",
+true
+);
 
 
-        showToast(
-          "Project published."
-        );
+form.reset();
 
 
-        setTimeout(
-          () => {
-            location.href =
-              "client-dashboard.html";
-          },
-          700
-        );
+toast(
+"Project published."
+);
 
-      }catch(e){
 
-        showError(e);
+setTimeout(
+() =>
+location.href =
+"client-dashboard.html",
+700
+);
 
-        $("postMessage").textContent =
-          e.message ||
-          "Could not publish project.";
 
-      }finally{
+}catch(error){
 
-        btn.disabled =
-          false;
+showError(error);
 
-        btn.textContent =
-          "🚀 Publish Project";
-      }
-    }
-  );
+msg(
+"postMessage",
+error.message ||
+"Could not publish project."
+);
+
+
+}finally{
+
+button.disabled =
+false;
+
+button.textContent =
+"🚀 Publish Project";
+
+}
+
+}
+);
+
 }
 
 
@@ -3198,69 +3650,204 @@ async function initPostPage(){
 ========================================================= */
 
 $("settingsForm")?.addEventListener(
-  "submit",
-  async e => {
+"submit",
+async event => {
 
-    e.preventDefault();
-
-
-    try{
-
-      await updateDoc(
-        doc(
-          db,
-          "users",
-          currentUser.uid
-        ),
-        {
-          name:
-            $("settingsName")
-              .value
-              .trim(),
-
-          skills:
-            $("settingsSkills")
-              .value
-              .trim(),
-
-          updatedAt:
-            serverTimestamp()
-        }
-      );
+event.preventDefault();
 
 
-      userData.name =
-        $("settingsName")
-          .value
-          .trim();
+try{
+
+const name =
+$("settingsName")
+.value
+.trim();
 
 
-      userData.skills =
-        $("settingsSkills")
-          .value
-          .trim();
+const skills =
+$("settingsSkills")
+.value
+.trim();
 
 
-      $("settingsMessage").textContent =
-        "Saved successfully.";
+await updateDoc(
+doc(
+db,
+"users",
+currentUser.uid
+),
+{
+
+name,
+
+skills,
+
+updatedAt:
+serverTimestamp()
+
+}
+);
 
 
-      showToast(
-        "Profile updated."
-      );
+userData.name =
+name;
+
+userData.skills =
+skills;
 
 
-      await loadIdentity();
+msg(
+"settingsMessage",
+"Saved successfully.",
+true
+);
 
-    }catch(err){
 
-      showError(err);
+toast(
+"Profile updated."
+);
 
-      $("settingsMessage").textContent =
-        err.message ||
-        "Could not save.";
-    }
-  }
+
+await loadIdentity();
+
+
+}catch(error){
+
+showError(error);
+
+msg(
+"settingsMessage",
+error.message ||
+"Could not save."
+);
+
+}
+
+}
+);
+
+
+/* =========================================================
+   PROFILE PHOTO
+========================================================= */
+
+$("saveAvatarBtn")?.addEventListener(
+"click",
+async () => {
+
+const file =
+$("avatarInput")
+?.files
+?.[0];
+
+
+if(!file){
+
+msg(
+"avatarMessage",
+"Choose an image first."
+);
+
+return;
+
+}
+
+
+if(
+file.size >
+5 * 1024 * 1024
+){
+
+msg(
+"avatarMessage",
+"Image must be 5 MB or smaller."
+);
+
+return;
+
+}
+
+
+try{
+
+$("saveAvatarBtn").disabled =
+true;
+
+
+const storageRef =
+ref(
+storage,
+`avatars/${currentUser.uid}`
+);
+
+
+await uploadBytes(
+storageRef,
+file,
+{
+contentType:
+file.type
+}
+);
+
+
+const url =
+await getDownloadURL(
+storageRef
+);
+
+
+await updateDoc(
+doc(
+db,
+"users",
+currentUser.uid
+),
+{
+
+photoURL:
+url,
+
+updatedAt:
+serverTimestamp()
+
+}
+);
+
+
+userData.photoURL =
+url;
+
+
+await loadIdentity();
+
+
+msg(
+"avatarMessage",
+"Profile photo saved.",
+true
+);
+
+
+}catch(error){
+
+showError(error);
+
+msg(
+"avatarMessage",
+error.message ||
+"Could not save photo."
+);
+
+
+}finally{
+
+$("saveAvatarBtn").disabled =
+false;
+
+}
+
+}
 );
 
 
@@ -3270,126 +3857,135 @@ $("settingsForm")?.addEventListener(
 
 async function loadOwnerStats(){
 
-  if(
-    !$("ownerStats") ||
-    !isOwner()
-  )
-    return;
+const box =
+$("ownerStats");
+
+if(
+!box ||
+!isOwner()
+)
+return;
 
 
-  try{
+try{
 
-    const [
-      u,
-      j,
-      a,
-      p
-    ] =
-      await Promise.all([
+const [
+users,
+jobs,
+applications,
+projects
+] =
+await Promise.all([
 
-        getDocs(
-          collection(
-            db,
-            "users"
-          )
-        ),
+getDocs(
+collection(
+db,
+"users"
+)
+),
 
-        getDocs(
-          collection(
-            db,
-            "jobs"
-          )
-        ),
+getDocs(
+collection(
+db,
+"jobs"
+)
+),
 
-        getDocs(
-          collection(
-            db,
-            "applications"
-          )
-        ),
+getDocs(
+collection(
+db,
+"applications"
+)
+),
 
-        getDocs(
-          collection(
-            db,
-            "projects"
-          )
-        )
-      ]);
+getDocs(
+collection(
+db,
+"projects"
+)
+)
+
+]);
 
 
-    $("ownerStats").innerHTML =
-      [
-        [
-          "👥",
-          "Users",
-          u.size,
-          "Registered accounts"
-        ],
+box.innerHTML =
+[
 
-        [
-          "💼",
-          "Projects",
-          j.size,
-          "All posted projects"
-        ],
+[
+"👥",
+"Users",
+users.size,
+"Registered accounts"
+],
 
-        [
-          "✉",
-          "Applications",
-          a.size,
-          "All applications"
-        ],
+[
+"💼",
+"Projects",
+jobs.size,
+"Posted projects"
+],
 
-        [
-          "✓",
-          "Projects in Work",
-          p.size,
-          "Accepted projects"
-        ]
-      ]
-      .map(
-        x =>
-          `<div class="stat">
+[
+"✉",
+"Applications",
+applications.size,
+"All applications"
+],
 
-            <div class="icon">
-              ${x[0]}
-            </div>
+[
+"✓",
+"Projects in Work",
+projects.size,
+"Accepted projects"
+]
 
-            <h3>
-              ${x[2]}
-            </h3>
+]
+.map(
+x =>
+`
+<div class="stat">
 
-            <p>
-              ${x[1]}
-            </p>
+<div class="icon">
+${x[0]}
+</div>
 
-            <em>
-              ${x[3]}
-            </em>
+<h3>
+${x[2]}
+</h3>
 
-          </div>`
-      )
-      .join("");
+<p>
+${x[1]}
+</p>
 
-  }catch(e){
+<em>
+${x[3]}
+</em>
 
-    showError(e);
-  }
+</div>
+`
+)
+.join("");
+
+
+}catch(error){
+
+showError(error);
+
 }
 
-
-/* =========================================================
-   TIMER PLACEHOLDER
-========================================================= */
-
-function renderTimerless(){}
+}
 
 
 /* =========================================================
    START
 ========================================================= */
 
-if(isLogin)
-  initAuth();
-else
-  authGuard();
+if(isLogin){
+
+initAuth();
+
+}else{
+
+authGuard();
+
+}
