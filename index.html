@@ -1,739 +1,408 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>ELITE FREELANCE HUB — Freelancer</title>
-  <link rel="icon" href="profile.png">
-  <link rel="stylesheet" href="style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ELITE FREELANCE HUB</title>
+<link rel="icon" href="profile.png">
+<link rel="stylesheet" href="style.css">
 </head>
 
-<body class="freelancer" data-role="freelancer">
+<body data-role="freelancer">
 
-<div class="app">
+<div class="app-shell">
 
-  <aside class="sidebar" id="sidebar">
+<aside class="sidebar">
 
-    <button class="brand" id="brandHome" type="button">
-      <img src="profile.png" class="brand-logo" alt="ELITE FREELANCE HUB">
+<button class="brand" id="brandHome" type="button">
+<img src="profile.png" alt="ELITE logo">
+<span>
+<b>ELITE</b>
+<small>FREELANCE HUB</small>
+</span>
+</button>
 
-      <span>
-        <strong>ELITE</strong>
-        <small>FREELANCE HUB</small>
-      </span>
-    </button>
+<div class="profile-mini">
+<img id="sideAvatar" src="profile.png" class="avatar-img" alt="Profile">
+<div>
+<strong id="sideName">Loading...</strong>
+<span id="sideRole">Professional Freelancer</span>
+</div>
+<span class="online-dot">●</span>
+</div>
 
-    <div class="mini-profile">
-      <img src="profile.png" class="avatar" alt="Profile">
+<nav id="navArea" class="sidebar-nav"></nav>
 
-      <div>
-        <strong id="sideName">Loading...</strong>
-        <small id="sideRole">Freelancer</small>
-      </div>
+<div class="sidebar-footer">
+<button class="side-action" id="switchMode" type="button">
+⇄ Switch to Client Mode
+</button>
 
-      <small class="online">●</small>
-    </div>
+<button class="side-action" id="helpBtn" type="button">
+♧ Help & Support
+</button>
 
-    <div class="nav-area" id="navArea"></div>
+<button class="side-action danger" id="logoutBtn" type="button">
+↪ Logout
+</button>
+</div>
 
-    <div class="side-bottom">
+</aside>
 
-      <button id="switchMode" type="button" class="owner-only">
-        ⇄ Client Mode
-      </button>
 
-      <button id="helpBtn" type="button">
-        ♧ Help & Support
-      </button>
+<main class="main-content">
 
-      <button id="logoutBtn" type="button" class="logout">
-        ↪ Logout
-      </button>
+<header class="topbar">
 
-    </div>
+<div>
+<span class="eyebrow">WELCOME BACK 👋</span>
+<h1 id="pageTitle">Dashboard</h1>
+</div>
 
-  </aside>
+<div class="top-actions">
 
+<button class="icon-btn" id="themeToggle" type="button">◐</button>
 
-  <main class="main">
+<button class="icon-btn" id="notificationBtn" type="button">♢</button>
 
-    <header class="topbar">
+<button class="top-user" id="topProfileBtn" type="button">
+<img id="topAvatar" src="profile.png" class="avatar-img" alt="Profile">
+<span id="topName">Member</span>
+</button>
 
-      <div class="top-left">
-        <small>WELCOME BACK 👋</small>
-        <h1 id="pageTitle">Dashboard</h1>
-      </div>
-
-      <div class="top-right">
-
-        <button
-          class="round-btn"
-          id="themeToggle"
-          type="button"
-          title="Toggle theme">
-          ◐
-        </button>
-
-        <button
-          class="round-btn"
-          id="notificationBtn"
-          type="button"
-          title="Notifications">
-          ♢
-          <span class="dot"></span>
-        </button>
-
-        <button
-          class="user-chip"
-          id="topProfileBtn"
-          type="button">
-
-          <img
-            src="profile.png"
-            class="avatar small"
-            alt="Profile">
-
-          <span id="topName">Member</span>
-
-        </button>
-
-        <button
-          class="logout-top"
-          id="topLogout"
-          type="button">
-          ↪ Logout
-        </button>
-
-      </div>
-
-    </header>
-
-
-    <!-- DASHBOARD -->
-
-    <section class="page active" id="dashboardPage">
-
-      <div class="mode">
-        FREELANCER MODE
-
-        <span
-          id="ownerBadge"
-          class="owner-badge owner-only">
-          OWNER
-        </span>
-
-      </div>
-
-
-      <div class="hero">
-
-        <div class="hero-copy">
-
-          <h2>
-            Find Work.
-            <span>Build Your Future.</span>
-          </h2>
-
-          <p>
-            Browse real client projects, apply to work,
-            manage accepted projects and chat with clients
-            from one professional workspace.
-          </p>
-
-          <div class="actions">
-
-            <button
-              class="primary"
-              type="button"
-              data-target="jobsPage">
-              Find Work →
-            </button>
-
-            <button
-              class="secondary"
-              type="button"
-              data-target="applicationsPage">
-              My Applications
-            </button>
-
-          </div>
-
-        </div>
-
-
-        <div class="hero-art">
-
-          <div class="circle"></div>
-
-          <div class="person">
-            💻
-          </div>
-
-          <div class="float a">
-            💼
-          </div>
-
-          <div class="float b">
-            ✓
-          </div>
-
-          <div class="screen">
-            WORK
-            <br>
-            <span>ONLINE</span>
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div class="stats" id="freelancerStats"></div>
-
-
-      <div class="grid2">
-
-        <div class="panel">
-
-          <div class="panel-head">
-
-            <div>
-              <h3>Recommended Work</h3>
-              <p>Open client projects</p>
-            </div>
-
-            <button
-              class="link"
-              type="button"
-              data-target="jobsPage">
-              View All →
-            </button>
-
-          </div>
-
-          <div
-            class="activity"
-            id="recommendedJobs">
-
-            <div class="loading">
-              Loading...
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <div class="panel">
-
-          <div class="panel-head">
-
-            <div>
-              <h3>My Applications</h3>
-              <p>Latest application status</p>
-            </div>
-
-            <button
-              class="link"
-              type="button"
-              data-target="applicationsPage">
-              View All →
-            </button>
-
-          </div>
-
-          <div
-            class="activity"
-            id="recentApplications">
-
-            <div class="loading">
-              Loading...
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- FIND WORK -->
-
-    <section class="page" id="jobsPage">
-
-      <div class="page-head">
-
-        <label>FIND WORK</label>
-
-        <h2>Available Projects</h2>
-
-        <p>
-          Browse open projects posted by clients.
-        </p>
-
-      </div>
-
-      <div
-        class="cards"
-        id="jobsList">
-
-        <div class="loading">
-          Loading projects...
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- APPLICATIONS -->
-
-    <section
-      class="page"
-      id="applicationsPage">
-
-      <div class="page-head">
-
-        <label>APPLICATIONS</label>
-
-        <h2>My Applications</h2>
-
-        <p>
-          Track every project you applied for.
-        </p>
-
-      </div>
-
-      <div
-        class="cards"
-        id="applicationsList">
-
-        <div class="loading">
-          Loading applications...
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- PROJECTS -->
-
-    <section
-      class="page"
-      id="projectsPage">
-
-      <div class="page-head">
-
-        <label>MY PROJECTS</label>
-
-        <h2>Accepted Projects</h2>
-
-        <p>
-          Projects where your application was accepted.
-        </p>
-
-      </div>
-
-      <div
-        class="cards"
-        id="projectsList">
-
-        <div class="loading">
-          Loading projects...
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- MESSAGES -->
-
-    <section
-      class="page"
-      id="messagesPage">
-
-      <div class="page-head">
-
-        <label>MESSAGES</label>
-
-        <h2>Project Inbox</h2>
-
-        <p>
-          Chat with clients about accepted projects.
-        </p>
-
-      </div>
-
-
-      <div class="messages-layout">
-
-        <div
-          class="conversations"
-          id="conversationsList">
-
-          <div class="empty">
-            Loading conversations...
-          </div>
-
-        </div>
-
-
-        <div class="chat">
-
-          <div class="chat-head">
-
-            <strong id="chatTitle">
-              Select a project
-            </strong>
-
-            <span id="chatSubtitle">
-              Choose a conversation.
-            </span>
-
-          </div>
-
-
-          <div
-            class="messages"
-            id="messageList">
-
-            <div class="empty">
-              No conversation selected.
-            </div>
-
-          </div>
-
-
-          <div
-            class="composer"
-            id="composer"
-            style="display:none">
-
-            <textarea
-              id="messageInput"
-              placeholder="Write a message...">
-            </textarea>
-
-            <button
-              class="primary"
-              id="sendMessage"
-              type="button">
-              Send
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- PROFILE -->
-
-    <section
-      class="page"
-      id="profilePage">
-
-      <div class="page-head">
-
-        <label>ACCOUNT</label>
-
-        <h2>Profile</h2>
-
-        <p>
-          Your professional freelancer profile.
-        </p>
-
-      </div>
-
-
-      <div class="profile-box">
-
-        <img
-          src="profile.png"
-          class="profile-avatar-img"
-          alt="Profile">
-
-        <div class="profile-info">
-
-          <h3 id="profileName">
-            Member
-          </h3>
-
-          <p id="profileRole">
-            Professional Freelancer
-          </p>
-
-          <p>
-            ✉
-            <span id="profileEmail"></span>
-          </p>
-
-          <p
-            id="profileSkills"
-            class="muted">
-          </p>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- SETTINGS -->
-
-    <section
-      class="page"
-      id="settingsPage">
-
-      <div class="page-head">
-
-        <label>ACCOUNT</label>
-
-        <h2>Settings</h2>
-
-        <p>
-          Update your account information.
-        </p>
-
-      </div>
-
-
-      <div class="form-box">
-
-        <form id="settingsForm">
-
-          <div class="form-grid">
-
-            <label class="field">
-              Display Name
-              <input
-                id="settingsName"
-                maxlength="80"
-                required>
-            </label>
-
-            <label class="field">
-              Email
-              <input
-                id="settingsEmail"
-                disabled>
-            </label>
-
-            <label class="field full">
-              Skills
-              <input
-                id="settingsSkills"
-                placeholder="HTML, CSS, JavaScript, Design...">
-            </label>
-
-          </div>
-
-
-          <div class="form-row">
-
-            <button
-              class="primary"
-              type="submit">
-              Save Changes
-            </button>
-
-            <span
-              class="success"
-              id="settingsMessage">
-            </span>
-
-          </div>
-
-        </form>
-
-      </div>
-
-    </section>
-
-
-    <!-- OWNER -->
-
-    <section
-      class="page"
-      id="ownerPage">
-
-      <div class="page-head">
-
-        <label>OWNER CONTROL</label>
-
-        <h2>Owner / Admin Panel</h2>
-
-        <p>
-          Only Ayesha Rehman has Owner access
-          to this platform.
-        </p>
-
-      </div>
-
-
-      <div class="owner-warning">
-
-        👑
-
-        <strong>
-          Owner protected area
-        </strong>
-
-        <span>
-          This panel is available only to
-          the authenticated owner account.
-        </span>
-
-      </div>
-
-
-      <div
-        class="stats"
-        id="ownerStats">
-      </div>
-
-
-      <div class="grid2">
-
-        <div class="panel">
-
-          <div class="panel-head">
-
-            <div>
-              <h3>Platform Rules</h3>
-              <p>Ownership and access</p>
-            </div>
-
-          </div>
-
-
-          <div class="activity">
-
-            <div class="activity-row">
-
-              <div class="activity-icon">
-                👑
-              </div>
-
-              <div>
-                <strong>Ayesha Rehman</strong>
-                <span>
-                  Only Owner + Freelancer access
-                </span>
-              </div>
-
-            </div>
-
-
-            <div class="activity-row">
-
-              <div class="activity-icon">
-                👤
-              </div>
-
-              <div>
-                <strong>Freelancers</strong>
-                <span>
-                  Can find work and apply
-                </span>
-              </div>
-
-            </div>
-
-
-            <div class="activity-row">
-
-              <div class="activity-icon">
-                💼
-              </div>
-
-              <div>
-                <strong>Clients</strong>
-                <span>
-                  Can post projects and manage applications
-                </span>
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <div class="panel">
-
-          <div class="panel-head">
-
-            <div>
-              <h3>Owner Actions</h3>
-              <p>Quick controls</p>
-            </div>
-
-          </div>
-
-
-          <div class="activity">
-
-            <button
-              class="quick-action"
-              type="button"
-              data-target="jobsPage">
-              View marketplace →
-            </button>
-
-            <button
-              class="quick-action"
-              type="button"
-              id="ownerClientMode">
-              Switch to Client Mode →
-            </button>
-
-            <button
-              class="quick-action"
-              type="button"
-              data-target="settingsPage">
-              Open account settings →
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <footer>
-      © 2026
-      <b>ELITE FREELANCE HUB</b>
-      · Connect • Collaborate • Succeed
-    </footer>
-
-  </main>
+<button class="outline-danger" id="topLogout" type="button">
+↪ Logout
+</button>
 
 </div>
 
-<div id="toast"></div>
+</header>
 
-<div
-  id="firebaseError"
-  class="firebase-error">
+
+<section class="page active" id="dashboardPage">
+
+<div class="mode-badge">
+FREELANCER MODE
 </div>
 
-<script
-  type="module"
-  src="script.js">
-</script>
+<div class="hero-card">
+
+<div class="hero-copy">
+
+<h2>
+Find Work.
+<span>Build Your Future.</span>
+</h2>
+
+<p>
+Browse real client projects, apply to work,
+manage accepted projects and chat with clients.
+</p>
+
+<div class="hero-buttons">
+
+<button class="primary" data-target="jobsPage" type="button">
+Find Work →
+</button>
+
+<button class="secondary" data-target="applicationsPage" type="button">
+My Applications
+</button>
+
+</div>
+
+</div>
+
+<div class="hero-art">
+<div class="glow"></div>
+<div class="hero-person">💻</div>
+<div class="hero-float one">💼</div>
+<div class="hero-float two">✓</div>
+</div>
+
+</div>
+
+
+<div class="stats" id="freelancerStats"></div>
+
+
+<div class="dashboard-grid">
+
+<div class="panel">
+
+<div class="panel-head">
+
+<div>
+<h3>Recommended Work</h3>
+<p>Open client projects</p>
+</div>
+
+<button class="text-link" data-target="jobsPage" type="button">
+View All →
+</button>
+
+</div>
+
+<div id="recommendedJobs"></div>
+
+</div>
+
+
+<div class="panel">
+
+<div class="panel-head">
+
+<div>
+<h3>My Applications</h3>
+<p>Latest application status</p>
+</div>
+
+<button class="text-link" data-target="applicationsPage" type="button">
+View All →
+</button>
+
+</div>
+
+<div id="recentApplications"></div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section class="page" id="jobsPage">
+
+<div class="page-heading">
+<span>FIND WORK</span>
+<h2>Available Projects</h2>
+<p>Browse open projects from clients.</p>
+</div>
+
+<div id="jobsList" class="card-grid"></div>
+
+</section>
+
+
+<section class="page" id="applicationsPage">
+
+<div class="page-heading">
+<span>APPLICATIONS</span>
+<h2>My Applications</h2>
+<p>Track your proposals and decisions.</p>
+</div>
+
+<div id="applicationsList" class="card-grid"></div>
+
+</section>
+
+
+<section class="page" id="projectsPage">
+
+<div class="page-heading">
+<span>MY PROJECTS</span>
+<h2>Active Projects</h2>
+<p>Projects assigned to you.</p>
+</div>
+
+<div id="projectsList" class="card-grid"></div>
+
+</section>
+
+
+<section class="page" id="messagesPage">
+
+<div class="page-heading">
+<span>MESSAGES</span>
+<h2>Project Inbox</h2>
+<p>Chat with clients on accepted projects.</p>
+</div>
+
+<div class="messages-layout">
+
+<div class="conversation-list" id="conversationsList"></div>
+
+<div class="chat-panel">
+
+<div class="chat-head">
+<strong id="chatTitle">Select a project</strong>
+<span id="chatSubtitle">
+Choose a conversation to start messaging.
+</span>
+</div>
+
+<div class="messages" id="messageList">
+<div class="empty">Select a conversation.</div>
+</div>
+
+<div class="composer" id="composer" style="display:none">
+
+<textarea
+id="messageInput"
+placeholder="Write a message..."
+></textarea>
+
+<button class="primary" id="sendMessage" type="button">
+Send
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section class="page" id="profilePage">
+
+<div class="page-heading">
+<span>ACCOUNT</span>
+<h2>Profile</h2>
+<p>Your professional profile.</p>
+</div>
+
+<div class="profile-panel">
+
+<img
+id="profileAvatar"
+src="profile.png"
+class="profile-large"
+alt="Profile"
+>
+
+<div>
+
+<h3 id="profileName">Member</h3>
+
+<p id="profileRole">
+Professional Freelancer
+</p>
+
+<p>
+✉ <span id="profileEmail"></span>
+</p>
+
+<p>
+🛠 <span id="profileSkills"></span>
+</p>
+
+</div>
+
+</div>
+
+
+<div class="form-panel">
+
+<h3>Profile Photo</h3>
+
+<p class="muted">
+Choose your own profile picture.
+This is separate from the ELITE website logo.
+</p>
+
+<input
+id="avatarInput"
+type="file"
+accept="image/*"
+>
+
+<button
+class="primary"
+id="saveAvatarBtn"
+type="button"
+>
+Save Profile Photo
+</button>
+
+<span id="avatarMessage" class="form-message"></span>
+
+</div>
+
+</section>
+
+
+<section class="page" id="settingsPage">
+
+<div class="page-heading">
+<span>ACCOUNT</span>
+<h2>Settings</h2>
+<p>Update your account information.</p>
+</div>
+
+<div class="form-panel">
+
+<form id="settingsForm">
+
+<div class="form-grid">
+
+<label>
+Display Name
+<input id="settingsName" required>
+</label>
+
+<label>
+Email
+<input id="settingsEmail" disabled>
+</label>
+
+<label class="full">
+Skills
+<input id="settingsSkills">
+</label>
+
+</div>
+
+<div class="form-actions">
+
+<button class="primary" type="submit">
+Save Changes
+</button>
+
+<span id="settingsMessage" class="form-message"></span>
+
+</div>
+
+</form>
+
+</div>
+
+</section>
+
+
+<section class="page" id="ownerPage">
+
+<div class="page-heading">
+<span>OWNER</span>
+<h2>Owner Panel</h2>
+<p>Private platform overview.</p>
+</div>
+
+<div class="stats" id="ownerStats"></div>
+
+<div class="panel">
+
+<h3>Owner Access</h3>
+
+<p class="muted">
+Only the account marked <b>owner: true</b>
+in Firestore receives Owner Panel access.
+</p>
+
+</div>
+
+</section>
+
+
+<div id="firebaseError" class="firebase-error"></div>
+
+</main>
+
+</div>
+
+<script type="module" src="script.js"></script>
 
 </body>
 </html>
