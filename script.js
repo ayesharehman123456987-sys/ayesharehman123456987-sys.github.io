@@ -1,29 +1,123 @@
-function themeInit() {
-  const light =
-    localStorage.getItem("efh_theme") === "light";
+/* =========================================================
+   ELITE FREELANCE HUB
+   THEME SYSTEM
+   LIGHT / DARK MODE
+   ========================================================= */
 
-  document.body.classList.toggle(
-    "light",
-    light
-  );
+(function () {
 
-  $("themeToggle")?.addEventListener(
-    "click",
-    () => {
-      const newLight =
-        !document.body.classList.contains("light");
+    function themeInit() {
 
-      document.body.classList.toggle(
-        "light",
-        newLight
-      );
+        const themeButton = document.getElementById("themeToggle");
 
-      localStorage.setItem(
-        "efh_theme",
-        newLight ? "light" : "dark"
-      );
+        /* -----------------------------------------
+           LOAD SAVED THEME
+           Default = LIGHT
+        ----------------------------------------- */
+
+        const savedTheme = localStorage.getItem("efh_theme");
+
+        if (savedTheme === "dark") {
+            document.body.classList.add("dark");
+        } else {
+            document.body.classList.remove("dark");
+        }
+
+
+        /* -----------------------------------------
+           UPDATE BUTTON ICON
+        ----------------------------------------- */
+
+        function updateThemeButton() {
+
+            if (!themeButton) return;
+
+            const isDark =
+                document.body.classList.contains("dark");
+
+            themeButton.textContent =
+                isDark ? "☀️" : "🌙";
+
+            themeButton.setAttribute(
+                "aria-label",
+                isDark
+                    ? "Switch to Light Mode"
+                    : "Switch to Dark Mode"
+            );
+
+            themeButton.setAttribute(
+                "title",
+                isDark
+                    ? "Light Mode"
+                    : "Dark Mode"
+            );
+        }
+
+
+        /* -----------------------------------------
+           THEME BUTTON CLICK
+        ----------------------------------------- */
+
+        if (themeButton) {
+
+            themeButton.addEventListener(
+                "click",
+                function () {
+
+                    const isDark =
+                        document.body.classList.contains("dark");
+
+                    if (isDark) {
+
+                        /* DARK → LIGHT */
+
+                        document.body.classList.remove("dark");
+
+                        localStorage.setItem(
+                            "efh_theme",
+                            "light"
+                        );
+
+                    } else {
+
+                        /* LIGHT → DARK */
+
+                        document.body.classList.add("dark");
+
+                        localStorage.setItem(
+                            "efh_theme",
+                            "dark"
+                        );
+                    }
+
+                    updateThemeButton();
+                }
+            );
+        }
+
+
+        /* -----------------------------------------
+           INITIAL BUTTON ICON
+        ----------------------------------------- */
+
+        updateThemeButton();
     }
-  );
-}
 
-themeInit();
+
+    /* -----------------------------------------
+       START AFTER PAGE LOAD
+    ----------------------------------------- */
+
+    if (document.readyState === "loading") {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            themeInit
+        );
+
+    } else {
+
+        themeInit();
+    }
+
+})();
