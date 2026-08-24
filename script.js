@@ -1,36 +1,26 @@
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import {
-initializeApp
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
-import {
-getAuth,
-onAuthStateChanged,
-signInWithEmailAndPassword,
-createUserWithEmailAndPassword,
-sendPasswordResetEmail,
-signOut
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signOut
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 import {
-getFirestore,
-collection,
-query,
-where,
-getDocs,
-getDoc,
-doc,
-setDoc,
-addDoc,
-updateDoc,
-serverTimestamp
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+  getDoc,
+  doc,
+  setDoc,
+  addDoc,
+  updateDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
-import {
-getStorage,
-ref,
-uploadBytes,
-getDownloadURL
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-storage.js";
 
 
 /* =========================================================
@@ -38,53 +28,52 @@ getDownloadURL
 ========================================================= */
 
 const firebaseConfig = {
-apiKey:"AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
-authDomain:"elite-freelance-hub.firebaseapp.com",
-projectId:"elite-freelance-hub",
-storageBucket:"elite-freelance-hub.firebasestorage.app",
-messagingSenderId:"777611553956",
-appId:"1:777611553956:web:730b7df36570ff803a8a31",
-measurementId:"G-PC7G6G6BRD"
+  apiKey: "AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
+  authDomain: "elite-freelance-hub.firebaseapp.com",
+  projectId: "elite-freelance-hub",
+  storageBucket: "elite-freelance-hub.firebasestorage.app",
+  messagingSenderId: "777611553956",
+  appId: "1:777611553956:web:730b7df36570ff803a8a31",
+  measurementId: "G-PC7G6G6BRD"
 };
 
 
-const app =
-initializeApp(firebaseConfig);
+/* =========================================================
+   OWNER
+   ONLY AYESHA IS OWNER
+========================================================= */
 
-const auth =
-getAuth(app);
+const OWNER_EMAIL =
+  "ayesharehman123456987@gmail.com";
 
-const db =
-getFirestore(app);
 
-const storage =
-getStorage(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 
 /* =========================================================
    GLOBALS
 ========================================================= */
 
-const $ =
-id => document.getElementById(id);
+const $ = id =>
+  document.getElementById(id);
 
 const pageName =
-location.pathname.split("/").pop() ||
-"index.html";
+  location.pathname.split("/").pop() ||
+  "index.html";
 
 const isLogin =
-pageName === "login.html";
+  pageName === "login.html";
 
 const isClientPage =
-pageName === "client-dashboard.html";
+  pageName === "client-dashboard.html";
 
 const isPostPage =
-pageName === "post-job.html";
+  pageName === "post-job.html";
 
 let currentUser = null;
-
 let userData = {};
-
 let currentConversation = null;
 
 
@@ -92,121 +81,149 @@ let currentConversation = null;
    HELPERS
 ========================================================= */
 
-function esc(value){
+function esc(value) {
 
-return String(value ?? "").replace(
-/[&<>"']/g,
-
-c => ({
-"&":"&amp;",
-"<":"&lt;",
-">":"&gt;",
-'"':"&quot;",
-"'":"&#039;"
-}[c])
-
-);
+  return String(value ?? "").replace(
+    /[&<>"']/g,
+    char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    }[char])
+  );
 
 }
 
 
-function fmtDate(value){
+function fmtDate(value) {
 
-try{
+  if (!value) return "";
 
-if(!value)
-return "";
+  try {
 
-const d =
-value?.toDate
-? value.toDate()
-: new Date(value);
+    const d =
+      value?.toDate
+        ? value.toDate()
+        : new Date(value);
 
-return d.toLocaleDateString(
-undefined,
-{
-day:"numeric",
-month:"short",
-year:"numeric"
-}
-);
+    return d.toLocaleDateString(
+      undefined,
+      {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      }
+    );
 
-}catch{
+  } catch {
 
-return "";
+    return "";
 
-}
-
-}
-
-
-function showError(error){
-
-console.error(error);
-
-const box =
-$("firebaseError");
-
-if(box){
-
-box.style.display =
-"block";
-
-box.textContent =
-"Firebase Error: " +
-(error?.message || error);
-
-}
+  }
 
 }
 
 
-function toast(message){
+function showError(error) {
 
-const t =
-$("toast");
+  console.error(error);
 
-if(t){
+  const box =
+    $("firebaseError");
 
-t.textContent =
-message;
+  if (box) {
 
-t.classList.add("show");
+    box.style.display = "block";
 
-setTimeout(
-() => t.classList.remove("show"),
-2500
-);
+    box.textContent =
+      "Firebase Error: " +
+      (error?.message || error);
 
-}else{
-
-alert(message);
-
-}
+  }
 
 }
 
 
-function msg(
-id,
-text,
-ok=false
-){
+function toast(message) {
 
-const x =
-$(id);
+  const t =
+    $("toast");
 
-if(x){
+  if (!t) {
 
-x.textContent =
-text;
+    alert(message);
+    return;
 
-x.style.color =
-ok
-? "#43d883"
-: "#ff7185";
+  }
+
+  t.textContent = message;
+
+  t.classList.add("show");
+
+  setTimeout(
+    () => t.classList.remove("show"),
+    2500
+  );
 
 }
+
+
+function msg(id, text, success = false) {
+
+  const el = $(id);
+
+  if (!el) return;
+
+  el.textContent = text;
+
+  el.style.color =
+    success
+      ? "#43d883"
+      : "#ff7185";
+
+}
+
+
+function friendly(error) {
+
+  const code =
+    error?.code || "";
+
+  const messages = {
+
+    "auth/invalid-credential":
+      "Email or password is incorrect.",
+
+    "auth/user-not-found":
+      "No account was found with this email.",
+
+    "auth/wrong-password":
+      "Email or password is incorrect.",
+
+    "auth/email-already-in-use":
+      "This email already has an account.",
+
+    "auth/weak-password":
+      "Password must be at least 6 characters.",
+
+    "auth/invalid-email":
+      "Please enter a valid email.",
+
+    "auth/too-many-requests":
+      "Too many attempts. Please try again later.",
+
+    "auth/network-request-failed":
+      "Network error. Check your internet connection."
+
+  };
+
+  return (
+    messages[code] ||
+    error?.message ||
+    "Something went wrong."
+  );
 
 }
 
@@ -215,19 +232,23 @@ ok
    ROLE
 ========================================================= */
 
-function role(){
+function role() {
 
-return document.body.dataset.role === "client"
-? "client"
-: "freelancer";
+  return document.body.dataset.role === "client"
+    ? "client"
+    : "freelancer";
 
 }
 
 
-function isOwner(){
+function isOwner() {
 
-return currentUser?.uid &&
-userData?.owner === true;
+  return (
+    currentUser?.email?.toLowerCase() ===
+      OWNER_EMAIL.toLowerCase()
+    ||
+    userData?.owner === true
+  );
 
 }
 
@@ -236,38 +257,41 @@ userData?.owner === true;
    THEME
 ========================================================= */
 
-function themeInit(){
+function themeInit() {
 
-const light =
-localStorage.getItem("efh_theme") ===
-"light";
+  const light =
+    localStorage.getItem("efh_theme") ===
+    "light";
 
-document.body.classList.toggle(
-"light",
-light
-);
+  document.body.classList.toggle(
+    "light",
+    light
+  );
 
-$("themeToggle")?.addEventListener(
-"click",
-() => {
 
-const next =
-!document.body.classList.contains("light");
+  $("themeToggle")?.addEventListener(
+    "click",
+    () => {
 
-document.body.classList.toggle(
-"light",
-next
-);
+      const newLight =
+        !document.body.classList.contains(
+          "light"
+        );
 
-localStorage.setItem(
-"efh_theme",
-next
-? "light"
-: "dark"
-);
+      document.body.classList.toggle(
+        "light",
+        newLight
+      );
 
-}
-);
+      localStorage.setItem(
+        "efh_theme",
+        newLight
+          ? "light"
+          : "dark"
+      );
+
+    }
+  );
 
 }
 
@@ -278,27 +302,37 @@ themeInit();
    LOGOUT
 ========================================================= */
 
-function logout(){
+async function logout() {
 
-signOut(auth)
-.then(
-() =>
-location.href =
-"login.html"
-)
-.catch(showError);
+  try {
+
+    await signOut(auth);
+
+    location.href =
+      "login.html";
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
 
 $("logoutBtn")?.addEventListener(
-"click",
-logout
+  "click",
+  logout
 );
 
 $("topLogout")?.addEventListener(
-"click",
-logout
+  "click",
+  logout
+);
+
+$("settingsLogout")?.addEventListener(
+  "click",
+  logout
 );
 
 
@@ -306,386 +340,406 @@ logout
    NAVIGATION
 ========================================================= */
 
-$("brandHome")?.addEventListener(
-"click",
-() =>
-go(
-"dashboardPage",
-"Dashboard"
-)
-);
+function buildNav() {
+
+  const nav =
+    $("navArea");
+
+  if (!nav) return;
+
+  const client =
+    role() === "client";
 
 
-$("topProfileBtn")?.addEventListener(
-"click",
-() =>
-go(
-"profilePage",
-"Profile"
-)
-);
+  const groups = client
+
+    ? [
+
+        [
+          "MAIN",
+          [
+            [
+              "dashboardPage",
+              "⌂",
+              "Dashboard"
+            ],
+            [
+              "projectsPage",
+              "▣",
+              "My Projects"
+            ],
+            [
+              "applicationsPage",
+              "✉",
+              "Applications"
+            ],
+            [
+              "messagesPage",
+              "◌",
+              "Messages"
+            ]
+          ]
+        ],
+
+        [
+          "MANAGE",
+          [
+            [
+              "postPage",
+              "＋",
+              "Post a Project"
+            ]
+          ]
+        ],
+
+        [
+          "ACCOUNT",
+          [
+            [
+              "profilePage",
+              "♙",
+              "Profile"
+            ],
+            [
+              "settingsPage",
+              "⚙",
+              "Settings"
+            ]
+          ]
+        ]
+
+      ]
+
+    : [
+
+        [
+          "MAIN",
+          [
+            [
+              "dashboardPage",
+              "⌂",
+              "Dashboard"
+            ],
+            [
+              "jobsPage",
+              "✓",
+              "Find Work"
+            ],
+            [
+              "applicationsPage",
+              "✉",
+              "My Applications"
+            ],
+            [
+              "projectsPage",
+              "▣",
+              "My Projects"
+            ],
+            [
+              "messagesPage",
+              "◌",
+              "Messages"
+            ]
+          ]
+        ],
+
+        [
+          "ACCOUNT",
+          [
+            [
+              "profilePage",
+              "♙",
+              "Profile"
+            ],
+            [
+              "settingsPage",
+              "⚙",
+              "Settings"
+            ]
+          ]
+        ]
+
+      ];
 
 
-$("helpBtn")?.addEventListener(
-"click",
-() =>
-alert(
-"ELITE FREELANCE HUB Support\n\n" +
-"Contact the platform owner for account, " +
-"project or payment issues."
-)
-);
+  /* OWNER PANEL ONLY FOR AYESHA */
+
+  if (
+    isOwner() &&
+    !client
+  ) {
+
+    groups.push(
+      [
+        "OWNER",
+        [
+          [
+            "ownerPage",
+            "♛",
+            "Owner Panel"
+          ]
+        ]
+      ]
+    );
+
+  }
 
 
-$("notificationBtn")?.addEventListener(
-"click",
-() =>
-toast(
-"No new notifications."
-)
-);
+  nav.innerHTML =
+    groups
+      .map(
+        group => {
+
+          const title =
+            group[0];
+
+          const items =
+            group[1];
+
+          return `
+
+            <div class="section-title">
+              ${title}
+            </div>
+
+            ${items
+              .map(
+                item => `
+
+                  <button
+                    class="nav"
+                    type="button"
+                    data-target="${item[0]}"
+                  >
+                    ${item[1]}&nbsp;
+                    ${item[2]}
+                  </button>
+
+                `
+              )
+              .join("")}
+
+          `;
+
+        }
+      )
+      .join("");
 
 
-$("switchMode")?.addEventListener(
-"click",
-() => {
+  nav
+    .querySelectorAll(".nav")
+    .forEach(
+      button => {
 
-if(!isOwner())
-return;
+        button.addEventListener(
+          "click",
+          () =>
+            go(
+              button.dataset.target,
+              button.textContent
+            )
+        );
 
-location.href =
-isClientPage
-? "index.html"
-: "client-dashboard.html";
-
-}
-);
-
-
-function buildNav(){
-
-const nav =
-$("navArea");
-
-if(!nav)
-return;
+      }
+    );
 
 
-const client =
-role() === "client";
-
-
-const groups =
-client
-
-? [
-
-[
-"MAIN",
-[
-[
-"dashboardPage",
-"⌂",
-"Dashboard"
-],
-
-[
-"projectsPage",
-"▣",
-"My Projects"
-],
-
-[
-"applicationsPage",
-"✉",
-"Applications"
-],
-
-[
-"messagesPage",
-"◌",
-"Messages"
-]
-
-]
-],
-
-[
-"MANAGE",
-[
-[
-"postPage",
-"＋",
-"Post a Project"
-]
-]
-],
-
-[
-"ACCOUNT",
-[
-[
-"profilePage",
-"♙",
-"Profile"
-],
-
-[
-"settingsPage",
-"⚙",
-"Settings"
-]
-]
-]
-
-]
-
-:
-
-[
-
-[
-"MAIN",
-[
-[
-"dashboardPage",
-"⌂",
-"Dashboard"
-],
-
-[
-"jobsPage",
-"✓",
-"Find Work"
-],
-
-[
-"applicationsPage",
-"✉",
-"My Applications"
-],
-
-[
-"projectsPage",
-"▣",
-"My Projects"
-],
-
-[
-"messagesPage",
-"◌",
-"Messages"
-]
-]
-],
-
-[
-"ACCOUNT",
-[
-[
-"profilePage",
-"♙",
-"Profile"
-],
-
-[
-"settingsPage",
-"⚙",
-"Settings"
-]
-]
-]
-
-];
-
-
-if(
-isOwner() &&
-!client
-){
-
-groups.push(
-[
-"OWNER",
-[
-[
-"ownerPage",
-"♛",
-"Owner Panel"
-]
-]
-]
-);
+  updateActive();
 
 }
 
 
-nav.innerHTML =
-groups
-.map(
-group => {
+function updateActive() {
 
-return `
-<div class="section-title">
-${group[0]}
-</div>
+  const active =
+    document.querySelector(
+      ".page.active"
+    )?.id;
 
-${group[1]
-.map(
-item => `
-
-<button
-class="nav"
-type="button"
-data-target="${item[0]}"
->
-${item[1]}&nbsp; ${item[2]}
-</button>
-
-`
-)
-.join("")}
-
-`;
-
-}
-)
-.join("");
-
-
-nav
-.querySelectorAll(".nav")
-.forEach(
-button =>
-button.addEventListener(
-"click",
-() =>
-go(
-button.dataset.target,
-button.textContent
-)
-)
-);
-
-
-updateActive();
+  document
+    .querySelectorAll(".nav")
+    .forEach(
+      nav =>
+        nav.classList.toggle(
+          "active",
+          nav.dataset.target ===
+            active
+        )
+    );
 
 }
 
 
-function updateActive(){
+async function go(id, title) {
 
-const active =
-document.querySelector(
-".page.active"
-)?.id;
-
-document
-.querySelectorAll(".nav")
-.forEach(
-n =>
-n.classList.toggle(
-"active",
-n.dataset.target === active
-)
-);
-
-}
+  document
+    .querySelectorAll(".page")
+    .forEach(
+      page =>
+        page.classList.toggle(
+          "active",
+          page.id === id
+        )
+    );
 
 
-async function go(
-id,
-title
-){
+  if ($("pageTitle")) {
 
-document
-.querySelectorAll(".page")
-.forEach(
-page =>
-page.classList.toggle(
-"active",
-page.id === id
-)
-);
+    $("pageTitle").textContent =
+      String(
+        title ||
+        "Dashboard"
+      )
+        .replace(
+          /^[^A-Za-z]+/,
+          ""
+        )
+        .trim();
 
-
-if($("pageTitle")){
-
-$("pageTitle").textContent =
-String(
-title ||
-"Dashboard"
-)
-.replace(
-/^[^A-Za-z]+/,
-""
-)
-.trim();
-
-}
+  }
 
 
-updateActive();
+  updateActive();
 
 
-window.scrollTo({
-top:0,
-behavior:"smooth"
-});
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 
 
-const map = {
+  if (id === "jobsPage")
+    await loadJobs();
 
-jobsPage:
-loadJobs,
+  if (id === "applicationsPage") {
 
-applicationsPage:
-role() === "client"
-? loadClientApplications
-: loadApplications,
+    if (role() === "client")
+      await loadClientApplications();
+    else
+      await loadApplications();
 
-projectsPage:
-role() === "client"
-? loadClientProjects
-: loadProjects,
+  }
 
-messagesPage:
-loadConversations,
+  if (id === "projectsPage") {
 
-ownerPage:
-loadOwnerStats
+    if (role() === "client")
+      await loadClientProjects();
+    else
+      await loadProjects();
 
-};
+  }
 
+  if (id === "messagesPage")
+    await loadConversations();
 
-if(map[id])
-await map[id]();
+  if (id === "ownerPage")
+    await loadOwnerStats();
 
 }
 
 
 document.addEventListener(
-"click",
-event => {
+  "click",
+  event => {
 
-const button =
-event.target.closest(
-"[data-target]"
+    const button =
+      event.target.closest(
+        "[data-target]"
+      );
+
+    if (
+      button &&
+      !button.classList.contains(
+        "nav"
+      )
+    ) {
+
+      go(
+        button.dataset.target,
+        button.textContent
+      );
+
+    }
+
+  }
 );
 
-if(
-button &&
-!button.classList.contains("nav")
-){
 
-go(
-button.dataset.target,
-button.textContent
+/* =========================================================
+   TOP BUTTONS
+========================================================= */
+
+$("brandHome")?.addEventListener(
+  "click",
+  () =>
+    go(
+      "dashboardPage",
+      "Dashboard"
+    )
 );
 
-}
 
-}
+$("topProfileBtn")?.addEventListener(
+  "click",
+  () =>
+    go(
+      "profilePage",
+      "Profile"
+    )
+);
+
+
+$("helpBtn")?.addEventListener(
+  "click",
+  () =>
+    alert(
+      "ELITE FREELANCE HUB Support\n\n" +
+      "For account, project or payment issues, " +
+      "contact the platform owner."
+    )
+);
+
+
+$("notificationBtn")?.addEventListener(
+  "click",
+  () =>
+    toast(
+      "No new notifications."
+    )
+);
+
+
+/* =========================================================
+   OWNER MODE SWITCH
+========================================================= */
+
+$("switchMode")?.addEventListener(
+  "click",
+  () => {
+
+    if (!isOwner())
+      return;
+
+    location.href =
+      isClientPage
+        ? "index.html"
+        : "client-dashboard.html";
+
+  }
+);
+
+
+$("ownerClientMode")?.addEventListener(
+  "click",
+  () => {
+
+    if (!isOwner())
+      return;
+
+    location.href =
+      "client-dashboard.html";
+
+  }
 );
 
 
@@ -693,205 +747,353 @@ button.textContent
    IDENTITY
 ========================================================= */
 
-async function loadIdentity(){
+async function loadIdentity() {
 
-const userRef =
-doc(
-db,
-"users",
-currentUser.uid
-);
-
-const snap =
-await getDoc(userRef);
+  const reference =
+    doc(
+      db,
+      "users",
+      currentUser.uid
+    );
 
 
-if(!snap.exists()){
-
-userData = {
-
-name:
-currentUser.displayName ||
-currentUser.email?.split("@")[0] ||
-"Member",
-
-email:
-currentUser.email || "",
-
-role:
-role(),
-
-owner:
-false,
-
-skills:
-"",
-
-photoURL:
-""
-
-};
+  const snapshot =
+    await getDoc(reference);
 
 
-await setDoc(
-userRef,
-{
-...userData,
-createdAt:
-serverTimestamp()
-}
-);
-
-}else{
-
-userData =
-snap.data() || {};
-
-}
+  const ownerByEmail =
+    currentUser.email
+      ?.toLowerCase() ===
+    OWNER_EMAIL.toLowerCase();
 
 
-if(!userData.role)
-userData.role =
-role();
+  if (!snapshot.exists()) {
+
+    userData = {
+
+      name:
+        ownerByEmail
+          ? "AYESHA REHMAN"
+          : (
+              currentUser.displayName ||
+              currentUser.email
+                ?.split("@")[0] ||
+              "Member"
+            ),
+
+      email:
+        currentUser.email || "",
+
+      role:
+        ownerByEmail
+          ? "freelancer"
+          : role(),
+
+      owner:
+        ownerByEmail,
+
+      skills:
+        ownerByEmail
+          ? "Web Development, HTML, CSS, JavaScript"
+          : "",
+
+      title:
+        ownerByEmail
+          ? "Founder & Professional Freelancer"
+          : "",
+
+      bio:
+        ownerByEmail
+          ? "Founder and Professional Freelancer at ELITE FREELANCE HUB."
+          : "",
+
+      photoData: ""
+
+    };
 
 
-if(
-!isOwner() &&
-userData.role !== role()
-){
+    await setDoc(
+      reference,
+      {
+        ...userData,
+        createdAt:
+          serverTimestamp()
+      }
+    );
 
-location.href =
-userData.role === "client"
-? "client-dashboard.html"
-: "index.html";
+  } else {
 
-return;
-
-}
-
-
-const photo =
-userData.photoURL ||
-"profile.png";
+    userData =
+      snapshot.data() || {};
 
 
-[
-"sideAvatar",
-"topAvatar",
-"profileAvatar"
-]
-.forEach(
-id => {
+    if (
+      ownerByEmail &&
+      (
+        !userData.owner ||
+        userData.role !==
+          "freelancer"
+      )
+    ) {
 
-if($(id))
-$(id).src =
-photo;
+      userData = {
 
-}
-);
+        ...userData,
 
+        owner: true,
 
-document
-.querySelectorAll(
-"#sideName"
-)
-.forEach(
-x =>
-x.textContent =
-userData.name ||
-"Member"
-);
+        role: "freelancer",
 
+        name:
+          userData.name ||
+          "AYESHA REHMAN",
 
-document
-.querySelectorAll(
-"#sideRole"
-)
-.forEach(
-x =>
-x.textContent =
-isOwner()
-? "Owner • Freelancer"
-: role() === "client"
-? "Professional Client"
-: "Professional Freelancer"
-);
+        title:
+          userData.title ||
+          "Founder & Professional Freelancer"
+
+      };
 
 
-if($("topName"))
-$("topName").textContent =
-userData.name ||
-"Member";
+      await updateDoc(
+        reference,
+        {
+          owner: true,
+          role: "freelancer",
+          name: userData.name,
+          title: userData.title,
+          updatedAt:
+            serverTimestamp()
+        }
+      );
+
+    }
+
+  }
 
 
-if($("profileName"))
-$("profileName").textContent =
-userData.name ||
-"Member";
+  if (!userData.role)
+    userData.role =
+      role();
 
 
-if($("profileRole"))
-$("profileRole").textContent =
-isOwner()
-? "Owner + Professional Freelancer"
-: role() === "client"
-? "Professional Client"
-: "Professional Freelancer";
+  /* NEVER ALLOW A NORMAL USER TO REMAIN OWNER */
+
+  if (
+    !ownerByEmail &&
+    userData.owner === true
+  ) {
+
+    userData.owner = false;
+
+    await updateDoc(
+      reference,
+      {
+        owner: false,
+        updatedAt:
+          serverTimestamp()
+      }
+    );
+
+  }
 
 
-if($("profileEmail"))
-$("profileEmail").textContent =
-currentUser.email ||
-"";
+  if (
+    !ownerByEmail &&
+    userData.role !== role()
+  ) {
+
+    location.href =
+      userData.role === "client"
+        ? "client-dashboard.html"
+        : "index.html";
+
+    return;
+
+  }
 
 
-if($("profileSkills"))
-$("profileSkills").textContent =
-userData.skills ||
-"Not added";
+  document.body.classList.toggle(
+    "is-owner",
+    ownerByEmail
+  );
 
 
-if($("settingsName"))
-$("settingsName").value =
-userData.name ||
-"";
+  const displayName =
+    userData.name ||
+    currentUser.email
+      ?.split("@")[0] ||
+    "Member";
 
 
-if($("settingsEmail"))
-$("settingsEmail").value =
-currentUser.email ||
-"";
+  const displayRole =
+    ownerByEmail
+      ? "Owner • Professional Freelancer"
+      : (
+          role() === "client"
+            ? "Professional Client"
+            : "Professional Freelancer"
+        );
 
 
-if($("settingsSkills"))
-$("settingsSkills").value =
-userData.skills ||
-"";
+  document
+    .querySelectorAll(
+      "[id='sideName']"
+    )
+    .forEach(
+      element =>
+        element.textContent =
+          displayName
+    );
 
 
-if($("switchMode")){
-
-$("switchMode").textContent =
-isOwner()
-? (
-isClientPage
-? "⇄ Switch to Freelancer Mode"
-: "⇄ Switch to Client Mode"
-)
-: "";
-
-}
+  document
+    .querySelectorAll(
+      "[id='sideRole']"
+    )
+    .forEach(
+      element =>
+        element.textContent =
+          displayRole
+    );
 
 
-if(
-$("switchMode") &&
-!isOwner()
-){
+  if ($("topName"))
+    $("topName").textContent =
+      displayName;
 
-$("switchMode").style.display =
-"none";
 
-}
+  if ($("profileName"))
+    $("profileName").textContent =
+      displayName;
+
+
+  if ($("profileRole"))
+    $("profileRole").textContent =
+      ownerByEmail
+        ? "Owner + Professional Freelancer"
+        : (
+            role() === "client"
+              ? "Professional Client"
+              : "Professional Freelancer"
+          );
+
+
+  if ($("profileEmail"))
+    $("profileEmail").textContent =
+      currentUser.email || "";
+
+
+  if ($("profileSkills"))
+    $("profileSkills").textContent =
+      userData.skills || "";
+
+
+  if ($("profileTitle"))
+    $("profileTitle").textContent =
+      userData.title || "";
+
+
+  if ($("profileBio"))
+    $("profileBio").textContent =
+      userData.bio || "";
+
+
+  if ($("settingsName"))
+    $("settingsName").value =
+      userData.name || "";
+
+
+  if ($("settingsEmail"))
+    $("settingsEmail").value =
+      currentUser.email || "";
+
+
+  if ($("settingsSkills"))
+    $("settingsSkills").value =
+      userData.skills || "";
+
+
+  if ($("profileEditName"))
+    $("profileEditName").value =
+      userData.name || "";
+
+
+  if ($("profileTitleInput"))
+    $("profileTitleInput").value =
+      userData.title || "";
+
+
+  if ($("profileBioInput"))
+    $("profileBioInput").value =
+      userData.bio || "";
+
+
+  if ($("profileSkillsEdit"))
+    $("profileSkillsEdit").value =
+      userData.skills || "";
+
+
+  /* =======================================================
+     WEBSITE LOGO AND USER PROFILE PHOTO ARE SEPARATE
+  ======================================================= */
+
+  const photo =
+    userData.photoData || "";
+
+
+  document
+    .querySelectorAll(
+      ".user-avatar"
+    )
+    .forEach(
+      image => {
+
+        if (photo) {
+
+          image.src =
+            photo;
+
+          image.classList.add(
+            "has-user-photo"
+          );
+
+        } else {
+
+          image.src =
+            "profile.png";
+
+          image.classList.remove(
+            "has-user-photo"
+          );
+
+        }
+
+      }
+    );
+
+
+  document
+    .querySelectorAll(
+      ".site-logo"
+    )
+    .forEach(
+      image =>
+        image.src =
+          "profile.png"
+    );
+
+
+  const preview =
+    $("profilePhotoPreview");
+
+  if (preview) {
+
+    preview.src =
+      photo ||
+      "profile.png";
+
+  }
 
 }
 
@@ -900,115 +1102,55 @@ $("switchMode").style.display =
    AUTH GUARD
 ========================================================= */
 
-function authGuard(){
+async function authGuard() {
 
-onAuthStateChanged(
-auth,
-async user => {
+  onAuthStateChanged(
+    auth,
+    async user => {
 
-if(!user){
+      if (!user) {
 
-location.href =
-"login.html";
+        location.href =
+          "login.html";
 
-return;
+        return;
 
-}
-
-
-currentUser =
-user;
+      }
 
 
-try{
-
-const userRef =
-doc(
-db,
-"users",
-user.uid
-);
-
-const snap =
-await getDoc(userRef);
+      currentUser =
+        user;
 
 
-if(!snap.exists()){
+      try {
 
-await setDoc(
-userRef,
-{
-name:
-user.email?.split("@")[0] ||
-"Member",
+        await loadIdentity();
 
-email:
-user.email || "",
-
-role:
-role(),
-
-owner:
-false,
-
-skills:
-"",
-
-photoURL:
-"",
-
-createdAt:
-serverTimestamp()
-}
-);
-
-}
+        buildNav();
 
 
-await loadIdentity();
+        if (isPostPage) {
 
-buildNav();
+          await initPost();
 
+        } else if (isClientPage) {
 
-if(isPostPage){
+          await initClient();
 
-if(
-role() !== "client" &&
-!isOwner()
-){
+        } else {
 
-location.href =
-"index.html";
+          await initFreelancer();
 
-return;
+        }
 
-}
+      } catch (error) {
 
-await initPost();
+        showError(error);
 
-}
+      }
 
-else if(isClientPage){
-
-await initClient();
-
-}
-
-else{
-
-await initFreelancer();
-
-}
-
-
-}catch(error){
-
-showError(error);
-
-}
-
-}
-);
+    }
+  );
 
 }
 
@@ -1017,302 +1159,316 @@ showError(error);
    LOGIN / SIGNUP
 ========================================================= */
 
-function initAuth(){
+function initAuth() {
 
-const loginForm =
-$("loginForm");
+  const loginForm =
+    $("loginForm");
 
-const signupForm =
-$("signupForm");
+  const signupForm =
+    $("signupForm");
 
 
-if(!loginForm ||
-!signupForm)
-return;
+  if (
+    !loginForm ||
+    !signupForm
+  )
+    return;
 
 
-const showLogin =
-() => {
+  $("loginTab")?.addEventListener(
+    "click",
+    () => {
 
-loginForm.classList.remove(
-"hidden"
-);
+      loginForm.classList.remove(
+        "hidden"
+      );
 
-signupForm.classList.add(
-"hidden"
-);
+      signupForm.classList.add(
+        "hidden"
+      );
 
-$("loginTab")?.classList.add(
-"active"
-);
+      $("loginTab")?.classList.add(
+        "active"
+      );
 
-$("signupTab")?.classList.remove(
-"active"
-);
+      $("signupTab")?.classList.remove(
+        "active"
+      );
 
-};
+    }
+  );
 
 
-const showSignup =
-() => {
+  $("signupTab")?.addEventListener(
+    "click",
+    () => {
 
-loginForm.classList.add(
-"hidden"
-);
+      loginForm.classList.add(
+        "hidden"
+      );
 
-signupForm.classList.remove(
-"hidden"
-);
+      signupForm.classList.remove(
+        "hidden"
+      );
 
-$("loginTab")?.classList.remove(
-"active"
-);
+      $("loginTab")?.classList.remove(
+        "active"
+      );
 
-$("signupTab")?.classList.add(
-"active"
-);
+      $("signupTab")?.classList.add(
+        "active"
+      );
 
-};
+    }
+  );
 
 
-$("loginTab")?.addEventListener(
-"click",
-showLogin
-);
+  loginForm.addEventListener(
+    "submit",
+    async event => {
 
-$("signupTab")?.addEventListener(
-"click",
-showSignup
-);
+      event.preventDefault();
 
-$("goSignup")?.addEventListener(
-"click",
-showSignup
-);
 
-$("goLogin")?.addEventListener(
-"click",
-showLogin
-);
+      msg(
+        "loginMsg",
+        ""
+      );
 
 
-loginForm.addEventListener(
-"submit",
-async event => {
+      const email =
+        $("loginEmail")
+          .value
+          .trim()
+          .toLowerCase();
 
-event.preventDefault();
 
+      const password =
+        $("loginPassword")
+          .value;
 
-try{
 
-await signInWithEmailAndPassword(
-auth,
-$("loginEmail")
-.value
-.trim()
-.toLowerCase(),
+      try {
 
-$("loginPassword")
-.value
-);
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
 
 
-location.href =
-"index.html";
+        location.href =
+          email ===
+            OWNER_EMAIL.toLowerCase()
+            ? "index.html"
+            : "index.html";
 
 
-}catch(error){
+      } catch (error) {
 
-msg(
-"loginMsg",
-friendly(error)
-);
+        msg(
+          "loginMsg",
+          friendly(error)
+        );
 
-}
+      }
 
-}
-);
+    }
+  );
 
 
-$("forgotBtn")?.addEventListener(
-"click",
-async () => {
+  $("forgotBtn")?.addEventListener(
+    "click",
+    async () => {
 
-const email =
-$("loginEmail")
-.value
-.trim()
-.toLowerCase();
+      const email =
+        $("loginEmail")
+          .value
+          .trim()
+          .toLowerCase();
 
 
-if(!email){
+      if (!email) {
 
-msg(
-"loginMsg",
-"Enter your email first."
-);
+        msg(
+          "loginMsg",
+          "Enter your email first."
+        );
 
-return;
+        return;
 
-}
+      }
 
 
-try{
+      try {
 
-await sendPasswordResetEmail(
-auth,
-email
-);
+        await sendPasswordResetEmail(
+          auth,
+          email
+        );
 
-msg(
-"loginMsg",
-"Password reset email sent.",
-true
-);
 
-}catch(error){
+        msg(
+          "loginMsg",
+          "Password reset email sent.",
+          true
+        );
 
-msg(
-"loginMsg",
-friendly(error)
-);
+      } catch (error) {
 
-}
+        msg(
+          "loginMsg",
+          friendly(error)
+        );
 
-}
-);
+      }
 
+    }
+  );
 
-signupForm.addEventListener(
-"submit",
-async event => {
 
-event.preventDefault();
+  signupForm.addEventListener(
+    "submit",
+    async event => {
 
+      event.preventDefault();
 
-try{
 
-const email =
-$("signupEmail")
-.value
-.trim()
-.toLowerCase();
+      msg(
+        "signupMsg",
+        ""
+      );
 
-const name =
-$("signupName")
-.value
-.trim();
 
-const selected =
-$("signupRole")
-.value;
+      const name =
+        $("signupName")
+          .value
+          .trim();
 
 
-const credential =
-await createUserWithEmailAndPassword(
-auth,
-email,
-$("signupPassword").value
-);
+      const email =
+        $("signupEmail")
+          .value
+          .trim()
+          .toLowerCase();
 
 
-await setDoc(
-doc(
-db,
-"users",
-credential.user.uid
-),
-{
+      const password =
+        $("signupPassword")
+          .value;
 
-name,
 
-email,
+      const selectedRole =
+        $("signupRole")
+          .value;
 
-role:
-selected,
 
-owner:
-false,
+      const ownerByEmail =
+        email ===
+        OWNER_EMAIL.toLowerCase();
 
-skills:
-"",
 
-photoURL:
-"",
+      try {
 
-createdAt:
-serverTimestamp()
+        const credential =
+          await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
 
-}
-);
 
+        await setDoc(
+          doc(
+            db,
+            "users",
+            credential.user.uid
+          ),
+          {
 
-msg(
-"signupMsg",
-"Account created successfully.",
-true
-);
+            name:
+              ownerByEmail
+                ? "AYESHA REHMAN"
+                : (
+                    name ||
+                    "User"
+                  ),
 
+            email,
 
-setTimeout(
-() =>
-location.href =
-selected === "client"
-? "client-dashboard.html"
-: "index.html",
-500
-);
+            role:
+              ownerByEmail
+                ? "freelancer"
+                : selectedRole,
 
+            owner:
+              ownerByEmail,
 
-}catch(error){
+            skills:
+              ownerByEmail
+                ? "Web Development, HTML, CSS, JavaScript"
+                : "",
 
-msg(
-"signupMsg",
-friendly(error)
-);
+            title:
+              ownerByEmail
+                ? "Founder & Professional Freelancer"
+                : (
+                    selectedRole ===
+                      "client"
+                      ? "Professional Client"
+                      : "Professional Freelancer"
+                  ),
 
-}
+            bio:
+              ownerByEmail
+                ? "Founder and Professional Freelancer at ELITE FREELANCE HUB."
+                : "",
 
-}
-);
+            photoData: "",
 
-}
+            createdAt:
+              serverTimestamp()
 
+          }
+        );
 
-function friendly(error){
 
-const messages = {
+        msg(
+          "signupMsg",
+          ownerByEmail
+            ? "Owner + Freelancer account created successfully."
+            : "Account created successfully.",
+          true
+        );
 
-"auth/invalid-credential":
-"Email or password is incorrect.",
 
-"auth/user-not-found":
-"No account was found with this email.",
+        setTimeout(
+          () => {
 
-"auth/wrong-password":
-"Email or password is incorrect.",
+            location.href =
+              ownerByEmail
+                ? "index.html"
+                : selectedRole ===
+                    "client"
+                    ? "client-dashboard.html"
+                    : "index.html";
 
-"auth/email-already-in-use":
-"This email already has an account.",
+          },
+          500
+        );
 
-"auth/weak-password":
-"Password must be at least 6 characters.",
 
-"auth/invalid-email":
-"Please enter a valid email.",
+      } catch (error) {
 
-"auth/too-many-requests":
-"Too many attempts. Please try again later.",
+        msg(
+          "signupMsg",
+          friendly(error)
+        );
 
-"auth/network-request-failed":
-"Network error. Check your internet connection."
+      }
 
-};
-
-
-return messages[error?.code] ||
-error?.message ||
-"Something went wrong.";
+    }
+  );
 
 }
 
@@ -1321,230 +1477,299 @@ error?.message ||
    FREELANCER DASHBOARD
 ========================================================= */
 
-async function loadFreelancerDashboard(){
+async function initFreelancer() {
 
-const [
-jobs,
-applications,
-projects
-] =
-await Promise.all([
-
-getDocs(
-query(
-collection(db,"jobs"),
-where(
-"status",
-"==",
-"open"
-)
-)
-),
-
-getDocs(
-query(
-collection(db,"applications"),
-where(
-"freelancerId",
-"==",
-currentUser.uid
-)
-)
-),
-
-getDocs(
-query(
-collection(db,"projects"),
-where(
-"freelancerId",
-"==",
-currentUser.uid
-)
-)
-)
-
-]);
+  if ($("pageTitle"))
+    $("pageTitle").textContent =
+      "Dashboard";
 
 
-const active =
-projects.docs.filter(
-d =>
-d.data().status !==
-"completed"
-).length;
+  await loadFreelancerDashboard();
 
+  await loadJobs();
 
-const earnings =
-projects.docs.reduce(
-(sum,d) =>
-sum +
-Number(
-d.data().budget ||
-0
-),
-0
-);
+  await loadApplications();
 
-
-$("freelancerStats").innerHTML =
-[
-
-[
-"💰",
-"Earnings",
-"$" +
-earnings.toLocaleString(),
-"Accepted project budgets"
-],
-
-[
-"📁",
-"Active Projects",
-active,
-"Assigned work"
-],
-
-[
-"✉",
-"Applications",
-applications.size,
-"Sent to clients"
-],
-
-[
-"★",
-"Profile Rating",
-"—",
-"Reviews will appear here"
-]
-
-]
-.map(
-x =>
-`
-<div class="stat">
-
-<div class="icon">
-${x[0]}
-</div>
-
-<h3>
-${x[2]}
-</h3>
-
-<p>
-${x[1]}
-</p>
-
-<em>
-${x[3]}
-</em>
-
-</div>
-`
-)
-.join("");
-
-
-$("recommendedJobs").innerHTML =
-jobs.docs
-.slice(0,5)
-.map(
-d => {
-
-const x =
-d.data();
-
-return `
-<div class="activity-row">
-
-<div class="activity-icon">
-💼
-</div>
-
-<div>
-
-<strong>
-${esc(x.title || "Project")}
-</strong>
-
-<span>
-$${Number(x.budget || 0)}
-•
-${esc(x.category || "General")}
-</span>
-
-</div>
-
-</div>
-`;
-
-}
-)
-.join("")
-||
-`
-<div class="empty">
-No open projects yet.
-</div>
-`;
-
-
-$("recentApplications").innerHTML =
-applications.docs
-.slice(0,5)
-.map(
-d => {
-
-const x =
-d.data();
-
-return `
-<div class="activity-row">
-
-<div class="activity-icon">
-✉
-</div>
-
-<div>
-
-<strong>
-${esc(x.jobTitle || "Project")}
-</strong>
-
-<span>
-${esc(x.status || "pending")}
-•
-${fmtDate(x.createdAt)}
-</span>
-
-</div>
-
-</div>
-`;
-
-}
-)
-.join("")
-||
-`
-<div class="empty">
-No applications yet.
-</div>
-`;
+  await loadProjects();
 
 }
 
 
-async function initFreelancer(){
+/* =========================================================
+   FREELANCER DASHBOARD DATA
+========================================================= */
 
-await loadFreelancerDashboard();
+async function loadFreelancerDashboard() {
 
-await loadJobs();
+  const stats =
+    $("freelancerStats");
 
-await loadApplications();
+  if (!stats)
+    return;
 
-await loadProjects();
+
+  try {
+
+    const [
+      jobsSnapshot,
+      applicationsSnapshot,
+      projectsSnapshot
+    ] =
+      await Promise.all([
+
+        getDocs(
+          query(
+            collection(
+              db,
+              "jobs"
+            ),
+            where(
+              "status",
+              "==",
+              "open"
+            )
+          )
+        ),
+
+        getDocs(
+          query(
+            collection(
+              db,
+              "applications"
+            ),
+            where(
+              "freelancerId",
+              "==",
+              currentUser.uid
+            )
+          )
+        ),
+
+        getDocs(
+          query(
+            collection(
+              db,
+              "projects"
+            ),
+            where(
+              "freelancerId",
+              "==",
+              currentUser.uid
+            )
+          )
+        )
+
+      ]);
+
+
+    const active =
+      projectsSnapshot.docs.filter(
+        document =>
+          document.data().status !==
+          "completed"
+      ).length;
+
+
+    const earnings =
+      projectsSnapshot.docs.reduce(
+        (sum, document) =>
+          sum +
+          Number(
+            document.data().budget ||
+            0
+          ),
+        0
+      );
+
+
+    stats.innerHTML = [
+
+      [
+        "💰",
+        "Earnings",
+        "$" +
+          earnings.toLocaleString(),
+        "Accepted project budgets"
+      ],
+
+      [
+        "📁",
+        "Active Projects",
+        active,
+        "Assigned work"
+      ],
+
+      [
+        "✉",
+        "Applications",
+        applicationsSnapshot.size,
+        "Sent to clients"
+      ],
+
+      [
+        "★",
+        "Profile Rating",
+        "—",
+        "Reviews will appear here"
+      ]
+
+    ]
+      .map(
+        item => `
+
+          <div class="stat">
+
+            <div class="icon">
+              ${item[0]}
+            </div>
+
+            <h3>
+              ${item[2]}
+            </h3>
+
+            <p>
+              ${item[1]}
+            </p>
+
+            <em>
+              ${item[3]}
+            </em>
+
+          </div>
+
+        `
+      )
+      .join("");
+
+
+    const recommended =
+      $("recommendedJobs");
+
+
+    if (recommended) {
+
+      recommended.innerHTML =
+        jobsSnapshot.docs
+          .slice(0, 5)
+          .map(
+            document => {
+
+              const job =
+                document.data();
+
+              return `
+
+                <div class="activity-row">
+
+                  <div class="activity-icon">
+                    💼
+                  </div>
+
+                  <div>
+
+                    <strong>
+                      ${esc(
+                        job.title ||
+                        "Project"
+                      )}
+                    </strong>
+
+                    <span>
+                      $${Number(
+                        job.budget || 0
+                      )}
+                      •
+                      ${esc(
+                        job.category ||
+                        "General"
+                      )}
+                    </span>
+
+                  </div>
+
+                </div>
+
+              `;
+
+            }
+          )
+          .join("")
+          ||
+          `
+            <div class="empty">
+              No open projects yet.
+            </div>
+          `;
+
+    }
+
+
+    const recent =
+      $("recentApplications");
+
+
+    if (recent) {
+
+      recent.innerHTML =
+        applicationsSnapshot.docs
+          .slice(0, 5)
+          .map(
+            document => {
+
+              const application =
+                document.data();
+
+              return `
+
+                <div class="activity-row">
+
+                  <div class="activity-icon">
+                    ✉
+                  </div>
+
+                  <div>
+
+                    <strong>
+                      ${esc(
+                        application.jobTitle ||
+                        "Project"
+                      )}
+                    </strong>
+
+                    <span>
+                      ${esc(
+                        application.status ||
+                        "pending"
+                      )}
+                      •
+                      ${fmtDate(
+                        application.createdAt
+                      )}
+                    </span>
+
+                  </div>
+
+                </div>
+
+              `;
+
+            }
+          )
+          .join("")
+          ||
+          `
+            <div class="empty">
+              No applications yet.
+            </div>
+          `;
+
+    }
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
@@ -1553,612 +1778,680 @@ await loadProjects();
    FIND WORK
 ========================================================= */
 
-async function loadJobs(){
+async function loadJobs() {
 
-const list =
-$("jobsList");
+  const list =
+    $("jobsList");
 
-if(!list)
-return;
-
-
-list.innerHTML =
-'<div class="loading">Loading projects...</div>';
+  if (!list)
+    return;
 
 
-try{
-
-const snap =
-await getDocs(
-query(
-collection(db,"jobs"),
-where(
-"status",
-"==",
-"open"
-)
-)
-);
+  list.innerHTML =
+    '<div class="loading">Loading projects...</div>';
 
 
-const docs =
-snap.docs.filter(
-d =>
-d.data().clientId !==
-currentUser.uid
-);
+  try {
+
+    const snapshot =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "jobs"
+          ),
+          where(
+            "status",
+            "==",
+            "open"
+          )
+        )
+      );
 
 
-if(!docs.length){
+    const jobs =
+      snapshot.docs.filter(
+        document =>
+          document.data().clientId !==
+          currentUser.uid
+      );
 
-list.innerHTML =
-`
-<div class="empty">
-No open projects available right now.
-</div>
-`;
 
-return;
+    if (!jobs.length) {
+
+      list.innerHTML =
+        `
+          <div class="empty">
+            No open projects available right now.
+          </div>
+        `;
+
+      return;
+
+    }
+
+
+    const applicationSnapshot =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "applications"
+          ),
+          where(
+            "freelancerId",
+            "==",
+            currentUser.uid
+          )
+        )
+      );
+
+
+    const applied =
+      new Set(
+        applicationSnapshot.docs.map(
+          document =>
+            document.data().jobId
+        )
+      );
+
+
+    list.innerHTML =
+      jobs
+        .map(
+          document => {
+
+            const job =
+              document.data();
+
+            const alreadyApplied =
+              applied.has(
+                document.id
+              );
+
+
+            return `
+
+              <article class="card">
+
+                <h3>
+                  💼
+                  ${esc(
+                    job.title ||
+                    "Project"
+                  )}
+                </h3>
+
+                <p>
+                  ${esc(
+                    job.description ||
+                    "No description provided."
+                  )}
+                </p>
+
+                <div class="meta">
+
+                  <span class="pill">
+                    ${esc(
+                      job.category ||
+                      "General"
+                    )}
+                  </span>
+
+                  <span class="pill">
+                    💰
+                    $${Number(
+                      job.budget || 0
+                    )}
+                  </span>
+
+                  <span class="pill">
+                    📅
+                    ${esc(
+                      job.deadline ||
+                      "—"
+                    )}
+                  </span>
+
+                </div>
+
+                <small class="muted">
+                  Client:
+                  ${esc(
+                    job.clientName ||
+                    "Client"
+                  )}
+                </small>
+
+                <div class="card-actions">
+
+                  <button
+                    class="${
+                      alreadyApplied
+                        ? "secondary"
+                        : "primary"
+                    } apply-btn"
+                    data-job="${document.id}"
+                    type="button"
+                    ${
+                      alreadyApplied
+                        ? "disabled"
+                        : ""
+                    }
+                  >
+                    ${
+                      alreadyApplied
+                        ? "Applied ✓"
+                        : "Apply Now"
+                    }
+                  </button>
+
+                </div>
+
+              </article>
+
+            `;
+
+          }
+        )
+        .join("");
+
+
+    list
+      .querySelectorAll(
+        ".apply-btn"
+      )
+      .forEach(
+        button => {
+
+          button.addEventListener(
+            "click",
+            () =>
+              applyJob(
+                button.dataset.job,
+                button
+              )
+          );
+
+        }
+      );
+
+
+  } catch (error) {
+
+    showError(error);
+
+    list.innerHTML =
+      `
+        <div class="empty">
+          Unable to load projects.
+        </div>
+      `;
+
+  }
 
 }
 
 
-const applicationSnap =
-await getDocs(
-query(
-collection(db,"applications"),
-where(
-"freelancerId",
-"==",
-currentUser.uid
-)
-)
-);
-
-
-const applied =
-new Set(
-applicationSnap.docs.map(
-d =>
-d.data().jobId
-)
-);
-
-
-list.innerHTML =
-docs
-.map(
-d => {
-
-const x =
-d.data();
-
-const yes =
-applied.has(d.id);
-
-
-return `
-<article class="card">
-
-<h3>
-💼 ${esc(x.title || "Project")}
-</h3>
-
-<p>
-${esc(
-x.description ||
-"No description provided."
-)}
-</p>
-
-<div class="meta">
-
-<span class="pill">
-${esc(x.category || "General")}
-</span>
-
-<span class="pill">
-💰 $${Number(x.budget || 0)}
-</span>
-
-<span class="pill">
-📅 ${esc(x.deadline || "—")}
-</span>
-
-</div>
-
-<small class="muted">
-Client:
-${esc(x.clientName || "Client")}
-</small>
-
-<div class="card-actions">
-
-<button
-class="${yes ? "secondary" : "primary"} apply-btn"
-data-job="${d.id}"
-${yes ? "disabled" : ""}
->
-
-${yes ? "Applied ✓" : "Apply Now"}
-
-</button>
-
-</div>
-
-</article>
-`;
-
-}
-)
-.join("");
-
-
-list
-.querySelectorAll(".apply-btn")
-.forEach(
-button =>
-button.addEventListener(
-"click",
-() =>
-applyJob(
-button.dataset.job,
-button
-)
-)
-);
-
-
-}catch(error){
-
-showError(error);
-
-list.innerHTML =
-`
-<div class="empty">
-Unable to load projects.
-</div>
-`;
-
-}
-
-}
-
+/* =========================================================
+   APPLY
+========================================================= */
 
 async function applyJob(
-jobId,
-button
-){
+  jobId,
+  button
+) {
 
-try{
+  try {
 
-button.disabled =
-true;
+    button.disabled =
+      true;
 
-button.textContent =
-"Applying...";
-
-
-const snap =
-await getDoc(
-doc(
-db,
-"jobs",
-jobId
-)
-);
+    button.textContent =
+      "Applying...";
 
 
-if(!snap.exists())
-throw new Error(
-"Project no longer exists."
-);
+    const jobSnapshot =
+      await getDoc(
+        doc(
+          db,
+          "jobs",
+          jobId
+        )
+      );
 
 
-const job =
-snap.data();
+    if (!jobSnapshot.exists())
+      throw new Error(
+        "Project no longer exists."
+      );
 
 
-if(job.status !== "open")
-throw new Error(
-"This project is no longer accepting applications."
-);
+    const job =
+      jobSnapshot.data();
 
 
-const duplicate =
-await getDocs(
-query(
-collection(db,"applications"),
-
-where(
-"jobId",
-"==",
-jobId
-),
-
-where(
-"freelancerId",
-"==",
-currentUser.uid
-)
-)
-);
+    if (job.status !== "open")
+      throw new Error(
+        "This project is no longer accepting applications."
+      );
 
 
-if(!duplicate.empty){
-
-button.textContent =
-"Applied ✓";
-
-return;
-
-}
-
-
-await addDoc(
-collection(
-db,
-"applications"
-),
-{
-
-jobId,
-
-clientId:
-job.clientId,
-
-clientEmail:
-job.clientEmail || "",
-
-clientName:
-job.clientName || "Client",
-
-freelancerId:
-currentUser.uid,
-
-freelancerEmail:
-currentUser.email || "",
-
-freelancerName:
-userData.name ||
-"Freelancer",
-
-jobTitle:
-job.title ||
-"Project",
-
-budget:
-Number(
-job.budget ||
-0
-),
-
-status:
-"pending",
-
-createdAt:
-serverTimestamp()
-
-}
-);
+    const duplicate =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "applications"
+          ),
+          where(
+            "jobId",
+            "==",
+            jobId
+          ),
+          where(
+            "freelancerId",
+            "==",
+            currentUser.uid
+          )
+        )
+      );
 
 
-button.textContent =
-"Applied ✓";
+    if (!duplicate.empty) {
+
+      button.textContent =
+        "Applied ✓";
+
+      return;
+
+    }
 
 
-toast(
-"Application sent successfully."
-);
+    await addDoc(
+      collection(
+        db,
+        "applications"
+      ),
+      {
+
+        jobId,
+
+        clientId:
+          job.clientId,
+
+        clientEmail:
+          job.clientEmail || "",
+
+        clientName:
+          job.clientName ||
+          "Client",
+
+        freelancerId:
+          currentUser.uid,
+
+        freelancerEmail:
+          currentUser.email ||
+          "",
+
+        freelancerName:
+          userData.name ||
+          "Freelancer",
+
+        jobTitle:
+          job.title ||
+          "Project",
+
+        budget:
+          Number(
+            job.budget || 0
+          ),
+
+        status:
+          "pending",
+
+        createdAt:
+          serverTimestamp()
+
+      }
+    );
 
 
-await loadApplications();
+    button.textContent =
+      "Applied ✓";
 
-await loadFreelancerDashboard();
+
+    toast(
+      "Application sent successfully."
+    );
 
 
-}catch(error){
+    await loadApplications();
 
-button.disabled =
-false;
+    await loadFreelancerDashboard();
 
-button.textContent =
-"Apply Now";
 
-showError(error);
+  } catch (error) {
 
-toast(
-error.message ||
-"Application failed."
-);
+    button.disabled =
+      false;
 
-}
+    button.textContent =
+      "Apply Now";
+
+    showError(error);
+
+    toast(
+      error.message ||
+      "Application failed."
+    );
+
+  }
 
 }
 
 
 /* =========================================================
-   APPLICATIONS
+   MY APPLICATIONS
 ========================================================= */
 
-async function loadApplications(){
+async function loadApplications() {
 
-const list =
-$("applicationsList");
+  const list =
+    $("applicationsList");
 
-if(!list)
-return;
-
-
-list.innerHTML =
-'<div class="loading">Loading applications...</div>';
+  if (!list)
+    return;
 
 
-try{
-
-const snap =
-await getDocs(
-query(
-collection(db,"applications"),
-where(
-"freelancerId",
-"==",
-currentUser.uid
-)
-)
-);
+  list.innerHTML =
+    '<div class="loading">Loading applications...</div>';
 
 
-if(snap.empty){
+  try {
 
-list.innerHTML =
-`
-<div class="empty">
-You have not applied to any projects yet.
-</div>
-`;
-
-return;
-
-}
-
-
-list.innerHTML =
-snap.docs
-.map(
-d => {
-
-const a =
-d.data();
-
-const status =
-a.status ||
-"pending";
+    const snapshot =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "applications"
+          ),
+          where(
+            "freelancerId",
+            "==",
+            currentUser.uid
+          )
+        )
+      );
 
 
-return `
-<article class="card">
+    if (snapshot.empty) {
 
-<h3>
-✉ ${esc(
-a.jobTitle ||
-"Project"
-)}
-</h3>
+      list.innerHTML =
+        `
+          <div class="empty">
+            You have not applied to any projects yet.
+          </div>
+        `;
 
-<p>
-Client:
-${esc(
-a.clientName ||
-"Client"
-)}
-</p>
+      return;
 
-<div class="meta">
-
-<span class="pill ${status}">
-${esc(status)}
-</span>
-
-<span class="pill">
-💰 $${Number(a.budget || 0)}
-</span>
-
-</div>
-
-<small class="muted">
-Applied ${fmtDate(a.createdAt)}
-</small>
-
-${
-status === "accepted"
-?
-
-`
-<div class="card-actions">
-
-<button
-class="primary message-application"
-data-id="${d.id}"
-type="button"
->
-💬 Message Client
-</button>
-
-</div>
-`
-
-: ""
-
-}
-
-</article>
-`;
-
-}
-)
-.join("");
+    }
 
 
-list
-.querySelectorAll(
-".message-application"
-)
-.forEach(
-button =>
-button.addEventListener(
-"click",
-() =>
-openApplicationChat(
-button.dataset.id
-)
-)
-);
+    list.innerHTML =
+      snapshot.docs
+        .map(
+          document => {
+
+            const application =
+              document.data();
+
+            const status =
+              application.status ||
+              "pending";
 
 
-}catch(error){
+            return `
 
-showError(error);
+              <article class="card">
 
-}
+                <h3>
+                  ✉
+                  ${esc(
+                    application.jobTitle ||
+                    "Project"
+                  )}
+                </h3>
+
+                <p>
+                  Client:
+                  ${esc(
+                    application.clientName ||
+                    "Client"
+                  )}
+                </p>
+
+                <div class="meta">
+
+                  <span class="pill ${esc(status)}">
+                    ${esc(status)}
+                  </span>
+
+                  <span class="pill">
+                    💰
+                    $${Number(
+                      application.budget ||
+                      0
+                    )}
+                  </span>
+
+                </div>
+
+                <small class="muted">
+                  Applied
+                  ${fmtDate(
+                    application.createdAt
+                  )}
+                </small>
+
+                ${
+                  status === "accepted"
+                    ? `
+
+                      <div class="card-actions">
+
+                        <button
+                          class="primary message-application"
+                          data-id="${document.id}"
+                          type="button"
+                        >
+                          💬 Message Client
+                        </button>
+
+                      </div>
+
+                    `
+                    : ""
+                }
+
+              </article>
+
+            `;
+
+          }
+        )
+        .join("");
+
+
+    list
+      .querySelectorAll(
+        ".message-application"
+      )
+      .forEach(
+        button =>
+          button.addEventListener(
+            "click",
+            () =>
+              openApplicationChat(
+                button.dataset.id
+              )
+          )
+      );
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
 
 /* =========================================================
-   PROJECTS
+   MY PROJECTS
 ========================================================= */
 
-async function loadProjects(){
+async function loadProjects() {
 
-const list =
-$("projectsList");
+  const list =
+    $("projectsList");
 
-if(!list)
-return;
-
-
-try{
-
-const snap =
-await getDocs(
-query(
-collection(db,"projects"),
-where(
-"freelancerId",
-"==",
-currentUser.uid
-)
-)
-);
+  if (!list)
+    return;
 
 
-if(snap.empty){
+  try {
 
-list.innerHTML =
-`
-<div class="empty">
-No accepted projects yet.
-</div>
-`;
-
-return;
-
-}
-
-
-list.innerHTML =
-snap.docs
-.map(
-d => {
-
-const p =
-d.data();
-
-return `
-<article class="card">
-
-<h3>
-📁 ${esc(
-p.title ||
-"Project"
-)}
-</h3>
-
-<p>
-${esc(
-p.description ||
-"Accepted project"
-)}
-</p>
-
-<div class="meta">
-
-<span class="pill accepted">
-${esc(
-p.status ||
-"in_progress"
-)}
-</span>
-
-<span class="pill">
-💰 $${Number(
-p.budget ||
-0
-)}
-</span>
-
-<span class="pill">
-Client:
-${esc(
-p.clientName ||
-"Client"
-)}
-</span>
-
-</div>
-
-<div class="card-actions">
-
-<button
-class="primary project-chat"
-data-id="${d.id}"
-type="button"
->
-💬 Open Chat
-</button>
-
-</div>
-
-</article>
-`;
-
-}
-)
-.join("");
+    const snapshot =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "projects"
+          ),
+          where(
+            "freelancerId",
+            "==",
+            currentUser.uid
+          )
+        )
+      );
 
 
-list
-.querySelectorAll(
-".project-chat"
-)
-.forEach(
-button =>
-button.addEventListener(
-"click",
-() =>
-openProjectChat(
-button.dataset.id
-)
-)
-);
+    if (snapshot.empty) {
+
+      list.innerHTML =
+        `
+          <div class="empty">
+            No accepted projects yet.
+          </div>
+        `;
+
+      return;
+
+    }
 
 
-}catch(error){
+    list.innerHTML =
+      snapshot.docs
+        .map(
+          document => {
 
-showError(error);
+            const project =
+              document.data();
 
-}
+
+            return `
+
+              <article class="card">
+
+                <h3>
+                  📁
+                  ${esc(
+                    project.title ||
+                    "Project"
+                  )}
+                </h3>
+
+                <p>
+                  ${esc(
+                    project.description ||
+                    "Accepted project"
+                  )}
+                </p>
+
+                <div class="meta">
+
+                  <span class="pill accepted">
+                    ${esc(
+                      project.status ||
+                      "in_progress"
+                    )}
+                  </span>
+
+                  <span class="pill">
+                    💰
+                    $${Number(
+                      project.budget ||
+                      0
+                    )}
+                  </span>
+
+                  <span class="pill">
+                    Client:
+                    ${esc(
+                      project.clientName ||
+                      "Client"
+                    )}
+                  </span>
+
+                </div>
+
+                <div class="card-actions">
+
+                  <button
+                    class="primary project-chat"
+                    data-id="${document.id}"
+                    type="button"
+                  >
+                    💬 Open Chat
+                  </button>
+
+                </div>
+
+              </article>
+
+            `;
+
+          }
+        )
+        .join("");
+
+
+    list
+      .querySelectorAll(
+        ".project-chat"
+      )
+      .forEach(
+        button =>
+          button.addEventListener(
+            "click",
+            () =>
+              openProjectChat(
+                button.dataset.id
+              )
+          )
+      );
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
@@ -2167,362 +2460,409 @@ showError(error);
    CLIENT
 ========================================================= */
 
-async function initClient(){
+async function initClient() {
 
-await loadClientDashboard();
+  await loadClientDashboard();
 
-await loadClientProjects();
+  await loadClientProjects();
 
-await loadClientApplications();
+  await loadClientApplications();
 
-await loadConversations();
-
-}
-
-
-async function loadClientDashboard(){
-
-if(!$("clientStats"))
-return;
-
-
-try{
-
-const [
-projects,
-applications
-] =
-await Promise.all([
-
-getDocs(
-query(
-collection(db,"jobs"),
-where(
-"clientId",
-"==",
-currentUser.uid
-)
-)
-),
-
-getDocs(
-query(
-collection(db,"applications"),
-where(
-"clientId",
-"==",
-currentUser.uid
-)
-)
-)
-
-]);
-
-
-const accepted =
-applications.docs.filter(
-d =>
-d.data().status ===
-"accepted"
-).length;
-
-
-const open =
-projects.docs.filter(
-d =>
-d.data().status ===
-"open"
-).length;
-
-
-const budget =
-projects.docs.reduce(
-(sum,d) =>
-sum +
-Number(
-d.data().budget ||
-0
-),
-0
-);
-
-
-$("clientStats").innerHTML =
-[
-
-[
-"📁",
-"Total Projects",
-projects.size,
-"Posted projects"
-],
-
-[
-"◷",
-"Open Projects",
-open,
-"Accepting applications"
-],
-
-[
-"✓",
-"Accepted",
-accepted,
-"Freelancers selected"
-],
-
-[
-"💰",
-"Total Budget",
-"$" +
-budget.toLocaleString(),
-"Posted budgets"
-]
-
-]
-.map(
-x =>
-`
-<div class="stat">
-
-<div class="icon">
-${x[0]}
-</div>
-
-<h3>
-${x[2]}
-</h3>
-
-<p>
-${x[1]}
-</p>
-
-<em>
-${x[3]}
-</em>
-
-</div>
-`
-)
-.join("");
-
-
-$("clientActivity").innerHTML =
-projects.docs
-.slice(0,5)
-.map(
-d => {
-
-const x =
-d.data();
-
-return `
-<div class="activity-row">
-
-<div class="activity-icon">
-💼
-</div>
-
-<div>
-
-<strong>
-${esc(x.title || "Project")}
-</strong>
-
-<span>
-${esc(x.status || "open")}
-•
-$${Number(x.budget || 0)}
-•
-${esc(x.deadline || "—")}
-</span>
-
-</div>
-
-</div>
-`;
-
-}
-)
-.join("")
-||
-`
-<div class="empty">
-No projects yet.
-</div>
-`;
-
-
-$("clientRecentApplications").innerHTML =
-applications.docs
-.slice(0,5)
-.map(
-d => {
-
-const x =
-d.data();
-
-return `
-<div class="activity-row">
-
-<div class="activity-icon">
-👤
-</div>
-
-<div>
-
-<strong>
-${esc(
-x.freelancerName ||
-"Freelancer"
-)}
-</strong>
-
-<span>
-${esc(
-x.jobTitle ||
-"Project"
-)}
-•
-${esc(
-x.status ||
-"pending"
-)}
-</span>
-
-</div>
-
-</div>
-`;
-
-}
-)
-.join("")
-||
-`
-<div class="empty">
-No applications yet.
-</div>
-`;
-
-
-}catch(error){
-
-showError(error);
-
-}
+  await loadConversations();
 
 }
 
 
-async function loadClientProjects(){
+/* =========================================================
+   CLIENT DASHBOARD
+========================================================= */
 
-const list =
-$("clientProjects");
+async function loadClientDashboard() {
 
-if(!list)
-return;
-
-
-try{
-
-const snap =
-await getDocs(
-query(
-collection(db,"jobs"),
-where(
-"clientId",
-"==",
-currentUser.uid
-)
-)
-);
+  if (!$("clientStats"))
+    return;
 
 
-if(snap.empty){
+  try {
 
-list.innerHTML =
-`
-<div class="empty">
-No projects posted yet.
-</div>
-`;
+    const [
+      projectsSnapshot,
+      applicationsSnapshot
+    ] =
+      await Promise.all([
 
-return;
+        getDocs(
+          query(
+            collection(
+              db,
+              "jobs"
+            ),
+            where(
+              "clientId",
+              "==",
+              currentUser.uid
+            )
+          )
+        ),
+
+        getDocs(
+          query(
+            collection(
+              db,
+              "applications"
+            ),
+            where(
+              "clientId",
+              "==",
+              currentUser.uid
+            )
+          )
+        )
+
+      ]);
+
+
+    const accepted =
+      applicationsSnapshot.docs.filter(
+        document =>
+          document.data().status ===
+          "accepted"
+      ).length;
+
+
+    const open =
+      projectsSnapshot.docs.filter(
+        document =>
+          document.data().status ===
+          "open"
+      ).length;
+
+
+    const budget =
+      projectsSnapshot.docs.reduce(
+        (sum, document) =>
+          sum +
+          Number(
+            document.data().budget ||
+            0
+          ),
+        0
+      );
+
+
+    $("clientStats").innerHTML = [
+
+      [
+        "📁",
+        "Total Projects",
+        projectsSnapshot.size,
+        "Posted projects"
+      ],
+
+      [
+        "◷",
+        "Open Projects",
+        open,
+        "Accepting applications"
+      ],
+
+      [
+        "✓",
+        "Accepted",
+        accepted,
+        "Freelancers selected"
+      ],
+
+      [
+        "💰",
+        "Total Budget",
+        "$" +
+          budget.toLocaleString(),
+        "Posted budgets"
+      ]
+
+    ]
+      .map(
+        item => `
+
+          <div class="stat">
+
+            <div class="icon">
+              ${item[0]}
+            </div>
+
+            <h3>
+              ${item[2]}
+            </h3>
+
+            <p>
+              ${item[1]}
+            </p>
+
+            <em>
+              ${item[3]}
+            </em>
+
+          </div>
+
+        `
+      )
+      .join("");
+
+
+    if ($("clientActivity")) {
+
+      $("clientActivity").innerHTML =
+        projectsSnapshot.docs
+          .slice(0, 5)
+          .map(
+            document => {
+
+              const job =
+                document.data();
+
+              return `
+
+                <div class="activity-row">
+
+                  <div class="activity-icon">
+                    💼
+                  </div>
+
+                  <div>
+
+                    <strong>
+                      ${esc(
+                        job.title ||
+                        "Project"
+                      )}
+                    </strong>
+
+                    <span>
+                      ${esc(
+                        job.status ||
+                        "open"
+                      )}
+                      •
+                      $${Number(
+                        job.budget ||
+                        0
+                      )}
+                      •
+                      ${esc(
+                        job.deadline ||
+                        "—"
+                      )}
+                    </span>
+
+                  </div>
+
+                </div>
+
+              `;
+
+            }
+          )
+          .join("")
+          ||
+          `
+            <div class="empty">
+              No projects yet.
+            </div>
+          `;
+
+    }
+
+
+    if ($("clientRecentApplications")) {
+
+      $("clientRecentApplications").innerHTML =
+        applicationsSnapshot.docs
+          .slice(0, 5)
+          .map(
+            document => {
+
+              const application =
+                document.data();
+
+              return `
+
+                <div class="activity-row">
+
+                  <div class="activity-icon">
+                    👤
+                  </div>
+
+                  <div>
+
+                    <strong>
+                      ${esc(
+                        application.freelancerName ||
+                        "Freelancer"
+                      )}
+                    </strong>
+
+                    <span>
+                      ${esc(
+                        application.jobTitle ||
+                        "Project"
+                      )}
+                      •
+                      ${esc(
+                        application.status ||
+                        "pending"
+                      )}
+                    </span>
+
+                  </div>
+
+                </div>
+
+              `;
+
+            }
+          )
+          .join("")
+          ||
+          `
+            <div class="empty">
+              No applications yet.
+            </div>
+          `;
+
+    }
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
 
-list.innerHTML =
-snap.docs
-.map(
-d => {
+/* =========================================================
+   CLIENT PROJECTS
+========================================================= */
 
-const x =
-d.data();
+async function loadClientProjects() {
 
-return `
-<article class="card">
+  const list =
+    $("clientProjects");
 
-<h3>
-💼 ${esc(
-x.title ||
-"Project"
-)}
-</h3>
-
-<p>
-${esc(
-x.description ||
-""
-)}
-</p>
-
-<div class="meta">
-
-<span class="pill">
-${esc(
-x.status ||
-"open"
-)}
-</span>
-
-<span class="pill">
-💰 $${Number(
-x.budget ||
-0
-)}
-</span>
-
-<span class="pill">
-📅 ${esc(
-x.deadline ||
-"—"
-)}
-</span>
-
-</div>
-
-<small class="muted">
-${esc(
-x.category ||
-"General"
-)}
-</small>
-
-</article>
-`;
-
-}
-)
-.join("");
+  if (!list)
+    return;
 
 
-}catch(error){
+  try {
 
-showError(error);
+    const snapshot =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "jobs"
+          ),
+          where(
+            "clientId",
+            "==",
+            currentUser.uid
+          )
+        )
+      );
 
-}
+
+    if (snapshot.empty) {
+
+      list.innerHTML =
+        `
+          <div class="empty">
+            No projects posted yet.
+          </div>
+        `;
+
+      return;
+
+    }
+
+
+    list.innerHTML =
+      snapshot.docs
+        .map(
+          document => {
+
+            const job =
+              document.data();
+
+
+            return `
+
+              <article class="card">
+
+                <h3>
+                  💼
+                  ${esc(
+                    job.title ||
+                    "Project"
+                  )}
+                </h3>
+
+                <p>
+                  ${esc(
+                    job.description ||
+                    ""
+                  )}
+                </p>
+
+                <div class="meta">
+
+                  <span class="pill">
+                    ${esc(
+                      job.status ||
+                      "open"
+                    )}
+                  </span>
+
+                  <span class="pill">
+                    💰
+                    $${Number(
+                      job.budget ||
+                      0
+                    )}
+                  </span>
+
+                  <span class="pill">
+                    📅
+                    ${esc(
+                      job.deadline ||
+                      "—"
+                    )}
+                  </span>
+
+                </div>
+
+                <small class="muted">
+                  ${esc(
+                    job.category ||
+                    "General"
+                  )}
+                </small>
+
+              </article>
+
+            `;
+
+          }
+        )
+        .join("");
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
@@ -2531,219 +2871,228 @@ showError(error);
    CLIENT APPLICATIONS
 ========================================================= */
 
-async function loadClientApplications(){
+async function loadClientApplications() {
 
-const list =
-$("clientApplications");
+  const list =
+    $("clientApplications");
 
-if(!list)
-return;
-
-
-try{
-
-const snap =
-await getDocs(
-query(
-collection(db,"applications"),
-where(
-"clientId",
-"==",
-currentUser.uid
-)
-)
-);
+  if (!list)
+    return;
 
 
-if(snap.empty){
+  try {
 
-list.innerHTML =
-`
-<div class="empty">
-No freelancer applications yet.
-</div>
-`;
-
-return;
-
-}
-
-
-list.innerHTML =
-snap.docs
-.map(
-d => {
-
-const a =
-d.data();
-
-const status =
-a.status ||
-"pending";
+    const snapshot =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "applications"
+          ),
+          where(
+            "clientId",
+            "==",
+            currentUser.uid
+          )
+        )
+      );
 
 
-let buttons =
-"";
+    if (snapshot.empty) {
+
+      list.innerHTML =
+        `
+          <div class="empty">
+            No freelancer applications yet.
+          </div>
+        `;
+
+      return;
+
+    }
 
 
-if(status === "pending"){
+    list.innerHTML =
+      snapshot.docs
+        .map(
+          document => {
 
-buttons = `
+            const application =
+              document.data();
 
-<button
-class="primary accept-app"
-data-id="${d.id}"
-type="button"
->
-Accept ✅
-</button>
-
-<button
-class="secondary reject-app"
-data-id="${d.id}"
-type="button"
->
-Reject ❌
-</button>
-
-`;
-
-}
+            const status =
+              application.status ||
+              "pending";
 
 
-if(status === "accepted"){
-
-buttons = `
-
-<button
-class="primary chat-app"
-data-id="${d.id}"
-type="button"
->
-💬 Message Freelancer
-</button>
-
-`;
-
-}
+            let buttons = "";
 
 
-return `
-<article class="card">
+            if (
+              status ===
+              "pending"
+            ) {
 
-<h3>
-👤 ${esc(
-a.freelancerName ||
-"Freelancer"
-)}
-</h3>
+              buttons = `
 
-<p>
-Applied for:
-<b>
-${esc(
-a.jobTitle ||
-"Project"
-)}
-</b>
-</p>
+                <button
+                  class="primary accept-app"
+                  data-id="${document.id}"
+                  type="button"
+                >
+                  Accept ✅
+                </button>
 
-<div class="meta">
+                <button
+                  class="secondary reject-app"
+                  data-id="${document.id}"
+                  type="button"
+                >
+                  Reject ❌
+                </button>
 
-<span class="pill">
-${esc(status)}
-</span>
+              `;
 
-<span class="pill">
-💰 $${Number(
-a.budget ||
-0
-)}
-</span>
-
-</div>
-
-<small class="muted">
-
-${esc(
-a.freelancerEmail ||
-""
-)}
-
-•
-${fmtDate(
-a.createdAt
-)}
-
-</small>
-
-<div class="card-actions">
-${buttons}
-</div>
-
-</article>
-`;
-
-}
-)
-.join("");
+            }
 
 
-list
-.querySelectorAll(
-".accept-app"
-)
-.forEach(
-button =>
-button.addEventListener(
-"click",
-() =>
-updateApplicationStatus(
-button.dataset.id,
-"accepted"
-)
-)
-);
+            if (
+              status ===
+              "accepted"
+            ) {
+
+              buttons = `
+
+                <button
+                  class="primary chat-app"
+                  data-id="${document.id}"
+                  type="button"
+                >
+                  💬 Message Freelancer
+                </button>
+
+              `;
+
+            }
 
 
-list
-.querySelectorAll(
-".reject-app"
-)
-.forEach(
-button =>
-button.addEventListener(
-"click",
-() =>
-updateApplicationStatus(
-button.dataset.id,
-"rejected"
-)
-)
-);
+            return `
+
+              <article class="card">
+
+                <h3>
+                  👤
+                  ${esc(
+                    application.freelancerName ||
+                    "Freelancer"
+                  )}
+                </h3>
+
+                <p>
+                  Applied for:
+                  <b>
+                    ${esc(
+                      application.jobTitle ||
+                      "Project"
+                    )}
+                  </b>
+                </p>
+
+                <div class="meta">
+
+                  <span class="pill ${esc(status)}">
+                    ${esc(status)}
+                  </span>
+
+                  <span class="pill">
+                    💰
+                    $${Number(
+                      application.budget ||
+                      0
+                    )}
+                  </span>
+
+                </div>
+
+                <small class="muted">
+                  ${esc(
+                    application.freelancerEmail ||
+                    ""
+                  )}
+                  •
+                  ${fmtDate(
+                    application.createdAt
+                  )}
+                </small>
+
+                <div class="card-actions">
+                  ${buttons}
+                </div>
+
+              </article>
+
+            `;
+
+          }
+        )
+        .join("");
 
 
-list
-.querySelectorAll(
-".chat-app"
-)
-.forEach(
-button =>
-button.addEventListener(
-"click",
-() =>
-openApplicationChat(
-button.dataset.id
-)
-)
-);
+    list
+      .querySelectorAll(
+        ".accept-app"
+      )
+      .forEach(
+        button =>
+          button.addEventListener(
+            "click",
+            () =>
+              updateApplicationStatus(
+                button.dataset.id,
+                "accepted"
+              )
+          )
+      );
 
 
-}catch(error){
+    list
+      .querySelectorAll(
+        ".reject-app"
+      )
+      .forEach(
+        button =>
+          button.addEventListener(
+            "click",
+            () =>
+              updateApplicationStatus(
+                button.dataset.id,
+                "rejected"
+              )
+          )
+      );
 
-showError(error);
 
-}
+    list
+      .querySelectorAll(
+        ".chat-app"
+      )
+      .forEach(
+        button =>
+          button.addEventListener(
+            "click",
+            () =>
+              openApplicationChat(
+                button.dataset.id
+              )
+          )
+      );
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
@@ -2753,201 +3102,196 @@ showError(error);
 ========================================================= */
 
 async function updateApplicationStatus(
-appId,
-status
-){
+  applicationId,
+  status
+) {
 
-try{
+  try {
 
-const appSnap =
-await getDoc(
-doc(
-db,
-"applications",
-appId
-)
-);
-
-
-if(!appSnap.exists())
-throw new Error(
-"Application not found."
-);
+    const snapshot =
+      await getDoc(
+        doc(
+          db,
+          "applications",
+          applicationId
+        )
+      );
 
 
-const application =
-appSnap.data();
+    if (!snapshot.exists())
+      throw new Error(
+        "Application not found."
+      );
 
 
-if(
-application.clientId !==
-currentUser.uid &&
-!isOwner()
-){
-
-throw new Error(
-"You cannot change this application."
-);
-
-}
+    const application =
+      snapshot.data();
 
 
-await updateDoc(
-doc(
-db,
-"applications",
-appId
-),
-{
+    if (
+      application.clientId !==
+        currentUser.uid &&
+      !isOwner()
+    ) {
 
-status,
+      throw new Error(
+        "You cannot change this application."
+      );
 
-updatedAt:
-serverTimestamp()
-
-}
-);
+    }
 
 
-if(status === "accepted"){
-
-await updateDoc(
-doc(
-db,
-"jobs",
-application.jobId
-),
-{
-
-status:
-"assigned",
-
-assignedFreelancerId:
-application.freelancerId,
-
-assignedFreelancerName:
-application.freelancerName ||
-"Freelancer"
-
-}
-);
+    await updateDoc(
+      doc(
+        db,
+        "applications",
+        applicationId
+      ),
+      {
+        status,
+        updatedAt:
+          serverTimestamp()
+      }
+    );
 
 
-const existing =
-await getDocs(
-query(
-collection(
-db,
-"projects"
-),
+    if (
+      status ===
+      "accepted"
+    ) {
 
-where(
-"jobId",
-"==",
-application.jobId
-),
+      await updateDoc(
+        doc(
+          db,
+          "jobs",
+          application.jobId
+        ),
+        {
+          status: "assigned",
 
-where(
-"freelancerId",
-"==",
-application.freelancerId
-)
-)
-);
+          assignedFreelancerId:
+            application.freelancerId,
 
-
-if(existing.empty){
-
-await addDoc(
-collection(
-db,
-"projects"
-),
-{
-
-jobId:
-application.jobId,
-
-title:
-application.jobTitle ||
-"Project",
-
-budget:
-Number(
-application.budget ||
-0
-),
-
-description:
-"Accepted project",
-
-clientId:
-application.clientId,
-
-clientName:
-userData.name ||
-"Client",
-
-clientEmail:
-currentUser.email ||
-"",
-
-freelancerId:
-application.freelancerId,
-
-freelancerName:
-application.freelancerName ||
-"Freelancer",
-
-freelancerEmail:
-application.freelancerEmail ||
-"",
-
-status:
-"in_progress",
-
-createdAt:
-serverTimestamp()
-
-}
-);
-
-}
+          assignedFreelancerName:
+            application.freelancerName ||
+            "Freelancer"
+        }
+      );
 
 
-toast(
-"Freelancer accepted. Project is now in progress."
-);
+      const existing =
+        await getDocs(
+          query(
+            collection(
+              db,
+              "projects"
+            ),
+            where(
+              "jobId",
+              "==",
+              application.jobId
+            ),
+            where(
+              "freelancerId",
+              "==",
+              application.freelancerId
+            )
+          )
+        );
 
 
-}else{
+      if (existing.empty) {
 
-toast(
-"Application rejected."
-);
+        await addDoc(
+          collection(
+            db,
+            "projects"
+          ),
+          {
 
-}
+            jobId:
+              application.jobId,
+
+            title:
+              application.jobTitle ||
+              "Project",
+
+            budget:
+              Number(
+                application.budget ||
+                0
+              ),
+
+            description:
+              "Accepted project",
+
+            clientId:
+              application.clientId,
+
+            clientName:
+              userData.name ||
+              "Client",
+
+            clientEmail:
+              currentUser.email ||
+              "",
+
+            freelancerId:
+              application.freelancerId,
+
+            freelancerName:
+              application.freelancerName ||
+              "Freelancer",
+
+            freelancerEmail:
+              application.freelancerEmail ||
+              "",
+
+            status:
+              "in_progress",
+
+            createdAt:
+              serverTimestamp()
+
+          }
+        );
+
+      }
 
 
-await loadClientApplications();
-
-await loadClientProjects();
-
-await loadClientDashboard();
-
-await loadConversations();
+      toast(
+        "Freelancer accepted. Project is now in progress."
+      );
 
 
-}catch(error){
+    } else {
 
-showError(error);
+      toast(
+        "Application rejected."
+      );
 
-toast(
-error.message ||
-"Could not update application."
-);
+    }
 
-}
+
+    await loadClientApplications();
+
+    await loadClientProjects();
+
+    await loadClientDashboard();
+
+    await loadConversations();
+
+
+  } catch (error) {
+
+    showError(error);
+
+    toast(
+      error.message ||
+      "Could not update application."
+    );
+
+  }
 
 }
 
@@ -2956,394 +3300,424 @@ error.message ||
    MESSAGES
 ========================================================= */
 
-async function loadConversations(){
+async function loadConversations() {
 
-const list =
-$("conversationsList");
+  const list =
+    $("conversationsList");
 
-if(!list)
-return;
-
-
-list.innerHTML =
-`
-<div class="empty">
-Loading conversations...
-</div>
-`;
+  if (!list)
+    return;
 
 
-try{
-
-const field =
-role() === "client"
-? "clientId"
-: "freelancerId";
-
-
-const snap =
-await getDocs(
-query(
-collection(db,"projects"),
-where(
-field,
-"==",
-currentUser.uid
-)
-)
-);
+  list.innerHTML =
+    `
+      <div class="empty">
+        Loading conversations...
+      </div>
+    `;
 
 
-if(snap.empty){
+  try {
 
-list.innerHTML =
-`
-<div class="empty">
-No accepted projects yet.
-</div>
-`;
+    const field =
+      role() === "client"
+        ? "clientId"
+        : "freelancerId";
 
-return;
+
+    const snapshot =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "projects"
+          ),
+          where(
+            field,
+            "==",
+            currentUser.uid
+          )
+        )
+      );
+
+
+    if (snapshot.empty) {
+
+      list.innerHTML =
+        `
+          <div class="empty">
+            No accepted projects yet.
+          </div>
+        `;
+
+      return;
+
+    }
+
+
+    list.innerHTML =
+      snapshot.docs
+        .map(
+          document => {
+
+            const project =
+              document.data();
+
+
+            const other =
+              role() === "client"
+                ? (
+                    project.freelancerName ||
+                    "Freelancer"
+                  )
+                : (
+                    project.clientName ||
+                    "Client"
+                  );
+
+
+            return `
+
+              <div
+                class="conversation"
+                data-id="${document.id}"
+              >
+
+                <strong>
+                  ${esc(
+                    project.title ||
+                    "Project"
+                  )}
+                </strong>
+
+                <span>
+                  Chat with
+                  ${esc(other)}
+                </span>
+
+              </div>
+
+            `;
+
+          }
+        )
+        .join("");
+
+
+    list
+      .querySelectorAll(
+        ".conversation"
+      )
+      .forEach(
+        conversation =>
+          conversation.addEventListener(
+            "click",
+            () =>
+              openProjectChat(
+                conversation.dataset.id
+              )
+          )
+      );
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
 
-list.innerHTML =
-snap.docs
-.map(
-d => {
-
-const p =
-d.data();
-
-const other =
-role() === "client"
-? p.freelancerName ||
-"Freelancer"
-: p.clientName ||
-"Client";
-
-
-return `
-<div
-class="conversation"
-data-id="${d.id}"
->
-
-<strong>
-${esc(
-p.title ||
-"Project"
-)}
-</strong>
-
-<span>
-Chat with
-${esc(other)}
-</span>
-
-</div>
-`;
-
-}
-)
-.join("");
-
-
-list
-.querySelectorAll(
-".conversation"
-)
-.forEach(
-conversation =>
-conversation.addEventListener(
-"click",
-() =>
-openProjectChat(
-conversation.dataset.id
-)
-)
-);
-
-
-}catch(error){
-
-showError(error);
-
-}
-
-}
-
+/* =========================================================
+   OPEN PROJECT CHAT
+========================================================= */
 
 async function openProjectChat(
-projectId
-){
+  projectId
+) {
 
-const snap =
-await getDoc(
-doc(
-db,
-"projects",
-projectId
-)
-);
-
-
-if(!snap.exists())
-return;
+  const snapshot =
+    await getDoc(
+      doc(
+        db,
+        "projects",
+        projectId
+      )
+    );
 
 
-const project =
-snap.data();
+  if (!snapshot.exists())
+    return;
 
 
-currentConversation = {
-
-id:
-projectId,
-
-...project
-
-};
+  const project =
+    snapshot.data();
 
 
-document
-.querySelectorAll(
-".conversation"
-)
-.forEach(
-conversation =>
-conversation.classList.toggle(
-"active",
-conversation.dataset.id ===
-projectId
-)
-);
+  currentConversation = {
+    id: projectId,
+    ...project
+  };
 
 
-if($("chatTitle"))
-$("chatTitle").textContent =
-project.title ||
-"Project";
+  document
+    .querySelectorAll(
+      ".conversation"
+    )
+    .forEach(
+      conversation =>
+        conversation.classList.toggle(
+          "active",
+          conversation.dataset.id ===
+            projectId
+        )
+    );
 
 
-if($("chatSubtitle"))
-$("chatSubtitle").textContent =
-role() === "client"
-? `Freelancer: ${
-project.freelancerName ||
-"Freelancer"
-}`
-: `Client: ${
-project.clientName ||
-"Client"
-}`;
+  if ($("chatTitle"))
+    $("chatTitle").textContent =
+      project.title ||
+      "Project";
 
 
-if($("composer"))
-$("composer").style.display =
-"flex";
+  if ($("chatSubtitle"))
+    $("chatSubtitle").textContent =
+      role() === "client"
+        ? `Freelancer: ${
+            project.freelancerName ||
+            "Freelancer"
+          }`
+        : `Client: ${
+            project.clientName ||
+            "Client"
+          }`;
 
 
-await loadMessages(
-projectId
-);
+  if ($("composer"))
+    $("composer").style.display =
+      "flex";
+
+
+  await loadMessages(
+    projectId
+  );
 
 }
 
+
+/* =========================================================
+   OPEN APPLICATION CHAT
+========================================================= */
 
 async function openApplicationChat(
-applicationId
-){
+  applicationId
+) {
 
-const snap =
-await getDoc(
-doc(
-db,
-"applications",
-applicationId
-)
-);
-
-
-if(!snap.exists())
-return;
+  const snapshot =
+    await getDoc(
+      doc(
+        db,
+        "applications",
+        applicationId
+      )
+    );
 
 
-const application =
-snap.data();
+  if (!snapshot.exists())
+    return;
 
 
-const projects =
-await getDocs(
-query(
-collection(db,"projects"),
-
-where(
-"jobId",
-"==",
-application.jobId
-),
-
-where(
-"freelancerId",
-"==",
-application.freelancerId
-)
-)
-);
+  const application =
+    snapshot.data();
 
 
-if(projects.empty){
+  const projects =
+    await getDocs(
+      query(
+        collection(
+          db,
+          "projects"
+        ),
+        where(
+          "jobId",
+          "==",
+          application.jobId
+        ),
+        where(
+          "freelancerId",
+          "==",
+          application.freelancerId
+        )
+      )
+    );
 
-toast(
-"Chat becomes available after the project is accepted."
-);
 
-return;
+  if (projects.empty) {
+
+    toast(
+      "Chat becomes available after the project is accepted."
+    );
+
+    return;
+
+  }
+
+
+  await go(
+    "messagesPage",
+    "Messages"
+  );
+
+
+  await openProjectChat(
+    projects.docs[0].id
+  );
 
 }
 
 
-await go(
-"messagesPage",
-"Messages"
-);
-
-
-await openProjectChat(
-projects.docs[0].id
-);
-
-}
-
+/* =========================================================
+   LOAD MESSAGES
+========================================================= */
 
 async function loadMessages(
-projectId
-){
+  projectId
+) {
 
-const list =
-$("messageList");
+  const list =
+    $("messageList");
 
-if(!list)
-return;
-
-
-try{
-
-const snap =
-await getDocs(
-query(
-collection(db,"messages"),
-where(
-"projectId",
-"==",
-projectId
-)
-)
-);
+  if (!list)
+    return;
 
 
-if(snap.empty){
-
-list.innerHTML =
-`
-<div class="empty">
-No messages yet. Start the conversation.
-</div>
-`;
-
-return;
-
-}
+  list.innerHTML =
+    `
+      <div class="loading">
+        Loading messages...
+      </div>
+    `;
 
 
-const docs =
-[
-...snap.docs
-]
-.sort(
-(a,b) =>
-(
-a.data()
-.createdAt
-?.toMillis?.() ||
-0
-)
--
-(
-b.data()
-.createdAt
-?.toMillis?.() ||
-0
-)
-);
+  try {
+
+    const snapshot =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "messages"
+          ),
+          where(
+            "projectId",
+            "==",
+            projectId
+          )
+        )
+      );
 
 
-list.innerHTML =
-docs
-.map(
-d => {
+    if (snapshot.empty) {
 
-const m =
-d.data();
+      list.innerHTML =
+        `
+          <div class="empty">
+            No messages yet. Start the conversation.
+          </div>
+        `;
 
-const mine =
-m.senderId ===
-currentUser.uid;
+      return;
 
-
-return `
-<div
-class="bubble ${
-mine
-? "mine"
-: ""
-}"
->
-
-<div>
-${esc(
-m.text ||
-""
-)}
-</div>
-
-<small>
-
-${
-mine
-? "You"
-: esc(
-m.senderName ||
-"Member"
-)
-}
-
-•
-${fmtDate(
-m.createdAt
-)}
-
-</small>
-
-</div>
-`;
-
-}
-)
-.join("");
+    }
 
 
-list.scrollTop =
-list.scrollHeight;
+    const messages =
+      [...snapshot.docs].sort(
+        (a, b) => {
+
+          const first =
+            a.data()
+              .createdAt
+              ?.toMillis?.() ||
+            0;
+
+          const second =
+            b.data()
+              .createdAt
+              ?.toMillis?.() ||
+            0;
+
+          return first - second;
+
+        }
+      );
 
 
-}catch(error){
+    list.innerHTML =
+      messages
+        .map(
+          document => {
 
-showError(error);
+            const message =
+              document.data();
 
-}
+
+            const mine =
+              message.senderId ===
+              currentUser.uid;
+
+
+            return `
+
+              <div
+                class="bubble ${
+                  mine
+                    ? "mine"
+                    : ""
+                }"
+              >
+
+                <div>
+                  ${esc(
+                    message.text ||
+                    ""
+                  )}
+                </div>
+
+                <small>
+                  ${
+                    mine
+                      ? "You"
+                      : esc(
+                          message.senderName ||
+                          "Member"
+                        )
+                  }
+                  •
+                  ${fmtDate(
+                    message.createdAt
+                  )}
+                </small>
+
+              </div>
+
+            `;
+
+          }
+        )
+        .join("");
+
+
+    list.scrollTop =
+      list.scrollHeight;
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
@@ -3353,130 +3727,135 @@ showError(error);
 ========================================================= */
 
 $("sendMessage")?.addEventListener(
-"click",
-async () => {
+  "click",
+  async () => {
 
-if(!currentConversation){
+    if (!currentConversation) {
 
-toast(
-"Select a project first."
-);
+      toast(
+        "Select a project first."
+      );
 
-return;
+      return;
 
-}
-
-
-const input =
-$("messageInput");
-
-const text =
-input.value.trim();
+    }
 
 
-if(!text)
-return;
+    const input =
+      $("messageInput");
+
+    if (!input)
+      return;
 
 
-const project =
-currentConversation;
+    const text =
+      input.value.trim();
 
 
-try{
-
-$("sendMessage").disabled =
-true;
+    if (!text)
+      return;
 
 
-const receiverId =
-role() === "client"
-? project.freelancerId
-: project.clientId;
+    const project =
+      currentConversation;
 
 
-await addDoc(
-collection(
-db,
-"messages"
-),
-{
-
-projectId:
-project.id,
-
-jobId:
-project.jobId ||
-"",
-
-senderId:
-currentUser.uid,
-
-senderName:
-userData.name ||
-"Member",
-
-senderEmail:
-currentUser.email ||
-"",
-
-receiverId:
-receiverId ||
-"",
-
-text,
-
-createdAt:
-serverTimestamp()
-
-}
-);
+    const receiverId =
+      role() === "client"
+        ? project.freelancerId
+        : project.clientId;
 
 
-input.value =
-"";
+    try {
+
+      $("sendMessage").disabled =
+        true;
 
 
-await loadMessages(
-project.id
-);
+      await addDoc(
+        collection(
+          db,
+          "messages"
+        ),
+        {
+
+          projectId:
+            project.id,
+
+          jobId:
+            project.jobId ||
+            "",
+
+          senderId:
+            currentUser.uid,
+
+          senderName:
+            userData.name ||
+            "Member",
+
+          senderEmail:
+            currentUser.email ||
+            "",
+
+          receiverId:
+            receiverId ||
+            "",
+
+          text,
+
+          createdAt:
+            serverTimestamp()
+
+        }
+      );
 
 
-}catch(error){
-
-showError(error);
-
-toast(
-"Message could not be sent."
-);
+      input.value =
+        "";
 
 
-}finally{
+      await loadMessages(
+        project.id
+      );
 
-$("sendMessage").disabled =
-false;
 
-}
+    } catch (error) {
 
-}
+      showError(error);
+
+      toast(
+        "Message could not be sent."
+      );
+
+
+    } finally {
+
+      $("sendMessage").disabled =
+        false;
+
+    }
+
+  }
 );
 
 
 $("messageInput")?.addEventListener(
-"keydown",
-event => {
+  "keydown",
+  event => {
 
-if(
-event.key === "Enter" &&
-!event.shiftKey
-){
+    if (
+      event.key ===
+        "Enter" &&
+      !event.shiftKey
+    ) {
 
-event.preventDefault();
+      event.preventDefault();
 
-$("sendMessage")?.click();
+      $("sendMessage")?.click();
 
-}
+    }
 
-}
+  }
 );
 
 
@@ -3484,163 +3863,176 @@ $("sendMessage")?.click();
    POST PROJECT
 ========================================================= */
 
-async function initPost(){
+async function initPost() {
 
-const form =
-$("postForm");
+  const form =
+    $("postForm");
 
-if(!form)
-return;
-
-
-form.addEventListener(
-"submit",
-async event => {
-
-event.preventDefault();
+  if (!form)
+    return;
 
 
-const button =
-$("postBtn");
+  if (
+    role() !== "client" &&
+    !isOwner()
+  ) {
+
+    location.href =
+      "index.html";
+
+    return;
+
+  }
 
 
-try{
+  form.addEventListener(
+    "submit",
+    async event => {
 
-button.disabled =
-true;
-
-button.textContent =
-"Publishing...";
+      event.preventDefault();
 
 
-const title =
-$("postTitle")
-.value
-.trim();
+      const button =
+        $("postBtn");
 
 
-const category =
-$("postCategory")
-.value;
+      try {
+
+        button.disabled =
+          true;
+
+        button.textContent =
+          "Publishing...";
 
 
-const description =
-$("postDescription")
-.value
-.trim();
+        const title =
+          $("postTitle")
+            .value
+            .trim();
 
 
-const budget =
-Number(
-$("postBudget")
-.value
-);
+        const category =
+          $("postCategory")
+            .value;
 
 
-const deadline =
-$("postDeadline")
-.value;
+        const description =
+          $("postDescription")
+            .value
+            .trim();
 
 
-if(
-!title ||
-!category ||
-!description ||
-!budget ||
-!deadline
-){
-
-throw new Error(
-"Please complete every field."
-);
-
-}
+        const budget =
+          Number(
+            $("postBudget")
+              .value
+          );
 
 
-await addDoc(
-collection(
-db,
-"jobs"
-),
-{
-
-title,
-
-category,
-
-description,
-
-budget,
-
-deadline,
-
-status:
-"open",
-
-clientId:
-currentUser.uid,
-
-clientEmail:
-currentUser.email ||
-"",
-
-clientName:
-userData.name ||
-"Client",
-
-createdAt:
-serverTimestamp()
-
-}
-);
+        const deadline =
+          $("postDeadline")
+            .value;
 
 
-msg(
-"postMessage",
-"Project published successfully!",
-true
-);
+        if (
+          !title ||
+          !category ||
+          !description ||
+          !budget ||
+          !deadline
+        ) {
+
+          throw new Error(
+            "Please complete every field."
+          );
+
+        }
 
 
-form.reset();
+        await addDoc(
+          collection(
+            db,
+            "jobs"
+          ),
+          {
+
+            title,
+
+            category,
+
+            description,
+
+            budget,
+
+            deadline,
+
+            status:
+              "open",
+
+            clientId:
+              currentUser.uid,
+
+            clientEmail:
+              currentUser.email ||
+              "",
+
+            clientName:
+              userData.name ||
+              "Client",
+
+            createdAt:
+              serverTimestamp()
+
+          }
+        );
 
 
-toast(
-"Project published."
-);
+        msg(
+          "postMessage",
+          "Project published successfully!",
+          true
+        );
 
 
-setTimeout(
-() =>
-location.href =
-"client-dashboard.html",
-700
-);
+        form.reset();
 
 
-}catch(error){
-
-showError(error);
-
-msg(
-"postMessage",
-error.message ||
-"Could not publish project."
-);
+        toast(
+          "Project published."
+        );
 
 
-}finally{
+        setTimeout(
+          () =>
+            location.href =
+              "client-dashboard.html",
+          700
+        );
 
-button.disabled =
-false;
 
-button.textContent =
-"🚀 Publish Project";
+      } catch (error) {
 
-}
+        showError(error);
 
-}
-);
+        msg(
+          "postMessage",
+          error.message ||
+          "Could not publish project."
+        );
+
+
+      } finally {
+
+        button.disabled =
+          false;
+
+        button.textContent =
+          "🚀 Publish Project";
+
+      }
+
+    }
+  );
 
 }
 
@@ -3650,204 +4042,551 @@ button.textContent =
 ========================================================= */
 
 $("settingsForm")?.addEventListener(
-"submit",
-async event => {
+  "submit",
+  async event => {
 
-event.preventDefault();
-
-
-try{
-
-const name =
-$("settingsName")
-.value
-.trim();
+    event.preventDefault();
 
 
-const skills =
-$("settingsSkills")
-.value
-.trim();
+    try {
+
+      const name =
+        $("settingsName")
+          .value
+          .trim();
 
 
-await updateDoc(
-doc(
-db,
-"users",
-currentUser.uid
-),
-{
-
-name,
-
-skills,
-
-updatedAt:
-serverTimestamp()
-
-}
-);
+      const skills =
+        $("settingsSkills")
+          .value
+          .trim();
 
 
-userData.name =
-name;
+      await updateDoc(
+        doc(
+          db,
+          "users",
+          currentUser.uid
+        ),
+        {
 
-userData.skills =
-skills;
+          name,
 
+          skills,
 
-msg(
-"settingsMessage",
-"Saved successfully.",
-true
-);
+          updatedAt:
+            serverTimestamp()
 
-
-toast(
-"Profile updated."
-);
-
-
-await loadIdentity();
+        }
+      );
 
 
-}catch(error){
+      userData.name =
+        name;
 
-showError(error);
+      userData.skills =
+        skills;
 
-msg(
-"settingsMessage",
-error.message ||
-"Could not save."
-);
 
-}
+      msg(
+        "settingsMessage",
+        "Saved successfully.",
+        true
+      );
 
-}
+
+      toast(
+        "Profile updated."
+      );
+
+
+      await loadIdentity();
+
+
+    } catch (error) {
+
+      showError(error);
+
+      msg(
+        "settingsMessage",
+        error.message ||
+        "Could not save."
+      );
+
+    }
+
+  }
 );
 
 
 /* =========================================================
    PROFILE PHOTO
+   NO FIREBASE STORAGE REQUIRED
+   SAVES COMPRESSED PHOTO IN FIRESTORE
 ========================================================= */
 
-$("saveAvatarBtn")?.addEventListener(
-"click",
-async () => {
+function compressImage(file) {
 
-const file =
-$("avatarInput")
-?.files
-?.[0];
+  return new Promise(
+    (resolve, reject) => {
+
+      if (
+        !file ||
+        !file.type.startsWith(
+          "image/"
+        )
+      ) {
+
+        reject(
+          new Error(
+            "Please select an image file."
+          )
+        );
+
+        return;
+
+      }
 
 
-if(!file){
+      if (
+        file.size >
+        2 * 1024 * 1024
+      ) {
 
-msg(
-"avatarMessage",
-"Choose an image first."
-);
+        reject(
+          new Error(
+            "Image must be 2 MB or smaller."
+          )
+        );
 
-return;
+        return;
+
+      }
+
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload =
+        () => {
+
+          const image =
+            new Image();
+
+
+          image.onload =
+            () => {
+
+              const max =
+                700;
+
+
+              let width =
+                image.width;
+
+              let height =
+                image.height;
+
+
+              if (
+                width >
+                max
+              ) {
+
+                height =
+                  Math.round(
+                    height *
+                    max /
+                    width
+                  );
+
+                width =
+                  max;
+
+              }
+
+
+              if (
+                height >
+                max
+              ) {
+
+                width =
+                  Math.round(
+                    width *
+                    max /
+                    height
+                  );
+
+                height =
+                  max;
+
+              }
+
+
+              const canvas =
+                document.createElement(
+                  "canvas"
+                );
+
+
+              canvas.width =
+                width;
+
+              canvas.height =
+                height;
+
+
+              const context =
+                canvas.getContext(
+                  "2d"
+                );
+
+
+              context.drawImage(
+                image,
+                0,
+                0,
+                width,
+                height
+              );
+
+
+              resolve(
+                canvas.toDataURL(
+                  "image/jpeg",
+                  0.68
+                )
+              );
+
+            };
+
+
+          image.onerror =
+            () =>
+              reject(
+                new Error(
+                  "Could not read image."
+                )
+              );
+
+
+          image.src =
+            reader.result;
+
+        };
+
+
+      reader.onerror =
+        () =>
+          reject(
+            new Error(
+              "Could not read image."
+            )
+          );
+
+
+      reader.readAsDataURL(
+        file
+      );
+
+    }
+  );
 
 }
 
 
-if(
-file.size >
-5 * 1024 * 1024
-){
+/* =========================================================
+   PROFILE PHOTO SELECT
+========================================================= */
 
-msg(
-"avatarMessage",
-"Image must be 5 MB or smaller."
+$("avatarInput")?.addEventListener(
+  "change",
+  async event => {
+
+    const file =
+      event.target.files?.[0];
+
+
+    if (!file)
+      return;
+
+
+    try {
+
+      msg(
+        "avatarMessage",
+        "Preparing photo..."
+      );
+
+
+      const photoData =
+        await compressImage(
+          file
+        );
+
+
+      await updateDoc(
+        doc(
+          db,
+          "users",
+          currentUser.uid
+        ),
+        {
+
+          photoData,
+
+          updatedAt:
+            serverTimestamp()
+
+        }
+      );
+
+
+      userData.photoData =
+        photoData;
+
+
+      await loadIdentity();
+
+
+      msg(
+        "avatarMessage",
+        "Profile photo updated.",
+        true
+      );
+
+
+      toast(
+        "Profile photo updated."
+      );
+
+
+    } catch (error) {
+
+      showError(error);
+
+      msg(
+        "avatarMessage",
+        error.message ||
+        "Could not update photo."
+      );
+
+
+    } finally {
+
+      event.target.value =
+        "";
+
+    }
+
+  }
 );
 
-return;
 
-}
+/* =========================================================
+   REMOVE PROFILE PHOTO
+========================================================= */
+
+$("removeAvatarBtn")?.addEventListener(
+  "click",
+  async () => {
+
+    try {
+
+      await updateDoc(
+        doc(
+          db,
+          "users",
+          currentUser.uid
+        ),
+        {
+
+          photoData: "",
+
+          updatedAt:
+            serverTimestamp()
+
+        }
+      );
 
 
-try{
-
-$("saveAvatarBtn").disabled =
-true;
+      userData.photoData =
+        "";
 
 
-const storageRef =
-ref(
-storage,
-`avatars/${currentUser.uid}`
+      await loadIdentity();
+
+
+      msg(
+        "avatarMessage",
+        "Profile photo removed.",
+        true
+      );
+
+
+      toast(
+        "Profile photo removed."
+      );
+
+
+    } catch (error) {
+
+      showError(error);
+
+    }
+
+  }
 );
 
 
-await uploadBytes(
-storageRef,
-file,
-{
-contentType:
-file.type
-}
-);
+/* =========================================================
+   FULL PROFILE SAVE
+========================================================= */
+
+$("profileForm")?.addEventListener(
+  "submit",
+  async event => {
+
+    event.preventDefault();
 
 
-const url =
-await getDownloadURL(
-storageRef
-);
+    const button =
+      $("saveProfileBtn");
 
 
-await updateDoc(
-doc(
-db,
-"users",
-currentUser.uid
-),
-{
+    try {
 
-photoURL:
-url,
+      if (button) {
 
-updatedAt:
-serverTimestamp()
+        button.disabled =
+          true;
 
-}
-);
+        button.textContent =
+          "Saving...";
+
+      }
 
 
-userData.photoURL =
-url;
+      const name =
+        $("profileEditName")
+          ?.value
+          .trim() ||
+        userData.name ||
+        "Member";
 
 
-await loadIdentity();
+      const title =
+        $("profileTitleInput")
+          ?.value
+          .trim() ||
+        (
+          role() === "client"
+            ? "Professional Client"
+            : "Professional Freelancer"
+        );
 
 
-msg(
-"avatarMessage",
-"Profile photo saved.",
-true
-);
+      const bio =
+        $("profileBioInput")
+          ?.value
+          .trim() ||
+        "";
 
 
-}catch(error){
-
-showError(error);
-
-msg(
-"avatarMessage",
-error.message ||
-"Could not save photo."
-);
+      const skills =
+        $("profileSkillsEdit")
+          ?.value
+          .trim() ||
+        "";
 
 
-}finally{
+      if (!name)
+        throw new Error(
+          "Please enter your name."
+        );
 
-$("saveAvatarBtn").disabled =
-false;
 
-}
+      await updateDoc(
+        doc(
+          db,
+          "users",
+          currentUser.uid
+        ),
+        {
 
-}
+          name,
+
+          title,
+
+          bio,
+
+          skills,
+
+          updatedAt:
+            serverTimestamp()
+
+        }
+      );
+
+
+      userData = {
+
+        ...userData,
+
+        name,
+
+        title,
+
+        bio,
+
+        skills
+
+      };
+
+
+      await loadIdentity();
+
+
+      msg(
+        "profileMessage",
+        "Profile saved successfully.",
+        true
+      );
+
+
+      toast(
+        "Profile saved successfully."
+      );
+
+
+    } catch (error) {
+
+      showError(error);
+
+      msg(
+        "profileMessage",
+        error.message ||
+        "Could not save profile."
+      );
+
+
+    } finally {
+
+      if (button) {
+
+        button.disabled =
+          false;
+
+        button.textContent =
+          "💾 Save Profile";
+
+      }
+
+    }
+
+  }
 );
 
 
@@ -3855,123 +4594,124 @@ false;
    OWNER PANEL
 ========================================================= */
 
-async function loadOwnerStats(){
+async function loadOwnerStats() {
 
-const box =
-$("ownerStats");
-
-if(
-!box ||
-!isOwner()
-)
-return;
+  const box =
+    $("ownerStats");
 
 
-try{
-
-const [
-users,
-jobs,
-applications,
-projects
-] =
-await Promise.all([
-
-getDocs(
-collection(
-db,
-"users"
-)
-),
-
-getDocs(
-collection(
-db,
-"jobs"
-)
-),
-
-getDocs(
-collection(
-db,
-"applications"
-)
-),
-
-getDocs(
-collection(
-db,
-"projects"
-)
-)
-
-]);
+  if (
+    !box ||
+    !isOwner()
+  )
+    return;
 
 
-box.innerHTML =
-[
+  try {
 
-[
-"👥",
-"Users",
-users.size,
-"Registered accounts"
-],
+    const [
+      users,
+      jobs,
+      applications,
+      projects
+    ] =
+      await Promise.all([
 
-[
-"💼",
-"Projects",
-jobs.size,
-"Posted projects"
-],
+        getDocs(
+          collection(
+            db,
+            "users"
+          )
+        ),
 
-[
-"✉",
-"Applications",
-applications.size,
-"All applications"
-],
+        getDocs(
+          collection(
+            db,
+            "jobs"
+          )
+        ),
 
-[
-"✓",
-"Projects in Work",
-projects.size,
-"Accepted projects"
-]
+        getDocs(
+          collection(
+            db,
+            "applications"
+          )
+        ),
 
-]
-.map(
-x =>
-`
-<div class="stat">
+        getDocs(
+          collection(
+            db,
+            "projects"
+          )
+        )
 
-<div class="icon">
-${x[0]}
-</div>
-
-<h3>
-${x[2]}
-</h3>
-
-<p>
-${x[1]}
-</p>
-
-<em>
-${x[3]}
-</em>
-
-</div>
-`
-)
-.join("");
+      ]);
 
 
-}catch(error){
+    box.innerHTML = [
 
-showError(error);
+      [
+        "👥",
+        "Users",
+        users.size,
+        "Registered accounts"
+      ],
 
-}
+      [
+        "💼",
+        "Projects",
+        jobs.size,
+        "Posted projects"
+      ],
+
+      [
+        "✉",
+        "Applications",
+        applications.size,
+        "All applications"
+      ],
+
+      [
+        "✓",
+        "Projects in Work",
+        projects.size,
+        "Accepted projects"
+      ]
+
+    ]
+      .map(
+        item => `
+
+          <div class="stat">
+
+            <div class="icon">
+              ${item[0]}
+            </div>
+
+            <h3>
+              ${item[2]}
+            </h3>
+
+            <p>
+              ${item[1]}
+            </p>
+
+            <em>
+              ${item[3]}
+            </em>
+
+          </div>
+
+        `
+      )
+      .join("");
+
+
+  } catch (error) {
+
+    showError(error);
+
+  }
 
 }
 
@@ -3980,12 +4720,12 @@ showError(error);
    START
 ========================================================= */
 
-if(isLogin){
+if (isLogin) {
 
-initAuth();
+  initAuth();
 
-}else{
+} else {
 
-authGuard();
+  authGuard();
 
 }
