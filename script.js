@@ -1,9 +1,3 @@
-/* =========================================================
-   ELITE FREELANCE HUB
-   FINAL SCRIPT.JS
-   Firebase + Navigation + Freelancer + Client + Theme
-   ========================================================= */
-
 import {
     initializeApp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
@@ -55,10 +49,11 @@ const db = getFirestore(app);
 
 
 /* =========================================================
-   GLOBALS
+   GLOBAL
    ========================================================= */
 
-const $ = id => document.getElementById(id);
+const $ = id =>
+    document.getElementById(id);
 
 const pageName =
     location.pathname.split("/").pop() || "index.html";
@@ -99,12 +94,12 @@ function fmtDate(value) {
     try {
         if (!value) return "";
 
-        const d =
+        const date =
             value?.toDate
                 ? value.toDate()
                 : new Date(value);
 
-        return d.toLocaleDateString(
+        return date.toLocaleDateString(
             undefined,
             {
                 day: "numeric",
@@ -120,12 +115,16 @@ function fmtDate(value) {
 
 
 function showError(error) {
+
     console.error(error);
 
-    const box = $("firebaseError");
+    const box =
+        $("firebaseError");
 
     if (box) {
+
         box.style.display = "block";
+
         box.textContent =
             "Firebase Error: " +
             (error?.message || error);
@@ -135,81 +134,46 @@ function showError(error) {
 
 function toast(message) {
 
-    const t = $("toast");
+    const box =
+        $("toast");
 
-    if (!t) {
+    if (box) {
+
+        box.textContent = message;
+
+        box.classList.add("show");
+
+        setTimeout(
+            () =>
+                box.classList.remove("show"),
+            2500
+        );
+
+    } else {
+
         alert(message);
-        return;
     }
-
-    t.textContent = message;
-    t.classList.add("show");
-
-    setTimeout(
-        () => t.classList.remove("show"),
-        2500
-    );
 }
 
 
-function msg(id, text, success = false) {
+function msg(
+    id,
+    text,
+    success = false
+) {
 
-    const el = $(id);
+    const box = $(id);
 
-    if (!el) return;
+    if (!box) return;
 
-    el.textContent = text;
+    box.textContent = text;
 
-    el.style.color =
+    box.style.color =
         success
             ? "#43d883"
             : "#ff7185";
 }
 
-
-function friendly(error) {
-
-    const code =
-        error?.code || "";
-
-    const messages = {
-
-        "auth/invalid-credential":
-            "Email or password is incorrect.",
-
-        "auth/user-not-found":
-            "No account was found with this email.",
-
-        "auth/wrong-password":
-            "Email or password is incorrect.",
-
-        "auth/email-already-in-use":
-            "This email already has an account.",
-
-        "auth/weak-password":
-            "Password must be at least 6 characters.",
-
-        "auth/invalid-email":
-            "Please enter a valid email.",
-
-        "auth/too-many-requests":
-            "Too many attempts. Please try again later.",
-
-        "auth/network-request-failed":
-            "Network error. Check your internet connection."
-    };
-
-    return (
-        messages[code] ||
-        error?.message ||
-        "Something went wrong."
-    );
-}
-
-
-/* =========================================================
-   ROLE
-   ========================================================= */
 
 function role() {
 
@@ -231,8 +195,8 @@ function isOwner() {
 
 
 /* =========================================================
-   FINAL THEME SYSTEM
-   LIGHT <-> DARK
+   THEME
+   LIGHT / DARK
    ========================================================= */
 
 function themeInit() {
@@ -250,6 +214,12 @@ function themeInit() {
         "dark",
         isDark
     );
+
+    document.body.classList.toggle(
+        "light",
+        !isDark
+    );
+
 
     function updateThemeButton() {
 
@@ -276,6 +246,7 @@ function themeInit() {
         );
     }
 
+
     if (themeButton) {
 
         themeButton.addEventListener(
@@ -283,22 +254,32 @@ function themeInit() {
             () => {
 
                 const dark =
-                    !document.body.classList.contains("dark");
+                    !document.body.classList.contains(
+                        "dark"
+                    );
 
                 document.body.classList.toggle(
                     "dark",
                     dark
                 );
 
+                document.body.classList.toggle(
+                    "light",
+                    !dark
+                );
+
                 localStorage.setItem(
                     "efh_theme",
-                    dark ? "dark" : "light"
+                    dark
+                        ? "dark"
+                        : "light"
                 );
 
                 updateThemeButton();
             }
         );
     }
+
 
     updateThemeButton();
 }
@@ -307,22 +288,16 @@ themeInit();
 
 
 /* =========================================================
-   LOGOUT
+   BASIC BUTTONS
    ========================================================= */
 
-async function logout() {
+function logout() {
 
-    try {
-
-        await signOut(auth);
-
-        location.href =
-            "login.html";
-
-    } catch (error) {
-
-        showError(error);
-    }
+    signOut(auth)
+        .then(() => {
+            location.href = "login.html";
+        })
+        .catch(showError);
 }
 
 
@@ -336,341 +311,6 @@ $("topLogout")?.addEventListener(
     logout
 );
 
-
-/* =========================================================
-   SIDEBAR NAVIGATION
-   THIS WAS THE IMPORTANT MISSING PART
-   ========================================================= */
-
-function buildNav() {
-
-    const nav =
-        $("navArea");
-
-    if (!nav) return;
-
-    const client =
-        role() === "client";
-
-
-    const groups = client
-
-        ? [
-
-            [
-                "MAIN",
-                [
-                    [
-                        "dashboardPage",
-                        "⌂",
-                        "Dashboard"
-                    ],
-
-                    [
-                        "projectsPage",
-                        "▣",
-                        "My Projects"
-                    ],
-
-                    [
-                        "applicationsPage",
-                        "✉",
-                        "Applications"
-                    ],
-
-                    [
-                        "messagesPage",
-                        "◌",
-                        "Messages"
-                    ]
-                ]
-            ],
-
-            [
-                "MANAGE",
-                [
-                    [
-                        "postPage",
-                        "＋",
-                        "Post a Project"
-                    ]
-                ]
-            ],
-
-            [
-                "ACCOUNT",
-                [
-                    [
-                        "profilePage",
-                        "♙",
-                        "Profile"
-                    ],
-
-                    [
-                        "settingsPage",
-                        "⚙",
-                        "Settings"
-                    ]
-                ]
-            ]
-
-        ]
-
-        : [
-
-            [
-                "MAIN",
-                [
-                    [
-                        "dashboardPage",
-                        "⌂",
-                        "Dashboard"
-                    ],
-
-                    [
-                        "jobsPage",
-                        "✓",
-                        "Find Work"
-                    ],
-
-                    [
-                        "applicationsPage",
-                        "✉",
-                        "My Applications"
-                    ],
-
-                    [
-                        "projectsPage",
-                        "▣",
-                        "My Projects"
-                    ],
-
-                    [
-                        "messagesPage",
-                        "◌",
-                        "Messages"
-                    ]
-                ]
-            ],
-
-            [
-                "ACCOUNT",
-                [
-                    [
-                        "profilePage",
-                        "♙",
-                        "Profile"
-                    ],
-
-                    [
-                        "settingsPage",
-                        "⚙",
-                        "Settings"
-                    ]
-                ]
-            ]
-
-        ];
-
-
-    /* OWNER PANEL ONLY FOR OWNER */
-
-    if (
-        isOwner() &&
-        !client
-    ) {
-
-        groups.push(
-            [
-                "OWNER",
-                [
-                    [
-                        "ownerPage",
-                        "♛",
-                        "Owner Panel"
-                    ]
-                ]
-            ]
-        );
-    }
-
-
-    nav.innerHTML =
-        groups
-            .map(group => {
-
-                const title =
-                    group[0];
-
-                const items =
-                    group[1];
-
-                return `
-                    <div class="section-title">
-                        ${title}
-                    </div>
-
-                    ${items.map(item => `
-                        <button
-                            class="nav"
-                            type="button"
-                            data-target="${item[0]}"
-                        >
-                            ${item[1]}&nbsp; ${item[2]}
-                        </button>
-                    `).join("")}
-                `;
-
-            })
-            .join("");
-
-
-    nav
-        .querySelectorAll(".nav")
-        .forEach(button => {
-
-            button.addEventListener(
-                "click",
-                () =>
-                    go(
-                        button.dataset.target,
-                        button.textContent
-                    )
-            );
-
-        });
-
-
-    updateActive();
-}
-
-
-/* =========================================================
-   ACTIVE SIDEBAR ITEM
-   ========================================================= */
-
-function updateActive() {
-
-    const active =
-        document.querySelector(
-            ".page.active"
-        )?.id;
-
-    document
-        .querySelectorAll(".nav")
-        .forEach(nav => {
-
-            nav.classList.toggle(
-                "active",
-                nav.dataset.target === active
-            );
-
-        });
-}
-
-
-/* =========================================================
-   PAGE NAVIGATION
-   ========================================================= */
-
-async function go(id, title) {
-
-    document
-        .querySelectorAll(".page")
-        .forEach(page => {
-
-            page.classList.toggle(
-                "active",
-                page.id === id
-            );
-
-        });
-
-
-    if ($("pageTitle")) {
-
-        $("pageTitle").textContent =
-            String(
-                title ||
-                "Dashboard"
-            )
-                .replace(
-                    /^[^A-Za-z]+/,
-                    ""
-                )
-                .trim();
-    }
-
-
-    updateActive();
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
-
-    if (id === "jobsPage")
-        await loadJobs();
-
-
-    if (id === "applicationsPage") {
-
-        if (role() === "client")
-            await loadClientApplications();
-        else
-            await loadApplications();
-    }
-
-
-    if (id === "projectsPage") {
-
-        if (role() === "client")
-            await loadClientProjects();
-        else
-            await loadProjects();
-    }
-
-
-    if (id === "messagesPage")
-        await loadConversations();
-
-
-    if (id === "ownerPage")
-        await loadOwnerStats();
-}
-
-
-/* =========================================================
-   HERO / LINK BUTTONS
-   ========================================================= */
-
-document.addEventListener(
-    "click",
-    event => {
-
-        const button =
-            event.target.closest(
-                "[data-target]"
-            );
-
-        if (
-            button &&
-            !button.classList.contains("nav")
-        ) {
-
-            go(
-                button.dataset.target,
-                button.textContent
-            );
-        }
-    }
-);
-
-
-/* =========================================================
-   TOP BUTTONS
-   ========================================================= */
 
 $("brandHome")?.addEventListener(
     "click",
@@ -713,20 +353,349 @@ $("notificationBtn")?.addEventListener(
 
 
 /* =========================================================
-   OWNER MODE SWITCH
+   SWITCH CLIENT / FREELANCER
    ========================================================= */
 
 $("switchMode")?.addEventListener(
     "click",
     () => {
 
-        if (!isOwner())
-            return;
+        if (!isOwner()) return;
 
         location.href =
             isClientPage
                 ? "index.html"
                 : "client-dashboard.html";
+    }
+);
+
+
+/* =========================================================
+   SIDEBAR NAVIGATION
+   ========================================================= */
+
+function buildNav() {
+
+    const nav =
+        $("navArea");
+
+    if (!nav) return;
+
+    const client =
+        role() === "client";
+
+
+    const groups =
+        client
+
+            ? [
+
+                [
+                    "MAIN",
+                    [
+                        [
+                            "dashboardPage",
+                            "⌂",
+                            "Dashboard"
+                        ],
+
+                        [
+                            "projectsPage",
+                            "▣",
+                            "My Projects"
+                        ],
+
+                        [
+                            "applicationsPage",
+                            "✉",
+                            "Applications"
+                        ],
+
+                        [
+                            "messagesPage",
+                            "◌",
+                            "Messages"
+                        ]
+                    ]
+                ],
+
+                [
+                    "MANAGE",
+                    [
+                        [
+                            "postPage",
+                            "＋",
+                            "Post a Project"
+                        ]
+                    ]
+                ],
+
+                [
+                    "ACCOUNT",
+                    [
+                        [
+                            "profilePage",
+                            "♙",
+                            "Profile"
+                        ],
+
+                        [
+                            "settingsPage",
+                            "⚙",
+                            "Settings"
+                        ]
+                    ]
+                ]
+
+            ]
+
+            : [
+
+                [
+                    "MAIN",
+                    [
+                        [
+                            "dashboardPage",
+                            "⌂",
+                            "Dashboard"
+                        ],
+
+                        [
+                            "jobsPage",
+                            "✓",
+                            "Find Work"
+                        ],
+
+                        [
+                            "applicationsPage",
+                            "✉",
+                            "My Applications"
+                        ],
+
+                        [
+                            "projectsPage",
+                            "▣",
+                            "My Projects"
+                        ],
+
+                        [
+                            "messagesPage",
+                            "◌",
+                            "Messages"
+                        ]
+                    ]
+                ],
+
+                [
+                    "ACCOUNT",
+                    [
+                        [
+                            "profilePage",
+                            "♙",
+                            "Profile"
+                        ],
+
+                        [
+                            "settingsPage",
+                            "⚙",
+                            "Settings"
+                        ]
+                    ]
+                ]
+            ];
+
+
+    /* OWNER PANEL */
+
+    if (
+        isOwner() &&
+        !client
+    ) {
+
+        groups.push(
+            [
+                "OWNER",
+                [
+                    [
+                        "ownerPage",
+                        "♛",
+                        "Owner Panel"
+                    ]
+                ]
+            ]
+        );
+    }
+
+
+    nav.innerHTML =
+        groups
+            .map(group => {
+
+                const title =
+                    group[0];
+
+                const items =
+                    group[1];
+
+                return `
+                    <div class="section-title">
+                        ${title}
+                    </div>
+
+                    ${items
+                        .map(item => `
+                            <button
+                                class="nav"
+                                type="button"
+                                data-target="${item[0]}"
+                            >
+                                ${item[1]}&nbsp;
+                                ${item[2]}
+                            </button>
+                        `)
+                        .join("")}
+                `;
+            })
+            .join("");
+
+
+    nav
+        .querySelectorAll(".nav")
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () =>
+                    go(
+                        button.dataset.target,
+                        button.textContent
+                    )
+            );
+        });
+
+
+    updateActive();
+}
+
+
+/* =========================================================
+   ACTIVE NAV
+   ========================================================= */
+
+function updateActive() {
+
+    const active =
+        document.querySelector(
+            ".page.active"
+        )?.id;
+
+    document
+        .querySelectorAll(".nav")
+        .forEach(nav => {
+
+            nav.classList.toggle(
+                "active",
+                nav.dataset.target === active
+            );
+        });
+}
+
+
+/* =========================================================
+   PAGE NAVIGATION
+   ========================================================= */
+
+async function go(
+    id,
+    title
+) {
+
+    document
+        .querySelectorAll(".page")
+        .forEach(page => {
+
+            page.classList.toggle(
+                "active",
+                page.id === id
+            );
+        });
+
+
+    if ($("pageTitle")) {
+
+        $("pageTitle").textContent =
+            String(
+                title || "Dashboard"
+            )
+            .replace(
+                /^[^A-Za-z]+/,
+                ""
+            )
+            .trim();
+    }
+
+
+    updateActive();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+
+    const map = {
+
+        jobsPage:
+            loadJobs,
+
+        applicationsPage:
+            role() === "client"
+                ? loadClientApplications
+                : loadApplications,
+
+        projectsPage:
+            role() === "client"
+                ? loadClientProjects
+                : loadProjects,
+
+        messagesPage:
+            loadConversations,
+
+        ownerPage:
+            loadOwnerStats
+    };
+
+
+    if (map[id]) {
+
+        await map[id]();
+    }
+}
+
+
+/* =========================================================
+   HERO / TEXT NAV BUTTONS
+   ========================================================= */
+
+document.addEventListener(
+    "click",
+    event => {
+
+        const button =
+            event.target.closest(
+                "[data-target]"
+            );
+
+        if (
+            button &&
+            !button.classList.contains("nav")
+        ) {
+
+            go(
+                button.dataset.target,
+                button.textContent
+            );
+        }
     }
 );
 
@@ -747,6 +716,7 @@ async function loadIdentity() {
     const snapshot =
         await getDoc(reference);
 
+
     const ownerByEmail =
         currentUser.email?.toLowerCase() ===
         OWNER_EMAIL.toLowerCase();
@@ -760,7 +730,8 @@ async function loadIdentity() {
                 ownerByEmail
                     ? "AYESHA REHMAN"
                     : currentUser.displayName ||
-                      currentUser.email?.split("@")[0] ||
+                      currentUser.email
+                          ?.split("@")[0] ||
                       "Member",
 
             email:
@@ -789,8 +760,7 @@ async function loadIdentity() {
                     ? "Founder and Professional Freelancer at ELITE FREELANCE HUB."
                     : "",
 
-            photoData:
-                ""
+            photoData: ""
         };
 
 
@@ -819,11 +789,15 @@ async function loadIdentity() {
 
             userData = {
                 ...userData,
+
                 owner: true,
+
                 role: "freelancer",
+
                 name:
                     userData.name ||
                     "AYESHA REHMAN",
+
                 title:
                     userData.title ||
                     "Founder & Professional Freelancer"
@@ -845,11 +819,12 @@ async function loadIdentity() {
     }
 
 
-    if (!userData.role)
-        userData.role = role();
+    if (!userData.role) {
 
+        userData.role =
+            role();
+    }
 
-    /* NORMAL USERS CAN NEVER BE OWNER */
 
     if (
         !ownerByEmail &&
@@ -869,10 +844,8 @@ async function loadIdentity() {
     }
 
 
-    /* KEEP USER ON CORRECT MODE */
-
     if (
-        !ownerByEmail &&
+        !isOwner() &&
         userData.role !== role()
     ) {
 
@@ -885,8 +858,6 @@ async function loadIdentity() {
     }
 
 
-    /* PROFILE PHOTO */
-
     const photo =
         userData.photoData ||
         "profile.png";
@@ -896,102 +867,120 @@ async function loadIdentity() {
         "sideAvatar",
         "topAvatar",
         "profileAvatar"
-    ].forEach(id => {
+    ]
+    .forEach(id => {
 
-        if ($(id))
-            $(id).src = photo;
+        if ($(id)) {
 
+            $(id).src =
+                photo;
+        }
     });
 
 
-    /* SIDEBAR NAME */
-
     document
         .querySelectorAll("#sideName")
-        .forEach(element => {
-
-            element.textContent =
+        .forEach(x =>
+            x.textContent =
                 userData.name ||
-                "Member";
+                "Member"
+        );
 
-        });
-
-
-    /* SIDEBAR ROLE */
 
     document
         .querySelectorAll("#sideRole")
-        .forEach(element => {
-
-            element.textContent =
+        .forEach(x =>
+            x.textContent =
                 isOwner()
                     ? "Owner • Freelancer"
                     : role() === "client"
                         ? "Professional Client"
-                        : "Professional Freelancer";
+                        : "Professional Freelancer"
+        );
 
-        });
 
+    if ($("topName")) {
 
-    if ($("topName"))
         $("topName").textContent =
-            userData.name || "Member";
+            userData.name ||
+            "Member";
+    }
 
 
-    if ($("profileName"))
+    if ($("profileName")) {
+
         $("profileName").textContent =
-            userData.name || "Member";
+            userData.name ||
+            "Member";
+    }
 
 
-    if ($("profileRole"))
+    if ($("profileRole")) {
+
         $("profileRole").textContent =
             isOwner()
                 ? "Owner + Professional Freelancer"
                 : userData.title ||
                   (
-                      role() === "client"
-                          ? "Professional Client"
-                          : "Professional Freelancer"
+                    role() === "client"
+                        ? "Professional Client"
+                        : "Professional Freelancer"
                   );
+    }
 
 
-    if ($("profileEmail"))
+    if ($("profileEmail")) {
+
         $("profileEmail").textContent =
             currentUser.email || "";
+    }
 
 
-    if ($("profileSkills"))
+    if ($("profileSkills")) {
+
         $("profileSkills").textContent =
             userData.skills ||
             "Not added";
+    }
 
 
-    if ($("settingsName"))
+    if ($("settingsName")) {
+
         $("settingsName").value =
             userData.name || "";
+    }
 
 
-    if ($("settingsEmail"))
+    if ($("settingsEmail")) {
+
         $("settingsEmail").value =
             currentUser.email || "";
+    }
 
 
-    if ($("settingsSkills"))
+    if ($("settingsSkills")) {
+
         $("settingsSkills").value =
             userData.skills || "";
+    }
 
 
-    if ($("profileEditName"))
+    if ($("profileEditName")) {
+
         $("profileEditName").value =
             userData.name || "";
+    }
 
 
-    if ($("profileEditEmail"))
+    if ($("profileEditEmail")) {
+
         $("profileEditEmail").value =
             currentUser.email || "";
+    }
 
 
-    if ($("profileTitle"))
+    if ($("profileTitle")) {
+
         $("profileTitle").value =
             userData.title ||
             (
@@ -999,16 +988,21 @@ async function loadIdentity() {
                     ? "Professional Client"
                     : "Professional Freelancer"
             );
+    }
 
 
-    if ($("profileBio"))
+    if ($("profileBio")) {
+
         $("profileBio").value =
             userData.bio || "";
+    }
 
 
-    if ($("profileSkillsEdit"))
+    if ($("profileSkillsEdit")) {
+
         $("profileSkillsEdit").value =
             userData.skills || "";
+    }
 
 
     if ($("switchMode")) {
@@ -1020,15 +1014,15 @@ async function loadIdentity() {
                     ? "⇄ Switch to Freelancer Mode"
                     : "⇄ Switch to Client Mode";
 
-            $("switchMode").style.display =
-                "block";
-
         } else {
 
             $("switchMode").style.display =
                 "none";
         }
     }
+
+
+    buildNav();
 }
 
 
@@ -1057,13 +1051,74 @@ function authGuard() {
 
             try {
 
+                const snapshot =
+                    await getDoc(
+                        doc(
+                            db,
+                            "users",
+                            user.uid
+                        )
+                    );
+
+
+                if (!snapshot.exists()) {
+
+                    const ownerByEmail =
+                        user.email
+                            ?.toLowerCase() ===
+                        OWNER_EMAIL.toLowerCase();
+
+
+                    await setDoc(
+                        doc(
+                            db,
+                            "users",
+                            user.uid
+                        ),
+                        {
+                            name:
+                                ownerByEmail
+                                    ? "AYESHA REHMAN"
+                                    : user.email
+                                        ?.split("@")[0] ||
+                                      "Member",
+
+                            email:
+                                user.email || "",
+
+                            role:
+                                ownerByEmail
+                                    ? "freelancer"
+                                    : role(),
+
+                            owner:
+                                ownerByEmail,
+
+                            skills:
+                                ownerByEmail
+                                    ? "Web Development, HTML, CSS, JavaScript"
+                                    : "",
+
+                            title:
+                                ownerByEmail
+                                    ? "Founder & Professional Freelancer"
+                                    : "",
+
+                            bio:
+                                ownerByEmail
+                                    ? "Founder and Professional Freelancer at ELITE FREELANCE HUB."
+                                    : "",
+
+                            photoData: "",
+
+                            createdAt:
+                                serverTimestamp()
+                        }
+                    );
+                }
+
+
                 await loadIdentity();
-
-
-                /* ⭐ IMPORTANT:
-                   BUILD SIDEBAR AFTER USER/ROLE IS LOADED */
-
-                buildNav();
 
 
                 if (isPostPage) {
@@ -1081,19 +1136,14 @@ function authGuard() {
 
                     await initPost();
 
-                }
-
-                else if (isClientPage) {
+                } else if (isClientPage) {
 
                     await initClient();
 
-                }
-
-                else {
+                } else {
 
                     await initFreelancer();
                 }
-
 
             } catch (error) {
 
@@ -1116,75 +1166,78 @@ function initAuth() {
     const signupForm =
         $("signupForm");
 
+
     if (
         !loginForm ||
         !signupForm
-    )
+    ) {
+
         return;
-
-
-    function showLogin() {
-
-        loginForm.classList.remove(
-            "hidden"
-        );
-
-        signupForm.classList.add(
-            "hidden"
-        );
-
-        $("loginTab")?.classList.add(
-            "active"
-        );
-
-        $("signupTab")?.classList.remove(
-            "active"
-        );
     }
 
 
-    function showSignup() {
+    const showLogin =
+        () => {
 
-        loginForm.classList.add(
-            "hidden"
+            loginForm.classList.remove(
+                "hidden"
+            );
+
+            signupForm.classList.add(
+                "hidden"
+            );
+
+            $("loginTab")
+                ?.classList.add("active");
+
+            $("signupTab")
+                ?.classList.remove("active");
+        };
+
+
+    const showSignup =
+        () => {
+
+            loginForm.classList.add(
+                "hidden"
+            );
+
+            signupForm.classList.remove(
+                "hidden"
+            );
+
+            $("loginTab")
+                ?.classList.remove("active");
+
+            $("signupTab")
+                ?.classList.add("active");
+        };
+
+
+    $("loginTab")
+        ?.addEventListener(
+            "click",
+            showLogin
         );
 
-        signupForm.classList.remove(
-            "hidden"
+    $("signupTab")
+        ?.addEventListener(
+            "click",
+            showSignup
         );
 
-        $("loginTab")?.classList.remove(
-            "active"
+    $("goSignup")
+        ?.addEventListener(
+            "click",
+            showSignup
         );
 
-        $("signupTab")?.classList.add(
-            "active"
+    $("goLogin")
+        ?.addEventListener(
+            "click",
+            showLogin
         );
-    }
 
-
-    $("loginTab")?.addEventListener(
-        "click",
-        showLogin
-    );
-
-    $("signupTab")?.addEventListener(
-        "click",
-        showSignup
-    );
-
-    $("goSignup")?.addEventListener(
-        "click",
-        showSignup
-    );
-
-    $("goLogin")?.addEventListener(
-        "click",
-        showLogin
-    );
-
-
-    /* LOGIN */
 
     loginForm.addEventListener(
         "submit",
@@ -1219,55 +1272,52 @@ function initAuth() {
     );
 
 
-    /* FORGOT PASSWORD */
+    $("forgotBtn")
+        ?.addEventListener(
+            "click",
+            async () => {
 
-    $("forgotBtn")?.addEventListener(
-        "click",
-        async () => {
-
-            const email =
-                $("loginEmail")
-                    .value
-                    .trim()
-                    .toLowerCase();
+                const email =
+                    $("loginEmail")
+                        .value
+                        .trim()
+                        .toLowerCase();
 
 
-            if (!email) {
+                if (!email) {
 
-                msg(
-                    "loginMsg",
-                    "Enter your email first."
-                );
+                    msg(
+                        "loginMsg",
+                        "Enter your email first."
+                    );
 
-                return;
+                    return;
+                }
+
+
+                try {
+
+                    await sendPasswordResetEmail(
+                        auth,
+                        email
+                    );
+
+                    msg(
+                        "loginMsg",
+                        "Password reset email sent.",
+                        true
+                    );
+
+                } catch (error) {
+
+                    msg(
+                        "loginMsg",
+                        friendly(error)
+                    );
+                }
             }
+        );
 
-
-            try {
-
-                await sendPasswordResetEmail(
-                    auth,
-                    email
-                );
-
-                msg(
-                    "loginMsg",
-                    "Password reset email sent.",
-                    true
-                );
-
-            } catch (error) {
-
-                msg(
-                    "loginMsg",
-                    friendly(error)
-                );
-            }
-        }
-    );
-
-
-    /* SIGNUP */
 
     signupForm.addEventListener(
         "submit",
@@ -1288,8 +1338,9 @@ function initAuth() {
                         .value
                         .trim();
 
-                const selectedRole =
-                    $("signupRole").value;
+                const selected =
+                    $("signupRole")
+                        .value;
 
                 const ownerByEmail =
                     email ===
@@ -1300,7 +1351,8 @@ function initAuth() {
                     await createUserWithEmailAndPassword(
                         auth,
                         email,
-                        $("signupPassword").value
+                        $("signupPassword")
+                            .value
                     );
 
 
@@ -1311,7 +1363,6 @@ function initAuth() {
                         credential.user.uid
                     ),
                     {
-
                         name:
                             ownerByEmail
                                 ? "AYESHA REHMAN"
@@ -1322,7 +1373,7 @@ function initAuth() {
                         role:
                             ownerByEmail
                                 ? "freelancer"
-                                : selectedRole,
+                                : selected,
 
                         owner:
                             ownerByEmail,
@@ -1335,11 +1386,7 @@ function initAuth() {
                         title:
                             ownerByEmail
                                 ? "Founder & Professional Freelancer"
-                                : (
-                                    selectedRole === "client"
-                                        ? "Professional Client"
-                                        : "Professional Freelancer"
-                                ),
+                                : "",
 
                         bio:
                             ownerByEmail
@@ -1369,14 +1416,13 @@ function initAuth() {
                         location.href =
                             ownerByEmail
                                 ? "index.html"
-                                : selectedRole === "client"
+                                : selected === "client"
                                     ? "client-dashboard.html"
                                     : "index.html";
 
                     },
                     500
                 );
-
 
             } catch (error) {
 
@@ -1391,41 +1437,57 @@ function initAuth() {
 
 
 /* =========================================================
-   FREELANCER DASHBOARD
+   FRIENDLY FIREBASE ERRORS
    ========================================================= */
 
-async function initFreelancer() {
+function friendly(error) {
 
-    await loadFreelancerDashboard();
-    await loadJobs();
-    await loadApplications();
-    await loadProjects();
+    const messages = {
+
+        "auth/invalid-credential":
+            "Email or password is incorrect.",
+
+        "auth/email-already-in-use":
+            "This email already has an account.",
+
+        "auth/weak-password":
+            "Password must be at least 6 characters.",
+
+        "auth/invalid-email":
+            "Please enter a valid email.",
+
+        "auth/too-many-requests":
+            "Too many attempts. Please try again later.",
+
+        "auth/network-request-failed":
+            "Network error. Check your internet connection."
+    };
+
+
+    return (
+        messages[error?.code] ||
+        error?.message ||
+        "Something went wrong."
+    );
 }
 
 
+/* =========================================================
+   FREELANCER DASHBOARD
+   ========================================================= */
+
 async function loadFreelancerDashboard() {
 
-    const stats =
-        $("freelancerStats");
-
-    if (!stats)
-        return;
-
-
-    try {
-
-        const [
-            jobsSnapshot,
-            applicationsSnapshot,
-            projectsSnapshot
-        ] = await Promise.all([
+    const [
+        jobs,
+        applications,
+        projects
+    ] =
+        await Promise.all([
 
             getDocs(
                 query(
-                    collection(
-                        db,
-                        "jobs"
-                    ),
+                    collection(db, "jobs"),
                     where(
                         "status",
                         "==",
@@ -1464,95 +1526,97 @@ async function loadFreelancerDashboard() {
         ]);
 
 
-        const active =
-            projectsSnapshot.docs.filter(
-                document =>
-                    document.data().status !==
-                    "completed"
-            ).length;
+    const active =
+        projects.docs.filter(
+            doc =>
+                doc.data().status !==
+                "completed"
+        ).length;
 
 
-        const earnings =
-            projectsSnapshot.docs.reduce(
-                (sum, document) =>
-                    sum +
-                    Number(
-                        document.data().budget ||
-                        0
-                    ),
-                0
-            );
+    const earnings =
+        projects.docs.reduce(
+            (sum, doc) =>
+                sum +
+                Number(
+                    doc.data().budget || 0
+                ),
+            0
+        );
 
 
-        stats.innerHTML = [
+    if ($("freelancerStats")) {
 
+        $("freelancerStats").innerHTML =
             [
-                "💰",
-                "Earnings",
-                "$" + earnings.toLocaleString(),
-                "Accepted project budgets"
-            ],
 
-            [
-                "📁",
-                "Active Projects",
-                active,
-                "Assigned work"
-            ],
+                [
+                    "💰",
+                    "Earnings",
+                    "$" +
+                        earnings.toLocaleString(),
+                    "Accepted project budgets"
+                ],
 
-            [
-                "✉",
-                "Applications",
-                applicationsSnapshot.size,
-                "Sent to clients"
-            ],
+                [
+                    "📁",
+                    "Active Projects",
+                    active,
+                    "Assigned work"
+                ],
 
-            [
-                "★",
-                "Profile Rating",
-                "—",
-                "Reviews will appear here"
+                [
+                    "✉",
+                    "Applications",
+                    applications.size,
+                    "Sent to clients"
+                ],
+
+                [
+                    "★",
+                    "Profile Rating",
+                    "—",
+                    "Reviews will appear here"
+                ]
+
             ]
+            .map(
+                item => `
+                    <div class="stat">
+                        <div class="icon">
+                            ${item[0]}
+                        </div>
 
-        ]
-            .map(item => `
+                        <h3>
+                            ${item[2]}
+                        </h3>
 
-                <div class="stat">
+                        <p>
+                            ${item[1]}
+                        </p>
 
-                    <div class="icon">
-                        ${item[0]}
+                        <em>
+                            ${item[3]}
+                        </em>
                     </div>
-
-                    <h3>
-                        ${item[2]}
-                    </h3>
-
-                    <p>
-                        ${item[1]}
-                    </p>
-
-                    <em>
-                        ${item[3]}
-                    </em>
-
-                </div>
-
-            `)
+                `
+            )
             .join("");
+    }
 
 
-        if ($("recommendedJobs")) {
+    if ($("recommendedJobs")) {
 
-            $("recommendedJobs").innerHTML =
-                jobsSnapshot.docs
-                    .slice(0, 5)
-                    .map(document => {
+        $("recommendedJobs").innerHTML =
+            jobs.docs
+                .slice(0, 5)
+                .map(
+                    doc => {
 
-                        const job =
-                            document.data();
+                        const data =
+                            doc.data();
 
                         return `
-
                             <div class="activity-row">
 
                                 <div class="activity-icon">
@@ -1562,19 +1626,16 @@ async function loadFreelancerDashboard() {
                                 <div>
 
                                     <strong>
-                                        ${esc(
-                                            job.title ||
-                                            "Project"
-                                        )}
+                                        ${esc(data.title)}
                                     </strong>
 
                                     <span>
                                         $${Number(
-                                            job.budget || 0
+                                            data.budget || 0
                                         )}
                                         •
                                         ${esc(
-                                            job.category ||
+                                            data.category ||
                                             "General"
                                         )}
                                     </span>
@@ -1582,31 +1643,31 @@ async function loadFreelancerDashboard() {
                                 </div>
 
                             </div>
-
                         `;
-                    })
-                    .join("")
-                    ||
-                    `
-                        <div class="empty">
-                            No open projects yet.
-                        </div>
-                    `;
-        }
+                    }
+                )
+                .join("")
+            ||
+            `
+                <div class="empty">
+                    No open projects yet.
+                </div>
+            `;
+    }
 
 
-        if ($("recentApplications")) {
+    if ($("recentApplications")) {
 
-            $("recentApplications").innerHTML =
-                applicationsSnapshot.docs
-                    .slice(0, 5)
-                    .map(document => {
+        $("recentApplications").innerHTML =
+            applications.docs
+                .slice(0, 5)
+                .map(
+                    doc => {
 
-                        const application =
-                            document.data();
+                        const data =
+                            doc.data();
 
                         return `
-
                             <div class="activity-row">
 
                                 <div class="activity-icon">
@@ -1617,42 +1678,48 @@ async function loadFreelancerDashboard() {
 
                                     <strong>
                                         ${esc(
-                                            application.jobTitle ||
+                                            data.jobTitle ||
                                             "Project"
                                         )}
                                     </strong>
 
                                     <span>
                                         ${esc(
-                                            application.status ||
+                                            data.status ||
                                             "pending"
                                         )}
                                         •
                                         ${fmtDate(
-                                            application.createdAt
+                                            data.createdAt
                                         )}
                                     </span>
 
                                 </div>
 
                             </div>
-
                         `;
-                    })
-                    .join("")
-                    ||
-                    `
-                        <div class="empty">
-                            No applications yet.
-                        </div>
-                    `;
-        }
-
-
-    } catch (error) {
-
-        showError(error);
+                    }
+                )
+                .join("")
+            ||
+            `
+                <div class="empty">
+                    No applications yet.
+                </div>
+            `;
     }
+}
+
+
+async function initFreelancer() {
+
+    await loadFreelancerDashboard();
+
+    await loadJobs();
+
+    await loadApplications();
+
+    await loadProjects();
 }
 
 
@@ -1665,12 +1732,14 @@ async function loadJobs() {
     const list =
         $("jobsList");
 
-    if (!list)
-        return;
-
+    if (!list) return;
 
     list.innerHTML =
-        '<div class="loading">Loading projects...</div>';
+        `
+            <div class="loading">
+                Loading projects...
+            </div>
+        `;
 
 
     try {
@@ -1678,10 +1747,7 @@ async function loadJobs() {
         const snapshot =
             await getDocs(
                 query(
-                    collection(
-                        db,
-                        "jobs"
-                    ),
+                    collection(db, "jobs"),
                     where(
                         "status",
                         "==",
@@ -1691,15 +1757,15 @@ async function loadJobs() {
             );
 
 
-        const jobs =
+        const docs =
             snapshot.docs.filter(
-                document =>
-                    document.data().clientId !==
+                doc =>
+                    doc.data().clientId !==
                     currentUser.uid
             );
 
 
-        if (!jobs.length) {
+        if (!docs.length) {
 
             list.innerHTML =
                 `
@@ -1712,7 +1778,7 @@ async function loadJobs() {
         }
 
 
-        const applicationSnapshot =
+        const applications =
             await getDocs(
                 query(
                     collection(
@@ -1730,131 +1796,124 @@ async function loadJobs() {
 
         const applied =
             new Set(
-                applicationSnapshot.docs.map(
-                    document =>
-                        document.data().jobId
+                applications.docs.map(
+                    doc =>
+                        doc.data().jobId
                 )
             );
 
 
         list.innerHTML =
-            jobs.map(document => {
+            docs
+                .map(
+                    doc => {
 
-                const job =
-                    document.data();
+                        const data =
+                            doc.data();
 
-                const alreadyApplied =
-                    applied.has(
-                        document.id
-                    );
+                        const alreadyApplied =
+                            applied.has(
+                                doc.id
+                            );
 
 
-                return `
+                        return `
+                            <article class="card">
 
-                    <article class="card">
+                                <h3>
+                                    💼
+                                    ${esc(
+                                        data.title ||
+                                        "Project"
+                                    )}
+                                </h3>
 
-                        <h3>
-                            💼
-                            ${esc(
-                                job.title ||
-                                "Project"
-                            )}
-                        </h3>
+                                <p>
+                                    ${esc(
+                                        data.description ||
+                                        "No description provided."
+                                    )}
+                                </p>
 
-                        <p>
-                            ${esc(
-                                job.description ||
-                                "No description provided."
-                            )}
-                        </p>
+                                <div class="meta">
 
-                        <div class="meta">
+                                    <span class="pill">
+                                        ${esc(
+                                            data.category ||
+                                            "General"
+                                        )}
+                                    </span>
 
-                            <span class="pill">
-                                ${esc(
-                                    job.category ||
-                                    "General"
-                                )}
-                            </span>
+                                    <span class="pill">
+                                        💰
+                                        $${Number(
+                                            data.budget ||
+                                            0
+                                        )}
+                                    </span>
 
-                            <span class="pill">
-                                💰
-                                $${Number(
-                                    job.budget || 0
-                                )}
-                            </span>
+                                    <span class="pill">
+                                        📅
+                                        ${esc(
+                                            data.deadline ||
+                                            "—"
+                                        )}
+                                    </span>
 
-                            <span class="pill">
-                                📅
-                                ${esc(
-                                    job.deadline ||
-                                    "—"
-                                )}
-                            </span>
+                                </div>
 
-                        </div>
+                                <small class="muted">
+                                    Client:
+                                    ${esc(
+                                        data.clientName ||
+                                        "Client"
+                                    )}
+                                </small>
 
-                        <small class="muted">
-                            Client:
-                            ${esc(
-                                job.clientName ||
-                                "Client"
-                            )}
-                        </small>
+                                <div class="card-actions">
 
-                        <div class="card-actions">
+                                    <button
+                                        class="${
+                                            alreadyApplied
+                                                ? "secondary"
+                                                : "primary"
+                                        } apply-btn"
+                                        data-job="${doc.id}"
+                                        ${alreadyApplied
+                                            ? "disabled"
+                                            : ""}
+                                    >
+                                        ${
+                                            alreadyApplied
+                                                ? "Applied ✓"
+                                                : "Apply Now"
+                                        }
+                                    </button>
 
-                            <button
-                                class="${
-                                    alreadyApplied
-                                        ? "secondary"
-                                        : "primary"
-                                } apply-btn"
+                                </div>
 
-                                data-job="${document.id}"
-
-                                type="button"
-
-                                ${
-                                    alreadyApplied
-                                        ? "disabled"
-                                        : ""
-                                }
-                            >
-
-                                ${
-                                    alreadyApplied
-                                        ? "Applied ✓"
-                                        : "Apply Now"
-                                }
-
-                            </button>
-
-                        </div>
-
-                    </article>
-
-                `;
-
-            })
-            .join("");
+                            </article>
+                        `;
+                    }
+                )
+                .join("");
 
 
         list
-            .querySelectorAll(".apply-btn")
-            .forEach(button => {
-
-                button.addEventListener(
-                    "click",
-                    () =>
-                        applyJob(
-                            button.dataset.job,
-                            button
-                        )
-                );
-
-            });
-
+            .querySelectorAll(
+                ".apply-btn"
+            )
+            .forEach(
+                button =>
+                    button.addEventListener(
+                        "click",
+                        () =>
+                            applyJob(
+                                button.dataset.job,
+                                button
+                            )
+                    )
+            );
 
     } catch (error) {
 
@@ -1871,7 +1930,7 @@ async function loadJobs() {
 
 
 /* =========================================================
-   APPLY TO PROJECT
+   APPLY JOB
    ========================================================= */
 
 async function applyJob(
@@ -1881,14 +1940,13 @@ async function applyJob(
 
     try {
 
-        button.disabled =
-            true;
+        button.disabled = true;
 
         button.textContent =
             "Applying...";
 
 
-        const jobSnapshot =
+        const snapshot =
             await getDoc(
                 doc(
                     db,
@@ -1898,23 +1956,27 @@ async function applyJob(
             );
 
 
-        if (!jobSnapshot.exists())
+        if (!snapshot.exists()) {
+
             throw new Error(
                 "Project no longer exists."
             );
+        }
 
 
         const job =
-            jobSnapshot.data();
+            snapshot.data();
 
 
-        if (job.status !== "open")
+        if (job.status !== "open") {
+
             throw new Error(
                 "This project is no longer accepting applications."
             );
+        }
 
 
-        const duplicate =
+        const existing =
             await getDocs(
                 query(
                     collection(
@@ -1935,7 +1997,7 @@ async function applyJob(
             );
 
 
-        if (!duplicate.empty) {
+        if (!existing.empty) {
 
             button.textContent =
                 "Applied ✓";
@@ -1967,8 +2029,7 @@ async function applyJob(
                     currentUser.uid,
 
                 freelancerEmail:
-                    currentUser.email ||
-                    "",
+                    currentUser.email || "",
 
                 freelancerName:
                     userData.name ||
@@ -1995,20 +2056,18 @@ async function applyJob(
         button.textContent =
             "Applied ✓";
 
-
         toast(
             "Application sent successfully."
         );
 
 
         await loadApplications();
-        await loadFreelancerDashboard();
 
+        await loadFreelancerDashboard();
 
     } catch (error) {
 
-        button.disabled =
-            false;
+        button.disabled = false;
 
         button.textContent =
             "Apply Now";
@@ -2024,7 +2083,7 @@ async function applyJob(
 
 
 /* =========================================================
-   MY APPLICATIONS
+   FREELANCER APPLICATIONS
    ========================================================= */
 
 async function loadApplications() {
@@ -2032,12 +2091,15 @@ async function loadApplications() {
     const list =
         $("applicationsList");
 
-    if (!list)
-        return;
+    if (!list) return;
 
 
     list.innerHTML =
-        '<div class="loading">Loading applications...</div>';
+        `
+            <div class="loading">
+                Loading applications...
+            </div>
+        `;
 
 
     try {
@@ -2073,82 +2135,81 @@ async function loadApplications() {
 
         list.innerHTML =
             snapshot.docs
-                .map(document => {
+                .map(
+                    doc => {
 
-                    const application =
-                        document.data();
+                        const application =
+                            doc.data();
 
-                    const status =
-                        application.status ||
-                        "pending";
+                        const status =
+                            application.status ||
+                            "pending";
 
 
-                    return `
+                        return `
+                            <article class="card">
 
-                        <article class="card">
-
-                            <h3>
-                                ✉
-                                ${esc(
-                                    application.jobTitle ||
-                                    "Project"
-                                )}
-                            </h3>
-
-                            <p>
-                                Client:
-                                ${esc(
-                                    application.clientName ||
-                                    "Client"
-                                )}
-                            </p>
-
-                            <div class="meta">
-
-                                <span class="pill ${esc(status)}">
-                                    ${esc(status)}
-                                </span>
-
-                                <span class="pill">
-                                    💰
-                                    $${Number(
-                                        application.budget ||
-                                        0
+                                <h3>
+                                    ✉
+                                    ${esc(
+                                        application.jobTitle ||
+                                        "Project"
                                     )}
-                                </span>
+                                </h3>
 
-                            </div>
+                                <p>
+                                    Client:
+                                    ${esc(
+                                        application.clientName ||
+                                        "Client"
+                                    )}
+                                </p>
 
-                            <small class="muted">
-                                Applied
-                                ${fmtDate(
-                                    application.createdAt
-                                )}
-                            </small>
+                                <div class="meta">
 
-                            ${
-                                status === "accepted"
-                                    ? `
-                                        <div class="card-actions">
+                                    <span class="pill ${esc(status)}">
+                                        ${esc(status)}
+                                    </span>
 
-                                            <button
-                                                class="primary message-application"
-                                                data-id="${document.id}"
-                                                type="button"
-                                            >
-                                                💬 Message Client
-                                            </button>
+                                    <span class="pill">
+                                        💰
+                                        $${Number(
+                                            application.budget ||
+                                            0
+                                        )}
+                                    </span>
 
-                                        </div>
-                                    `
-                                    : ""
-                            }
+                                </div>
 
-                        </article>
+                                <small class="muted">
+                                    Applied
+                                    ${fmtDate(
+                                        application.createdAt
+                                    )}
+                                </small>
 
-                    `;
+                                ${
+                                    status === "accepted"
+                                        ? `
+                                            <div class="card-actions">
 
-                })
+                                                <button
+                                                    class="primary message-application"
+                                                    data-id="${doc.id}"
+                                                    type="button"
+                                                >
+                                                    💬 Message Client
+                                                </button>
+
+                                            </div>
+                                        `
+                                        : ""
+                                }
+
+                            </article>
+                        `;
+                    }
+                )
                 .join("");
 
 
@@ -2156,18 +2217,16 @@ async function loadApplications() {
             .querySelectorAll(
                 ".message-application"
             )
-            .forEach(button => {
-
-                button.addEventListener(
-                    "click",
-                    () =>
-                        openApplicationChat(
-                            button.dataset.id
-                        )
-                );
-
-            });
-
+            .forEach(
+                button =>
+                    button.addEventListener(
+                        "click",
+                        () =>
+                            openApplicationChat(
+                                button.dataset.id
+                            )
+                    )
+            );
 
     } catch (error) {
 
@@ -2177,7 +2236,7 @@ async function loadApplications() {
 
 
 /* =========================================================
-   MY PROJECTS
+   FREELANCER PROJECTS
    ========================================================= */
 
 async function loadProjects() {
@@ -2185,8 +2244,7 @@ async function loadProjects() {
     const list =
         $("projectsList");
 
-    if (!list)
-        return;
+    if (!list) return;
 
 
     try {
@@ -2222,75 +2280,73 @@ async function loadProjects() {
 
         list.innerHTML =
             snapshot.docs
-                .map(document => {
+                .map(
+                    doc => {
 
-                    const project =
-                        document.data();
+                        const project =
+                            doc.data();
 
+                        return `
+                            <article class="card">
 
-                    return `
-
-                        <article class="card">
-
-                            <h3>
-                                📁
-                                ${esc(
-                                    project.title ||
-                                    "Project"
-                                )}
-                            </h3>
-
-                            <p>
-                                ${esc(
-                                    project.description ||
-                                    "Accepted project"
-                                )}
-                            </p>
-
-                            <div class="meta">
-
-                                <span class="pill accepted">
+                                <h3>
+                                    📁
                                     ${esc(
-                                        project.status ||
-                                        "in_progress"
+                                        project.title ||
+                                        "Project"
                                     )}
-                                </span>
+                                </h3>
 
-                                <span class="pill">
-                                    💰
-                                    $${Number(
-                                        project.budget ||
-                                        0
-                                    )}
-                                </span>
-
-                                <span class="pill">
-                                    Client:
+                                <p>
                                     ${esc(
-                                        project.clientName ||
-                                        "Client"
+                                        project.description ||
+                                        "Accepted project"
                                     )}
-                                </span>
+                                </p>
 
-                            </div>
+                                <div class="meta">
 
-                            <div class="card-actions">
+                                    <span class="pill accepted">
+                                        ${esc(
+                                            project.status ||
+                                            "in_progress"
+                                        )}
+                                    </span>
 
-                                <button
-                                    class="primary project-chat"
-                                    data-id="${document.id}"
-                                    type="button"
-                                >
-                                    💬 Open Chat
-                                </button>
+                                    <span class="pill">
+                                        💰
+                                        $${Number(
+                                            project.budget ||
+                                            0
+                                        )}
+                                    </span>
 
-                            </div>
+                                    <span class="pill">
+                                        Client:
+                                        ${esc(
+                                            project.clientName ||
+                                            "Client"
+                                        )}
+                                    </span>
 
-                        </article>
+                                </div>
 
-                    `;
+                                <div class="card-actions">
 
-                })
+                                    <button
+                                        class="primary project-chat"
+                                        data-id="${doc.id}"
+                                        type="button"
+                                    >
+                                        💬 Open Chat
+                                    </button>
+
+                                </div>
+
+                            </article>
+                        `;
+                    }
+                )
                 .join("");
 
 
@@ -2298,18 +2354,16 @@ async function loadProjects() {
             .querySelectorAll(
                 ".project-chat"
             )
-            .forEach(button => {
-
-                button.addEventListener(
-                    "click",
-                    () =>
-                        openProjectChat(
-                            button.dataset.id
-                        )
-                );
-
-            });
-
+            .forEach(
+                button =>
+                    button.addEventListener(
+                        "click",
+                        () =>
+                            openProjectChat(
+                                button.dataset.id
+                            )
+                    )
+            );
 
     } catch (error) {
 
@@ -2325,23 +2379,25 @@ async function loadProjects() {
 async function initClient() {
 
     await loadClientDashboard();
+
     await loadClientProjects();
+
     await loadClientApplications();
+
     await loadConversations();
 }
 
 
 async function loadClientDashboard() {
 
-    if (!$("clientStats"))
-        return;
+    if (!$("clientStats")) return;
 
 
     try {
 
         const [
-            projectsSnapshot,
-            applicationsSnapshot
+            projects,
+            applications
         ] =
             await Promise.all([
 
@@ -2372,107 +2428,106 @@ async function loadClientDashboard() {
                         )
                     )
                 )
-
             ]);
 
 
         const accepted =
-            applicationsSnapshot.docs.filter(
-                document =>
-                    document.data().status ===
+            applications.docs.filter(
+                doc =>
+                    doc.data().status ===
                     "accepted"
             ).length;
 
 
         const open =
-            projectsSnapshot.docs.filter(
-                document =>
-                    document.data().status ===
+            projects.docs.filter(
+                doc =>
+                    doc.data().status ===
                     "open"
             ).length;
 
 
         const budget =
-            projectsSnapshot.docs.reduce(
-                (sum, document) =>
+            projects.docs.reduce(
+                (sum, doc) =>
                     sum +
                     Number(
-                        document.data().budget ||
+                        doc.data().budget ||
                         0
                     ),
                 0
             );
 
 
-        $("clientStats").innerHTML = [
-
+        $("clientStats").innerHTML =
             [
-                "📁",
-                "Total Projects",
-                projectsSnapshot.size,
-                "Posted projects"
-            ],
 
-            [
-                "◷",
-                "Open Projects",
-                open,
-                "Accepting applications"
-            ],
+                [
+                    "📁",
+                    "Total Projects",
+                    projects.size,
+                    "Posted projects"
+                ],
 
-            [
-                "✓",
-                "Accepted",
-                accepted,
-                "Freelancers selected"
-            ],
+                [
+                    "◷",
+                    "Open Projects",
+                    open,
+                    "Accepting applications"
+                ],
 
-            [
-                "💰",
-                "Total Budget",
-                "$" + budget.toLocaleString(),
-                "Posted budgets"
+                [
+                    "✓",
+                    "Accepted",
+                    accepted,
+                    "Freelancers selected"
+                ],
+
+                [
+                    "💰",
+                    "Total Budget",
+                    "$" +
+                        budget.toLocaleString(),
+                    "Posted budgets"
+                ]
+
             ]
+            .map(
+                item => `
+                    <div class="stat">
 
-        ]
-            .map(item => `
+                        <div class="icon">
+                            ${item[0]}
+                        </div>
 
-                <div class="stat">
+                        <h3>
+                            ${item[2]}
+                        </h3>
 
-                    <div class="icon">
-                        ${item[0]}
+                        <p>
+                            ${item[1]}
+                        </p>
+
+                        <em>
+                            ${item[3]}
+                        </em>
+
                     </div>
-
-                    <h3>
-                        ${item[2]}
-                    </h3>
-
-                    <p>
-                        ${item[1]}
-                    </p>
-
-                    <em>
-                        ${item[3]}
-                    </em>
-
-                </div>
-
-            `)
+                `
+            )
             .join("");
 
 
-        if ($("clientActivity")) {
+        $("clientActivity").innerHTML =
+            projects.docs
+                .slice(0, 5)
+                .map(
+                    doc => {
 
-            $("clientActivity").innerHTML =
-                projectsSnapshot.docs
-                    .slice(0, 5)
-                    .map(document => {
-
-                        const project =
-                            document.data();
+                        const data =
+                            doc.data();
 
                         return `
-
                             <div class="activity-row">
 
                                 <div class="activity-icon">
@@ -2482,25 +2537,22 @@ async function loadClientDashboard() {
                                 <div>
 
                                     <strong>
-                                        ${esc(
-                                            project.title ||
-                                            "Project"
-                                        )}
+                                        ${esc(data.title)}
                                     </strong>
 
                                     <span>
                                         ${esc(
-                                            project.status ||
+                                            data.status ||
                                             "open"
                                         )}
                                         •
                                         $${Number(
-                                            project.budget ||
+                                            data.budget ||
                                             0
                                         )}
                                         •
                                         ${esc(
-                                            project.deadline ||
+                                            data.deadline ||
                                             "—"
                                         )}
                                     </span>
@@ -2508,32 +2560,28 @@ async function loadClientDashboard() {
                                 </div>
 
                             </div>
-
                         `;
+                    }
+                )
+                .join("")
+            ||
+            `
+                <div class="empty">
+                    No projects yet.
+                </div>
+            `;
 
-                    })
-                    .join("")
-                    ||
-                    `
-                        <div class="empty">
-                            No projects yet.
-                        </div>
-                    `;
-        }
 
+        $("clientRecentApplications").innerHTML =
+            applications.docs
+                .slice(0, 5)
+                .map(
+                    doc => {
 
-        if ($("clientRecentApplications")) {
-
-            $("clientRecentApplications").innerHTML =
-                applicationsSnapshot.docs
-                    .slice(0, 5)
-                    .map(document => {
-
-                        const application =
-                            document.data();
+                        const data =
+                            doc.data();
 
                         return `
-
                             <div class="activity-row">
 
                                 <div class="activity-icon">
@@ -2544,19 +2592,19 @@ async function loadClientDashboard() {
 
                                     <strong>
                                         ${esc(
-                                            application.freelancerName ||
+                                            data.freelancerName ||
                                             "Freelancer"
                                         )}
                                     </strong>
 
                                     <span>
                                         ${esc(
-                                            application.jobTitle ||
+                                            data.jobTitle ||
                                             "Project"
                                         )}
                                         •
                                         ${esc(
-                                            application.status ||
+                                            data.status ||
                                             "pending"
                                         )}
                                     </span>
@@ -2564,19 +2612,16 @@ async function loadClientDashboard() {
                                 </div>
 
                             </div>
-
                         `;
-
-                    })
-                    .join("")
-                    ||
-                    `
-                        <div class="empty">
-                            No applications yet.
-                        </div>
-                    `;
-        }
-
+                    }
+                )
+                .join("")
+            ||
+            `
+                <div class="empty">
+                    No applications yet.
+                </div>
+            `;
 
     } catch (error) {
 
@@ -2585,17 +2630,12 @@ async function loadClientDashboard() {
 }
 
 
-/* =========================================================
-   CLIENT PROJECTS
-   ========================================================= */
-
 async function loadClientProjects() {
 
     const list =
         $("clientProjects");
 
-    if (!list)
-        return;
+    if (!list) return;
 
 
     try {
@@ -2631,72 +2671,68 @@ async function loadClientProjects() {
 
         list.innerHTML =
             snapshot.docs
-                .map(document => {
+                .map(
+                    doc => {
 
-                    const job =
-                        document.data();
+                        const data =
+                            doc.data();
 
+                        return `
+                            <article class="card">
 
-                    return `
-
-                        <article class="card">
-
-                            <h3>
-                                💼
-                                ${esc(
-                                    job.title ||
-                                    "Project"
-                                )}
-                            </h3>
-
-                            <p>
-                                ${esc(
-                                    job.description ||
-                                    ""
-                                )}
-                            </p>
-
-                            <div class="meta">
-
-                                <span class="pill">
+                                <h3>
+                                    💼
                                     ${esc(
-                                        job.status ||
-                                        "open"
+                                        data.title
                                     )}
-                                </span>
+                                </h3>
 
-                                <span class="pill">
-                                    💰
-                                    $${Number(
-                                        job.budget ||
-                                        0
-                                    )}
-                                </span>
-
-                                <span class="pill">
-                                    📅
+                                <p>
                                     ${esc(
-                                        job.deadline ||
-                                        "—"
+                                        data.description ||
+                                        ""
                                     )}
-                                </span>
+                                </p>
 
-                            </div>
+                                <div class="meta">
 
-                            <small class="muted">
-                                ${esc(
-                                    job.category ||
-                                    "General"
-                                )}
-                            </small>
+                                    <span class="pill">
+                                        ${esc(
+                                            data.status ||
+                                            "open"
+                                        )}
+                                    </span>
 
-                        </article>
+                                    <span class="pill">
+                                        💰
+                                        $${Number(
+                                            data.budget ||
+                                            0
+                                        )}
+                                    </span>
 
-                    `;
+                                    <span class="pill">
+                                        📅
+                                        ${esc(
+                                            data.deadline ||
+                                            "—"
+                                        )}
+                                    </span>
 
-                })
+                                </div>
+
+                                <small class="muted">
+                                    ${esc(
+                                        data.category ||
+                                        "General"
+                                    )}
+                                </small>
+
+                            </article>
+                        `;
+                    }
+                )
                 .join("");
-
 
     } catch (error) {
 
@@ -2714,8 +2750,7 @@ async function loadClientApplications() {
     const list =
         $("clientApplications");
 
-    if (!list)
-        return;
+    if (!list) return;
 
 
     try {
@@ -2751,125 +2786,120 @@ async function loadClientApplications() {
 
         list.innerHTML =
             snapshot.docs
-                .map(document => {
+                .map(
+                    doc => {
 
-                    const application =
-                        document.data();
+                        const application =
+                            doc.data();
 
-                    const status =
-                        application.status ||
-                        "pending";
+                        const status =
+                            application.status ||
+                            "pending";
 
-                    let buttons = "";
-
-
-                    if (
-                        status ===
-                        "pending"
-                    ) {
-
-                        buttons = `
-
-                            <button
-                                class="primary accept-app"
-                                data-id="${document.id}"
-                                type="button"
-                            >
-                                Accept ✅
-                            </button>
-
-                            <button
-                                class="secondary reject-app"
-                                data-id="${document.id}"
-                                type="button"
-                            >
-                                Reject ❌
-                            </button>
-
-                        `;
-                    }
+                        let buttons = "";
 
 
-                    if (
-                        status ===
-                        "accepted"
-                    ) {
+                        if (
+                            status ===
+                            "pending"
+                        ) {
 
-                        buttons = `
+                            buttons = `
+                                <button
+                                    class="primary accept-app"
+                                    data-id="${doc.id}"
+                                    type="button"
+                                >
+                                    Accept ✅
+                                </button>
 
-                            <button
-                                class="primary chat-app"
-                                data-id="${document.id}"
-                                type="button"
-                            >
-                                💬 Message Freelancer
-                            </button>
+                                <button
+                                    class="secondary reject-app"
+                                    data-id="${doc.id}"
+                                    type="button"
+                                >
+                                    Reject ❌
+                                </button>
+                            `;
+                        }
 
-                        `;
-                    }
+
+                        if (
+                            status ===
+                            "accepted"
+                        ) {
+
+                            buttons = `
+                                <button
+                                    class="primary chat-app"
+                                    data-id="${doc.id}"
+                                    type="button"
+                                >
+                                    💬 Message Freelancer
+                                </button>
+                            `;
+                        }
 
 
-                    return `
+                        return `
+                            <article class="card">
 
-                        <article class="card">
-
-                            <h3>
-                                👤
-                                ${esc(
-                                    application.freelancerName ||
-                                    "Freelancer"
-                                )}
-                            </h3>
-
-                            <p>
-                                Applied for:
-                                <b>
+                                <h3>
+                                    👤
                                     ${esc(
-                                        application.jobTitle ||
-                                        "Project"
+                                        application.freelancerName ||
+                                        "Freelancer"
                                     )}
-                                </b>
-                            </p>
+                                </h3>
 
-                            <div class="meta">
+                                <p>
+                                    Applied for:
+                                    <b>
+                                        ${esc(
+                                            application.jobTitle ||
+                                            "Project"
+                                        )}
+                                    </b>
+                                </p>
 
-                                <span class="pill ${esc(status)}">
-                                    ${esc(status)}
-                                </span>
+                                <div class="meta">
 
-                                <span class="pill">
-                                    💰
-                                    $${Number(
-                                        application.budget ||
-                                        0
+                                    <span class="pill ${esc(status)}">
+                                        ${esc(status)}
+                                    </span>
+
+                                    <span class="pill">
+                                        💰
+                                        $${Number(
+                                            application.budget ||
+                                            0
+                                        )}
+                                    </span>
+
+                                </div>
+
+                                <small class="muted">
+
+                                    ${esc(
+                                        application.freelancerEmail ||
+                                        ""
                                     )}
-                                </span>
 
-                            </div>
+                                    •
+                                    ${fmtDate(
+                                        application.createdAt
+                                    )}
 
-                            <small class="muted">
+                                </small>
 
-                                ${esc(
-                                    application.freelancerEmail ||
-                                    ""
-                                )}
+                                <div class="card-actions">
+                                    ${buttons}
+                                </div>
 
-                                •
-                                ${fmtDate(
-                                    application.createdAt
-                                )}
-
-                            </small>
-
-                            <div class="card-actions">
-                                ${buttons}
-                            </div>
-
-                        </article>
-
-                    `;
-
-                })
+                            </article>
+                        `;
+                    }
+                )
                 .join("");
 
 
@@ -2877,54 +2907,50 @@ async function loadClientApplications() {
             .querySelectorAll(
                 ".accept-app"
             )
-            .forEach(button => {
-
-                button.addEventListener(
-                    "click",
-                    () =>
-                        updateApplicationStatus(
-                            button.dataset.id,
-                            "accepted"
-                        )
-                );
-
-            });
+            .forEach(
+                button =>
+                    button.addEventListener(
+                        "click",
+                        () =>
+                            updateApplicationStatus(
+                                button.dataset.id,
+                                "accepted"
+                            )
+                    )
+            );
 
 
         list
             .querySelectorAll(
                 ".reject-app"
             )
-            .forEach(button => {
-
-                button.addEventListener(
-                    "click",
-                    () =>
-                        updateApplicationStatus(
-                            button.dataset.id,
-                            "rejected"
-                        )
-                );
-
-            });
+            .forEach(
+                button =>
+                    button.addEventListener(
+                        "click",
+                        () =>
+                            updateApplicationStatus(
+                                button.dataset.id,
+                                "rejected"
+                            )
+                    )
+            );
 
 
         list
             .querySelectorAll(
                 ".chat-app"
             )
-            .forEach(button => {
-
-                button.addEventListener(
-                    "click",
-                    () =>
-                        openApplicationChat(
-                            button.dataset.id
-                        )
-                );
-
-            });
-
+            .forEach(
+                button =>
+                    button.addEventListener(
+                        "click",
+                        () =>
+                            openApplicationChat(
+                                button.dataset.id
+                            )
+                    )
+            );
 
     } catch (error) {
 
@@ -2934,7 +2960,7 @@ async function loadClientApplications() {
 
 
 /* =========================================================
-   ACCEPT / REJECT APPLICATION
+   ACCEPT / REJECT
    ========================================================= */
 
 async function updateApplicationStatus(
@@ -2954,10 +2980,12 @@ async function updateApplicationStatus(
             );
 
 
-        if (!snapshot.exists())
+        if (!snapshot.exists()) {
+
             throw new Error(
                 "Application not found."
             );
+        }
 
 
         const application =
@@ -2984,6 +3012,7 @@ async function updateApplicationStatus(
             ),
             {
                 status,
+
                 updatedAt:
                     serverTimestamp()
             }
@@ -3002,7 +3031,6 @@ async function updateApplicationStatus(
                     application.jobId
                 ),
                 {
-
                     status:
                         "assigned",
 
@@ -3107,10 +3135,12 @@ async function updateApplicationStatus(
 
 
         await loadClientApplications();
-        await loadClientProjects();
-        await loadClientDashboard();
-        await loadConversations();
 
+        await loadClientProjects();
+
+        await loadClientDashboard();
+
+        await loadConversations();
 
     } catch (error) {
 
@@ -3125,7 +3155,7 @@ async function updateApplicationStatus(
 
 
 /* =========================================================
-   MESSAGES / CONVERSATIONS
+   MESSAGES
    ========================================================= */
 
 async function loadConversations() {
@@ -3133,8 +3163,7 @@ async function loadConversations() {
     const list =
         $("conversationsList");
 
-    if (!list)
-        return;
+    if (!list) return;
 
 
     list.innerHTML =
@@ -3184,43 +3213,42 @@ async function loadConversations() {
 
         list.innerHTML =
             snapshot.docs
-                .map(document => {
+                .map(
+                    doc => {
 
-                    const project =
-                        document.data();
+                        const project =
+                            doc.data();
 
-                    const other =
-                        role() === "client"
-                            ? project.freelancerName ||
-                              "Freelancer"
-                            : project.clientName ||
-                              "Client";
+                        const other =
+                            role() === "client"
+                                ? project.freelancerName ||
+                                  "Freelancer"
+                                : project.clientName ||
+                                  "Client";
 
 
-                    return `
+                        return `
+                            <div
+                                class="conversation"
+                                data-id="${doc.id}"
+                            >
 
-                        <div
-                            class="conversation"
-                            data-id="${document.id}"
-                        >
+                                <strong>
+                                    ${esc(
+                                        project.title ||
+                                        "Project"
+                                    )}
+                                </strong>
 
-                            <strong>
-                                ${esc(
-                                    project.title ||
-                                    "Project"
-                                )}
-                            </strong>
+                                <span>
+                                    Chat with
+                                    ${esc(other)}
+                                </span>
 
-                            <span>
-                                Chat with
-                                ${esc(other)}
-                            </span>
-
-                        </div>
-
-                    `;
-
-                })
+                            </div>
+                        `;
+                    }
+                )
                 .join("");
 
 
@@ -3228,18 +3256,16 @@ async function loadConversations() {
             .querySelectorAll(
                 ".conversation"
             )
-            .forEach(conversation => {
-
-                conversation.addEventListener(
-                    "click",
-                    () =>
-                        openProjectChat(
-                            conversation.dataset.id
-                        )
-                );
-
-            });
-
+            .forEach(
+                conversation =>
+                    conversation.addEventListener(
+                        "click",
+                        () =>
+                            openProjectChat(
+                                conversation.dataset.id
+                            )
+                    )
+            );
 
     } catch (error) {
 
@@ -3248,12 +3274,8 @@ async function loadConversations() {
 }
 
 
-/* =========================================================
-   OPEN PROJECT CHAT
-   ========================================================= */
-
 async function openProjectChat(
-    projectId
+    id
 ) {
 
     const snapshot =
@@ -3261,13 +3283,12 @@ async function openProjectChat(
             doc(
                 db,
                 "projects",
-                projectId
+                id
             )
         );
 
 
-    if (!snapshot.exists())
-        return;
+    if (!snapshot.exists()) return;
 
 
     const project =
@@ -3275,7 +3296,7 @@ async function openProjectChat(
 
 
     currentConversation = {
-        id: projectId,
+        id,
         ...project
     };
 
@@ -3284,24 +3305,25 @@ async function openProjectChat(
         .querySelectorAll(
             ".conversation"
         )
-        .forEach(conversation => {
-
-            conversation.classList.toggle(
-                "active",
-                conversation.dataset.id ===
-                projectId
-            );
-
-        });
+        .forEach(
+            conversation =>
+                conversation.classList.toggle(
+                    "active",
+                    conversation.dataset.id === id
+                )
+        );
 
 
-    if ($("chatTitle"))
+    if ($("chatTitle")) {
+
         $("chatTitle").textContent =
             project.title ||
             "Project";
+    }
 
 
-    if ($("chatSubtitle"))
+    if ($("chatSubtitle")) {
+
         $("chatSubtitle").textContent =
             role() === "client"
                 ? `Freelancer: ${
@@ -3312,25 +3334,22 @@ async function openProjectChat(
                     project.clientName ||
                     "Client"
                 }`;
+    }
 
 
-    if ($("composer"))
+    if ($("composer")) {
+
         $("composer").style.display =
             "flex";
+    }
 
 
-    await loadMessages(
-        projectId
-    );
+    await loadMessages(id);
 }
 
 
-/* =========================================================
-   OPEN APPLICATION CHAT
-   ========================================================= */
-
 async function openApplicationChat(
-    applicationId
+    id
 ) {
 
     const snapshot =
@@ -3338,13 +3357,12 @@ async function openApplicationChat(
             doc(
                 db,
                 "applications",
-                applicationId
+                id
             )
         );
 
 
-    if (!snapshot.exists())
-        return;
+    if (!snapshot.exists()) return;
 
 
     const application =
@@ -3394,10 +3412,6 @@ async function openApplicationChat(
 }
 
 
-/* =========================================================
-   LOAD MESSAGES
-   ========================================================= */
-
 async function loadMessages(
     projectId
 ) {
@@ -3405,8 +3419,7 @@ async function loadMessages(
     const list =
         $("messageList");
 
-    if (!list)
-        return;
+    if (!list) return;
 
 
     try {
@@ -3432,7 +3445,8 @@ async function loadMessages(
             list.innerHTML =
                 `
                     <div class="empty">
-                        No messages yet. Start the conversation.
+                        No messages yet.
+                        Start the conversation.
                     </div>
                 `;
 
@@ -3440,79 +3454,80 @@ async function loadMessages(
         }
 
 
-        const messages =
+        const docs =
             [...snapshot.docs].sort(
                 (a, b) =>
                     (
-                        a.data().createdAt?.toMillis?.() ||
+                        a.data()
+                            .createdAt
+                            ?.toMillis?.() ||
                         0
                     )
                     -
                     (
-                        b.data().createdAt?.toMillis?.() ||
+                        b.data()
+                            .createdAt
+                            ?.toMillis?.() ||
                         0
                     )
             );
 
 
         list.innerHTML =
-            messages
-                .map(document => {
+            docs
+                .map(
+                    doc => {
 
-                    const message =
-                        document.data();
+                        const message =
+                            doc.data();
 
-                    const mine =
-                        message.senderId ===
-                        currentUser.uid;
+                        const mine =
+                            message.senderId ===
+                            currentUser.uid;
 
 
-                    return `
-
-                        <div
-                            class="bubble ${
-                                mine
-                                    ? "mine"
-                                    : ""
-                            }"
-                        >
-
-                            <div>
-                                ${esc(
-                                    message.text ||
-                                    ""
-                                )}
-                            </div>
-
-                            <small>
-                                ${
+                        return `
+                            <div
+                                class="bubble ${
                                     mine
-                                        ? "You"
-                                        : esc(
-                                            message.senderName ||
-                                            "Member"
-                                        )
-                                }
+                                        ? "mine"
+                                        : ""
+                                }"
+                            >
 
-                                •
+                                <div>
+                                    ${esc(
+                                        message.text ||
+                                        ""
+                                    )}
+                                </div>
 
-                                ${fmtDate(
-                                    message.createdAt
-                                )}
+                                <small>
+                                    ${
+                                        mine
+                                            ? "You"
+                                            : esc(
+                                                message.senderName ||
+                                                "Member"
+                                            )
+                                    }
 
-                            </small>
+                                    •
 
-                        </div>
+                                    ${fmtDate(
+                                        message.createdAt
+                                    )}
+                                </small>
 
-                    `;
-
-                })
+                            </div>
+                        `;
+                    }
+                )
                 .join("");
 
 
         list.scrollTop =
             list.scrollHeight;
-
 
     } catch (error) {
 
@@ -3542,32 +3557,27 @@ $("sendMessage")?.addEventListener(
         const input =
             $("messageInput");
 
-        if (!input)
-            return;
-
-
         const text =
             input.value.trim();
 
 
-        if (!text)
-            return;
+        if (!text) return;
 
 
         const project =
             currentConversation;
 
 
-        const receiverId =
-            role() === "client"
-                ? project.freelancerId
-                : project.clientId;
-
-
         try {
 
             $("sendMessage").disabled =
                 true;
+
+
+            const receiverId =
+                role() === "client"
+                    ? project.freelancerId
+                    : project.clientId;
 
 
             await addDoc(
@@ -3581,8 +3591,7 @@ $("sendMessage")?.addEventListener(
                         project.id,
 
                     jobId:
-                        project.jobId ||
-                        "",
+                        project.jobId || "",
 
                     senderId:
                         currentUser.uid,
@@ -3596,8 +3605,7 @@ $("sendMessage")?.addEventListener(
                         "",
 
                     receiverId:
-                        receiverId ||
-                        "",
+                        receiverId || "",
 
                     text,
 
@@ -3607,14 +3615,11 @@ $("sendMessage")?.addEventListener(
             );
 
 
-            input.value =
-                "";
-
+            input.value = "";
 
             await loadMessages(
                 project.id
             );
-
 
         } catch (error) {
 
@@ -3644,7 +3649,8 @@ $("messageInput")?.addEventListener(
 
             event.preventDefault();
 
-            $("sendMessage")?.click();
+            $("sendMessage")
+                ?.click();
         }
     }
 );
@@ -3659,8 +3665,7 @@ async function initPost() {
     const form =
         $("postForm");
 
-    if (!form)
-        return;
+    if (!form) return;
 
 
     form.addEventListener(
@@ -3730,9 +3735,13 @@ async function initPost() {
                     {
 
                         title,
+
                         category,
+
                         description,
+
                         budget,
+
                         deadline,
 
                         status:
@@ -3764,7 +3773,6 @@ async function initPost() {
 
                 form.reset();
 
-
                 toast(
                     "Project published."
                 );
@@ -3776,7 +3784,6 @@ async function initPost() {
                             "client-dashboard.html",
                     700
                 );
-
 
             } catch (error) {
 
@@ -3832,8 +3839,8 @@ $("settingsForm")?.addEventListener(
                     currentUser.uid
                 ),
                 {
-
                     name,
+
                     skills,
 
                     updatedAt:
@@ -3857,7 +3864,6 @@ $("settingsForm")?.addEventListener(
 
 
             await loadIdentity();
-
 
         } catch (error) {
 
@@ -3985,19 +3991,17 @@ function compressImage(file) {
                                 height;
 
 
-                            const context =
-                                canvas.getContext(
+                            canvas
+                                .getContext(
                                     "2d"
+                                )
+                                .drawImage(
+                                    image,
+                                    0,
+                                    0,
+                                    width,
+                                    height
                                 );
-
-
-                            context.drawImage(
-                                image,
-                                0,
-                                0,
-                                width,
-                                height
-                            );
 
 
                             resolve(
@@ -4047,16 +4051,16 @@ $("avatarInput")?.addEventListener(
         const file =
             event.target.files?.[0];
 
-        if (!file)
-            return;
+        if (!file) return;
 
 
         try {
 
-            msg(
-                "avatarMessage",
-                "Preparing photo..."
-            );
+            if ($("avatarMessage")) {
+
+                $("avatarMessage").textContent =
+                    "Preparing photo...";
+            }
 
 
             const photoData =
@@ -4072,7 +4076,6 @@ $("avatarInput")?.addEventListener(
                     currentUser.uid
                 ),
                 {
-
                     photoData,
 
                     updatedAt:
@@ -4099,7 +4102,6 @@ $("avatarInput")?.addEventListener(
                 "Profile photo updated."
             );
 
-
         } catch (error) {
 
             showError(error);
@@ -4112,8 +4114,7 @@ $("avatarInput")?.addEventListener(
 
         } finally {
 
-            event.target.value =
-                "";
+            event.target.value = "";
         }
     }
 );
@@ -4136,7 +4137,6 @@ $("removeAvatarBtn")?.addEventListener(
                     currentUser.uid
                 ),
                 {
-
                     photoData: "",
 
                     updatedAt:
@@ -4163,7 +4163,6 @@ $("removeAvatarBtn")?.addEventListener(
                 "Profile photo removed."
             );
 
-
         } catch (error) {
 
             showError(error);
@@ -4173,7 +4172,7 @@ $("removeAvatarBtn")?.addEventListener(
 
 
 /* =========================================================
-   PROFILE SAVE
+   PROFILE FORM
    ========================================================= */
 
 $("profileForm")?.addEventListener(
@@ -4217,9 +4216,20 @@ $("profileForm")?.addEventListener(
                     .trim();
 
 
-            if (!name)
+            if (!name) {
+
                 throw new Error(
                     "Please enter your name."
+                );
+            }
+
+
+            const finalTitle =
+                title ||
+                (
+                    role() === "client"
+                        ? "Professional Client"
+                        : "Professional Freelancer"
                 );
 
 
@@ -4234,12 +4244,7 @@ $("profileForm")?.addEventListener(
                     name,
 
                     title:
-                        title ||
-                        (
-                            role() === "client"
-                                ? "Professional Client"
-                                : "Professional Freelancer"
-                        ),
+                        finalTitle,
 
                     bio,
 
@@ -4252,10 +4257,16 @@ $("profileForm")?.addEventListener(
 
 
             userData = {
+
                 ...userData,
+
                 name,
-                title,
+
+                title:
+                    finalTitle,
+
                 bio,
+
                 skills
             };
 
@@ -4274,7 +4285,6 @@ $("profileForm")?.addEventListener(
                 "Profile saved successfully."
             );
 
-
         } catch (error) {
 
             showError(error);
@@ -4284,7 +4294,6 @@ $("profileForm")?.addEventListener(
                 error.message ||
                 "Could not save profile."
             );
-
 
         } finally {
 
@@ -4310,8 +4319,7 @@ async function loadOwnerStats() {
     if (
         !box ||
         !isOwner()
-    )
-        return;
+    ) return;
 
 
     try {
@@ -4351,66 +4359,65 @@ async function loadOwnerStats() {
                         "projects"
                     )
                 )
-
             ]);
 
 
-        box.innerHTML = [
-
+        box.innerHTML =
             [
-                "👥",
-                "Users",
-                users.size,
-                "Registered accounts"
-            ],
 
-            [
-                "💼",
-                "Projects",
-                jobs.size,
-                "Posted projects"
-            ],
+                [
+                    "👥",
+                    "Users",
+                    users.size,
+                    "Registered accounts"
+                ],
 
-            [
-                "✉",
-                "Applications",
-                applications.size,
-                "All applications"
-            ],
+                [
+                    "💼",
+                    "Projects",
+                    jobs.size,
+                    "Posted projects"
+                ],
 
-            [
-                "✓",
-                "Projects in Work",
-                projects.size,
-                "Accepted projects"
+                [
+                    "✉",
+                    "Applications",
+                    applications.size,
+                    "All applications"
+                ],
+
+                [
+                    "✓",
+                    "Projects in Work",
+                    projects.size,
+                    "Accepted projects"
+                ]
+
             ]
+            .map(
+                item => `
+                    <div class="stat">
 
-        ]
-            .map(item => `
+                        <div class="icon">
+                            ${item[0]}
+                        </div>
 
-                <div class="stat">
+                        <h3>
+                            ${item[2]}
+                        </h3>
 
-                    <div class="icon">
-                        ${item[0]}
+                        <p>
+                            ${item[1]}
+                        </p>
+
+                        <em>
+                            ${item[3]}
+                        </em>
+
                     </div>
-
-                    <h3>
-                        ${item[2]}
-                    </h3>
-
-                    <p>
-                        ${item[1]}
-                    </p>
-
-                    <em>
-                        ${item[3]}
-                    </em>
-
-                </div>
-
-            `)
+                `
+            )
             .join("");
-
 
     } catch (error) {
 
@@ -4420,7 +4427,7 @@ async function loadOwnerStats() {
 
 
 /* =========================================================
-   START APP
+   START
    ========================================================= */
 
 if (isLogin) {
