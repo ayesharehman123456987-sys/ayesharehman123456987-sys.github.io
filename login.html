@@ -1,12 +1,308 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ELITE FREELANCE HUB — Login</title><link rel="icon" href="profile.png"><link rel="stylesheet" href="style.css"></head>
+
+<head>
+
+<meta charset="utf-8">
+
+<meta
+    name="viewport"
+    content="width=device-width,initial-scale=1">
+
+<title>
+    ELITE FREELANCE HUB — Login
+</title>
+
+<link
+    rel="icon"
+    href="profile.png">
+
+<link
+    rel="stylesheet"
+    href="style.css">
+
+</head>
+
+
 <body class="auth-page">
+
+
 <div class="auth-shell">
-<div class="auth-brand"><img src="profile.png" alt="ELITE FREELANCE HUB logo"><h1>ELITE FREELANCE HUB</h1><p>Connect • Collaborate • Succeed</p><div class="auth-points"><span>✓ Real authentication</span><span>✓ Real projects</span><span>✓ Real applications</span><span>✓ Real messages</span></div></div>
-<div class="auth-card">
-<div class="tabs"><button id="loginTab" class="active" type="button">Login</button><button id="signupTab" type="button">Create Account</button></div>
-<form id="loginForm"><h2>Welcome Back! 👋</h2><p>Login to your account.</p><label>Email<input id="loginEmail" type="email" autocomplete="email" required></label><label>Password<input id="loginPassword" type="password" autocomplete="current-password" required></label><div class="remember"><label><input id="rememberMe" type="checkbox"> Remember me</label><button id="forgotBtn" type="button" class="link-btn">Forgot Password?</button></div><button class="primary wide" type="submit">Login</button><div id="loginMsg" class="form-message"></div><p class="switch-auth">Don't have an account? <button id="goSignup" class="link-btn" type="button">Create Account</button></p></form>
-<form id="signupForm" class="hidden"><h2>Create Your Account 🚀</h2><p>Join ELITE Freelance Hub.</p><label>Full Name<input id="signupName" required></label><label>Email<input id="signupEmail" type="email" required></label><label>Password<input id="signupPassword" type="password" minlength="6" required></label><label>Account Type<select id="signupRole" required><option value="freelancer">Freelancer</option><option value="client">Client</option></select></label><button class="primary wide" type="submit">Create Account</button><div id="signupMsg" class="form-message"></div><p class="switch-auth">Already have an account? <button id="goLogin" class="link-btn" type="button">Login</button></p></form>
-</div></div>
-<script type="module" src="script.js"></script></body></html>
+
+
+    <div class="auth-brand">
+
+        <img
+            src="profile.png"
+            alt="ELITE FREELANCE HUB logo">
+
+        <h1>
+            ELITE FREELANCE HUB
+        </h1>
+
+        <p>
+            Connect • Collaborate • Succeed
+        </p>
+
+
+        <div class="auth-points">
+
+            <span>
+                ✓ Real authentication
+            </span>
+
+            <span>
+                ✓ Real projects
+            </span>
+
+            <span>
+                ✓ Real applications
+            </span>
+
+            <span>
+                ✓ Real messages
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="auth-card">
+
+
+        <div class="tabs">
+
+            <button
+                id="loginTab"
+                class="active"
+                type="button">
+                Login
+            </button>
+
+            <button
+                id="signupTab"
+                type="button">
+                Create Account
+            </button>
+
+        </div>
+
+
+        <!-- LOGIN -->
+
+        <form id="loginForm">
+
+            <h2>
+                Welcome Back! 👋
+            </h2>
+
+            <p>
+                Login to your account.
+            </p>
+
+
+            <label>
+
+                Email
+
+                <input
+                    id="loginEmail"
+                    type="email"
+                    autocomplete="email"
+                    required>
+
+            </label>
+
+
+            <label>
+
+                Password
+
+                <input
+                    id="loginPassword"
+                    type="password"
+                    autocomplete="current-password"
+                    required>
+
+            </label>
+
+
+            <div class="remember">
+
+                <label>
+
+                    <input
+                        id="rememberMe"
+                        type="checkbox">
+
+                    Remember me
+
+                </label>
+
+
+                <button
+                    id="forgotBtn"
+                    type="button"
+                    class="link-btn">
+
+                    Forgot Password?
+
+                </button>
+
+            </div>
+
+
+            <button
+                class="primary wide"
+                type="submit">
+
+                Login
+
+            </button>
+
+
+            <div
+                id="loginMsg"
+                class="form-message">
+            </div>
+
+
+            <p class="switch-auth">
+
+                Don't have an account?
+
+                <button
+                    id="goSignup"
+                    class="link-btn"
+                    type="button">
+
+                    Create Account
+
+                </button>
+
+            </p>
+
+        </form>
+
+
+        <!-- SIGNUP -->
+
+        <form
+            id="signupForm"
+            class="hidden">
+
+            <h2>
+                Create Your Account 🚀
+            </h2>
+
+            <p>
+                Join ELITE Freelance Hub.
+            </p>
+
+
+            <label>
+
+                Full Name
+
+                <input
+                    id="signupName"
+                    autocomplete="name"
+                    required>
+
+            </label>
+
+
+            <label>
+
+                Email
+
+                <input
+                    id="signupEmail"
+                    type="email"
+                    autocomplete="email"
+                    required>
+
+            </label>
+
+
+            <label>
+
+                Password
+
+                <input
+                    id="signupPassword"
+                    type="password"
+                    minlength="6"
+                    autocomplete="new-password"
+                    required>
+
+            </label>
+
+
+            <label>
+
+                Account Type
+
+                <select
+                    id="signupRole"
+                    required>
+
+                    <option value="freelancer">
+                        Freelancer
+                    </option>
+
+                    <option value="client">
+                        Client
+                    </option>
+
+                </select>
+
+            </label>
+
+
+            <button
+                class="primary wide"
+                type="submit">
+
+                Create Account
+
+            </button>
+
+
+            <div
+                id="signupMsg"
+                class="form-message">
+            </div>
+
+
+            <p class="switch-auth">
+
+                Already have an account?
+
+                <button
+                    id="goLogin"
+                    class="link-btn"
+                    type="button">
+
+                    Login
+
+                </button>
+
+            </p>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script
+    type="module"
+    src="script.js">
+</script>
+
+</body>
+
+</html>
