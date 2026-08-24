@@ -6,64 +6,85 @@
 <meta charset="utf-8">
 
 <meta
-  name="viewport"
-  content="width=device-width,initial-scale=1">
+name="viewport"
+content="width=device-width,initial-scale=1"
+>
 
 <title>
-Login / Sign Up — ELITE FREELANCE HUB
+ELITE FREELANCE HUB — Login
 </title>
 
-<link
-  rel="icon"
-  href="profile.png">
+<link rel="icon" href="profile.png">
 
 <link
-  rel="stylesheet"
-  href="style.css">
+rel="stylesheet"
+href="style.css"
+>
 
 </head>
 
 
 <body class="auth-page">
 
-<main class="auth-main">
 
-<section class="auth-card">
+<div class="auth-shell">
+
 
 <div class="auth-brand">
 
 <img
-  src="profile.png"
-  class="auth-logo"
-  alt="ELITE FREELANCE HUB">
+src="profile.png"
+alt="ELITE FREELANCE HUB logo"
+>
 
-<div>
-
-<strong>
+<h1>
 ELITE FREELANCE HUB
-</strong>
+</h1>
 
-<small>
-CONNECT • COLLABORATE • SUCCEED
-</small>
+<p>
+Connect • Collaborate • Succeed
+</p>
+
+<div class="auth-points">
+
+<span>
+✓ Real authentication
+</span>
+
+<span>
+✓ Real projects
+</span>
+
+<span>
+✓ Real applications
+</span>
+
+<span>
+✓ Real messages
+</span>
 
 </div>
 
 </div>
 
 
-<div class="auth-tabs">
+<div class="auth-card">
+
+
+<div class="tabs">
 
 <button
-  id="loginTab"
-  class="active"
-  type="button">
+id="loginTab"
+class="active"
+type="button"
+>
 Login
 </button>
 
 <button
-  id="signupTab"
-  type="button">
+id="signupTab"
+type="button"
+>
 Create Account
 </button>
 
@@ -71,8 +92,6 @@ Create Account
 
 
 <form id="loginForm">
-
-<div class="auth-head">
 
 <h2>
 Welcome Back! 👋
@@ -82,44 +101,41 @@ Welcome Back! 👋
 Login to your account.
 </p>
 
-</div>
 
-
-<label class="field">
-
+<label>
 Email
 
 <input
-  id="loginEmail"
-  type="email"
-  required
-  autocomplete="email"
-  placeholder="you@example.com">
+id="loginEmail"
+type="email"
+autocomplete="email"
+required
+>
 
 </label>
 
 
-<label class="field">
-
+<label>
 Password
 
 <input
-  id="loginPassword"
-  type="password"
-  required
-  autocomplete="current-password"
-  placeholder="Your password">
+id="loginPassword"
+type="password"
+autocomplete="current-password"
+required
+>
 
 </label>
 
 
-<div class="auth-options">
+<div class="remember">
 
 <label>
 
 <input
-  id="rememberMe"
-  type="checkbox">
+id="rememberMe"
+type="checkbox"
+>
 
 Remember me
 
@@ -127,97 +143,104 @@ Remember me
 
 
 <button
-  id="forgotBtn"
-  class="link"
-  type="button">
-
+id="forgotBtn"
+type="button"
+class="link-btn"
+>
 Forgot Password?
-
 </button>
 
 </div>
 
 
 <button
-  class="primary auth-button"
-  type="submit">
+class="primary wide"
+type="submit"
+>
 Login
 </button>
 
 
 <div
-  id="loginMsg"
-  class="auth-message">
-</div>
+id="loginMsg"
+class="form-message"
+></div>
+
+
+<p class="switch-auth">
+
+Don't have an account?
+
+<button
+id="goSignup"
+class="link-btn"
+type="button"
+>
+Create Account
+</button>
+
+</p>
 
 </form>
 
 
 <form
-  id="signupForm"
-  class="hidden">
-
-<div class="auth-head">
+id="signupForm"
+class="hidden"
+>
 
 <h2>
 Create Your Account 🚀
 </h2>
 
 <p>
-Join ELITE FREELANCE HUB.
+Join ELITE Freelance Hub.
 </p>
 
-</div>
 
-
-<label class="field">
-
-Display Name
+<label>
+Full Name
 
 <input
-  id="signupName"
-  required
-  maxlength="80"
-  autocomplete="name"
-  placeholder="Your name">
+id="signupName"
+required
+>
 
 </label>
 
 
-<label class="field">
-
+<label>
 Email
 
 <input
-  id="signupEmail"
-  type="email"
-  required
-  autocomplete="email"
-  placeholder="you@example.com">
+id="signupEmail"
+type="email"
+required
+>
 
 </label>
 
 
-<label class="field">
-
+<label>
 Password
 
 <input
-  id="signupPassword"
-  type="password"
-  minlength="6"
-  required
-  autocomplete="new-password"
-  placeholder="Minimum 6 characters">
+id="signupPassword"
+type="password"
+minlength="6"
+required
+>
 
 </label>
 
 
-<label class="field">
-
+<label>
 Account Type
 
-<select id="signupRole">
+<select
+id="signupRole"
+required
+>
 
 <option value="freelancer">
 Freelancer
@@ -233,47 +256,45 @@ Client
 
 
 <button
-  class="primary auth-button"
-  type="submit">
+class="primary wide"
+type="submit"
+>
 Create Account
 </button>
 
 
 <div
-  id="signupMsg"
-  class="auth-message">
-</div>
+id="signupMsg"
+class="form-message"
+></div>
+
+
+<p class="switch-auth">
+
+Already have an account?
+
+<button
+id="goLogin"
+class="link-btn"
+type="button"
+>
+Login
+</button>
+
+</p>
 
 </form>
 
 
-<div class="auth-note">
-
-👑
-<b>Owner:</b>
-Ayesha Rehman — Owner + Freelancer access only.
-
-<br>
-
-All other accounts are either Freelancer or Client.
-
 </div>
 
-</section>
-
-</main>
-
-
-<div
-  id="firebaseError"
-  class="firebase-error">
 </div>
 
 
 <script
-  type="module"
-  src="script.js">
-</script>
+type="module"
+src="script.js"
+></script>
 
 </body>
 </html>
