@@ -28,7 +28,7 @@ import {
 
 /* =========================================================
    FIREBASE
-   ========================================================= */
+========================================================= */
 
 const firebaseConfig = {
     apiKey: "AIzaSyAOCEJrsfxYnY_d6966vNyzdh61mo245sE",
@@ -43,20 +43,25 @@ const firebaseConfig = {
 const OWNER_EMAIL =
     "ayesharehman123456987@gmail.com";
 
+
 const app = initializeApp(firebaseConfig);
+
 const auth = getAuth(app);
+
 const db = getFirestore(app);
 
 
 /* =========================================================
    GLOBAL
-   ========================================================= */
+========================================================= */
 
 const $ = id =>
     document.getElementById(id);
 
 const pageName =
-    location.pathname.split("/").pop() || "index.html";
+    location.pathname
+        .split("/")
+        .pop() || "index.html";
 
 const isLogin =
     pageName === "login.html";
@@ -67,31 +72,40 @@ const isClientPage =
 const isPostPage =
     pageName === "post-job.html";
 
+
 let currentUser = null;
+
 let userData = {};
+
 let currentConversation = null;
+
+let authReady = false;
 
 
 /* =========================================================
    HELPERS
-   ========================================================= */
+========================================================= */
 
 function esc(value) {
-    return String(value ?? "").replace(
-        /[&<>"']/g,
-        char => ({
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#039;"
-        }[char])
-    );
+
+    return String(value ?? "")
+        .replace(
+            /[&<>"']/g,
+            char => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+            }[char])
+        );
 }
 
 
 function fmtDate(value) {
+
     try {
+
         if (!value) return "";
 
         const date =
@@ -109,6 +123,7 @@ function fmtDate(value) {
         );
 
     } catch {
+
         return "";
     }
 }
@@ -121,14 +136,27 @@ function showError(error) {
     const box =
         $("firebaseError");
 
-    if (box) {
+    if (!box) return;
 
-        box.style.display = "block";
+    box.style.display = "block";
 
-        box.textContent =
-            "Firebase Error: " +
-            (error?.message || error);
-    }
+    box.textContent =
+        "Firebase Error: " +
+        (error?.message || error);
+
+}
+
+
+function clearError() {
+
+    const box =
+        $("firebaseError");
+
+    if (!box) return;
+
+    box.style.display = "none";
+
+    box.textContent = "";
 }
 
 
@@ -137,22 +165,21 @@ function toast(message) {
     const box =
         $("toast");
 
-    if (box) {
-
-        box.textContent = message;
-
-        box.classList.add("show");
-
-        setTimeout(
-            () =>
-                box.classList.remove("show"),
-            2500
-        );
-
-    } else {
+    if (!box) {
 
         alert(message);
+
+        return;
     }
+
+    box.textContent = message;
+
+    box.classList.add("show");
+
+    setTimeout(
+        () => box.classList.remove("show"),
+        2500
+    );
 }
 
 
@@ -162,18 +189,23 @@ function msg(
     success = false
 ) {
 
-    const box = $(id);
+    const element =
+        $(id);
 
-    if (!box) return;
+    if (!element) return;
 
-    box.textContent = text;
+    element.textContent = text;
 
-    box.style.color =
+    element.style.color =
         success
-            ? "#43d883"
-            : "#ff7185";
+            ? "#16a34a"
+            : "#dc2626";
 }
 
+
+/* =========================================================
+   ROLE
+========================================================= */
 
 function role() {
 
@@ -196,183 +228,259 @@ function isOwner() {
 
 /* =========================================================
    THEME
-   LIGHT / DARK
-   ========================================================= */
+========================================================= */
 
 function themeInit() {
 
-    const themeButton =
-        $("themeToggle");
-
-    const savedTheme =
+    const saved =
         localStorage.getItem("efh_theme");
 
-    const isDark =
-        savedTheme === "dark";
+    const dark =
+        saved === "dark";
 
     document.body.classList.toggle(
         "dark",
-        isDark
-    );
-
-    document.body.classList.toggle(
-        "light",
-        !isDark
+        dark
     );
 
 
-    function updateThemeButton() {
+    const button =
+        $("themeToggle");
 
-        if (!themeButton) return;
+    function updateButton() {
 
-        const dark =
+        if (!button) return;
+
+        const isDark =
             document.body.classList.contains("dark");
 
-        themeButton.textContent =
-            dark ? "☀️" : "🌙";
+        button.textContent =
+            isDark
+                ? "☀️"
+                : "🌙";
 
-        themeButton.setAttribute(
-            "aria-label",
-            dark
+        button.title =
+            isDark
                 ? "Switch to Light Mode"
-                : "Switch to Dark Mode"
-        );
-
-        themeButton.setAttribute(
-            "title",
-            dark
-                ? "Light Mode"
-                : "Dark Mode"
-        );
+                : "Switch to Dark Mode";
     }
 
 
-    if (themeButton) {
+    if (button) {
 
-        themeButton.addEventListener(
+        button.addEventListener(
             "click",
             () => {
 
-                const dark =
+                const darkNow =
                     !document.body.classList.contains(
                         "dark"
                     );
 
                 document.body.classList.toggle(
                     "dark",
-                    dark
-                );
-
-                document.body.classList.toggle(
-                    "light",
-                    !dark
+                    darkNow
                 );
 
                 localStorage.setItem(
                     "efh_theme",
-                    dark
+                    darkNow
                         ? "dark"
                         : "light"
                 );
 
-                updateThemeButton();
+                updateButton();
+
             }
         );
     }
 
 
-    updateThemeButton();
+    updateButton();
 }
+
 
 themeInit();
 
 
 /* =========================================================
-   BASIC BUTTONS
-   ========================================================= */
+   MOBILE SIDEBAR
+========================================================= */
 
-function logout() {
+function mobileMenuInit() {
 
-    signOut(auth)
-        .then(() => {
-            location.href = "login.html";
-        })
-        .catch(showError);
+    const button =
+        $("mobileMenuBtn");
+
+    const overlay =
+        $("sidebarOverlay");
+
+    if (!button) return;
+
+
+    function closeMenu() {
+
+        document.body.classList.remove(
+            "menu-open"
+        );
+
+    }
+
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            document.body.classList.toggle(
+                "menu-open"
+            );
+
+        }
+    );
+
+
+    overlay?.addEventListener(
+        "click",
+        closeMenu
+    );
+
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            const nav =
+                event.target.closest(".nav");
+
+            if (nav) {
+
+                closeMenu();
+
+            }
+
+        }
+    );
+
 }
 
 
-$("logoutBtn")?.addEventListener(
-    "click",
-    logout
-);
-
-$("topLogout")?.addEventListener(
-    "click",
-    logout
-);
+mobileMenuInit();
 
 
-$("brandHome")?.addEventListener(
-    "click",
-    () =>
-        go(
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logout() {
+
+    try {
+
+        await signOut(auth);
+
+        location.href =
+            "login.html";
+
+    } catch (error) {
+
+        showError(error);
+
+    }
+
+}
+
+
+$("logoutBtn")
+    ?.addEventListener(
+        "click",
+        logout
+    );
+
+$("topLogout")
+    ?.addEventListener(
+        "click",
+        logout
+    );
+
+
+/* =========================================================
+   BASIC BUTTONS
+========================================================= */
+
+$("brandHome")
+    ?.addEventListener(
+        "click",
+        () => go(
             "dashboardPage",
             "Dashboard"
         )
-);
+    );
 
 
-$("topProfileBtn")?.addEventListener(
-    "click",
-    () =>
-        go(
+$("topProfileBtn")
+    ?.addEventListener(
+        "click",
+        () => go(
             "profilePage",
             "Profile"
         )
-);
+    );
 
 
-$("helpBtn")?.addEventListener(
-    "click",
-    () =>
-        alert(
-            "ELITE FREELANCE HUB Support\n\n" +
-            "For account, project or payment issues, " +
-            "contact the platform owner."
-        )
-);
+$("helpBtn")
+    ?.addEventListener(
+        "click",
+        () => {
+
+            alert(
+                "ELITE FREELANCE HUB Support\n\n" +
+                "For account, project or payment issues, " +
+                "contact the platform owner."
+            );
+
+        }
+    );
 
 
-$("notificationBtn")?.addEventListener(
-    "click",
-    () =>
-        toast(
+$("notificationBtn")
+    ?.addEventListener(
+        "click",
+        () => toast(
             "No new notifications."
         )
-);
+    );
 
 
 /* =========================================================
-   SWITCH CLIENT / FREELANCER
-   ========================================================= */
+   MODE SWITCH
+========================================================= */
 
-$("switchMode")?.addEventListener(
-    "click",
-    () => {
+$("switchMode")
+    ?.addEventListener(
+        "click",
+        () => {
 
-        if (!isOwner()) return;
+            if (!isOwner()) {
 
-        location.href =
-            isClientPage
-                ? "index.html"
-                : "client-dashboard.html";
-    }
-);
+                toast(
+                    "Mode switching is available for the owner account."
+                );
+
+                return;
+            }
+
+
+            location.href =
+                isClientPage
+                    ? "index.html"
+                    : "client-dashboard.html";
+
+        }
+    );
 
 
 /* =========================================================
-   SIDEBAR NAVIGATION
-   ========================================================= */
+   NAVIGATION
+========================================================= */
 
 function buildNav() {
 
@@ -380,6 +488,7 @@ function buildNav() {
         $("navArea");
 
     if (!nav) return;
+
 
     const client =
         role() === "client";
@@ -392,6 +501,7 @@ function buildNav() {
 
                 [
                     "MAIN",
+
                     [
                         [
                             "dashboardPage",
@@ -419,8 +529,10 @@ function buildNav() {
                     ]
                 ],
 
+
                 [
                     "MANAGE",
+
                     [
                         [
                             "postPage",
@@ -430,8 +542,10 @@ function buildNav() {
                     ]
                 ],
 
+
                 [
                     "ACCOUNT",
+
                     [
                         [
                             "profilePage",
@@ -449,10 +563,12 @@ function buildNav() {
 
             ]
 
+
             : [
 
                 [
                     "MAIN",
+
                     [
                         [
                             "dashboardPage",
@@ -486,8 +602,10 @@ function buildNav() {
                     ]
                 ],
 
+
                 [
                     "ACCOUNT",
+
                     [
                         [
                             "profilePage",
@@ -502,10 +620,9 @@ function buildNav() {
                         ]
                     ]
                 ]
+
             ];
 
-
-    /* OWNER PANEL */
 
     if (
         isOwner() &&
@@ -515,6 +632,7 @@ function buildNav() {
         groups.push(
             [
                 "OWNER",
+
                 [
                     [
                         "ownerPage",
@@ -524,158 +642,201 @@ function buildNav() {
                 ]
             ]
         );
+
     }
 
 
     nav.innerHTML =
         groups
-            .map(group => {
+            .map(
+                group => {
 
-                const title =
-                    group[0];
+                    return `
+                        <div class="section-title">
+                            ${esc(group[0])}
+                        </div>
 
-                const items =
-                    group[1];
+                        ${group[1]
+                            .map(
+                                item => `
+                                    <button
+                                        class="nav"
+                                        type="button"
+                                        data-target="${item[0]}">
+                                        ${item[1]}&nbsp; ${esc(item[2])}
+                                    </button>
+                                `
+                            )
+                            .join("")
+                        }
+                    `;
 
-                return `
-                    <div class="section-title">
-                        ${title}
-                    </div>
-
-                    ${items
-                        .map(item => `
-                            <button
-                                class="nav"
-                                type="button"
-                                data-target="${item[0]}"
-                            >
-                                ${item[1]}&nbsp;
-                                ${item[2]}
-                            </button>
-                        `)
-                        .join("")}
-                `;
-            })
+                }
+            )
             .join("");
 
 
     nav
         .querySelectorAll(".nav")
-        .forEach(button => {
+        .forEach(
+            button => {
 
-            button.addEventListener(
-                "click",
-                () =>
-                    go(
-                        button.dataset.target,
-                        button.textContent
-                    )
-            );
-        });
+                button.addEventListener(
+                    "click",
+                    () =>
+                        go(
+                            button.dataset.target,
+                            button.textContent
+                        )
+                );
+
+            }
+        );
 
 
     updateActive();
+
 }
 
 
 /* =========================================================
    ACTIVE NAV
-   ========================================================= */
+========================================================= */
 
 function updateActive() {
 
     const active =
-        document.querySelector(
-            ".page.active"
-        )?.id;
+        document
+            .querySelector(".page.active")
+            ?.id;
+
 
     document
         .querySelectorAll(".nav")
-        .forEach(nav => {
+        .forEach(
+            button =>
+                button.classList.toggle(
+                    "active",
+                    button.dataset.target === active
+                )
+        );
 
-            nav.classList.toggle(
-                "active",
-                nav.dataset.target === active
-            );
-        });
 }
 
 
 /* =========================================================
-   PAGE NAVIGATION
-   ========================================================= */
+   SAFE NAVIGATION
+========================================================= */
 
 async function go(
     id,
     title
 ) {
 
+    if (!authReady || !currentUser) {
+
+        return;
+
+    }
+
+
+    const page =
+        $(id);
+
+    if (!page) {
+
+        console.warn(
+            "Page not found:",
+            id
+        );
+
+        return;
+
+    }
+
+
     document
         .querySelectorAll(".page")
-        .forEach(page => {
-
-            page.classList.toggle(
-                "active",
-                page.id === id
-            );
-        });
+        .forEach(
+            p =>
+                p.classList.toggle(
+                    "active",
+                    p.id === id
+                )
+        );
 
 
     if ($("pageTitle")) {
 
         $("pageTitle").textContent =
-            String(
-                title || "Dashboard"
-            )
-            .replace(
-                /^[^A-Za-z]+/,
-                ""
-            )
-            .trim();
+            String(title || "Dashboard")
+                .replace(
+                    /^[^A-Za-z]+/,
+                    ""
+                )
+                .trim();
+
     }
 
 
     updateActive();
 
+
+    document.body.classList.remove(
+        "menu-open"
+    );
+
+
     window.scrollTo({
-        top: 0,
-        behavior: "smooth"
+        top:0,
+        behavior:"smooth"
     });
 
 
-    const map = {
+    try {
 
-        jobsPage:
-            loadJobs,
+        const map = {
 
-        applicationsPage:
-            role() === "client"
-                ? loadClientApplications
-                : loadApplications,
+            jobsPage:
+                loadJobs,
 
-        projectsPage:
-            role() === "client"
-                ? loadClientProjects
-                : loadProjects,
+            applicationsPage:
+                role() === "client"
+                    ? loadClientApplications
+                    : loadApplications,
 
-        messagesPage:
-            loadConversations,
+            projectsPage:
+                role() === "client"
+                    ? loadClientProjects
+                    : loadProjects,
 
-        ownerPage:
-            loadOwnerStats
-    };
+            messagesPage:
+                loadConversations,
+
+            ownerPage:
+                loadOwnerStats
+
+        };
 
 
-    if (map[id]) {
+        if (map[id]) {
 
-        await map[id]();
+            await map[id]();
+
+        }
+
+    } catch (error) {
+
+        showError(error);
+
     }
+
 }
 
 
 /* =========================================================
-   HERO / TEXT NAV BUTTONS
-   ========================================================= */
+   DATA TARGET BUTTONS
+========================================================= */
 
 document.addEventListener(
     "click",
@@ -686,25 +847,36 @@ document.addEventListener(
                 "[data-target]"
             );
 
-        if (
-            button &&
-            !button.classList.contains("nav")
-        ) {
+        if (!button) return;
 
-            go(
-                button.dataset.target,
-                button.textContent
-            );
-        }
+        if (
+            button.classList.contains("nav")
+        ) return;
+
+
+        go(
+            button.dataset.target,
+            button.textContent
+        );
+
     }
 );
 
 
 /* =========================================================
-   LOAD USER IDENTITY
-   ========================================================= */
+   IDENTITY
+========================================================= */
 
 async function loadIdentity() {
+
+    if (!currentUser?.uid) {
+
+        throw new Error(
+            "Your login session is not ready yet."
+        );
+
+    }
+
 
     const reference =
         doc(
@@ -713,12 +885,14 @@ async function loadIdentity() {
             currentUser.uid
         );
 
+
     const snapshot =
         await getDoc(reference);
 
 
     const ownerByEmail =
-        currentUser.email?.toLowerCase() ===
+        currentUser.email
+            ?.toLowerCase() ===
         OWNER_EMAIL.toLowerCase();
 
 
@@ -731,7 +905,7 @@ async function loadIdentity() {
                     ? "AYESHA REHMAN"
                     : currentUser.displayName ||
                       currentUser.email
-                          ?.split("@")[0] ||
+                        ?.split("@")[0] ||
                       "Member",
 
             email:
@@ -760,7 +934,8 @@ async function loadIdentity() {
                     ? "Founder and Professional Freelancer at ELITE FREELANCE HUB."
                     : "",
 
-            photoData: ""
+            photoData:""
+
         };
 
 
@@ -778,44 +953,6 @@ async function loadIdentity() {
         userData =
             snapshot.data() || {};
 
-
-        if (
-            ownerByEmail &&
-            (
-                !userData.owner ||
-                userData.role !== "freelancer"
-            )
-        ) {
-
-            userData = {
-                ...userData,
-
-                owner: true,
-
-                role: "freelancer",
-
-                name:
-                    userData.name ||
-                    "AYESHA REHMAN",
-
-                title:
-                    userData.title ||
-                    "Founder & Professional Freelancer"
-            };
-
-
-            await updateDoc(
-                reference,
-                {
-                    owner: true,
-                    role: "freelancer",
-                    name: userData.name,
-                    title: userData.title,
-                    updatedAt:
-                        serverTimestamp()
-                }
-            );
-        }
     }
 
 
@@ -823,6 +960,43 @@ async function loadIdentity() {
 
         userData.role =
             role();
+
+    }
+
+
+    if (
+        ownerByEmail &&
+        (
+            userData.owner !== true ||
+            userData.role !== "freelancer"
+        )
+    ) {
+
+        userData.owner = true;
+
+        userData.role = "freelancer";
+
+        userData.name =
+            userData.name ||
+            "AYESHA REHMAN";
+
+        userData.title =
+            userData.title ||
+            "Founder & Professional Freelancer";
+
+
+        await updateDoc(
+            reference,
+            {
+                owner:true,
+                role:"freelancer",
+                name:userData.name,
+                title:userData.title,
+                updatedAt:
+                    serverTimestamp()
+            }
+        );
+
     }
 
 
@@ -836,13 +1010,21 @@ async function loadIdentity() {
         await updateDoc(
             reference,
             {
-                owner: false,
+                owner:false,
                 updatedAt:
                     serverTimestamp()
             }
         );
+
     }
 
+
+    /*
+       ROLE PROTECTION
+
+       Normal users cannot open
+       the wrong dashboard.
+    */
 
     if (
         !isOwner() &&
@@ -855,6 +1037,7 @@ async function loadIdentity() {
                 : "index.html";
 
         return;
+
     }
 
 
@@ -868,119 +1051,102 @@ async function loadIdentity() {
         "topAvatar",
         "profileAvatar"
     ]
-    .forEach(id => {
+        .forEach(
+            id => {
 
-        if ($(id)) {
+                if ($(id)) {
 
-            $(id).src =
-                photo;
-        }
-    });
+                    $(id).src =
+                        photo;
+
+                }
+
+            }
+        );
 
 
     document
         .querySelectorAll("#sideName")
-        .forEach(x =>
-            x.textContent =
-                userData.name ||
-                "Member"
+        .forEach(
+            element =>
+                element.textContent =
+                    userData.name ||
+                    "Member"
         );
 
 
     document
         .querySelectorAll("#sideRole")
-        .forEach(x =>
-            x.textContent =
-                isOwner()
-                    ? "Owner • Freelancer"
-                    : role() === "client"
-                        ? "Professional Client"
-                        : "Professional Freelancer"
+        .forEach(
+            element =>
+                element.textContent =
+                    isOwner()
+                        ? "Owner • Freelancer"
+                        : role() === "client"
+                            ? "Professional Client"
+                            : "Professional Freelancer"
         );
 
 
-    if ($("topName")) {
-
+    if ($("topName"))
         $("topName").textContent =
-            userData.name ||
-            "Member";
-    }
+            userData.name || "Member";
 
 
-    if ($("profileName")) {
-
+    if ($("profileName"))
         $("profileName").textContent =
-            userData.name ||
-            "Member";
-    }
+            userData.name || "Member";
 
 
-    if ($("profileRole")) {
-
+    if ($("profileRole"))
         $("profileRole").textContent =
             isOwner()
                 ? "Owner + Professional Freelancer"
                 : userData.title ||
                   (
-                    role() === "client"
-                        ? "Professional Client"
-                        : "Professional Freelancer"
+                      role() === "client"
+                          ? "Professional Client"
+                          : "Professional Freelancer"
                   );
-    }
 
 
-    if ($("profileEmail")) {
-
+    if ($("profileEmail"))
         $("profileEmail").textContent =
             currentUser.email || "";
-    }
 
 
-    if ($("profileSkills")) {
-
+    if ($("profileSkills"))
         $("profileSkills").textContent =
             userData.skills ||
             "Not added";
-    }
 
 
-    if ($("settingsName")) {
-
+    if ($("settingsName"))
         $("settingsName").value =
             userData.name || "";
-    }
 
 
-    if ($("settingsEmail")) {
-
+    if ($("settingsEmail"))
         $("settingsEmail").value =
             currentUser.email || "";
-    }
 
 
-    if ($("settingsSkills")) {
-
+    if ($("settingsSkills"))
         $("settingsSkills").value =
             userData.skills || "";
-    }
 
 
-    if ($("profileEditName")) {
-
+    if ($("profileEditName"))
         $("profileEditName").value =
             userData.name || "";
-    }
 
 
-    if ($("profileEditEmail")) {
-
+    if ($("profileEditEmail"))
         $("profileEditEmail").value =
             currentUser.email || "";
-    }
 
 
-    if ($("profileTitle")) {
-
+    if ($("profileTitle"))
         $("profileTitle").value =
             userData.title ||
             (
@@ -988,26 +1154,24 @@ async function loadIdentity() {
                     ? "Professional Client"
                     : "Professional Freelancer"
             );
-    }
 
 
-    if ($("profileBio")) {
-
+    if ($("profileBio"))
         $("profileBio").value =
             userData.bio || "";
-    }
 
 
-    if ($("profileSkillsEdit")) {
-
+    if ($("profileSkillsEdit"))
         $("profileSkillsEdit").value =
             userData.skills || "";
-    }
 
 
     if ($("switchMode")) {
 
         if (isOwner()) {
+
+            $("switchMode").style.display =
+                "block";
 
             $("switchMode").textContent =
                 isClientPage
@@ -1018,17 +1182,20 @@ async function loadIdentity() {
 
             $("switchMode").style.display =
                 "none";
+
         }
+
     }
 
 
     buildNav();
+
 }
 
 
 /* =========================================================
    AUTH GUARD
-   ========================================================= */
+========================================================= */
 
 function authGuard() {
 
@@ -1038,53 +1205,76 @@ function authGuard() {
 
             if (!user) {
 
-                location.href =
-                    "login.html";
+                authReady = false;
+
+                currentUser = null;
+
+                if (!isLogin) {
+
+                    location.replace(
+                        "login.html"
+                    );
+
+                }
 
                 return;
+
             }
 
 
-            currentUser =
-                user;
+            currentUser = user;
 
 
             try {
 
-                const snapshot =
-                    await getDoc(
-                        doc(
-                            db,
-                            "users",
-                            user.uid
-                        )
+                /*
+                   VERY IMPORTANT:
+                   UID exists before any
+                   Firestore query runs.
+                */
+
+                if (!currentUser.uid) {
+
+                    throw new Error(
+                        "Firebase account UID is unavailable."
                     );
+
+                }
+
+
+                const reference =
+                    doc(
+                        db,
+                        "users",
+                        currentUser.uid
+                    );
+
+
+                const snapshot =
+                    await getDoc(reference);
 
 
                 if (!snapshot.exists()) {
 
                     const ownerByEmail =
-                        user.email
+                        currentUser.email
                             ?.toLowerCase() ===
                         OWNER_EMAIL.toLowerCase();
 
 
                     await setDoc(
-                        doc(
-                            db,
-                            "users",
-                            user.uid
-                        ),
+                        reference,
                         {
+
                             name:
                                 ownerByEmail
                                     ? "AYESHA REHMAN"
-                                    : user.email
+                                    : currentUser.email
                                         ?.split("@")[0] ||
                                       "Member",
 
                             email:
-                                user.email || "",
+                                currentUser.email || "",
 
                             role:
                                 ownerByEmail
@@ -1109,16 +1299,29 @@ function authGuard() {
                                     ? "Founder and Professional Freelancer at ELITE FREELANCE HUB."
                                     : "",
 
-                            photoData: "",
+                            photoData:"",
 
                             createdAt:
                                 serverTimestamp()
+
                         }
                     );
+
                 }
 
 
                 await loadIdentity();
+
+
+                authReady = true;
+
+
+                /*
+                   Build navigation AFTER
+                   Firebase identity is ready.
+                */
+
+                buildNav();
 
 
                 if (isPostPage) {
@@ -1128,35 +1331,74 @@ function authGuard() {
                         !isOwner()
                     ) {
 
-                        location.href =
-                            "index.html";
+                        location.replace(
+                            "index.html"
+                        );
 
                         return;
+
                     }
 
                     await initPost();
 
-                } else if (isClientPage) {
+                }
+
+                else if (isClientPage) {
+
+                    if (
+                        role() !== "client" &&
+                        !isOwner()
+                    ) {
+
+                        location.replace(
+                            "index.html"
+                        );
+
+                        return;
+
+                    }
 
                     await initClient();
 
-                } else {
+                }
+
+                else {
+
+                    if (
+                        role() === "client" &&
+                        !isOwner()
+                    ) {
+
+                        location.replace(
+                            "client-dashboard.html"
+                        );
+
+                        return;
+
+                    }
 
                     await initFreelancer();
+
                 }
+
 
             } catch (error) {
 
+                authReady = false;
+
                 showError(error);
+
             }
+
         }
     );
+
 }
 
 
 /* =========================================================
-   LOGIN / SIGNUP
-   ========================================================= */
+   AUTH PAGE
+========================================================= */
 
 function initAuth() {
 
@@ -1173,6 +1415,7 @@ function initAuth() {
     ) {
 
         return;
+
     }
 
 
@@ -1192,6 +1435,7 @@ function initAuth() {
 
             $("signupTab")
                 ?.classList.remove("active");
+
         };
 
 
@@ -1211,6 +1455,7 @@ function initAuth() {
 
             $("signupTab")
                 ?.classList.add("active");
+
         };
 
 
@@ -1220,17 +1465,20 @@ function initAuth() {
             showLogin
         );
 
+
     $("signupTab")
         ?.addEventListener(
             "click",
             showSignup
         );
 
+
     $("goSignup")
         ?.addEventListener(
             "click",
             showSignup
         );
+
 
     $("goLogin")
         ?.addEventListener(
@@ -1245,21 +1493,44 @@ function initAuth() {
 
             event.preventDefault();
 
+            clearError();
+
+            const email =
+                $("loginEmail")
+                    .value
+                    .trim()
+                    .toLowerCase();
+
+            const password =
+                $("loginPassword")
+                    .value;
+
+
+            if (!email || !password) {
+
+                msg(
+                    "loginMsg",
+                    "Please enter your email and password."
+                );
+
+                return;
+
+            }
+
+
             try {
 
                 await signInWithEmailAndPassword(
                     auth,
-                    $("loginEmail")
-                        .value
-                        .trim()
-                        .toLowerCase(),
-
-                    $("loginPassword")
-                        .value
+                    email,
+                    password
                 );
 
-                location.href =
-                    "index.html";
+
+                location.replace(
+                    "index.html"
+                );
+
 
             } catch (error) {
 
@@ -1267,7 +1538,9 @@ function initAuth() {
                     "loginMsg",
                     friendly(error)
                 );
+
             }
+
         }
     );
 
@@ -1292,6 +1565,7 @@ function initAuth() {
                     );
 
                     return;
+
                 }
 
 
@@ -1314,7 +1588,9 @@ function initAuth() {
                         "loginMsg",
                         friendly(error)
                     );
+
                 }
+
             }
         );
 
@@ -1325,22 +1601,42 @@ function initAuth() {
 
             event.preventDefault();
 
+            clearError();
+
+
+            const name =
+                $("signupName")
+                    .value
+                    .trim();
+
+            const email =
+                $("signupEmail")
+                    .value
+                    .trim()
+                    .toLowerCase();
+
+            const password =
+                $("signupPassword")
+                    .value;
+
+            const selectedRole =
+                $("signupRole")
+                    .value;
+
+
+            if (!name || !email || !password) {
+
+                msg(
+                    "signupMsg",
+                    "Please complete all fields."
+                );
+
+                return;
+
+            }
+
+
             try {
-
-                const email =
-                    $("signupEmail")
-                        .value
-                        .trim()
-                        .toLowerCase();
-
-                const name =
-                    $("signupName")
-                        .value
-                        .trim();
-
-                const selected =
-                    $("signupRole")
-                        .value;
 
                 const ownerByEmail =
                     email ===
@@ -1351,8 +1647,7 @@ function initAuth() {
                     await createUserWithEmailAndPassword(
                         auth,
                         email,
-                        $("signupPassword")
-                            .value
+                        password
                     );
 
 
@@ -1363,6 +1658,7 @@ function initAuth() {
                         credential.user.uid
                     ),
                     {
+
                         name:
                             ownerByEmail
                                 ? "AYESHA REHMAN"
@@ -1373,7 +1669,7 @@ function initAuth() {
                         role:
                             ownerByEmail
                                 ? "freelancer"
-                                : selected,
+                                : selectedRole,
 
                         owner:
                             ownerByEmail,
@@ -1393,19 +1689,18 @@ function initAuth() {
                                 ? "Founder and Professional Freelancer at ELITE FREELANCE HUB."
                                 : "",
 
-                        photoData: "",
+                        photoData:"",
 
                         createdAt:
                             serverTimestamp()
+
                     }
                 );
 
 
                 msg(
                     "signupMsg",
-                    ownerByEmail
-                        ? "Owner + Freelancer account created successfully."
-                        : "Account created successfully.",
+                    "Account created successfully!",
                     true
                 );
 
@@ -1413,16 +1708,18 @@ function initAuth() {
                 setTimeout(
                     () => {
 
-                        location.href =
+                        location.replace(
                             ownerByEmail
                                 ? "index.html"
-                                : selected === "client"
+                                : selectedRole === "client"
                                     ? "client-dashboard.html"
-                                    : "index.html";
+                                    : "index.html"
+                        );
 
                     },
-                    500
+                    600
                 );
+
 
             } catch (error) {
 
@@ -1430,21 +1727,30 @@ function initAuth() {
                     "signupMsg",
                     friendly(error)
                 );
+
             }
+
         }
     );
+
 }
 
 
 /* =========================================================
-   FRIENDLY FIREBASE ERRORS
-   ========================================================= */
+   FIREBASE FRIENDLY ERRORS
+========================================================= */
 
 function friendly(error) {
 
     const messages = {
 
         "auth/invalid-credential":
+            "Email or password is incorrect.",
+
+        "auth/user-not-found":
+            "No account was found with this email.",
+
+        "auth/wrong-password":
             "Email or password is incorrect.",
 
         "auth/email-already-in-use":
@@ -1461,6 +1767,7 @@ function friendly(error) {
 
         "auth/network-request-failed":
             "Network error. Check your internet connection."
+
     };
 
 
@@ -1469,77 +1776,75 @@ function friendly(error) {
         error?.message ||
         "Something went wrong."
     );
+
 }
 
 
 /* =========================================================
    FREELANCER DASHBOARD
-   ========================================================= */
+========================================================= */
 
 async function loadFreelancerDashboard() {
+
+    if (!currentUser?.uid) return;
+
 
     const [
         jobs,
         applications,
         projects
-    ] =
-        await Promise.all([
+    ] = await Promise.all([
 
-            getDocs(
-                query(
-                    collection(db, "jobs"),
-                    where(
-                        "status",
-                        "==",
-                        "open"
-                    )
-                )
-            ),
-
-            getDocs(
-                query(
-                    collection(
-                        db,
-                        "applications"
-                    ),
-                    where(
-                        "freelancerId",
-                        "==",
-                        currentUser.uid
-                    )
-                )
-            ),
-
-            getDocs(
-                query(
-                    collection(
-                        db,
-                        "projects"
-                    ),
-                    where(
-                        "freelancerId",
-                        "==",
-                        currentUser.uid
-                    )
+        getDocs(
+            query(
+                collection(db,"jobs"),
+                where(
+                    "status",
+                    "==",
+                    "open"
                 )
             )
-        ]);
+        ),
+
+        getDocs(
+            query(
+                collection(db,"applications"),
+                where(
+                    "freelancerId",
+                    "==",
+                    currentUser.uid
+                )
+            )
+        ),
+
+        getDocs(
+            query(
+                collection(db,"projects"),
+                where(
+                    "freelancerId",
+                    "==",
+                    currentUser.uid
+                )
+            )
+        )
+
+    ]);
 
 
     const active =
         projects.docs.filter(
-            doc =>
-                doc.data().status !==
+            d =>
+                d.data().status !==
                 "completed"
         ).length;
 
 
     const earnings =
         projects.docs.reduce(
-            (sum, doc) =>
+            (sum,d) =>
                 sum +
                 Number(
-                    doc.data().budget || 0
+                    d.data().budget || 0
                 ),
             0
         );
@@ -1547,61 +1852,63 @@ async function loadFreelancerDashboard() {
 
     if ($("freelancerStats")) {
 
-        $("freelancerStats").innerHTML =
+        $("freelancerStats").innerHTML = [
+
             [
+                "💰",
+                "Earnings",
+                "$" +
+                    earnings.toLocaleString(),
+                "Accepted project budgets"
+            ],
 
-                [
-                    "💰",
-                    "Earnings",
-                    "$" +
-                        earnings.toLocaleString(),
-                    "Accepted project budgets"
-                ],
+            [
+                "📁",
+                "Active Projects",
+                active,
+                "Assigned work"
+            ],
 
-                [
-                    "📁",
-                    "Active Projects",
-                    active,
-                    "Assigned work"
-                ],
+            [
+                "✉",
+                "Applications",
+                applications.size,
+                "Sent to clients"
+            ],
 
-                [
-                    "✉",
-                    "Applications",
-                    applications.size,
-                    "Sent to clients"
-                ],
-
-                [
-                    "★",
-                    "Profile Rating",
-                    "—",
-                    "Reviews will appear here"
-                ]
-
+            [
+                "★",
+                "Profile Rating",
+                "—",
+                "Reviews will appear here"
             ]
-            .map(
-                item => `
-                    <div class="stat">
-                        <div class="icon">
-                            ${item[0]}
-                        </div>
 
-                        <h3>
-                            ${item[2]}
-                        </h3>
+        ]
+        .map(
+            item => `
+                <div class="stat">
 
-                        <p>
-                            ${item[1]}
-                        </p>
-
-                        <em>
-                            ${item[3]}
-                        </em>
+                    <div class="icon">
+                        ${item[0]}
                     </div>
-                `
-            )
-            .join("");
+
+                    <h3>
+                        ${item[2]}
+                    </h3>
+
+                    <p>
+                        ${item[1]}
+                    </p>
+
+                    <em>
+                        ${item[3]}
+                    </em>
+
+                </div>
+            `
+        )
+        .join("");
+
     }
 
 
@@ -1609,12 +1916,12 @@ async function loadFreelancerDashboard() {
 
         $("recommendedJobs").innerHTML =
             jobs.docs
-                .slice(0, 5)
+                .slice(0,5)
                 .map(
-                    doc => {
+                    d => {
 
-                        const data =
-                            doc.data();
+                        const x =
+                            d.data();
 
                         return `
                             <div class="activity-row">
@@ -1626,24 +1933,20 @@ async function loadFreelancerDashboard() {
                                 <div>
 
                                     <strong>
-                                        ${esc(data.title)}
+                                        ${esc(x.title)}
                                     </strong>
 
                                     <span>
-                                        $${Number(
-                                            data.budget || 0
-                                        )}
+                                        $${Number(x.budget || 0)}
                                         •
-                                        ${esc(
-                                            data.category ||
-                                            "General"
-                                        )}
+                                        ${esc(x.category || "General")}
                                     </span>
 
                                 </div>
 
                             </div>
                         `;
+
                     }
                 )
                 .join("")
@@ -1653,6 +1956,7 @@ async function loadFreelancerDashboard() {
                     No open projects yet.
                 </div>
             `;
+
     }
 
 
@@ -1660,12 +1964,12 @@ async function loadFreelancerDashboard() {
 
         $("recentApplications").innerHTML =
             applications.docs
-                .slice(0, 5)
+                .slice(0,5)
                 .map(
-                    doc => {
+                    d => {
 
-                        const data =
-                            doc.data();
+                        const x =
+                            d.data();
 
                         return `
                             <div class="activity-row">
@@ -1678,19 +1982,19 @@ async function loadFreelancerDashboard() {
 
                                     <strong>
                                         ${esc(
-                                            data.jobTitle ||
+                                            x.jobTitle ||
                                             "Project"
                                         )}
                                     </strong>
 
                                     <span>
                                         ${esc(
-                                            data.status ||
+                                            x.status ||
                                             "pending"
                                         )}
                                         •
                                         ${fmtDate(
-                                            data.createdAt
+                                            x.createdAt
                                         )}
                                     </span>
 
@@ -1698,6 +2002,7 @@ async function loadFreelancerDashboard() {
 
                             </div>
                         `;
+
                     }
                 )
                 .join("")
@@ -1707,9 +2012,15 @@ async function loadFreelancerDashboard() {
                     No applications yet.
                 </div>
             `;
+
     }
+
 }
 
+
+/* =========================================================
+   FREELANCER INIT
+========================================================= */
 
 async function initFreelancer() {
 
@@ -1720,12 +2031,13 @@ async function initFreelancer() {
     await loadApplications();
 
     await loadProjects();
+
 }
 
 
 /* =========================================================
-   FIND WORK
-   ========================================================= */
+   JOBS
+========================================================= */
 
 async function loadJobs() {
 
@@ -1733,6 +2045,9 @@ async function loadJobs() {
         $("jobsList");
 
     if (!list) return;
+
+    if (!currentUser?.uid) return;
+
 
     list.innerHTML =
         `
@@ -1747,7 +2062,7 @@ async function loadJobs() {
         const snapshot =
             await getDocs(
                 query(
-                    collection(db, "jobs"),
+                    collection(db,"jobs"),
                     where(
                         "status",
                         "==",
@@ -1757,15 +2072,15 @@ async function loadJobs() {
             );
 
 
-        const docs =
+        const jobs =
             snapshot.docs.filter(
-                doc =>
-                    doc.data().clientId !==
+                d =>
+                    d.data().clientId !==
                     currentUser.uid
             );
 
 
-        if (!docs.length) {
+        if (!jobs.length) {
 
             list.innerHTML =
                 `
@@ -1775,16 +2090,14 @@ async function loadJobs() {
                 `;
 
             return;
+
         }
 
 
-        const applications =
+        const applicationSnapshot =
             await getDocs(
                 query(
-                    collection(
-                        db,
-                        "applications"
-                    ),
+                    collection(db,"applications"),
                     where(
                         "freelancerId",
                         "==",
@@ -1796,25 +2109,23 @@ async function loadJobs() {
 
         const applied =
             new Set(
-                applications.docs.map(
-                    doc =>
-                        doc.data().jobId
+                applicationSnapshot.docs.map(
+                    d =>
+                        d.data().jobId
                 )
             );
 
 
         list.innerHTML =
-            docs
+            jobs
                 .map(
-                    doc => {
+                    d => {
 
-                        const data =
-                            doc.data();
+                        const x =
+                            d.data();
 
-                        const alreadyApplied =
-                            applied.has(
-                                doc.id
-                            );
+                        const already =
+                            applied.has(d.id);
 
 
                         return `
@@ -1823,23 +2134,24 @@ async function loadJobs() {
                                 <h3>
                                     💼
                                     ${esc(
-                                        data.title ||
+                                        x.title ||
                                         "Project"
                                     )}
                                 </h3>
 
                                 <p>
                                     ${esc(
-                                        data.description ||
+                                        x.description ||
                                         "No description provided."
                                     )}
                                 </p>
+
 
                                 <div class="meta">
 
                                     <span class="pill">
                                         ${esc(
-                                            data.category ||
+                                            x.category ||
                                             "General"
                                         )}
                                     </span>
@@ -1847,64 +2159,65 @@ async function loadJobs() {
                                     <span class="pill">
                                         💰
                                         $${Number(
-                                            data.budget ||
-                                            0
+                                            x.budget || 0
                                         )}
                                     </span>
 
                                     <span class="pill">
                                         📅
                                         ${esc(
-                                            data.deadline ||
+                                            x.deadline ||
                                             "—"
                                         )}
                                     </span>
 
                                 </div>
 
+
                                 <small class="muted">
                                     Client:
                                     ${esc(
-                                        data.clientName ||
+                                        x.clientName ||
                                         "Client"
                                     )}
                                 </small>
+
 
                                 <div class="card-actions">
 
                                     <button
                                         class="${
-                                            alreadyApplied
+                                            already
                                                 ? "secondary"
                                                 : "primary"
                                         } apply-btn"
-                                        data-job="${doc.id}"
-                                        ${alreadyApplied
-                                            ? "disabled"
-                                            : ""}
-                                    >
+                                        data-job="${d.id}"
+                                        type="button"
+                                        ${already ? "disabled" : ""}>
+
                                         ${
-                                            alreadyApplied
+                                            already
                                                 ? "Applied ✓"
                                                 : "Apply Now"
                                         }
+
                                     </button>
 
                                 </div>
 
                             </article>
                         `;
+
                     }
                 )
                 .join("");
 
 
         list
-            .querySelectorAll(
-                ".apply-btn"
-            )
+            .querySelectorAll(".apply-btn")
             .forEach(
-                button =>
+                button => {
+
                     button.addEventListener(
                         "click",
                         () =>
@@ -1912,8 +2225,11 @@ async function loadJobs() {
                                 button.dataset.job,
                                 button
                             )
-                    )
+                    );
+
+                }
             );
+
 
     } catch (error) {
 
@@ -1925,18 +2241,31 @@ async function loadJobs() {
                     Unable to load projects.
                 </div>
             `;
+
     }
+
 }
 
 
 /* =========================================================
-   APPLY JOB
-   ========================================================= */
+   APPLY
+========================================================= */
 
 async function applyJob(
     jobId,
     button
 ) {
+
+    if (!currentUser?.uid) {
+
+        toast(
+            "Please login again."
+        );
+
+        return;
+
+    }
+
 
     try {
 
@@ -1946,7 +2275,7 @@ async function applyJob(
             "Applying...";
 
 
-        const snapshot =
+        const jobSnapshot =
             await getDoc(
                 doc(
                     db,
@@ -1956,16 +2285,17 @@ async function applyJob(
             );
 
 
-        if (!snapshot.exists()) {
+        if (!jobSnapshot.exists()) {
 
             throw new Error(
                 "Project no longer exists."
             );
+
         }
 
 
         const job =
-            snapshot.data();
+            jobSnapshot.data();
 
 
         if (job.status !== "open") {
@@ -1973,16 +2303,14 @@ async function applyJob(
             throw new Error(
                 "This project is no longer accepting applications."
             );
+
         }
 
 
         const existing =
             await getDocs(
                 query(
-                    collection(
-                        db,
-                        "applications"
-                    ),
+                    collection(db,"applications"),
                     where(
                         "jobId",
                         "==",
@@ -2003,14 +2331,12 @@ async function applyJob(
                 "Applied ✓";
 
             return;
+
         }
 
 
         await addDoc(
-            collection(
-                db,
-                "applications"
-            ),
+            collection(db,"applications"),
             {
 
                 jobId,
@@ -2022,8 +2348,7 @@ async function applyJob(
                     job.clientEmail || "",
 
                 clientName:
-                    job.clientName ||
-                    "Client",
+                    job.clientName || "Client",
 
                 freelancerId:
                     currentUser.uid,
@@ -2049,12 +2374,14 @@ async function applyJob(
 
                 createdAt:
                     serverTimestamp()
+
             }
         );
 
 
         button.textContent =
             "Applied ✓";
+
 
         toast(
             "Application sent successfully."
@@ -2064,6 +2391,7 @@ async function applyJob(
         await loadApplications();
 
         await loadFreelancerDashboard();
+
 
     } catch (error) {
 
@@ -2078,13 +2406,15 @@ async function applyJob(
             error.message ||
             "Application failed."
         );
+
     }
+
 }
 
 
 /* =========================================================
-   FREELANCER APPLICATIONS
-   ========================================================= */
+   APPLICATIONS
+========================================================= */
 
 async function loadApplications() {
 
@@ -2092,6 +2422,8 @@ async function loadApplications() {
         $("applicationsList");
 
     if (!list) return;
+
+    if (!currentUser?.uid) return;
 
 
     list.innerHTML =
@@ -2107,10 +2439,7 @@ async function loadApplications() {
         const snapshot =
             await getDocs(
                 query(
-                    collection(
-                        db,
-                        "applications"
-                    ),
+                    collection(db,"applications"),
                     where(
                         "freelancerId",
                         "==",
@@ -2130,16 +2459,17 @@ async function loadApplications() {
                 `;
 
             return;
+
         }
 
 
         list.innerHTML =
             snapshot.docs
                 .map(
-                    doc => {
+                    d => {
 
                         const application =
-                            doc.data();
+                            d.data();
 
                         const status =
                             application.status ||
@@ -2165,28 +2495,40 @@ async function loadApplications() {
                                     )}
                                 </p>
 
+
                                 <div class="meta">
 
-                                    <span class="pill ${esc(status)}">
+                                    <span class="pill ${
+                                        status
+                                    }">
+
                                         ${esc(status)}
+
                                     </span>
 
+
                                     <span class="pill">
+
                                         💰
                                         $${Number(
                                             application.budget ||
                                             0
                                         )}
+
                                     </span>
 
                                 </div>
 
+
                                 <small class="muted">
+
                                     Applied
                                     ${fmtDate(
                                         application.createdAt
                                     )}
+
                                 </small>
+
 
                                 ${
                                     status === "accepted"
@@ -2195,10 +2537,11 @@ async function loadApplications() {
 
                                                 <button
                                                     class="primary message-application"
-                                                    data-id="${doc.id}"
-                                                    type="button"
-                                                >
+                                                    data-id="${d.id}"
+                                                    type="button">
+
                                                     💬 Message Client
+
                                                 </button>
 
                                             </div>
@@ -2208,6 +2551,7 @@ async function loadApplications() {
 
                             </article>
                         `;
+
                     }
                 )
                 .join("");
@@ -2228,16 +2572,19 @@ async function loadApplications() {
                     )
             );
 
+
     } catch (error) {
 
         showError(error);
+
     }
+
 }
 
 
 /* =========================================================
    FREELANCER PROJECTS
-   ========================================================= */
+========================================================= */
 
 async function loadProjects() {
 
@@ -2246,16 +2593,15 @@ async function loadProjects() {
 
     if (!list) return;
 
+    if (!currentUser?.uid) return;
+
 
     try {
 
         const snapshot =
             await getDocs(
                 query(
-                    collection(
-                        db,
-                        "projects"
-                    ),
+                    collection(db,"projects"),
                     where(
                         "freelancerId",
                         "==",
@@ -2275,16 +2621,18 @@ async function loadProjects() {
                 `;
 
             return;
+
         }
 
 
         list.innerHTML =
             snapshot.docs
                 .map(
-                    doc => {
+                    d => {
 
                         const project =
-                            doc.data();
+                            d.data();
+
 
                         return `
                             <article class="card">
@@ -2303,6 +2651,7 @@ async function loadProjects() {
                                         "Accepted project"
                                     )}
                                 </p>
+
 
                                 <div class="meta">
 
@@ -2331,20 +2680,23 @@ async function loadProjects() {
 
                                 </div>
 
+
                                 <div class="card-actions">
 
                                     <button
                                         class="primary project-chat"
-                                        data-id="${doc.id}"
-                                        type="button"
-                                    >
+                                        data-id="${d.id}"
+                                        type="button">
+
                                         💬 Open Chat
+
                                     </button>
 
                                 </div>
 
                             </article>
                         `;
+
                     }
                 )
                 .join("");
@@ -2365,16 +2717,19 @@ async function loadProjects() {
                     )
             );
 
+
     } catch (error) {
 
         showError(error);
+
     }
+
 }
 
 
 /* =========================================================
-   CLIENT
-   ========================================================= */
+   CLIENT INIT
+========================================================= */
 
 async function initClient() {
 
@@ -2385,12 +2740,19 @@ async function initClient() {
     await loadClientApplications();
 
     await loadConversations();
+
 }
 
+
+/* =========================================================
+   CLIENT DASHBOARD
+========================================================= */
 
 async function loadClientDashboard() {
 
     if (!$("clientStats")) return;
+
+    if (!currentUser?.uid) return;
 
 
     try {
@@ -2398,237 +2760,245 @@ async function loadClientDashboard() {
         const [
             projects,
             applications
-        ] =
-            await Promise.all([
+        ] = await Promise.all([
 
-                getDocs(
-                    query(
-                        collection(
-                            db,
-                            "jobs"
-                        ),
-                        where(
-                            "clientId",
-                            "==",
-                            currentUser.uid
-                        )
-                    )
-                ),
-
-                getDocs(
-                    query(
-                        collection(
-                            db,
-                            "applications"
-                        ),
-                        where(
-                            "clientId",
-                            "==",
-                            currentUser.uid
-                        )
+            getDocs(
+                query(
+                    collection(db,"jobs"),
+                    where(
+                        "clientId",
+                        "==",
+                        currentUser.uid
                     )
                 )
-            ]);
+            ),
+
+            getDocs(
+                query(
+                    collection(db,"applications"),
+                    where(
+                        "clientId",
+                        "==",
+                        currentUser.uid
+                    )
+                )
+            )
+
+        ]);
 
 
         const accepted =
             applications.docs.filter(
-                doc =>
-                    doc.data().status ===
+                d =>
+                    d.data().status ===
                     "accepted"
             ).length;
 
 
         const open =
             projects.docs.filter(
-                doc =>
-                    doc.data().status ===
+                d =>
+                    d.data().status ===
                     "open"
             ).length;
 
 
         const budget =
             projects.docs.reduce(
-                (sum, doc) =>
+                (sum,d) =>
                     sum +
                     Number(
-                        doc.data().budget ||
-                        0
+                        d.data().budget || 0
                     ),
                 0
             );
 
 
-        $("clientStats").innerHTML =
+        $("clientStats").innerHTML = [
+
             [
+                "📁",
+                "Total Projects",
+                projects.size,
+                "Posted projects"
+            ],
 
-                [
-                    "📁",
-                    "Total Projects",
-                    projects.size,
-                    "Posted projects"
-                ],
+            [
+                "◷",
+                "Open Projects",
+                open,
+                "Accepting applications"
+            ],
 
-                [
-                    "◷",
-                    "Open Projects",
-                    open,
-                    "Accepting applications"
-                ],
+            [
+                "✓",
+                "Accepted",
+                accepted,
+                "Freelancers selected"
+            ],
 
-                [
-                    "✓",
-                    "Accepted",
-                    accepted,
-                    "Freelancers selected"
-                ],
-
-                [
-                    "💰",
-                    "Total Budget",
-                    "$" +
-                        budget.toLocaleString(),
-                    "Posted budgets"
-                ]
-
+            [
+                "💰",
+                "Total Budget",
+                "$" +
+                    budget.toLocaleString(),
+                "Posted budgets"
             ]
-            .map(
-                item => `
-                    <div class="stat">
 
-                        <div class="icon">
-                            ${item[0]}
-                        </div>
+        ]
+        .map(
+            item => `
+                <div class="stat">
 
-                        <h3>
-                            ${item[2]}
-                        </h3>
-
-                        <p>
-                            ${item[1]}
-                        </p>
-
-                        <em>
-                            ${item[3]}
-                        </em>
-
+                    <div class="icon">
+                        ${item[0]}
                     </div>
+
+                    <h3>
+                        ${item[2]}
+                    </h3>
+
+                    <p>
+                        ${item[1]}
+                    </p>
+
+                    <em>
+                        ${item[3]}
+                    </em>
+
+                </div>
+            `
+        )
+        .join("");
+
+
+        if ($("clientActivity")) {
+
+            $("clientActivity").innerHTML =
+                projects.docs
+                    .slice(0,5)
+                    .map(
+                        d => {
+
+                            const x =
+                                d.data();
+
+                            return `
+                                <div class="activity-row">
+
+                                    <div class="activity-icon">
+                                        💼
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            ${esc(x.title)}
+                                        </strong>
+
+                                        <span>
+                                            ${esc(
+                                                x.status ||
+                                                "open"
+                                            )}
+                                            •
+                                            $${Number(
+                                                x.budget || 0
+                                            )}
+                                            •
+                                            ${esc(
+                                                x.deadline ||
+                                                "—"
+                                            )}
+                                        </span>
+
+                                    </div>
+
+                                </div>
+                            `;
+
+                        }
+                    )
+                    .join("")
+                ||
                 `
-            )
-            .join("");
+                    <div class="empty">
+                        No projects yet.
+                    </div>
+                `;
+
+        }
 
 
-        $("clientActivity").innerHTML =
-            projects.docs
-                .slice(0, 5)
-                .map(
-                    doc => {
+        if ($("clientRecentApplications")) {
 
-                        const data =
-                            doc.data();
+            $("clientRecentApplications").innerHTML =
+                applications.docs
+                    .slice(0,5)
+                    .map(
+                        d => {
 
-                        return `
-                            <div class="activity-row">
+                            const x =
+                                d.data();
 
-                                <div class="activity-icon">
-                                    💼
-                                </div>
+                            return `
+                                <div class="activity-row">
 
-                                <div>
+                                    <div class="activity-icon">
+                                        👤
+                                    </div>
 
-                                    <strong>
-                                        ${esc(data.title)}
-                                    </strong>
+                                    <div>
 
-                                    <span>
-                                        ${esc(
-                                            data.status ||
-                                            "open"
-                                        )}
-                                        •
-                                        $${Number(
-                                            data.budget ||
-                                            0
-                                        )}
-                                        •
-                                        ${esc(
-                                            data.deadline ||
-                                            "—"
-                                        )}
-                                    </span>
+                                        <strong>
+                                            ${esc(
+                                                x.freelancerName ||
+                                                "Freelancer"
+                                            )}
+                                        </strong>
 
-                                </div>
+                                        <span>
+                                            ${esc(
+                                                x.jobTitle ||
+                                                "Project"
+                                            )}
+                                            •
+                                            ${esc(
+                                                x.status ||
+                                                "pending"
+                                            )}
+                                        </span>
 
-                            </div>
-                        `;
-                    }
-                )
-                .join("")
-            ||
-            `
-                <div class="empty">
-                    No projects yet.
-                </div>
-            `;
-
-
-        $("clientRecentApplications").innerHTML =
-            applications.docs
-                .slice(0, 5)
-                .map(
-                    doc => {
-
-                        const data =
-                            doc.data();
-
-                        return `
-                            <div class="activity-row">
-
-                                <div class="activity-icon">
-                                    👤
-                                </div>
-
-                                <div>
-
-                                    <strong>
-                                        ${esc(
-                                            data.freelancerName ||
-                                            "Freelancer"
-                                        )}
-                                    </strong>
-
-                                    <span>
-                                        ${esc(
-                                            data.jobTitle ||
-                                            "Project"
-                                        )}
-                                        •
-                                        ${esc(
-                                            data.status ||
-                                            "pending"
-                                        )}
-                                    </span>
+                                    </div>
 
                                 </div>
+                            `;
 
-                            </div>
-                        `;
-                    }
-                )
-                .join("")
-            ||
-            `
-                <div class="empty">
-                    No applications yet.
-                </div>
-            `;
+                        }
+                    )
+                    .join("")
+                ||
+                `
+                    <div class="empty">
+                        No applications yet.
+                    </div>
+                `;
+
+        }
+
 
     } catch (error) {
 
         showError(error);
+
     }
+
 }
 
+
+/* =========================================================
+   CLIENT PROJECTS
+========================================================= */
 
 async function loadClientProjects() {
 
@@ -2637,16 +3007,15 @@ async function loadClientProjects() {
 
     if (!list) return;
 
+    if (!currentUser?.uid) return;
+
 
     try {
 
         const snapshot =
             await getDocs(
                 query(
-                    collection(
-                        db,
-                        "jobs"
-                    ),
+                    collection(db,"jobs"),
                     where(
                         "clientId",
                         "==",
@@ -2666,39 +3035,39 @@ async function loadClientProjects() {
                 `;
 
             return;
+
         }
 
 
         list.innerHTML =
             snapshot.docs
                 .map(
-                    doc => {
+                    d => {
 
-                        const data =
-                            doc.data();
+                        const x =
+                            d.data();
 
                         return `
                             <article class="card">
 
                                 <h3>
                                     💼
-                                    ${esc(
-                                        data.title
-                                    )}
+                                    ${esc(x.title)}
                                 </h3>
 
                                 <p>
                                     ${esc(
-                                        data.description ||
+                                        x.description ||
                                         ""
                                     )}
                                 </p>
+
 
                                 <div class="meta">
 
                                     <span class="pill">
                                         ${esc(
-                                            data.status ||
+                                            x.status ||
                                             "open"
                                         )}
                                     </span>
@@ -2706,7 +3075,7 @@ async function loadClientProjects() {
                                     <span class="pill">
                                         💰
                                         $${Number(
-                                            data.budget ||
+                                            x.budget ||
                                             0
                                         )}
                                     </span>
@@ -2714,36 +3083,43 @@ async function loadClientProjects() {
                                     <span class="pill">
                                         📅
                                         ${esc(
-                                            data.deadline ||
+                                            x.deadline ||
                                             "—"
                                         )}
                                     </span>
 
                                 </div>
 
+
                                 <small class="muted">
+
                                     ${esc(
-                                        data.category ||
+                                        x.category ||
                                         "General"
                                     )}
+
                                 </small>
 
                             </article>
                         `;
+
                     }
                 )
                 .join("");
 
+
     } catch (error) {
 
         showError(error);
+
     }
+
 }
 
 
 /* =========================================================
    CLIENT APPLICATIONS
-   ========================================================= */
+========================================================= */
 
 async function loadClientApplications() {
 
@@ -2752,16 +3128,15 @@ async function loadClientApplications() {
 
     if (!list) return;
 
+    if (!currentUser?.uid) return;
+
 
     try {
 
         const snapshot =
             await getDocs(
                 query(
-                    collection(
-                        db,
-                        "applications"
-                    ),
+                    collection(db,"applications"),
                     where(
                         "clientId",
                         "==",
@@ -2781,20 +3156,22 @@ async function loadClientApplications() {
                 `;
 
             return;
+
         }
 
 
         list.innerHTML =
             snapshot.docs
                 .map(
-                    doc => {
+                    d => {
 
                         const application =
-                            doc.data();
+                            d.data();
 
                         const status =
                             application.status ||
                             "pending";
+
 
                         let buttons = "";
 
@@ -2805,22 +3182,27 @@ async function loadClientApplications() {
                         ) {
 
                             buttons = `
+
                                 <button
                                     class="primary accept-app"
-                                    data-id="${doc.id}"
-                                    type="button"
-                                >
+                                    data-id="${d.id}"
+                                    type="button">
+
                                     Accept ✅
+
                                 </button>
 
                                 <button
                                     class="secondary reject-app"
-                                    data-id="${doc.id}"
-                                    type="button"
-                                >
+                                    data-id="${d.id}"
+                                    type="button">
+
                                     Reject ❌
+
                                 </button>
+
                             `;
+
                         }
 
 
@@ -2830,14 +3212,18 @@ async function loadClientApplications() {
                         ) {
 
                             buttons = `
+
                                 <button
                                     class="primary chat-app"
-                                    data-id="${doc.id}"
-                                    type="button"
-                                >
+                                    data-id="${d.id}"
+                                    type="button">
+
                                     💬 Message Freelancer
+
                                 </button>
+
                             `;
+
                         }
 
 
@@ -2862,9 +3248,10 @@ async function loadClientApplications() {
                                     </b>
                                 </p>
 
+
                                 <div class="meta">
 
-                                    <span class="pill ${esc(status)}">
+                                    <span class="pill ${status}">
                                         ${esc(status)}
                                     </span>
 
@@ -2878,6 +3265,7 @@ async function loadClientApplications() {
 
                                 </div>
 
+
                                 <small class="muted">
 
                                     ${esc(
@@ -2886,27 +3274,30 @@ async function loadClientApplications() {
                                     )}
 
                                     •
+
                                     ${fmtDate(
                                         application.createdAt
                                     )}
 
                                 </small>
 
+
                                 <div class="card-actions">
+
                                     ${buttons}
+
                                 </div>
 
                             </article>
                         `;
+
                     }
                 )
                 .join("");
 
 
         list
-            .querySelectorAll(
-                ".accept-app"
-            )
+            .querySelectorAll(".accept-app")
             .forEach(
                 button =>
                     button.addEventListener(
@@ -2921,9 +3312,7 @@ async function loadClientApplications() {
 
 
         list
-            .querySelectorAll(
-                ".reject-app"
-            )
+            .querySelectorAll(".reject-app")
             .forEach(
                 button =>
                     button.addEventListener(
@@ -2938,9 +3327,7 @@ async function loadClientApplications() {
 
 
         list
-            .querySelectorAll(
-                ".chat-app"
-            )
+            .querySelectorAll(".chat-app")
             .forEach(
                 button =>
                     button.addEventListener(
@@ -2952,21 +3339,27 @@ async function loadClientApplications() {
                     )
             );
 
+
     } catch (error) {
 
         showError(error);
+
     }
+
 }
 
 
 /* =========================================================
    ACCEPT / REJECT
-   ========================================================= */
+========================================================= */
 
 async function updateApplicationStatus(
-    applicationId,
+    id,
     status
 ) {
+
+    if (!currentUser?.uid) return;
+
 
     try {
 
@@ -2975,7 +3368,7 @@ async function updateApplicationStatus(
                 doc(
                     db,
                     "applications",
-                    applicationId
+                    id
                 )
             );
 
@@ -2985,6 +3378,7 @@ async function updateApplicationStatus(
             throw new Error(
                 "Application not found."
             );
+
         }
 
 
@@ -3001,6 +3395,7 @@ async function updateApplicationStatus(
             throw new Error(
                 "You cannot change this application."
             );
+
         }
 
 
@@ -3008,7 +3403,7 @@ async function updateApplicationStatus(
             doc(
                 db,
                 "applications",
-                applicationId
+                id
             ),
             {
                 status,
@@ -3024,13 +3419,18 @@ async function updateApplicationStatus(
             "accepted"
         ) {
 
-            await updateDoc(
+            const jobReference =
                 doc(
                     db,
                     "jobs",
                     application.jobId
-                ),
+                );
+
+
+            await updateDoc(
+                jobReference,
                 {
+
                     status:
                         "assigned",
 
@@ -3040,6 +3440,7 @@ async function updateApplicationStatus(
                     assignedFreelancerName:
                         application.freelancerName ||
                         "Freelancer"
+
                 }
             );
 
@@ -3047,10 +3448,7 @@ async function updateApplicationStatus(
             const existing =
                 await getDocs(
                     query(
-                        collection(
-                            db,
-                            "projects"
-                        ),
+                        collection(db,"projects"),
                         where(
                             "jobId",
                             "==",
@@ -3068,10 +3466,7 @@ async function updateApplicationStatus(
             if (existing.empty) {
 
                 await addDoc(
-                    collection(
-                        db,
-                        "projects"
-                    ),
+                    collection(db,"projects"),
                     {
 
                         jobId:
@@ -3117,8 +3512,10 @@ async function updateApplicationStatus(
 
                         createdAt:
                             serverTimestamp()
+
                     }
                 );
+
             }
 
 
@@ -3131,6 +3528,7 @@ async function updateApplicationStatus(
             toast(
                 "Application rejected."
             );
+
         }
 
 
@@ -3142,6 +3540,7 @@ async function updateApplicationStatus(
 
         await loadConversations();
 
+
     } catch (error) {
 
         showError(error);
@@ -3150,13 +3549,15 @@ async function updateApplicationStatus(
             error.message ||
             "Could not update application."
         );
+
     }
+
 }
 
 
 /* =========================================================
-   MESSAGES
-   ========================================================= */
+   CONVERSATIONS
+========================================================= */
 
 async function loadConversations() {
 
@@ -3164,6 +3565,8 @@ async function loadConversations() {
         $("conversationsList");
 
     if (!list) return;
+
+    if (!currentUser?.uid) return;
 
 
     list.innerHTML =
@@ -3185,10 +3588,7 @@ async function loadConversations() {
         const snapshot =
             await getDocs(
                 query(
-                    collection(
-                        db,
-                        "projects"
-                    ),
+                    collection(db,"projects"),
                     where(
                         field,
                         "==",
@@ -3208,16 +3608,17 @@ async function loadConversations() {
                 `;
 
             return;
+
         }
 
 
         list.innerHTML =
             snapshot.docs
                 .map(
-                    doc => {
+                    d => {
 
                         const project =
-                            doc.data();
+                            d.data();
 
                         const other =
                             role() === "client"
@@ -3230,8 +3631,7 @@ async function loadConversations() {
                         return `
                             <div
                                 class="conversation"
-                                data-id="${doc.id}"
-                            >
+                                data-id="${d.id}">
 
                                 <strong>
                                     ${esc(
@@ -3247,6 +3647,7 @@ async function loadConversations() {
 
                             </div>
                         `;
+
                     }
                 )
                 .join("");
@@ -3257,26 +3658,34 @@ async function loadConversations() {
                 ".conversation"
             )
             .forEach(
-                conversation =>
-                    conversation.addEventListener(
+                item =>
+                    item.addEventListener(
                         "click",
                         () =>
                             openProjectChat(
-                                conversation.dataset.id
+                                item.dataset.id
                             )
                     )
             );
 
+
     } catch (error) {
 
         showError(error);
+
     }
+
 }
 
 
-async function openProjectChat(
-    id
-) {
+/* =========================================================
+   OPEN PROJECT CHAT
+========================================================= */
+
+async function openProjectChat(id) {
+
+    if (!currentUser?.uid) return;
+
 
     const snapshot =
         await getDoc(
@@ -3296,8 +3705,11 @@ async function openProjectChat(
 
 
     currentConversation = {
+
         id,
+
         ...project
+
     };
 
 
@@ -3306,51 +3718,51 @@ async function openProjectChat(
             ".conversation"
         )
         .forEach(
-            conversation =>
-                conversation.classList.toggle(
+            item =>
+                item.classList.toggle(
                     "active",
-                    conversation.dataset.id === id
+                    item.dataset.id === id
                 )
         );
 
 
-    if ($("chatTitle")) {
-
+    if ($("chatTitle"))
         $("chatTitle").textContent =
             project.title ||
             "Project";
-    }
 
 
-    if ($("chatSubtitle")) {
-
+    if ($("chatSubtitle"))
         $("chatSubtitle").textContent =
             role() === "client"
                 ? `Freelancer: ${
                     project.freelancerName ||
                     "Freelancer"
-                }`
+                  }`
                 : `Client: ${
                     project.clientName ||
                     "Client"
-                }`;
-    }
+                  }`;
 
 
-    if ($("composer")) {
-
+    if ($("composer"))
         $("composer").style.display =
             "flex";
-    }
 
 
     await loadMessages(id);
+
 }
 
 
-async function openApplicationChat(
-    id
-) {
+/* =========================================================
+   APPLICATION CHAT
+========================================================= */
+
+async function openApplicationChat(id) {
+
+    if (!currentUser?.uid) return;
+
 
     const snapshot =
         await getDoc(
@@ -3362,7 +3774,15 @@ async function openApplicationChat(
         );
 
 
-    if (!snapshot.exists()) return;
+    if (!snapshot.exists()) {
+
+        toast(
+            "Application not found."
+        );
+
+        return;
+
+    }
 
 
     const application =
@@ -3372,10 +3792,7 @@ async function openApplicationChat(
     const projects =
         await getDocs(
             query(
-                collection(
-                    db,
-                    "projects"
-                ),
+                collection(db,"projects"),
                 where(
                     "jobId",
                     "==",
@@ -3397,6 +3814,7 @@ async function openApplicationChat(
         );
 
         return;
+
     }
 
 
@@ -3409,8 +3827,13 @@ async function openApplicationChat(
     await openProjectChat(
         projects.docs[0].id
     );
+
 }
 
+
+/* =========================================================
+   MESSAGES
+========================================================= */
 
 async function loadMessages(
     projectId
@@ -3421,16 +3844,15 @@ async function loadMessages(
 
     if (!list) return;
 
+    if (!currentUser?.uid) return;
+
 
     try {
 
         const snapshot =
             await getDocs(
                 query(
-                    collection(
-                        db,
-                        "messages"
-                    ),
+                    collection(db,"messages"),
                     where(
                         "projectId",
                         "==",
@@ -3451,35 +3873,37 @@ async function loadMessages(
                 `;
 
             return;
+
         }
 
 
-        const docs =
-            [...snapshot.docs].sort(
-                (a, b) =>
-                    (
-                        a.data()
-                            .createdAt
-                            ?.toMillis?.() ||
-                        0
-                    )
-                    -
-                    (
-                        b.data()
-                            .createdAt
-                            ?.toMillis?.() ||
-                        0
-                    )
-            );
+        const messages =
+            [...snapshot.docs]
+                .sort(
+                    (a,b) =>
+                        (
+                            a.data()
+                                .createdAt
+                                ?.toMillis?.() ||
+                            0
+                        )
+                        -
+                        (
+                            b.data()
+                                .createdAt
+                                ?.toMillis?.() ||
+                            0
+                        )
+                );
 
 
         list.innerHTML =
-            docs
+            messages
                 .map(
-                    doc => {
+                    d => {
 
                         const message =
-                            doc.data();
+                            d.data();
 
                         const mine =
                             message.senderId ===
@@ -3492,8 +3916,7 @@ async function loadMessages(
                                     mine
                                         ? "mine"
                                         : ""
-                                }"
-                            >
+                                }">
 
                                 <div>
                                     ${esc(
@@ -3509,7 +3932,7 @@ async function loadMessages(
                                             : esc(
                                                 message.senderName ||
                                                 "Member"
-                                            )
+                                              )
                                     }
 
                                     •
@@ -3517,10 +3940,12 @@ async function loadMessages(
                                     ${fmtDate(
                                         message.createdAt
                                     )}
+
                                 </small>
 
                             </div>
                         `;
+
                     }
                 )
                 .join("");
@@ -3529,136 +3954,160 @@ async function loadMessages(
         list.scrollTop =
             list.scrollHeight;
 
+
     } catch (error) {
 
         showError(error);
+
     }
+
 }
 
 
 /* =========================================================
    SEND MESSAGE
-   ========================================================= */
+========================================================= */
 
-$("sendMessage")?.addEventListener(
-    "click",
-    async () => {
+$("sendMessage")
+    ?.addEventListener(
+        "click",
+        async () => {
 
-        if (!currentConversation) {
+            if (
+                !currentUser?.uid
+            ) {
 
-            toast(
-                "Select a project first."
-            );
+                toast(
+                    "Please login again."
+                );
 
-            return;
+                return;
+
+            }
+
+
+            if (!currentConversation) {
+
+                toast(
+                    "Select a project first."
+                );
+
+                return;
+
+            }
+
+
+            const input =
+                $("messageInput");
+
+
+            const text =
+                input.value.trim();
+
+
+            if (!text) return;
+
+
+            const project =
+                currentConversation;
+
+
+            try {
+
+                $("sendMessage").disabled =
+                    true;
+
+
+                const receiverId =
+                    role() === "client"
+                        ? project.freelancerId
+                        : project.clientId;
+
+
+                await addDoc(
+                    collection(db,"messages"),
+                    {
+
+                        projectId:
+                            project.id,
+
+                        jobId:
+                            project.jobId || "",
+
+                        senderId:
+                            currentUser.uid,
+
+                        senderName:
+                            userData.name ||
+                            "Member",
+
+                        senderEmail:
+                            currentUser.email ||
+                            "",
+
+                        receiverId:
+                            receiverId || "",
+
+                        text,
+
+                        createdAt:
+                            serverTimestamp()
+
+                    }
+                );
+
+
+                input.value = "";
+
+
+                await loadMessages(
+                    project.id
+                );
+
+
+            } catch (error) {
+
+                showError(error);
+
+                toast(
+                    "Message could not be sent."
+                );
+
+            } finally {
+
+                $("sendMessage").disabled =
+                    false;
+
+            }
+
         }
+    );
 
 
-        const input =
-            $("messageInput");
+$("messageInput")
+    ?.addEventListener(
+        "keydown",
+        event => {
 
-        const text =
-            input.value.trim();
+            if (
+                event.key === "Enter" &&
+                !event.shiftKey
+            ) {
 
+                event.preventDefault();
 
-        if (!text) return;
+                $("sendMessage")
+                    ?.click();
 
+            }
 
-        const project =
-            currentConversation;
-
-
-        try {
-
-            $("sendMessage").disabled =
-                true;
-
-
-            const receiverId =
-                role() === "client"
-                    ? project.freelancerId
-                    : project.clientId;
-
-
-            await addDoc(
-                collection(
-                    db,
-                    "messages"
-                ),
-                {
-
-                    projectId:
-                        project.id,
-
-                    jobId:
-                        project.jobId || "",
-
-                    senderId:
-                        currentUser.uid,
-
-                    senderName:
-                        userData.name ||
-                        "Member",
-
-                    senderEmail:
-                        currentUser.email ||
-                        "",
-
-                    receiverId:
-                        receiverId || "",
-
-                    text,
-
-                    createdAt:
-                        serverTimestamp()
-                }
-            );
-
-
-            input.value = "";
-
-            await loadMessages(
-                project.id
-            );
-
-        } catch (error) {
-
-            showError(error);
-
-            toast(
-                "Message could not be sent."
-            );
-
-        } finally {
-
-            $("sendMessage").disabled =
-                false;
         }
-    }
-);
-
-
-$("messageInput")?.addEventListener(
-    "keydown",
-    event => {
-
-        if (
-            event.key === "Enter" &&
-            !event.shiftKey
-        ) {
-
-            event.preventDefault();
-
-            $("sendMessage")
-                ?.click();
-        }
-    }
-);
+    );
 
 
 /* =========================================================
    POST PROJECT
-   ========================================================= */
+========================================================= */
 
 async function initPost() {
 
@@ -3666,6 +4115,8 @@ async function initPost() {
         $("postForm");
 
     if (!form) return;
+
+    if (!currentUser?.uid) return;
 
 
     form.addEventListener(
@@ -3724,14 +4175,12 @@ async function initPost() {
                     throw new Error(
                         "Please complete every field."
                     );
+
                 }
 
 
                 await addDoc(
-                    collection(
-                        db,
-                        "jobs"
-                    ),
+                    collection(db,"jobs"),
                     {
 
                         title,
@@ -3760,6 +4209,7 @@ async function initPost() {
 
                         createdAt:
                             serverTimestamp()
+
                     }
                 );
 
@@ -3773,6 +4223,7 @@ async function initPost() {
 
                 form.reset();
 
+
                 toast(
                     "Project published."
                 );
@@ -3780,10 +4231,12 @@ async function initPost() {
 
                 setTimeout(
                     () =>
-                        location.href =
-                            "client-dashboard.html",
+                        location.replace(
+                            "client-dashboard.html"
+                        ),
                     700
                 );
+
 
             } catch (error) {
 
@@ -3802,91 +4255,103 @@ async function initPost() {
 
                 button.textContent =
                     "🚀 Publish Project";
+
             }
+
         }
     );
+
 }
 
 
 /* =========================================================
    SETTINGS
-   ========================================================= */
+========================================================= */
 
-$("settingsForm")?.addEventListener(
-    "submit",
-    async event => {
+$("settingsForm")
+    ?.addEventListener(
+        "submit",
+        async event => {
 
-        event.preventDefault();
-
-
-        try {
-
-            const name =
-                $("settingsName")
-                    .value
-                    .trim();
-
-            const skills =
-                $("settingsSkills")
-                    .value
-                    .trim();
+            event.preventDefault();
 
 
-            await updateDoc(
-                doc(
-                    db,
-                    "users",
-                    currentUser.uid
-                ),
-                {
-                    name,
-
-                    skills,
-
-                    updatedAt:
-                        serverTimestamp()
-                }
-            );
+            if (!currentUser?.uid) return;
 
 
-            userData.name =
-                name;
+            try {
 
-            userData.skills =
-                skills;
+                const name =
+                    $("settingsName")
+                        .value
+                        .trim();
+
+                const skills =
+                    $("settingsSkills")
+                        .value
+                        .trim();
 
 
-            msg(
-                "settingsMessage",
-                "Saved successfully.",
-                true
-            );
+                await updateDoc(
+                    doc(
+                        db,
+                        "users",
+                        currentUser.uid
+                    ),
+                    {
+
+                        name,
+
+                        skills,
+
+                        updatedAt:
+                            serverTimestamp()
+
+                    }
+                );
 
 
-            await loadIdentity();
+                userData.name =
+                    name;
 
-        } catch (error) {
+                userData.skills =
+                    skills;
 
-            showError(error);
 
-            msg(
-                "settingsMessage",
-                error.message ||
-                "Could not save."
-            );
+                msg(
+                    "settingsMessage",
+                    "Saved successfully.",
+                    true
+                );
+
+
+                await loadIdentity();
+
+
+            } catch (error) {
+
+                showError(error);
+
+                msg(
+                    "settingsMessage",
+                    error.message ||
+                    "Could not save."
+                );
+
+            }
+
         }
-    }
-);
+    );
 
 
 /* =========================================================
    PROFILE PHOTO
-   ========================================================= */
+========================================================= */
 
 function compressImage(file) {
 
     return new Promise(
-        (resolve, reject) => {
+        (resolve,reject) => {
 
             if (
                 !file ||
@@ -3902,6 +4367,7 @@ function compressImage(file) {
                 );
 
                 return;
+
             }
 
 
@@ -3917,6 +4383,7 @@ function compressImage(file) {
                 );
 
                 return;
+
             }
 
 
@@ -3937,6 +4404,7 @@ function compressImage(file) {
                             const max =
                                 700;
 
+
                             let width =
                                 image.width;
 
@@ -3945,8 +4413,7 @@ function compressImage(file) {
 
 
                             if (
-                                width >
-                                max
+                                width > max
                             ) {
 
                                 height =
@@ -3958,12 +4425,12 @@ function compressImage(file) {
 
                                 width =
                                     max;
+
                             }
 
 
                             if (
-                                height >
-                                max
+                                height > max
                             ) {
 
                                 width =
@@ -3975,6 +4442,7 @@ function compressImage(file) {
 
                                 height =
                                     max;
+
                             }
 
 
@@ -3992,9 +4460,7 @@ function compressImage(file) {
 
 
                             canvas
-                                .getContext(
-                                    "2d"
-                                )
+                                .getContext("2d")
                                 .drawImage(
                                     image,
                                     0,
@@ -4007,9 +4473,10 @@ function compressImage(file) {
                             resolve(
                                 canvas.toDataURL(
                                     "image/jpeg",
-                                    0.68
+                                    .68
                                 )
                             );
+
                         };
 
 
@@ -4024,6 +4491,7 @@ function compressImage(file) {
 
                     image.src =
                         reader.result;
+
                 };
 
 
@@ -4039,207 +4507,256 @@ function compressImage(file) {
             reader.readAsDataURL(
                 file
             );
+
         }
     );
+
 }
 
 
-$("avatarInput")?.addEventListener(
-    "change",
-    async event => {
+$("avatarInput")
+    ?.addEventListener(
+        "change",
+        async event => {
 
-        const file =
-            event.target.files?.[0];
-
-        if (!file) return;
+            const file =
+                event.target.files?.[0];
 
 
-        try {
+            if (!file) return;
 
-            if ($("avatarMessage")) {
 
-                $("avatarMessage").textContent =
-                    "Preparing photo...";
+            if (!currentUser?.uid) {
+
+                msg(
+                    "avatarMessage",
+                    "Please login again."
+                );
+
+                return;
+
             }
 
 
-            const photoData =
-                await compressImage(
-                    file
+            try {
+
+                $("avatarMessage")
+                    .textContent =
+                    "Preparing photo...";
+
+
+                const photoData =
+                    await compressImage(
+                        file
+                    );
+
+
+                await updateDoc(
+                    doc(
+                        db,
+                        "users",
+                        currentUser.uid
+                    ),
+                    {
+
+                        photoData,
+
+                        updatedAt:
+                            serverTimestamp()
+
+                    }
                 );
 
 
-            await updateDoc(
-                doc(
-                    db,
-                    "users",
-                    currentUser.uid
-                ),
-                {
-                    photoData,
-
-                    updatedAt:
-                        serverTimestamp()
-                }
-            );
+                userData.photoData =
+                    photoData;
 
 
-            userData.photoData =
-                photoData;
+                await loadIdentity();
 
 
-            await loadIdentity();
+                msg(
+                    "avatarMessage",
+                    "Profile photo updated.",
+                    true
+                );
 
 
-            msg(
-                "avatarMessage",
-                "Profile photo updated.",
-                true
-            );
+                toast(
+                    "Profile photo updated."
+                );
 
 
-            toast(
-                "Profile photo updated."
-            );
+            } catch (error) {
 
-        } catch (error) {
+                showError(error);
 
-            showError(error);
+                msg(
+                    "avatarMessage",
+                    error.message ||
+                    "Could not update photo."
+                );
 
-            msg(
-                "avatarMessage",
-                error.message ||
-                "Could not update photo."
-            );
+            } finally {
 
-        } finally {
+                event.target.value = "";
 
-            event.target.value = "";
+            }
+
         }
-    }
-);
+    );
 
 
-/* =========================================================
-   REMOVE PHOTO
-   ========================================================= */
+$("removeAvatarBtn")
+    ?.addEventListener(
+        "click",
+        async () => {
 
-$("removeAvatarBtn")?.addEventListener(
-    "click",
-    async () => {
-
-        try {
-
-            await updateDoc(
-                doc(
-                    db,
-                    "users",
-                    currentUser.uid
-                ),
-                {
-                    photoData: "",
-
-                    updatedAt:
-                        serverTimestamp()
-                }
-            );
+            if (!currentUser?.uid) return;
 
 
-            userData.photoData =
-                "";
+            try {
+
+                await updateDoc(
+                    doc(
+                        db,
+                        "users",
+                        currentUser.uid
+                    ),
+                    {
+
+                        photoData:"",
+
+                        updatedAt:
+                            serverTimestamp()
+
+                    }
+                );
 
 
-            await loadIdentity();
+                userData.photoData =
+                    "";
 
 
-            msg(
-                "avatarMessage",
-                "Profile photo removed.",
-                true
-            );
+                await loadIdentity();
 
 
-            toast(
-                "Profile photo removed."
-            );
+                msg(
+                    "avatarMessage",
+                    "Profile photo removed.",
+                    true
+                );
 
-        } catch (error) {
 
-            showError(error);
+                toast(
+                    "Profile photo removed."
+                );
+
+
+            } catch (error) {
+
+                showError(error);
+
+            }
+
         }
-    }
-);
+    );
 
 
 /* =========================================================
    PROFILE FORM
-   ========================================================= */
+========================================================= */
 
-$("profileForm")?.addEventListener(
-    "submit",
-    async event => {
+$("profileForm")
+    ?.addEventListener(
+        "submit",
+        async event => {
 
-        event.preventDefault();
-
-
-        const button =
-            $("saveProfileBtn");
+            event.preventDefault();
 
 
-        try {
-
-            button.disabled =
-                true;
-
-            button.textContent =
-                "Saving...";
+            if (!currentUser?.uid) return;
 
 
-            const name =
-                $("profileEditName")
-                    .value
-                    .trim();
-
-            const title =
-                $("profileTitle")
-                    .value
-                    .trim();
-
-            const bio =
-                $("profileBio")
-                    .value
-                    .trim();
-
-            const skills =
-                $("profileSkillsEdit")
-                    .value
-                    .trim();
+            const button =
+                $("saveProfileBtn");
 
 
-            if (!name) {
+            try {
 
-                throw new Error(
-                    "Please enter your name."
+                button.disabled =
+                    true;
+
+                button.textContent =
+                    "Saving...";
+
+
+                const name =
+                    $("profileEditName")
+                        .value
+                        .trim();
+
+                const title =
+                    $("profileTitle")
+                        .value
+                        .trim();
+
+                const bio =
+                    $("profileBio")
+                        .value
+                        .trim();
+
+                const skills =
+                    $("profileSkillsEdit")
+                        .value
+                        .trim();
+
+
+                if (!name) {
+
+                    throw new Error(
+                        "Please enter your name."
+                    );
+
+                }
+
+
+                const finalTitle =
+                    title ||
+                    (
+                        role() === "client"
+                            ? "Professional Client"
+                            : "Professional Freelancer"
+                    );
+
+
+                await updateDoc(
+                    doc(
+                        db,
+                        "users",
+                        currentUser.uid
+                    ),
+                    {
+
+                        name,
+
+                        title:
+                            finalTitle,
+
+                        bio,
+
+                        skills,
+
+                        updatedAt:
+                            serverTimestamp()
+
+                    }
                 );
-            }
 
 
-            const finalTitle =
-                title ||
-                (
-                    role() === "client"
-                        ? "Professional Client"
-                        : "Professional Freelancer"
-                );
+                userData = {
 
-
-            await updateDoc(
-                doc(
-                    db,
-                    "users",
-                    currentUser.uid
-                ),
-                {
+                    ...userData,
 
                     name,
 
@@ -4248,78 +4765,62 @@ $("profileForm")?.addEventListener(
 
                     bio,
 
-                    skills,
+                    skills
 
-                    updatedAt:
-                        serverTimestamp()
-                }
-            );
+                };
 
 
-            userData = {
-
-                ...userData,
-
-                name,
-
-                title:
-                    finalTitle,
-
-                bio,
-
-                skills
-            };
+                await loadIdentity();
 
 
-            await loadIdentity();
+                msg(
+                    "profileMessage",
+                    "Profile saved successfully.",
+                    true
+                );
 
 
-            msg(
-                "profileMessage",
-                "Profile saved successfully.",
-                true
-            );
+                toast(
+                    "Profile saved successfully."
+                );
 
 
-            toast(
-                "Profile saved successfully."
-            );
+            } catch (error) {
 
-        } catch (error) {
+                showError(error);
 
-            showError(error);
+                msg(
+                    "profileMessage",
+                    error.message ||
+                    "Could not save profile."
+                );
 
-            msg(
-                "profileMessage",
-                error.message ||
-                "Could not save profile."
-            );
+            } finally {
 
-        } finally {
+                button.disabled =
+                    false;
 
-            button.disabled =
-                false;
+                button.textContent =
+                    "💾 Save Profile";
 
-            button.textContent =
-                "💾 Save Profile";
+            }
+
         }
-    }
-);
+    );
 
 
 /* =========================================================
-   OWNER PANEL
-   ========================================================= */
+   OWNER
+========================================================= */
 
 async function loadOwnerStats() {
 
     const box =
         $("ownerStats");
 
-    if (
-        !box ||
-        !isOwner()
-    ) return;
+    if (!box) return;
+
+    if (!isOwner()) return;
 
 
     try {
@@ -4329,106 +4830,108 @@ async function loadOwnerStats() {
             jobs,
             applications,
             projects
-        ] =
-            await Promise.all([
+        ] = await Promise.all([
 
-                getDocs(
-                    collection(
-                        db,
-                        "users"
-                    )
-                ),
-
-                getDocs(
-                    collection(
-                        db,
-                        "jobs"
-                    )
-                ),
-
-                getDocs(
-                    collection(
-                        db,
-                        "applications"
-                    )
-                ),
-
-                getDocs(
-                    collection(
-                        db,
-                        "projects"
-                    )
+            getDocs(
+                collection(
+                    db,
+                    "users"
                 )
-            ]);
+            ),
 
+            getDocs(
+                collection(
+                    db,
+                    "jobs"
+                )
+            ),
 
-        box.innerHTML =
-            [
+            getDocs(
+                collection(
+                    db,
+                    "applications"
+                )
+            ),
 
-                [
-                    "👥",
-                    "Users",
-                    users.size,
-                    "Registered accounts"
-                ],
-
-                [
-                    "💼",
-                    "Projects",
-                    jobs.size,
-                    "Posted projects"
-                ],
-
-                [
-                    "✉",
-                    "Applications",
-                    applications.size,
-                    "All applications"
-                ],
-
-                [
-                    "✓",
-                    "Projects in Work",
-                    projects.size,
-                    "Accepted projects"
-                ]
-
-            ]
-            .map(
-                item => `
-                    <div class="stat">
-
-                        <div class="icon">
-                            ${item[0]}
-                        </div>
-
-                        <h3>
-                            ${item[2]}
-                        </h3>
-
-                        <p>
-                            ${item[1]}
-                        </p>
-
-                        <em>
-                            ${item[3]}
-                        </em>
-
-                    </div>
-                `
+            getDocs(
+                collection(
+                    db,
+                    "projects"
+                )
             )
-            .join("");
+
+        ]);
+
+
+        box.innerHTML = [
+
+            [
+                "👥",
+                "Users",
+                users.size,
+                "Registered accounts"
+            ],
+
+            [
+                "💼",
+                "Projects",
+                jobs.size,
+                "Posted projects"
+            ],
+
+            [
+                "✉",
+                "Applications",
+                applications.size,
+                "All applications"
+            ],
+
+            [
+                "✓",
+                "Projects in Work",
+                projects.size,
+                "Accepted projects"
+            ]
+
+        ]
+        .map(
+            item => `
+                <div class="stat">
+
+                    <div class="icon">
+                        ${item[0]}
+                    </div>
+
+                    <h3>
+                        ${item[2]}
+                    </h3>
+
+                    <p>
+                        ${item[1]}
+                    </p>
+
+                    <em>
+                        ${item[3]}
+                    </em>
+
+                </div>
+            `
+        )
+        .join("");
+
 
     } catch (error) {
 
         showError(error);
+
     }
+
 }
 
 
 /* =========================================================
    START
-   ========================================================= */
+========================================================= */
 
 if (isLogin) {
 
@@ -4437,4 +4940,5 @@ if (isLogin) {
 } else {
 
     authGuard();
+
 }
