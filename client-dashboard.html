@@ -4,55 +4,41 @@
 <head>
 
 <meta charset="utf-8">
-
-<meta
-  name="viewport"
-  content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>ELITE FREELANCE HUB — Client</title>
 
-<link
-  rel="icon"
-  href="profile.png">
-
-<link
-  rel="stylesheet"
-  href="style.css">
+<link rel="icon" href="profile.png">
+<link rel="stylesheet" href="style.css">
 
 </head>
 
-<body
-  class="client"
-  data-role="client">
+<body class="client" data-role="client">
 
-<div class="app">
+<div class="app-shell">
 
 <aside class="sidebar">
 
-<button
-  class="brand"
-  id="brandHome"
-  type="button">
+<button class="brand" id="brandHome" type="button">
 
-<img
-  src="profile.png"
-  class="brand-logo"
-  alt="ELITE FREELANCE HUB">
+<img src="profile.png" alt="ELITE logo">
 
 <span>
-<strong>ELITE</strong>
+<b>ELITE</b>
 <small>FREELANCE HUB</small>
 </span>
 
 </button>
 
 
-<div class="mini-profile">
+<div class="profile-mini">
 
 <img
-  src="profile.png"
-  class="avatar"
-  alt="Profile">
+id="sideAvatar"
+src="profile.png"
+class="avatar-img"
+alt="Profile"
+>
 
 <div>
 
@@ -60,44 +46,43 @@
 Loading...
 </strong>
 
-<small id="sideRole">
-Client
-</small>
+<span id="sideRole">
+Professional Client
+</span>
 
 </div>
 
-<small class="online">
-●
-</small>
+<span class="online-dot">●</span>
 
 </div>
 
 
-<div
-  class="nav-area"
-  id="navArea">
-</div>
+<nav id="navArea" class="sidebar-nav"></nav>
 
 
-<div class="side-bottom">
+<div class="sidebar-footer">
 
 <button
-  id="switchMode"
-  type="button"
-  class="owner-only">
-⇄ Freelancer Mode
+class="side-action"
+id="switchMode"
+type="button"
+>
+⇄ Switch to Freelancer Mode
 </button>
 
 <button
-  id="helpBtn"
-  type="button">
+class="side-action"
+id="helpBtn"
+type="button"
+>
 ♧ Help & Support
 </button>
 
 <button
-  id="logoutBtn"
-  type="button"
-  class="logout">
+class="side-action danger"
+id="logoutBtn"
+type="button"
+>
 ↪ Logout
 </button>
 
@@ -106,15 +91,15 @@ Client
 </aside>
 
 
-<main class="main">
+<main class="main-content">
 
 <header class="topbar">
 
-<div class="top-left">
+<div>
 
-<small>
+<span class="eyebrow">
 WELCOME BACK 👋
-</small>
+</span>
 
 <h1 id="pageTitle">
 Dashboard
@@ -123,32 +108,36 @@ Dashboard
 </div>
 
 
-<div class="top-right">
+<div class="top-actions">
 
 <button
-  class="round-btn"
-  id="themeToggle"
-  type="button">
+class="icon-btn"
+id="themeToggle"
+type="button"
+>
 ◐
 </button>
 
 <button
-  class="round-btn"
-  id="notificationBtn"
-  type="button">
+class="icon-btn"
+id="notificationBtn"
+type="button"
+>
 ♢
-<span class="dot"></span>
 </button>
 
 <button
-  class="user-chip"
-  id="topProfileBtn"
-  type="button">
+class="top-user"
+id="topProfileBtn"
+type="button"
+>
 
 <img
-  src="profile.png"
-  class="avatar small"
-  alt="Profile">
+id="topAvatar"
+src="profile.png"
+class="avatar-img"
+alt="Profile"
+>
 
 <span id="topName">
 Member
@@ -156,10 +145,12 @@ Member
 
 </button>
 
+
 <button
-  class="logout-top"
-  id="topLogout"
-  type="button">
+class="outline-danger"
+id="topLogout"
+type="button"
+>
 ↪ Logout
 </button>
 
@@ -168,24 +159,14 @@ Member
 </header>
 
 
-<section
-  class="page active"
-  id="dashboardPage">
+<section class="page active" id="dashboardPage">
 
-<div class="mode">
-
+<div class="mode-badge client-badge">
 CLIENT MODE
-
-<span
-  id="ownerBadge"
-  class="owner-badge owner-only">
-OWNER
-</span>
-
 </div>
 
 
-<div class="hero client-hero">
+<div class="hero-card">
 
 <div class="hero-copy">
 
@@ -195,23 +176,25 @@ Build Your
 </h2>
 
 <p>
-Post real projects, receive freelancer applications,
-accept the best proposal and manage your work.
+Post projects, receive applications,
+choose freelancers and manage accepted work.
 </p>
 
-<div class="actions">
+<div class="hero-buttons">
 
 <button
-  class="primary"
-  type="button"
-  data-target="postPage">
+class="primary"
+data-target="postPage"
+type="button"
+>
 Post a Project ＋
 </button>
 
 <button
-  class="secondary"
-  type="button"
-  data-target="applicationsPage">
+class="secondary"
+data-target="applicationsPage"
+type="button"
+>
 View Applications
 </button>
 
@@ -222,24 +205,18 @@ View Applications
 
 <div class="hero-art">
 
-<div class="circle"></div>
+<div class="glow"></div>
 
-<div class="person">
+<div class="hero-person">
 💼
 </div>
 
-<div class="float a">
-✦
-</div>
-
-<div class="float b">
+<div class="hero-float one">
 ✓
 </div>
 
-<div class="screen">
-CLIENT
-<br>
-<span>ONLINE</span>
+<div class="hero-float two">
+👤
 </div>
 
 </div>
@@ -247,44 +224,31 @@ CLIENT
 </div>
 
 
-<div
-  class="stats"
-  id="clientStats">
-</div>
+<div class="stats" id="clientStats"></div>
 
 
-<div class="grid2">
+<div class="dashboard-grid">
 
 <div class="panel">
 
 <div class="panel-head">
 
 <div>
-
-<h3>
-Recent Work Activity
-</h3>
-
-<p>
-Latest project activity
-</p>
-
+<h3>My Projects</h3>
+<p>Latest posted projects</p>
 </div>
 
 <button
-  class="link"
-  type="button"
-  data-target="applicationsPage">
+class="text-link"
+data-target="projectsPage"
+type="button"
+>
 View All →
 </button>
 
 </div>
 
-
-<div
-  class="activity"
-  id="clientActivity">
-</div>
+<div id="clientActivity"></div>
 
 </div>
 
@@ -294,29 +258,21 @@ View All →
 <div class="panel-head">
 
 <div>
-
-<h3>
-Recent Messages
-</h3>
-
-<p>
-Your project conversations
-</p>
-
+<h3>Recent Applications</h3>
+<p>Freelancers applying to your projects</p>
 </div>
 
 <button
-  class="link"
-  type="button"
-  data-target="messagesPage">
+class="text-link"
+data-target="applicationsPage"
+type="button"
+>
 View All →
 </button>
 
 </div>
 
-<div class="empty">
-Open Messages to see accepted-project chats.
-</div>
+<div id="clientRecentApplications"></div>
 
 </div>
 
@@ -325,88 +281,60 @@ Open Messages to see accepted-project chats.
 </section>
 
 
-<section
-  class="page"
-  id="projectsPage">
+<section class="page" id="projectsPage">
 
-<div class="page-head">
+<div class="page-heading">
 
-<label>
-MY PROJECTS
-</label>
+<span>MY PROJECTS</span>
 
-<h2>
-My Projects
-</h2>
+<h2>My Projects</h2>
 
 <p>
-Projects posted by you.
+Manage projects you posted.
 </p>
 
 </div>
 
 <div
-  class="cards"
-  id="clientProjects">
-
-<div class="loading">
-Loading...
-</div>
-
-</div>
+id="clientProjects"
+class="card-grid"
+></div>
 
 </section>
 
 
-<section
-  class="page"
-  id="applicationsPage">
+<section class="page" id="applicationsPage">
 
-<div class="page-head">
+<div class="page-heading">
 
-<label>
-APPLICATIONS
-</label>
+<span>APPLICATIONS</span>
 
-<h2>
-Freelancer Applications
-</h2>
+<h2>Freelancer Applications</h2>
 
 <p>
-Review and accept or reject applications.
+Accept or reject applications.
 </p>
 
 </div>
 
 <div
-  class="cards"
-  id="clientApplications">
-
-<div class="loading">
-Loading...
-</div>
-
-</div>
+id="clientApplications"
+class="card-grid"
+></div>
 
 </section>
 
 
-<section
-  class="page"
-  id="messagesPage">
+<section class="page" id="messagesPage">
 
-<div class="page-head">
+<div class="page-heading">
 
-<label>
-MESSAGES
-</label>
+<span>MESSAGES</span>
 
-<h2>
-Project Inbox
-</h2>
+<h2>Project Inbox</h2>
 
 <p>
-Chat with freelancers on accepted projects.
+Chat with accepted freelancers.
 </p>
 
 </div>
@@ -415,17 +343,12 @@ Chat with freelancers on accepted projects.
 <div class="messages-layout">
 
 <div
-  class="conversations"
-  id="conversationsList">
-
-<div class="empty">
-Loading conversations...
-</div>
-
-</div>
+class="conversation-list"
+id="conversationsList"
+></div>
 
 
-<div class="chat">
+<div class="chat-panel">
 
 <div class="chat-head">
 
@@ -434,37 +357,37 @@ Select a project
 </strong>
 
 <span id="chatSubtitle">
-Choose a conversation.
+Choose a conversation to start messaging.
 </span>
 
 </div>
 
 
-<div
-  class="messages"
-  id="messageList">
+<div class="messages" id="messageList">
 
 <div class="empty">
-No conversation selected.
+Select a conversation.
 </div>
 
 </div>
 
 
 <div
-  class="composer"
-  id="composer"
-  style="display:none">
+class="composer"
+id="composer"
+style="display:none"
+>
 
 <textarea
-  id="messageInput"
-  placeholder="Write a message...">
-</textarea>
+id="messageInput"
+placeholder="Write a message..."
+></textarea>
 
 <button
-  class="primary"
-  id="sendMessage"
-  type="button">
+class="primary"
+id="sendMessage"
+type="button"
+>
 Send
 </button>
 
@@ -477,52 +400,37 @@ Send
 </section>
 
 
-<section
-  class="page"
-  id="postPage">
+<section class="page" id="postPage">
 
-<div class="page-head">
+<div class="page-heading">
 
-<label>
-PROJECT
-</label>
+<span>CREATE PROJECT</span>
 
-<h2>
-Post a Project
-</h2>
+<h2>Post a Project</h2>
 
 <p>
-Publish a real project to Firebase.
+Publish a real client project.
 </p>
 
 </div>
 
 
-<div class="form-box">
+<div class="form-panel">
 
 <form id="postForm">
 
 <div class="form-grid">
 
-<label class="field">
-
+<label>
 Project Title
-
-<input
-  id="postTitle"
-  required
-  maxlength="120">
-
+<input id="postTitle" required>
 </label>
 
 
-<label class="field">
-
+<label>
 Category
 
-<select
-  id="postCategory"
-  required>
+<select id="postCategory" required>
 
 <option value="">
 Select
@@ -552,80 +460,66 @@ Digital Marketing
 Video Editing
 </option>
 
-<option>
-Mobile App Development
-</option>
-
-<option>
-Other
-</option>
-
 </select>
 
 </label>
 
 
-<label class="field full">
+<label class="full">
 
-Description
+Project Description
 
 <textarea
-  id="postDescription"
-  required
-  maxlength="5000">
-</textarea>
+id="postDescription"
+required
+></textarea>
 
 </label>
 
 
-<label class="field">
+<label>
 
 Budget (USD)
 
 <input
-  id="postBudget"
-  type="number"
-  min="1"
-  step="1"
-  required>
+id="postBudget"
+type="number"
+min="1"
+required
+>
 
 </label>
 
 
-<label class="field">
+<label>
 
 Deadline
 
 <input
-  id="postDeadline"
-  type="date"
-  required>
+id="postDeadline"
+type="date"
+required
+>
 
 </label>
 
 </div>
 
 
-<div class="form-row">
+<div class="form-actions">
 
 <button
-  class="primary"
-  id="postBtn"
-  type="submit">
+class="primary"
+id="postBtn"
+type="submit"
+>
 🚀 Publish Project
 </button>
 
-<button
-  class="secondary"
-  type="button"
-  data-target="dashboardPage">
-Cancel
-</button>
-
 <span
-  class="success"
-  id="postMessage">
-</span>
+id="postMessage"
+class="form-message"
+></span>
 
 </div>
 
@@ -636,19 +530,13 @@ Cancel
 </section>
 
 
-<section
-  class="page"
-  id="profilePage">
+<section class="page" id="profilePage">
 
-<div class="page-head">
+<div class="page-heading">
 
-<label>
-ACCOUNT
-</label>
+<span>ACCOUNT</span>
 
-<h2>
-Profile
-</h2>
+<h2>Profile</h2>
 
 <p>
 Your client profile.
@@ -657,14 +545,16 @@ Your client profile.
 </div>
 
 
-<div class="profile-box">
+<div class="profile-panel">
 
 <img
-  src="profile.png"
-  class="profile-avatar-img"
-  alt="Profile">
+id="profileAvatar"
+src="profile.png"
+class="profile-large"
+alt="Profile"
+>
 
-<div class="profile-info">
+<div>
 
 <h3 id="profileName">
 Member
@@ -675,30 +565,60 @@ Professional Client
 </p>
 
 <p>
-✉
-<span id="profileEmail"></span>
+✉ <span id="profileEmail"></span>
+</p>
+
+<p>
+🛠 <span id="profileSkills"></span>
 </p>
 
 </div>
 
 </div>
 
+
+<div class="form-panel">
+
+<h3>
+Profile Photo
+</h3>
+
+<p class="muted">
+Choose your own profile picture.
+This does not change the ELITE website logo.
+</p>
+
+<input
+id="avatarInput"
+type="file"
+accept="image/*"
+>
+
+<button
+class="primary"
+id="saveAvatarBtn"
+type="button"
+>
+Save Profile Photo
+</button>
+
+<span
+id="avatarMessage"
+class="form-message"
+></span>
+
+</div>
+
 </section>
 
 
-<section
-  class="page"
-  id="settingsPage">
+<section class="page" id="settingsPage">
 
-<div class="page-head">
+<div class="page-heading">
 
-<label>
-ACCOUNT
-</label>
+<span>ACCOUNT</span>
 
-<h2>
-Settings
-</h2>
+<h2>Settings</h2>
 
 <p>
 Update your account information.
@@ -707,58 +627,43 @@ Update your account information.
 </div>
 
 
-<div class="form-box">
+<div class="form-panel">
 
 <form id="settingsForm">
 
 <div class="form-grid">
 
-<label class="field">
-
+<label>
 Display Name
-
-<input
-  id="settingsName"
-  maxlength="80"
-  required>
-
+<input id="settingsName" required>
 </label>
 
-
-<label class="field">
-
+<label>
 Email
-
-<input
-  id="settingsEmail"
-  disabled>
-
+<input id="settingsEmail" disabled>
 </label>
 
-
-<label class="field full">
-
-Company / Skills / Notes
-
+<label class="full">
+Skills
 <input id="settingsSkills">
-
 </label>
 
 </div>
 
 
-<div class="form-row">
+<div class="form-actions">
 
 <button
-  class="primary"
-  type="submit">
+class="primary"
+type="submit"
+>
 Save Changes
 </button>
 
 <span
-  class="success"
-  id="settingsMessage">
-</span>
+id="settingsMessage"
+class="form-message"
+></span>
 
 </div>
 
@@ -769,29 +674,16 @@ Save Changes
 </section>
 
 
-<footer>
-© 2026
-<b>ELITE FREELANCE HUB</b>
-· Connect • Collaborate • Succeed
-</footer>
+<div
+id="firebaseError"
+class="firebase-error"
+></div>
 
 </main>
 
 </div>
 
-
-<div id="toast"></div>
-
-<div
-  id="firebaseError"
-  class="firebase-error">
-</div>
-
-
-<script
-  type="module"
-  src="script.js">
-</script>
+<script type="module" src="script.js"></script>
 
 </body>
 </html>
